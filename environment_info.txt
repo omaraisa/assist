@@ -1,0 +1,17 @@
+# SmartAssistant Environment Information
+# Generated on Sun 06/15/2025 23:06:14.72
+
+PROJECT_DIR=F:\MEGA\Shared\ProAI\SmartAssistant\BaseAssistant\SmartAssistantFastAPI
+PYTHON_VERSION=3.13.5
+VIRTUAL_ENV=F:\MEGA\Shared\ProAI\SmartAssistant\BaseAssistant\SmartAssistantFastAPI\venv
+
+# To activate this environment:
+# call activate_environment.bat
+
+# To start the server:
+# call start_smartassistant.bat  
+
+# To connect ArcGIS Pro:
+# call connect_arcgis.bat
+
+# This environment is now independent of ArcGIS Pro Python installation
