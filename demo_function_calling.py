@@ -20,10 +20,9 @@ async def demonstrate_function_calling():
     
     try:
         print(f"\n📱 Current AI Model: {ai_service.current_model}")
-        
-        # Example 1: OpenAI Function Calling Format
+          # Example 1: OpenAI Function Calling Format
         print(f"\n🔧 OpenAI Function Call Example:")
-        ai_service.set_model("GPT_4")
+        ai_service.set_model("GPT4O")
         
         openai_response = {
             "type": "function_calls",
@@ -66,10 +65,9 @@ async def demonstrate_function_calling():
         parsed_calls = ai_service.parse_function_calls(gemini_response)
         print(f"   Function: {parsed_calls[0]['name']}")
         print(f"   Parameters: {json.dumps(parsed_calls[0]['parameters'], indent=6)}")
-        
-        # Example 3: Claude Function Calling Format
+          # Example 3: Claude Function Calling Format
         print(f"\n🔧 Claude Function Call Example:")
-        ai_service.set_model("CLAUDE_3_5_SONNET")
+        ai_service.set_model("CLAUDE")
         
         claude_response = {
             "type": "function_calls",

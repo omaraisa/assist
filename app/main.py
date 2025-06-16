@@ -183,8 +183,7 @@ async def handle_user_message(client_id: str, user_message: str):
         
         # Get current ArcGIS Pro state
         arcgis_state = websocket_manager.get_arcgis_state()
-        
-        # Generate AI response
+          # Generate AI response
         ai_response = await ai_service.generate_response(
             user_message=user_message,
             conversation_history=history,
@@ -192,14 +191,93 @@ async def handle_user_message(client_id: str, user_message: str):
             available_functions=spatial_functions.get_available_functions()
         )
         
-        # Process AI response for investigation commands or final response
-        await process_ai_response(client_id, ai_response)
+        # Process AI response for function calling or final response
+        await process_ai_response_with_functions(client_id, ai_response)
         
     except Exception as e:
         logger.error(f"Error handling user message: {str(e)}")
         await websocket_manager.send_to_client(client_id, {
             "type": "error",
             "message": f"Error processing your message: {str(e)}"
+        })
+
+async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
+    """Process AI response with function calling support"""
+    try:
+        response_type = ai_response.get("type")
+        
+        if response_type == "function_calls":
+            # AI wants to call functions
+            function_calls = ai_service.parse_function_calls(ai_response)
+            
+            if function_calls:
+                # Execute functions via ArcGIS Pro
+                await execute_function_calls(client_id, function_calls, ai_response)
+            else:
+                # Fallback to text response
+                content = ai_response.get("content", "I encountered an issue processing your request.")
+                await send_final_response(client_id, content)
+                
+        elif response_type == "text":
+            # Direct text response
+            content = ai_response.get("content", "")
+            await send_final_response(client_id, content)
+            
+        else:
+            # Fallback for unexpected response types
+            logger.warning(f"Unexpected AI response type: {response_type}")
+            await send_final_response(client_id, "I encountered an issue processing your request.")
+            
+    except Exception as e:
+        logger.error(f"Error processing AI response with functions: {str(e)}")
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error",
+            "message": f"Error processing AI response: {str(e)}"
+        })
+
+async def execute_function_calls(client_id: str, function_calls: List[Dict], original_response: Dict):
+    """Execute function calls via ArcGIS Pro"""
+    try:
+        # Send function call request to ArcGIS Pro
+        for func_call in function_calls:
+            # Create function execution request
+            function_request = {
+                "type": "execute_function",
+                "session_id": f"func_{uuid.uuid4().hex[:8]}",
+                "source_client": client_id,
+                "function_name": func_call["name"],
+                "parameters": func_call["parameters"]
+            }
+            
+            logger.info(f"Sending function request to ArcGIS Pro: {func_call['name']}")
+            
+            # Send to ArcGIS Pro client
+            arcgis_clients = websocket_manager.get_clients_by_type("arcgis_pro")
+            if arcgis_clients:
+                await websocket_manager.send_to_client(arcgis_clients[0], function_request)
+                
+                # Store function call context for response handling
+                websocket_manager.store_function_context(
+                    function_request["session_id"], 
+                    {
+                        "client_id": client_id,
+                        "function_call": func_call,
+                        "original_response": original_response,
+                        "is_function_calling": True
+                    }
+                )
+            else:
+                logger.error("No ArcGIS Pro client connected for function execution")
+                await websocket_manager.send_to_client(client_id, {
+                    "type": "error",
+                    "message": "ArcGIS Pro is not connected. Please ensure ArcGIS Pro is running and connected."
+                })
+                
+    except Exception as e:
+        logger.error(f"Error executing function calls: {str(e)}")
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error",
+            "message": f"Error executing functions: {str(e)}"
         })
 
 async def process_ai_response(client_id: str, ai_response: str):
@@ -315,6 +393,57 @@ async def handle_software_state_update(client_id: str, state_data: Dict):
     except Exception as e:
         logger.error(f"Error handling software state update: {str(e)}")
 
+async def handle_function_calling_response(session_id: str, message: Dict, context: Dict):
+    """Handle function calling response and generate final AI response"""
+    try:
+        client_id = context["client_id"]
+        function_call = context["function_call"]
+        original_response = context["original_response"]
+        
+        # Prepare function result
+        function_result = {
+            "id": function_call["id"],
+            "name": function_call["name"],
+            "parameters": function_call["parameters"],
+            "result": message.get("data", {})
+        }
+        
+        # Get conversation history and prepare messages for AI
+        history = websocket_manager.get_conversation_history(client_id)
+        arcgis_state = websocket_manager.get_arcgis_state()
+        
+        # Build messages for function response
+        messages = ai_service._prepare_messages(
+            original_response.get("content", ""),
+            history,
+            arcgis_state
+        )
+        
+        # Add the function call response to conversation
+        logger.info(f"Sending function result to AI for final response: {function_call['name']}")
+        final_response = await ai_service.handle_function_response(messages, [function_result])
+        
+        # Send final response to user
+        if final_response.get("type") == "text":
+            content = final_response.get("content", "I processed your request successfully.")
+            await send_final_response(client_id, content)
+            
+            # Add to conversation history
+            websocket_manager.add_to_history(client_id, "assistant", content)
+        else:
+            # Handle unexpected response type
+            await send_final_response(client_id, "I processed your request successfully.")
+        
+        # Clean up function context
+        websocket_manager.remove_function_context(session_id)
+        
+    except Exception as e:
+        logger.error(f"Error handling function calling response: {str(e)}")
+        await websocket_manager.send_to_client(context.get("client_id"), {
+            "type": "error",
+            "message": f"Error processing function result: {str(e)}"
+        })
+
 async def handle_function_response(client_id: str, message: Dict):
     """Handle function execution responses from ArcGIS Pro"""
     try:
@@ -323,12 +452,20 @@ async def handle_function_response(client_id: str, message: Dict):
         
         logger.info(f"Received function response: session_id={session_id}, source_client={source_client}, from_client={client_id}")
         
+        # Check if this is a function calling response
+        if session_id:
+            context = websocket_manager.get_function_context(session_id)
+            if context and context.get("is_function_calling"):
+                logger.info(f"Processing function calling response for session {session_id}")
+                await handle_function_calling_response(session_id, message, context)
+                return
+        
         if session_id and source_client:
-            # This is part of an investigation session
+            # This is part of an investigation session (legacy)
             logger.info(f"Continuing investigation session {session_id} for client {source_client}")
             await continue_investigation_session(source_client, session_id, message)
         elif source_client:
-            # Direct function response
+            # Direct function response (legacy)
             logger.info(f"Sending direct function result to client {source_client}")
             await websocket_manager.send_to_client(source_client, {
                 "type": "function_result",

@@ -2,7 +2,7 @@
 REM SmartAssistant Environment Activation Script
 REM This script ensures the project uses its own Python environment
 
-set "PROJECT_DIR=F:\MEGA\Shared\ProAI\SmartAssistant\BaseAssistant\SmartAssistantFastAPI"
+set "PROJECT_DIR=E:\ai_stage\smart_assistant"
 set "OLD_PATH=%PATH%"
 set "OLD_PYTHONPATH=%PYTHONPATH%"
 

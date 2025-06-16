@@ -17,8 +17,7 @@ class WebSocketManager:
         
         # Store client types (arcgis_pro, chatbot)
         self.client_types: Dict[str, str] = {}
-        
-        # Store conversation histories per client
+          # Store conversation histories per client
         self.conversation_histories: Dict[str, List[Dict]] = {}
         
         # Store investigation sessions
@@ -32,6 +31,9 @@ class WebSocketManager:
         
         # Store function execution results
         self.function_results: Dict[str, Dict] = {}
+        
+        # Store function calling contexts (for new function calling system)
+        self.function_contexts: Dict[str, Dict] = {}
     
     async def connect(self, websocket: WebSocket, client_id: str):
         """Accept a new WebSocket connection"""
@@ -183,6 +185,25 @@ class WebSocketManager:
     def has_function_result(self, function_id: str) -> bool:
         """Check if function result is available"""
         return function_id in self.function_results
+    
+    def store_function_context(self, session_id: str, context: Dict):
+        """Store function calling context"""
+        self.function_contexts[session_id] = context
+        logger.info(f"Stored function context for session {session_id}")
+    
+    def get_function_context(self, session_id: str) -> Optional[Dict]:
+        """Get function calling context"""
+        return self.function_contexts.get(session_id)
+    
+    def remove_function_context(self, session_id: str):
+        """Remove function calling context"""
+        if session_id in self.function_contexts:
+            del self.function_contexts[session_id]
+            logger.info(f"Removed function context for session {session_id}")
+    
+    def get_clients_by_type(self, client_type: str) -> List[str]:
+        """Get all client IDs of a specific type"""
+        return [client_id for client_id, ctype in self.client_types.items() if ctype == client_type]
     
     def get_active_connections_count(self) -> int:
         """Get number of active connections"""

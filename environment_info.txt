@@ -1,9 +1,9 @@
 # SmartAssistant Environment Information
-# Generated on Sun 06/15/2025 23:06:14.72
+# Generated on Mon 06/16/2025  8:53:27.66
 
-PROJECT_DIR=F:\MEGA\Shared\ProAI\SmartAssistant\BaseAssistant\SmartAssistantFastAPI
-PYTHON_VERSION=3.13.5
-VIRTUAL_ENV=F:\MEGA\Shared\ProAI\SmartAssistant\BaseAssistant\SmartAssistantFastAPI\venv
+PROJECT_DIR=E:\ai_stage\smart_assistant
+PYTHON_VERSION=3.11.9
+VIRTUAL_ENV=E:\ai_stage\smart_assistant\venv
 
 # To activate this environment:
 # call activate_environment.bat
