@@ -211,6 +211,24 @@ async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
             function_calls = ai_service.parse_function_calls(ai_response)
             
             if function_calls:
+                # CRITICAL: Add assistant message with function calls to conversation history
+                # This is required for Gemini API to properly match function calls with responses
+                assistant_content = ai_response.get("content", "")
+                
+                # Create special assistant message that includes function call information
+                assistant_message = {
+                    "role": "assistant",
+                    "content": assistant_content,
+                    "function_calls": function_calls  # Store for Gemini API
+                }
+                
+                # Add to conversation history
+                websocket_manager.add_to_history_with_metadata(client_id, assistant_message)
+                
+                # For Gemini API, log that we've added this special message
+                if ai_service.current_model.startswith("GEMINI"):
+                    logger.info(f"Added assistant message with function_calls to history for Gemini: {json.dumps(function_calls, indent=2)}")
+                
                 # Execute functions via ArcGIS Pro
                 await execute_function_calls(client_id, function_calls, ai_response)
             else:
@@ -412,6 +430,21 @@ async def handle_function_calling_response(session_id: str, message: Dict, conte
         history = websocket_manager.get_conversation_history(client_id)
         arcgis_state = websocket_manager.get_arcgis_state()
         
+        # Log the conversation history to debug any Gemini API issues
+        if ai_service.current_model.startswith("GEMINI"):
+            logger.info(f"Conversation history before function response (last 3 messages): {json.dumps(history[-3:], indent=2)}")
+        
+        # Verify that the assistant message with function calls is in history
+        function_call_in_history = False
+        for msg in history:
+            if msg.get("role") == "assistant" and "function_calls" in msg:
+                function_call_in_history = True
+                logger.info("Found assistant message with function_calls in history")
+                break
+        
+        if not function_call_in_history and ai_service.current_model.startswith("GEMINI"):
+            logger.warning("No assistant message with function_calls found in history, this may cause Gemini API errors")
+                
         # Build messages for function response
         messages = ai_service._prepare_messages(
             original_response.get("content", ""),

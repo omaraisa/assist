@@ -118,6 +118,22 @@ class WebSocketManager:
         if len(self.conversation_histories[client_id]) > max_history:
             self.conversation_histories[client_id] = self.conversation_histories[client_id][-max_history:]
     
+    def add_to_history_with_metadata(self, client_id: str, message: Dict):
+        """Add message with metadata to conversation history (for function calls)"""
+        if client_id not in self.conversation_histories:
+            self.conversation_histories[client_id] = []
+        
+        # Add timestamp to the message
+        message_with_timestamp = message.copy()
+        message_with_timestamp["timestamp"] = datetime.now().isoformat()
+        
+        self.conversation_histories[client_id].append(message_with_timestamp)
+        
+        # Keep only last N messages to prevent memory issues
+        max_history = 20
+        if len(self.conversation_histories[client_id]) > max_history:
+            self.conversation_histories[client_id] = self.conversation_histories[client_id][-max_history:]
+    
     def get_arcgis_state(self) -> Dict:
         """Get current ArcGIS Pro state"""
         return self.arcgis_state

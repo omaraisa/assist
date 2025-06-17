@@ -245,7 +245,6 @@ When you need to analyze data or perform spatial operations, use the available f
                     "maxOutputTokens": model_config["max_tokens"]
                 }
             }
-            
             url = f"{model_config['endpoint']}?key={model_config['api_key']}"
             
             async with self.session.post(url, json=payload) as response:
@@ -470,7 +469,6 @@ When you need to analyze data or perform spatial operations, use the available f
                 "type": "text",
                 "content": f"I successfully executed the function but encountered an error formatting the response: {str(e)}"
             }
-    
     async def _handle_gemini_function_response(
         self, 
         messages: List[Dict], 
@@ -478,62 +476,183 @@ When you need to analyze data or perform spatial operations, use the available f
         model_config: Dict
     ) -> Dict[str, Any]:
         """Handle Gemini function calling response"""
-        # Convert messages to Gemini format and add function responses
-        contents = []
-        for msg in messages:
-            role = "user" if msg["role"] == "user" else "model"
-            contents.append({
-                "role": role,
-                "parts": [{"text": msg["content"]}]
-            })
-          # Add function call results
-        function_response_parts = []
-        for result in function_results:
-            function_response_parts.append({
-                "functionResponse": {
-                    "name": result["name"],
-                    "response": {
-                        "content": json.dumps(result["result"])  # Ensure content field is present
+        try:
+            # For Gemini, we need to rebuild the conversation properly
+            # The key issue is that we need to include the model's function calls
+            # and then add matching function responses
+            
+            contents = []
+            
+            # Process messages, but we need to handle the last few messages carefully
+            # The conversation should end with: user -> model (with function calls) -> user (with function responses)
+            
+            # Track whether we've found the assistant message with function calls
+            found_function_call_message = False
+            
+            # Add all messages except potentially the last assistant message
+            for i, msg in enumerate(messages):
+                if msg["role"] == "system":
+                    # Skip system messages in Gemini contents - they're in the system prompt
+                    continue
+                elif msg["role"] == "user":
+                    contents.append({
+                        "role": "user",
+                        "parts": [{"text": msg["content"]}]
+                    })
+                elif msg["role"] == "assistant":
+                    # For assistant messages, check if it has function_calls metadata
+                    # This is crucial for Gemini API to properly match function calls with responses
+                    
+                    # If we have function_calls metadata, this is the message we need to handle specially
+                    if "function_calls" in msg:
+                        found_function_call_message = True
+                        
+                        # Build the function calls from the stored metadata
+                        function_call_parts = []
+                        
+                        # Add any text content first
+                        if msg.get("content"):
+                            function_call_parts.append({"text": msg["content"]})
+                        
+                        # Add function calls based on the stored metadata
+                        for func_call in msg["function_calls"]:
+                            function_call_parts.append({
+                                "functionCall": {
+                                    "name": func_call["name"],
+                                    "args": func_call.get("parameters", {})
+                                }
+                            })
+                        
+                        contents.append({
+                            "role": "model",
+                            "parts": function_call_parts
+                        })
+                    else:
+                        # Regular assistant message
+                        contents.append({
+                            "role": "model",
+                            "parts": [{"text": msg["content"]}]
+                        })
+            
+            # If we didn't find a function call message, try to reconstruct it from the last assistant message
+            # This is a fallback in case the metadata was not properly stored
+            if not found_function_call_message and messages:
+                for i in range(len(messages) - 1, -1, -1):
+                    if messages[i]["role"] == "assistant":
+                        # Get the last assistant message
+                        last_assistant_msg = messages[i]
+                        
+                        # Build function calls from the results
+                        function_call_parts = []
+                        
+                        # Add any text content first
+                        if last_assistant_msg.get("content"):
+                            function_call_parts.append({"text": last_assistant_msg["content"]})
+                        
+                        # Add function calls based on the results we received
+                        for result in function_results:
+                            function_call_parts.append({
+                                "functionCall": {
+                                    "name": result["name"],
+                                    "args": result.get("parameters", {})
+                                }
+                            })
+                        
+                        # Replace the last model message or add a new one if needed
+                        if any(item["role"] == "model" for item in contents):
+                            # Find the last model message and replace it
+                            for j in range(len(contents) - 1, -1, -1):
+                                if contents[j]["role"] == "model":
+                                    contents[j] = {
+                                        "role": "model",
+                                        "parts": function_call_parts
+                                    }
+                                    break
+                        else:
+                            # Add a new model message with function calls
+                            contents.append({
+                                "role": "model",
+                                "parts": function_call_parts
+                            })
+                        
+                        break
+            
+            # Now add the function responses that match the function calls
+            # Ensure the order of function responses matches the order of function calls
+            function_response_parts = []
+            for result in function_results:
+                function_response_parts.append({
+                    "functionResponse": {
+                        "name": result["name"],
+                        "response": result["result"]  # Direct result, not JSON-encoded
                     }
-                }
+                })
+            
+            # Add function responses as a user message
+            contents.append({
+                "role": "user",
+                "parts": function_response_parts
             })
-        
-        contents.append({
-            "role": "user",
-            "parts": function_response_parts
-        })
-        
-        payload = {
-            "contents": contents,
-            "tools": [{
-                "function_declarations": gemini_functions
-            }],
-            "generationConfig": {
-                "temperature": model_config["temperature"],
-                "maxOutputTokens": model_config["max_tokens"]
-            }
-        }
-        
-        url = f"{model_config['endpoint']}?key={model_config['api_key']}"
-        
-        async with self.session.post(url, json=payload) as response:
-            if response.status == 200:
-                data = await response.json()
-                candidate = data["candidates"][0]
-                content_parts = candidate["content"]["parts"]
-                
-                text_content = ""
-                for part in content_parts:
-                    if "text" in part:
-                        text_content += part["text"]
-                
-                return {
-                    "type": "text",
-                    "content": text_content
+            
+            # Log the constructed conversation
+            logger.info(f"Gemini conversation with function calls: {json.dumps(contents, indent=2)}")
+            
+            payload = {
+                "contents": contents,
+                "tools": [{
+                    "function_declarations": gemini_functions
+                }],
+                "generationConfig": {
+                    "temperature": model_config["temperature"],
+                    "maxOutputTokens": model_config["max_tokens"]
                 }
-            else:
-                error_text = await response.text()
-                raise Exception(f"Gemini API error {response.status}: {error_text}")
+            }
+            
+            url = f"{model_config['endpoint']}?key={model_config['api_key']}"
+            
+            async with self.session.post(url, json=payload) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Check for missing candidates
+                    if "candidates" not in data or not data["candidates"]:
+                        logger.error(f"No candidates in Gemini response: {json.dumps(data, indent=2)}")
+                        raise Exception("Gemini API returned no candidates")
+                    
+                    candidate = data["candidates"][0]
+                    
+                    # Check for finish reason
+                    if "finishReason" in candidate and candidate["finishReason"] != "STOP":
+                        logger.warning(f"Gemini API finished with reason: {candidate['finishReason']}")
+                    
+                    # Check for missing content or parts
+                    if "content" not in candidate or "parts" not in candidate["content"]:
+                        logger.error(f"Invalid Gemini response structure: {json.dumps(candidate, indent=2)}")
+                        raise Exception("Invalid Gemini API response structure")
+                    
+                    content_parts = candidate["content"]["parts"]
+                    
+                    text_content = ""
+                    for part in content_parts:
+                        if "text" in part:
+                            text_content += part["text"]
+                    
+                    return {
+                        "type": "text",
+                        "content": text_content
+                    }
+                else:
+                    error_text = await response.text()
+                    logger.error(f"Gemini API error: {error_text}")
+                    logger.error(f"Payload sent: {json.dumps(payload, indent=2)}")
+                    raise Exception(f"Gemini API error {response.status}: {error_text}")
+                    
+        except Exception as e:
+            logger.error(f"Error in Gemini function response handling: {str(e)}")
+            return {
+                "type": "text",
+                "content": f"I successfully executed the function but encountered an error formatting the response: {str(e)}"
+            }
     
     async def _handle_claude_function_response(
         self, 
