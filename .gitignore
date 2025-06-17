@@ -4,4 +4,10 @@ __pycache__/
 *.pyc
 *.pyo
 .env
+/.history
+/venv
+environment_info.txt
+start_smartassistant.bat
+activate_environment.bat
+connect_arcgis.bat
 

@@ -96,12 +96,20 @@ set "INSTALL_SUCCESS=0"
 
 if exist "%PROJECT_DIR%\requirements.txt" (
     echo [INFO] Found requirements.txt, installing packages...
-    pip install -r "%PROJECT_DIR%\requirements.txt"
+    echo [INFO] Attempting to install with pre-compiled binaries only...
+    pip install -r "%PROJECT_DIR%\requirements.txt" --only-binary=:all: --no-cache-dir
     if not errorlevel 1 (
         set "INSTALL_SUCCESS=1"
-        echo [SUCCESS] Requirements installed successfully
+        echo [SUCCESS] Requirements installed successfully with pre-compiled binaries
     ) else (
-        echo [WARNING] Requirements installation had issues
+        echo [WARNING] Pre-compiled installation failed, trying with fallback strategy...
+        pip install -r "%PROJECT_DIR%\requirements.txt" --prefer-binary --no-cache-dir
+        if not errorlevel 1 (
+            set "INSTALL_SUCCESS=1"
+            echo [SUCCESS] Requirements installed successfully with fallback strategy
+        ) else (
+            echo [WARNING] Requirements installation had issues
+        )
     )
 ) else (
     echo [WARNING] requirements.txt not found
@@ -124,12 +132,26 @@ if "%INSTALL_SUCCESS%"=="0" (
         echo [ERROR] Failed to install Uvicorn
         pause
         exit /b 1
-    )
+    )      echo [INFO] Installing additional packages...
+    echo [INFO] Trying to install packages with pre-compiled binaries...
+    pip install python-multipart jinja2 aiofiles pydantic-settings --only-binary=:all: --no-cache-dir
     
-    echo [INFO] Installing additional packages...
-    pip install python-multipart jinja2 aiofiles
+    echo [INFO] Installing aiohttp with fallback strategy...
+    pip install aiohttp --only-binary=:all: --no-cache-dir
     if errorlevel 1 (
-        echo [WARNING] Some additional packages failed to install
+        echo [WARNING] Pre-compiled aiohttp failed, trying compatible version...
+        pip install aiohttp==3.10.11 --only-binary=:all: --no-cache-dir
+        if errorlevel 1 (
+            echo [WARNING] Trying older stable version...
+            pip install aiohttp==3.6.2 --only-binary=:all: --no-cache-dir
+            if errorlevel 1 (
+                echo [WARNING] Installing aiohttp without binary restriction...
+                pip install aiohttp --prefer-binary --no-cache-dir
+                if errorlevel 1 (
+                    echo [WARNING] aiohttp installation failed, skipping...
+                )
+            )
+        )
     )
     
     echo [SUCCESS] Core packages installed
@@ -149,6 +171,38 @@ if errorlevel 1 (
     echo [ERROR] Uvicorn not available after installation
     echo [INFO] Attempting to reinstall Uvicorn...
     pip install --force-reinstall uvicorn[standard]
+)
+
+REM Verify aiohttp is available
+python -c "import aiohttp; print('aiohttp: OK')" 2>nul
+if errorlevel 1 (
+    echo [WARNING] aiohttp not available, attempting to install...
+    pip install aiohttp --only-binary=:all: --no-cache-dir 2>nul
+    if errorlevel 1 (
+        echo [INFO] Trying aiohttp with compatible version...
+        pip install aiohttp==3.10.11 --only-binary=:all: --no-cache-dir 2>nul
+        if errorlevel 1 (
+            echo [INFO] Trying older stable version...
+            pip install aiohttp==3.6.2 --only-binary=:all: --no-cache-dir 2>nul
+            if errorlevel 1 (
+                echo [WARNING] aiohttp installation failed - some features may be limited
+            )
+        )
+    )
+)
+
+REM Verify pydantic-settings is available
+python -c "import pydantic_settings; print('pydantic-settings: OK')" 2>nul
+if errorlevel 1 (
+    echo [WARNING] pydantic-settings not available, attempting to install...
+    pip install pydantic-settings --only-binary=:all: --no-cache-dir 2>nul
+    if errorlevel 1 (
+        echo [INFO] Trying pydantic-settings without binary restriction...
+        pip install pydantic-settings --prefer-binary --no-cache-dir 2>nul
+        if errorlevel 1 (
+            echo [WARNING] pydantic-settings installation failed - configuration features may be limited
+        )
+    )
 )
 
 echo.
@@ -355,6 +409,18 @@ try:
     print('Uvicorn: Available -', uvicorn.__version__)
 except ImportError:
     print('Uvicorn: NOT AVAILABLE - Installation failed!')
+
+try:
+    import aiohttp
+    print('aiohttp: Available -', aiohttp.__version__)
+except ImportError:
+    print('aiohttp: NOT AVAILABLE - Some features may be limited')
+
+try:
+    import pydantic_settings
+    print('pydantic-settings: Available -', pydantic_settings.__version__)
+except ImportError:
+    print('pydantic-settings: NOT AVAILABLE - Configuration features may be limited')
 
 try:
     import arcpy
