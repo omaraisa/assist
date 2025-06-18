@@ -1,4 +1,3 @@
-/venv/Lib
 /logs
 __pycache__/
 *.pyc
@@ -6,6 +5,7 @@ __pycache__/
 .env
 /.history
 /venv
+/venv_backup
 environment_info.txt
 start_smartassistant.bat
 activate_environment.bat
