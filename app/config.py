@@ -63,7 +63,34 @@ class Settings(BaseSettings):
             "endpoint": "https://api.anthropic.com/v1/messages",
             "max_tokens": 8192,
             "temperature": 0.7,
-            "api_key_env": "ANTHROPIC_API_KEY"
+            "api_key_env": "ANTHROPIC_API_KEY"        },
+        # Ollama Models (Local LLMs)
+        "OLLAMA_LLAMA31": {
+            "name": "Llama 3.2 8B (Local)",
+            "model": "llama3.2:latest",
+            "provider": "ollama",
+            "endpoint": "http://localhost:11434",
+            "max_tokens": 32768,
+            "temperature": 0.7,
+            "local": True
+        },
+        "OLLAMA_CODELLAMA": {
+            "name": "CodeLlama 13B (Local)",
+            "model": "codellama:13b",
+            "provider": "ollama", 
+            "endpoint": "http://localhost:11434",
+            "max_tokens": 32768,
+            "temperature": 0.7,
+            "local": True
+        },
+        "OLLAMA_MISTRAL": {
+            "name": "Mistral 7B (Local)",
+            "model": "mistral:7b",
+            "provider": "ollama",
+            "endpoint": "http://localhost:11434", 
+            "max_tokens": 32768,
+            "temperature": 0.7,
+            "local": True
         }
     }
     
@@ -75,9 +102,16 @@ class Settings(BaseSettings):
     # - For Gemini models: Set GEMINI_API_KEY
     # - For OpenAI models: Set OPENAI_API_KEY 
     # - For Claude: Set ANTHROPIC_API_KEY
+    # - For Ollama: No API key needed (local)
     GEMINI_API_KEY: str = ""
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
+    
+    # Ollama Configuration
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    ENABLE_RAG: bool = True
+    RAG_CHUNK_SIZE: int = 1000
+    RAG_CHUNK_OVERLAP: int = 200
     
     # WebSocket Configuration
     WS_HEARTBEAT_INTERVAL: int = 30
@@ -139,11 +173,21 @@ def get_api_key(model_key: str) -> str:
     if model_key not in settings.AI_MODELS:
         raise ValueError(f"Unknown AI model: {model_key}")
     
-    env_var = settings.AI_MODELS[model_key]["api_key_env"]
+    model_config = settings.AI_MODELS[model_key]
+    
+    # Check if this is a local model (no API key needed)
+    if model_config.get("local", False) or model_config.get("provider") == "ollama":
+        return ""  # No API key needed for local models
+    
+    # For cloud models, get the API key
+    if "api_key_env" not in model_config:
+        raise ValueError(f"Model {model_key} missing api_key_env configuration")
+        
+    env_var = model_config["api_key_env"]
     api_key = getattr(settings, env_var, "")
     
     if not api_key:
-        model_name = settings.AI_MODELS[model_key]["name"]
+        model_name = model_config["name"]
         raise ValueError(f"API key not found for {model_name}. Please set {env_var} environment variable or update config.py")
     
     return api_key

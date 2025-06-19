@@ -9,22 +9,69 @@ from .function_declarations import openai_functions, gemini_functions, claude_to
 
 logger = logging.getLogger(__name__)
 
+# Import Ollama and RAG services with better error handling
+OLLAMA_AVAILABLE = False
+RAG_AVAILABLE = False
+
+try:
+    from .ollama_service import OllamaService
+    OLLAMA_AVAILABLE = True
+    logger.info("Ollama service imported successfully")
+except ImportError as e:
+    logger.warning(f"Ollama service not available: {e}")
+
+try:
+    from .rag_service import RAGService
+    RAG_AVAILABLE = True
+    logger.info("RAG service imported successfully")
+except ImportError as e:
+    logger.warning(f"RAG service not available: {e}")
+
+logger.info(f"Services available - Ollama: {OLLAMA_AVAILABLE}, RAG: {RAG_AVAILABLE}")
+
 class AIService:
     """Service for handling AI model interactions with function calling support"""
     
     def __init__(self):
         self.current_model = settings.DEFAULT_AI_MODEL
         self.session = None
+        self.ollama_service = None
+        self.rag_service = None
     
     async def initialize(self):
         """Initialize the AI service"""
         self.session = aiohttp.ClientSession()
+          # Initialize Ollama service if available
+        logger.info(f"OLLAMA_AVAILABLE: {OLLAMA_AVAILABLE}")
+        if OLLAMA_AVAILABLE:
+            try:
+                logger.info(f"Initializing Ollama service at: {settings.OLLAMA_BASE_URL}")
+                self.ollama_service = OllamaService(settings.OLLAMA_BASE_URL)
+                await self.ollama_service.initialize()
+                logger.info("Ollama service initialized successfully")
+            except Exception as e:
+                logger.error(f"Could not initialize Ollama service: {e}", exc_info=True)
+                self.ollama_service = None
+        else:
+            logger.info("Ollama service not available (import failed)")
+        
+        # Initialize RAG service if available
+        if RAG_AVAILABLE and settings.ENABLE_RAG:
+            try:
+                self.rag_service = RAGService()
+                await self.rag_service.initialize()
+            except Exception as e:
+                logger.warning(f"Could not initialize RAG service: {e}")
+                self.rag_service = None
+        
         logger.info(f"AI Service initialized with model: {self.current_model}")
     
     async def cleanup(self):
         """Cleanup resources"""
         if self.session:
             await self.session.close()
+        if self.ollama_service:
+            await self.ollama_service.cleanup()
     
     def set_model(self, model_key: str):
         """Set the current AI model"""
@@ -43,30 +90,42 @@ class AIService:
     ) -> Dict[str, Any]:
         """Generate AI response with function calling support"""
         try:
-            model_config = get_model_config(self.current_model)
+            logger.info(f"Generating response for model: {self.current_model}")
+            logger.info(f"User message: {user_message[:100]}...")
             
-            # Prepare the conversation context
+            model_config = get_model_config(self.current_model)
+            logger.info(f"Model config retrieved for: {model_config.get('name', 'unknown')}")
+              # Prepare the conversation context (RAG not available, use regular method)
             messages = self._prepare_messages(
                 user_message, 
                 conversation_history, 
                 arcgis_state
             )
             
+            logger.info(f"Messages prepared, count: {len(messages)}")
+            
             # Generate response based on model type with function calling
             if self.current_model.startswith("GEMINI"):
+                logger.info("Using Gemini model")
                 return await self._generate_gemini_response_with_functions(messages, model_config)
             elif self.current_model.startswith("GPT"):
+                logger.info("Using OpenAI model")
                 return await self._generate_openai_response_with_functions(messages, model_config)
             elif self.current_model.startswith("CLAUDE"):
+                logger.info("Using Claude model")
                 return await self._generate_claude_response_with_functions(messages, model_config)
+            elif self.current_model.startswith("OLLAMA"):
+                logger.info("Using Ollama model")
+                return await self._generate_ollama_response_with_functions(messages, model_config)
             else:
                 raise ValueError(f"Unsupported model: {self.current_model}")
                 
         except Exception as e:
-            logger.error(f"Error generating AI response: {str(e)}")
+            logger.error(f"Error generating AI response: {str(e)}", exc_info=True)
             return {
-                "type": "text",
-                "content": f"I apologize, but I encountered an error while processing your request: {str(e)}. Please try again."
+                "type": "error",
+                "content": f"Error generating response: {str(e)}",
+                "model": self.current_model
             }
 
     def _prepare_messages(
@@ -364,6 +423,37 @@ When you need to analyze data or perform spatial operations, use the available f
             logger.error(f"Error calling Claude API: {str(e)}")
             raise
     
+    async def _generate_ollama_response_with_functions(self, messages: List[Dict], model_config: Dict) -> Dict[str, Any]:
+        """Generate Ollama response with function calling support"""
+        try:
+            logger.info(f"Generating Ollama response with model: {model_config.get('model', 'unknown')}")
+            
+            if not self.ollama_service:
+                logger.error("Ollama service not available")
+                raise Exception("Ollama service not available")
+            
+            # Get the model name from config
+            model_name = model_config.get("model", "llama3.2:latest")
+            logger.info(f"Using Ollama model: {model_name}")
+            
+            # Use Ollama service to generate response with function calling
+            result = await self.ollama_service.generate_with_functions(
+                messages=messages,
+                functions=openai_functions,  # Use same function format as OpenAI
+                model=model_name
+            )
+            
+            logger.info(f"Ollama response type: {result.get('type', 'unknown')}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error calling Ollama API: {str(e)}", exc_info=True)
+            return {
+                "type": "error",
+                "content": f"Error with Ollama model: {str(e)}",
+                "model": model_config.get("model", "ollama")
+            }
+
     # Function execution and response handling methods
     
     def parse_function_calls(self, response: Dict[str, Any]) -> List[Dict]:
