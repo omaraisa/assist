@@ -237,6 +237,7 @@ body.dark .chat-messages::-webkit-scrollbar-thumb {
   border-radius: var(--border-radius);
   word-wrap: break-word;
   line-height: 1.5;
+  min-width: 10rem;
 }
 
 .msg-info {
@@ -311,6 +312,7 @@ body.dark .chat-messages::-webkit-scrollbar-thumb {
   max-height: 120px;
   min-height: 50px;
   transition: border-color 0.2s;
+  overflow-y: hidden;
 }
 
 #user-input:focus {

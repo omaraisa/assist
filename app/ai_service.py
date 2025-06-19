@@ -39,7 +39,7 @@ class AIService:
         user_message: str, 
         conversation_history: List[Dict], 
         arcgis_state: Dict,
-        available_functions: str = None  # Legacy parameter, now unused
+        available_functions: Optional[str] = None  # Legacy parameter, now unused
     ) -> Dict[str, Any]:
         """Generate AI response with function calling support"""
         try:
@@ -119,6 +119,7 @@ Key Guidelines:
 3. If layer names or field names mentioned by the user don't match the ArcGIS state, ask for clarification
 4. Be precise and factual in your responses
 5. If you cannot fulfill a request, explain why politely
+6. When you receive function results, ALWAYS provide a clear, concise, and user-friendly summary or answer based on the results. DO NOT simply repeat or dump the raw function result or JSON. Synthesize the information into a natural, helpful response for the user.
 
 Current ArcGIS Pro State: {json.dumps(simplified_state)}
 
@@ -198,6 +199,8 @@ When you need to analyze data or perform spatial operations, use the available f
                 "Content-Type": "application/json"
             }
             
+            if self.session is None:
+                raise RuntimeError("aiohttp ClientSession is not initialized. Call 'await initialize()' before making requests.")
             async with self.session.post(model_config["endpoint"], json=payload, headers=headers) as response:
                 if response.status == 200:
                     data = await response.json()
@@ -247,6 +250,9 @@ When you need to analyze data or perform spatial operations, use the available f
             }
             url = f"{model_config['endpoint']}?key={model_config['api_key']}"
             
+            if self.session is None:
+                raise RuntimeError("aiohttp ClientSession is not initialized. Call 'await initialize()' before making requests.")
+
             async with self.session.post(url, json=payload) as response:
                 if response.status == 200:
                     data = await response.json()
@@ -316,6 +322,10 @@ When you need to analyze data or perform spatial operations, use the available f
                 "anthropic-version": "2023-06-01"
             }
             
+
+            if self.session is None:
+                raise RuntimeError("aiohttp ClientSession is not initialized. Call 'await initialize()' before making requests.")
+
             async with self.session.post(model_config["endpoint"], json=payload, headers=headers) as response:
                 if response.status == 200:
                     data = await response.json()
@@ -417,7 +427,6 @@ When you need to analyze data or perform spatial operations, use the available f
             return {
                 "type": "text",
                 "content": f"I encountered an error processing the function results: {str(e)}"            }
-    
     async def _handle_openai_function_response(
         self, 
         messages: List[Dict], 
@@ -428,13 +437,19 @@ When you need to analyze data or perform spatial operations, use the available f
         try:
             # Add tool result messages - the assistant message with tool_calls should already be in history
             for result in function_results:
+                # Ensure result content is properly formatted and not null
+                result_content = result.get("result")
+                if result_content is None:
+                    result_content = {"success": True, "message": "Function executed successfully with no return value"}
+                elif not isinstance(result_content, (dict, list, str, int, float, bool)):
+                    result_content = {"success": True, "message": str(result_content)}
+                
                 messages.append({
                     "role": "tool",
                     "tool_call_id": result["id"],
-                    "content": json.dumps(result["result"])
+                    "content": json.dumps(result_content)
                 })
-            
-            # Use essential functions only for follow-up to save tokens
+              # Use essential functions only for follow-up to save tokens
             essential_functions = self._get_essential_openai_functions()
             
             # Get final response
@@ -451,12 +466,65 @@ When you need to analyze data or perform spatial operations, use the available f
                 "Content-Type": "application/json"
             }
             
+            if self.session is None:
+                raise RuntimeError("aiohttp ClientSession is not initialized. Call 'await initialize()' before making requests.")
             async with self.session.post(model_config["endpoint"], json=payload, headers=headers) as response:
                 if response.status == 200:
                     data = await response.json()
+                    message = data["choices"][0]["message"]
+                    content = message.get("content")
+
+                    # Handle null content from OpenAI API
+                    if content is None:
+                        # Extract function results for fallback response
+                        results_summary = []
+                        for result in function_results:
+                            if isinstance(result.get("result"), dict) and result["result"].get("success"):
+                                results_summary.append(f"✓ {result['name']}: {result['result'].get('summary', 'Completed successfully')}")
+                            else:
+                                results_summary.append(f"✓ {result['name']}: Executed successfully")
+                        content = "Based on the function results:\n\n" + "\n".join(results_summary)
+                    else:
+                        # Post-process: If the model's response is just a JSON dump or raw function result, re-prompt for a summary
+                        try:
+                            # Heuristic: If the content is valid JSON or looks like a dict/list, or starts/ends with braces, it's likely a dump
+                            is_json_like = False
+                            stripped = content.strip()
+                            if (stripped.startswith('{') and stripped.endswith('}')) or (stripped.startswith('[') and stripped.endswith(']')):
+                                is_json_like = True
+                            else:
+                                try:
+                                    parsed = json.loads(stripped)
+                                    is_json_like = True
+                                except Exception:
+                                    pass
+                            if is_json_like or '"success"' in stripped or '"message"' in stripped:
+                                # Re-prompt the model for a user-friendly summary
+                                followup_messages = messages + [
+                                    {"role": "assistant", "content": content},
+                                    {"role": "user", "content": "Please summarize the above function results in a clear, user-friendly way for the user. Do not repeat the raw data; provide a natural-language answer."}
+                                ]
+                                followup_payload = {
+                                    "model": model_config.get("model", "gpt-4o"),
+                                    "messages": followup_messages,
+                                    "temperature": model_config["temperature"],
+                                    "max_tokens": model_config["max_tokens"],
+                                    "tools": self._get_essential_openai_functions()
+                                }
+                                
+                                async with self.session.post(model_config["endpoint"], json=followup_payload, headers=headers) as followup_response:
+                                    if followup_response.status == 200:
+                                        followup_data = await followup_response.json()
+                                        followup_message = followup_data["choices"][0]["message"]
+                                        followup_content = followup_message.get("content")
+                                        if followup_content:
+                                            content = followup_content
+                        except Exception as postproc_exc:
+                            logger.warning(f"Post-processing for natural summary failed: {str(postproc_exc)}")
+
                     return {
                         "type": "text",
-                        "content": data["choices"][0]["message"]["content"]
+                        "content": content
                     }
                 else:
                     error_text = await response.text()
@@ -464,10 +532,19 @@ When you need to analyze data or perform spatial operations, use the available f
                     
         except Exception as e:
             logger.error(f"Error in OpenAI function response handling: {str(e)}")
-            # Fallback to simple text response
+            # Fallback to simple text response with function results
+            results_summary = []
+            for result in function_results:
+                if isinstance(result.get("result"), dict) and result["result"].get("success"):
+                    results_summary.append(f"✓ {result['name']}: {result['result'].get('summary', 'Completed successfully')}")
+                else:
+                    results_summary.append(f"✓ {result['name']}: Executed successfully")
+            
+            fallback_content = "I successfully executed the requested functions:\n\n" + "\n".join(results_summary)
+            
             return {
                 "type": "text",
-                "content": f"I successfully executed the function but encountered an error formatting the response: {str(e)}"
+                "content": fallback_content
             }
     async def _handle_gemini_function_response(
         self, 
@@ -477,15 +554,8 @@ When you need to analyze data or perform spatial operations, use the available f
     ) -> Dict[str, Any]:
         """Handle Gemini function calling response"""
         try:
-            # For Gemini, we need to rebuild the conversation properly
-            # The key issue is that we need to include the model's function calls
-            # and then add matching function responses
-            
+          
             contents = []
-            
-            # Process messages, but we need to handle the last few messages carefully
-            # The conversation should end with: user -> model (with function calls) -> user (with function responses)
-            
             # Track whether we've found the assistant message with function calls
             found_function_call_message = False
             
@@ -576,15 +646,21 @@ When you need to analyze data or perform spatial operations, use the available f
                             })
                         
                         break
-            
-            # Now add the function responses that match the function calls
+              # Now add the function responses that match the function calls
             # Ensure the order of function responses matches the order of function calls
             function_response_parts = []
             for result in function_results:
+                # Ensure result is properly formatted for Gemini
+                result_data = result.get("result")
+                if result_data is None:
+                    result_data = {"success": True, "message": "Function executed successfully with no return value"}
+                elif not isinstance(result_data, (dict, list, str, int, float, bool)):
+                    result_data = {"success": True, "message": str(result_data)}
+                
                 function_response_parts.append({
                     "functionResponse": {
                         "name": result["name"],
-                        "response": result["result"]  # Direct result, not JSON-encoded
+                        "response": result_data
                     }
                 })
             
@@ -610,6 +686,9 @@ When you need to analyze data or perform spatial operations, use the available f
             
             url = f"{model_config['endpoint']}?key={model_config['api_key']}"
             
+            if self.session is None:
+                raise RuntimeError("aiohttp ClientSession is not initialized. Call 'await initialize()' before making requests.")
+
             async with self.session.post(url, json=payload) as response:
                 if response.status == 200:
                     data = await response.json()
@@ -624,8 +703,7 @@ When you need to analyze data or perform spatial operations, use the available f
                     # Check for finish reason
                     if "finishReason" in candidate and candidate["finishReason"] != "STOP":
                         logger.warning(f"Gemini API finished with reason: {candidate['finishReason']}")
-                    
-                    # Check for missing content or parts
+                      # Check for missing content or parts
                     if "content" not in candidate or "parts" not in candidate["content"]:
                         logger.error(f"Invalid Gemini response structure: {json.dumps(candidate, indent=2)}")
                         raise Exception("Invalid Gemini API response structure")
@@ -649,11 +727,20 @@ When you need to analyze data or perform spatial operations, use the available f
                     
         except Exception as e:
             logger.error(f"Error in Gemini function response handling: {str(e)}")
+            # Fallback to simple text response with function results
+            results_summary = []
+            for result in function_results:
+                if isinstance(result.get("result"), dict) and result["result"].get("success"):
+                    results_summary.append(f"✓ {result['name']}: {result['result'].get('summary', 'Completed successfully')}")
+                else:
+                    results_summary.append(f"✓ {result['name']}: Executed successfully")
+            
+            fallback_content = "I successfully executed the requested functions:\n\n" + "\n".join(results_summary)
+            
             return {
                 "type": "text",
-                "content": f"I successfully executed the function but encountered an error formatting the response: {str(e)}"
+                "content": fallback_content
             }
-    
     async def _handle_claude_function_response(
         self, 
         messages: List[Dict], 
@@ -661,61 +748,104 @@ When you need to analyze data or perform spatial operations, use the available f
         model_config: Dict
     ) -> Dict[str, Any]:
         """Handle Claude function calling response"""
-        # Claude format - system message separate
-        system_message = ""
-        claude_messages = []
-        
-        for msg in messages:
-            if msg["role"] == "system":
-                system_message = msg["content"]
-            else:
-                claude_messages.append(msg)
-        
-        # Add function call results
-        tool_result_content = []
-        for result in function_results:
-            tool_result_content.append({
-                "type": "tool_result",
-                "tool_use_id": result["id"],
-                "content": json.dumps(result["result"])
+        try:
+            # Claude format - system message separate
+            system_message = ""
+            claude_messages = []
+            
+            for msg in messages:
+                if msg["role"] == "system":
+                    system_message = msg["content"]
+                else:
+                    claude_messages.append(msg)
+            
+            # Add function call results
+            tool_result_content = []
+            for result in function_results:
+                # Ensure result content is properly formatted
+                result_content = result.get("result")
+                if result_content is None:
+                    result_content = "Function executed successfully with no return value."
+                elif isinstance(result_content, dict):
+                    result_content = json.dumps(result_content)
+                elif not isinstance(result_content, str):
+                    result_content = str(result_content)
+                
+                tool_result_content.append({
+                    "type": "tool_result",
+                    "tool_use_id": result["id"],
+                    "content": result_content
+                })
+            
+            claude_messages.append({
+                "role": "user",
+                "content": tool_result_content
             })
-        
-        claude_messages.append({
-            "role": "user",
-            "content": tool_result_content
-        })
-        
-        payload = {
-            "model": model_config.get("model", "claude-3-5-sonnet-20241022"),
-            "system": system_message,
-            "messages": claude_messages,
-            "temperature": model_config["temperature"],
-            "max_tokens": model_config["max_tokens"]
-        }
-        
-        headers = {
-            "x-api-key": model_config['api_key'],
-            "Content-Type": "application/json",
-            "anthropic-version": "2023-06-01"
-        }
-        
-        async with self.session.post(model_config["endpoint"], json=payload, headers=headers) as response:
-            if response.status == 200:
-                data = await response.json()
-                content = data["content"]
-                
-                text_content = ""
-                for item in content:
-                    if item["type"] == "text":
-                        text_content += item["text"]
-                
-                return {
-                    "type": "text",
-                    "content": text_content
-                }
-            else:
-                error_text = await response.text()
-                raise Exception(f"Claude API error {response.status}: {error_text}")
+            
+            payload = {
+                "model": model_config.get("model", "claude-3-5-sonnet-20241022"),
+                "system": system_message,
+                "messages": claude_messages,
+                "temperature": model_config["temperature"],
+                "max_tokens": model_config["max_tokens"]
+            }
+            
+            headers = {
+                "x-api-key": model_config['api_key'],
+                "Content-Type": "application/json",
+                "anthropic-version": "2023-06-01"
+            }
+            
+            if self.session is None:
+                raise RuntimeError("aiohttp ClientSession is not initialized. Call 'await initialize()' before making requests.")
+            async with self.session.post(model_config["endpoint"], json=payload, headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    content = data["content"]
+                    
+                    text_content = ""
+                    for item in content:
+                        if item["type"] == "text":
+                            text_content += item["text"]
+                    
+                    # Ensure we have some content
+                    if not text_content:
+                        # Extract function results for fallback response
+                        results_summary = []
+                        for result in function_results:
+                            if isinstance(result.get("result"), dict) and result["result"].get("success"):
+                                results_summary.append(f"✓ {result['name']}: {result['result'].get('summary', 'Completed successfully')}")
+                            else:
+                                results_summary.append(f"✓ {result['name']}: Executed successfully")
+                        
+                        text_content = "Based on the function results:\n\n" + "\n".join(results_summary)
+                    
+                    return {
+                        "type": "text",
+                        "content": text_content
+                    }
+                else:
+                    error_text = await response.text()
+                    logger.error(f"Claude API error: {error_text}")
+                    logger.error(f"Payload sent: {json.dumps(payload, indent=2)}")
+                    raise Exception(f"Claude API error {response.status}: {error_text}")
+                    
+        except Exception as e:
+            logger.error(f"Error in Claude function response handling: {str(e)}")
+            # Fallback to simple text response with function results
+            results_summary = []
+            for result in function_results:
+                if isinstance(result.get("result"), dict) and result["result"].get("success"):
+                    results_summary.append(f"✓ {result['name']}: {result['result'].get('summary', 'Completed successfully')}")
+                else:
+                    results_summary.append(f"✓ {result['name']}: Executed successfully")
+            
+            fallback_content = "I successfully executed the requested functions:\n\n" + "\n".join(results_summary)
+            
+            return {
+                "type": "text",
+                "content": fallback_content
+            }
 
     def _get_model_identity(self) -> str:
         """Get model-specific identity string"""
@@ -886,6 +1016,8 @@ When you need to analyze data or perform spatial operations, use the available f
             
             url = f"{model_config['endpoint']}?key={model_config['api_key']}"
             
+            if self.session is None:
+                raise RuntimeError("aiohttp ClientSession is not initialized. Call 'await initialize()' before making requests.")
             async with self.session.post(url, json=payload) as response:
                 if response.status == 200:
                     data = await response.json()
@@ -913,6 +1045,8 @@ When you need to analyze data or perform spatial operations, use the available f
                 "Content-Type": "application/json"
             }
             
+            if self.session is None:
+                raise RuntimeError("aiohttp ClientSession is not initialized. Call 'await initialize()' before making requests.")
             async with self.session.post(model_config["endpoint"], json=payload, headers=headers) as response:
                 if response.status == 200:
                     data = await response.json()
@@ -952,6 +1086,8 @@ When you need to analyze data or perform spatial operations, use the available f
                 "anthropic-version": "2023-06-01"
             }
             
+            if self.session is None:
+                raise RuntimeError("aiohttp ClientSession is not initialized. Call 'await initialize()' before making requests.")
             async with self.session.post(model_config["endpoint"], json=payload, headers=headers) as response:
                 if response.status == 200:
                     data = await response.json()

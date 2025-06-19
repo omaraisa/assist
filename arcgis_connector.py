@@ -207,8 +207,10 @@ class ArcGISProConnector:
     
     async def connect_and_listen(self):
         """Connect to the FastAPI server and listen for messages"""
-        max_retries = 5
-        retry_delay = 3
+        max_retries = 2
+        retry_delay = 1
+        # max_retries = 5
+        # retry_delay = 3
         
         for attempt in range(1, max_retries + 1):
             try:
