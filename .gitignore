@@ -5,6 +5,7 @@ __pycache__/
 .env
 /.history
 /venv
+/rag_db
 /venv_backup
 environment_info.txt
 start_smartassistant.bat

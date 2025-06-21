@@ -452,9 +452,7 @@ When you need to analyze data or perform spatial operations, use the available f
                 "type": "error",
                 "content": f"Error with Ollama model: {str(e)}",
                 "model": model_config.get("model", "ollama")
-            }
-
-    # Function execution and response handling methods
+            }    # Function execution and response handling methods
     
     def parse_function_calls(self, response: Dict[str, Any]) -> List[Dict]:
         """Parse function calls from AI response into standardized format"""
@@ -491,6 +489,15 @@ When you need to analyze data or perform spatial operations, use the available f
                     "parameters": func_call["input"]
                 })
         
+        elif self.current_model.startswith("OLLAMA"):
+            # Ollama format: function_calls is a list of dicts with name/arguments
+            for idx, func_call in enumerate(response["function_calls"]):
+                function_calls.append({
+                    "id": f"ollama_{func_call.get('name', 'func')}_{idx}",
+                    "name": func_call["name"],
+                    "parameters": func_call.get("arguments", {})
+                })
+        
         return function_calls
     
     async def handle_function_response(
@@ -509,6 +516,8 @@ When you need to analyze data or perform spatial operations, use the available f
                 return await self._handle_gemini_function_response(messages, function_results, model_config)
             elif self.current_model.startswith("CLAUDE"):
                 return await self._handle_claude_function_response(messages, function_results, model_config)
+            elif self.current_model.startswith("OLLAMA"):
+                return await self._handle_ollama_function_response(messages, function_results, model_config)
             else:
                 raise ValueError(f"Unsupported model: {self.current_model}")
                 
@@ -516,7 +525,9 @@ When you need to analyze data or perform spatial operations, use the available f
             logger.error(f"Error handling function response: {str(e)}")
             return {
                 "type": "text",
-                "content": f"I encountered an error processing the function results: {str(e)}"            }
+                "content": f"I encountered an error processing the function results: {str(e)}"
+            }
+    
     async def _handle_openai_function_response(
         self, 
         messages: List[Dict], 
@@ -636,6 +647,7 @@ When you need to analyze data or perform spatial operations, use the available f
                 "type": "text",
                 "content": fallback_content
             }
+
     async def _handle_gemini_function_response(
         self, 
         messages: List[Dict], 
@@ -937,6 +949,47 @@ When you need to analyze data or perform spatial operations, use the available f
                 "content": fallback_content
             }
 
+    async def _handle_ollama_function_response(
+        self, 
+        messages: List[Dict], 
+        function_results: List[Dict], 
+        model_config: Dict
+    ) -> Dict[str, Any]:
+        """Handle Ollama function calling response"""
+        try:
+            if not self.ollama_service:
+                logger.error("Ollama service not available")
+                raise Exception("Ollama service not available")
+            
+            # Get the model name from config
+            model_name = model_config.get("model", "llama3.2:latest")
+            logger.info(f"Handling Ollama function response with model: {model_name}")
+              # Use Ollama service to handle function response
+            result = await self.ollama_service.handle_function_response(
+                messages=messages,
+                function_results=function_results,
+                model=model_name
+            )
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error in Ollama function response handling: {str(e)}")
+            # Fallback to simple text response with function results
+            results_summary = []
+            for result in function_results:
+                if isinstance(result.get("result"), dict) and result["result"].get("success"):
+                    results_summary.append(f"✓ {result['name']}: {result['result'].get('summary', 'Completed successfully')}")
+                else:
+                    results_summary.append(f"✓ {result['name']}: Executed successfully")
+            
+            fallback_content = "I successfully executed the requested functions:\n\n" + "\n".join(results_summary)
+            
+            return {
+                "type": "text",
+                "content": fallback_content
+            }
+
     def _get_model_identity(self) -> str:
         """Get model-specific identity string"""
         if self.current_model.startswith("GEMINI"):
@@ -945,6 +998,8 @@ When you need to analyze data or perform spatial operations, use the available f
             return "GPT (OpenAI)"
         elif self.current_model.startswith("CLAUDE"):
             return "Claude (Anthropic)"
+        elif self.current_model.startswith("OLLAMA"):
+            return "Llama (Local)"
         else:
             return "AI Assistant"
 
@@ -1066,8 +1121,7 @@ When you need to analyze data or perform spatial operations, use the available f
             ]
             
             model_config = get_model_config(self.current_model)
-            
-            # Use legacy methods for backward compatibility
+              # Use legacy methods for backward compatibility
             if self.current_model.startswith("GEMINI"):
                 return await self._generate_gemini_response_legacy(messages, model_config)
             elif self.current_model.startswith("GPT"):
