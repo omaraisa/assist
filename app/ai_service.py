@@ -2,6 +2,7 @@ import asyncio
 import json
 import re
 import logging
+import requests
 from typing import Dict, List, Optional, Any, Tuple
 import aiohttp
 from .config import settings, get_model_config
@@ -946,9 +947,8 @@ When you need to analyze data or perform spatial operations, use the available f
                 if msg["role"] == "user":
                     user_message = msg["content"]
                     break
-            
-            # Get intelligent function selection for this context
-            selected_functions = self._get_intelligent_function_selection(user_message, "gemini")
+              # Get intelligent function selection for this context
+            selected_functions, intent = self._get_intelligent_function_selection(user_message, "gemini")
             
             payload = {
                 "contents": contents,
@@ -1064,9 +1064,8 @@ When you need to analyze data or perform spatial operations, use the available f
                 if msg["role"] == "user":
                     user_message = msg["content"]
                     break
-            
-            # Get intelligent function selection for this context
-            selected_functions = self._get_intelligent_function_selection(user_message, "claude")
+              # Get intelligent function selection for this context
+            selected_functions, intent = self._get_intelligent_function_selection(user_message, "claude")
             
             payload = {
                 "model": model_config.get("model", "claude-3-5-sonnet-20241022"),
@@ -1809,14 +1808,15 @@ Use the available functions to analyze data and provide accurate, helpful respon
         for result in function_results:
             function_name = result.get("name", "unknown_function")
             result_data = result.get("result", {})
-            
-            # Generate specific responses based on function type
+              # Generate specific responses based on function type
             if function_name == "get_map_layers_info":
                 response = self._process_layers_info_result(result_data)
             elif function_name == "get_field_statistics":
                 response = self._process_field_stats_result(result_data)
             elif function_name == "get_unique_values_count":
                 response = self._process_unique_values_result(result_data)
+            elif function_name == "get_value_frequency":
+                response = self._process_value_frequency_result(result_data)
             elif function_name == "select_by_attribute":
                 response = self._process_selection_result(result_data)
             elif function_name == "calculate_area":
@@ -1912,7 +1912,6 @@ Use the available functions to analyze data and provide accurate, helpful respon
         if not result_data.get("success"):
             return "I couldn't retrieve unique values."
 
-        
         unique_values = result_data.get("unique_values", [])
         field_name = result_data.get("field_name", "field")
         layer_name = result_data.get("layer_name", "layer")
@@ -1930,6 +1929,28 @@ Use the available functions to analyze data and provide accurate, helpful respon
         
         if len(unique_values) > 10:
             response_parts.append(f"... and {len(unique_values) - 10} more values")
+        
+        return "\n".join(response_parts)
+    
+    def _process_value_frequency_result(self, result_data: Dict) -> str:
+        """Process get_value_frequency result into user-friendly text"""
+        if not result_data.get("success"):
+            return "I couldn't retrieve the value frequency."
+        
+        field_name = result_data.get("field_name", "field")
+        layer_name = result_data.get("layer_name", "layer")
+        lookup_value = result_data.get("lookup_value", "value")
+        value_count = result_data.get("value_count", 0)
+        total_count = result_data.get("total_count", 0)
+        percentage = result_data.get("percentage", 0)
+        
+        if value_count == 0:
+            return f"No records found with {field_name} = '{lookup_value}' in {layer_name}."
+        
+        response_parts = [f"**Count for {field_name} = '{lookup_value}' in {layer_name}:**"]
+        response_parts.append(f"- Found: **{value_count:,} records**")
+        response_parts.append(f"- Total records in layer: {total_count:,}")
+        response_parts.append(f"- Percentage: {percentage:.1f}%")
         
         return "\n".join(response_parts)
     
