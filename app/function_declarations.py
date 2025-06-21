@@ -6,7 +6,7 @@ Each AI provider has its own schema format for function/tool calling.
 
 from typing import Dict, List, Any
 import inspect
-from app.spatial_functions import SpatialFunctions
+from .spatial_functions import SpatialFunctions
 
 class FunctionDeclarationGenerator:
     """Generate function declarations for different AI models"""
