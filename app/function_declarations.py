@@ -267,6 +267,18 @@ class FunctionDeclarationGenerator:
                 "required": ["layer_name"]
             },
             
+            "get_list_of_layer_fields": {
+                "name": "get_list_of_layer_fields",
+                "description": "Get a list of field names for a given GIS layer.",
+                "parameters": {
+                    "layer_name": {
+                        "type": "string",
+                        "description": "The name of the layer to list fields from"
+                    }
+                },
+                "required": ["layer_name"]
+            },
+            
             "get_data_source_info": {
                 "name": "get_data_source_info",
                 "description": "Get information about the data source (file path, database connection, etc.) for a layer.",

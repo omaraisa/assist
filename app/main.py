@@ -48,7 +48,7 @@ async def get_chatbot(request: Request):
         "index.html", 
         {
             "request": request,
-            "available_functions": spatial_functions.get_available_functions()
+            "available_functions": spatial_functions.AVAILABLE_FUNCTIONS
         }
     )
 
@@ -90,7 +90,7 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket_manager.send_to_client(client_id, {
             "type": "config",
             "data": {
-                "available_functions": spatial_functions.get_available_functions(),
+                "available_functions": spatial_functions.AVAILABLE_FUNCTIONS,
                 "ai_models": settings.AI_MODELS,
                 "current_model": settings.DEFAULT_AI_MODEL
             }
@@ -188,7 +188,7 @@ async def handle_user_message(client_id: str, user_message: str):
             user_message=user_message,
             conversation_history=history,
             arcgis_state=arcgis_state,
-            available_functions=spatial_functions.get_available_functions()
+            available_functions=spatial_functions.AVAILABLE_FUNCTIONS
         )
         
         # Process AI response for function calling or final response

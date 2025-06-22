@@ -7,6 +7,7 @@ from typing import Dict, List, Optional, Any, Tuple
 import aiohttp
 from .config import settings, get_model_config
 from .function_declarations import openai_functions, gemini_functions, claude_tools, functions_summary
+from .spatial_functions import SpatialFunctions
 
 logger = logging.getLogger(__name__)
 
@@ -77,8 +78,7 @@ class AIService:
                 self.ollama_service = None
         else:
             logger.info("Ollama service not available (import failed)")
-        
-        # Initialize RAG service if available
+          # Initialize RAG service if available
         if RAG_AVAILABLE and RAGService is not None and settings.ENABLE_RAG:
             try:
                 self.rag_service = RAGService()
@@ -103,6 +103,7 @@ class AIService:
             logger.info(f"AI model changed to: {model_key}")
         else:
             raise ValueError(f"Unknown AI model: {model_key}")
+    
     async def generate_response(
         self, 
         user_message: str, 
@@ -118,19 +119,14 @@ class AIService:
             model_config = get_model_config(self.current_model)
             logger.info(f"Model config retrieved for: {model_config.get('name', 'unknown')}")
             
-            # Classify user intent for optimizations
-            intent = self._classify_user_intent(user_message)
-            logger.info(f"User intent classified as: {intent}")
-            
-            # Prepare optimized messages with intent-based payload reduction
-            messages = self._prepare_optimized_messages(
+            # Prepare messages with all available functions
+            messages = self._prepare_messages(
                 user_message, 
                 conversation_history, 
-                arcgis_state,
-                intent
+                arcgis_state
             )
             
-            logger.info(f"Optimized messages prepared, count: {len(messages)}")
+            logger.info(f"Messages prepared, count: {len(messages)}")
               # Generate response based on model type with function calling
             if self.current_model.startswith("GEMINI"):
                 logger.info("Using Gemini model")
@@ -198,6 +194,13 @@ class AIService:
         # Get model-specific identity
         model_identity = self._get_model_identity()
         
+        # Get all available functions from SpatialFunctions
+        spatial_functions = SpatialFunctions()
+        available_functions = spatial_functions.AVAILABLE_FUNCTIONS
+        
+        # Format the available functions for the prompt
+        functions_list = "\n".join([f"{func_id}: {description}" for func_id, description in available_functions.items()])
+        
         return f"""You are {model_identity}, an ArcGIS Pro Intelligent Assistant with access to spatial analysis functions. 
 
 IMPORTANT: When a user asks about your identity, always respond with: I am {model_identity}
@@ -205,6 +208,9 @@ IMPORTANT: When a user asks about your identity, always respond with: I am {mode
 LANGUAGE INSTRUCTION: Always respond in the same language as the user's question. If the user asks in Arabic, respond in Arabic. If the user asks in English, respond in English.
 
 You have access to various GIS functions that you can call to analyze spatial data, perform calculations, and retrieve information. Use these functions to provide accurate, data-driven responses.
+
+AVAILABLE FUNCTIONS:
+{functions_list}
 
 Key Guidelines:
 1. Always use function calls to gather information before providing answers
@@ -244,214 +250,23 @@ When you need to analyze data or perform spatial operations, use the available f
         if "layer_types" in state:
             simplified["layer_types"] = state["layer_types"]
         
-        # Include basemap info
-        if "basemap" in state:
+        # Include basemap info        if "basemap" in state:
             simplified["basemap"] = state["basemap"]
         
         return simplified
 
-    def _get_essential_openai_functions(self) -> List[Dict]:
-        """Get essential OpenAI functions to reduce token usage"""
-        # Essential function names for common operations
-        essential_names = [
-            "get_layer_summary",
-            "get_field_statistics", 
-            "select_by_attribute",
-            "select_by_location",
-            "calculate_area",
-            "calculate_length",
-            "get_centroid",
-            "create_buffer",
-            "get_unique_values_count"
-        ]
-        
-        # Filter to include only essential functions
-        essential_functions = []
-        for func in openai_functions:
-            if func["function"]["name"] in essential_names:
-                essential_functions.append(func)
-        
-        return essential_functions
-
-    def _classify_user_intent(self, user_message: str) -> str:
-        """Classify user intent to determine which function category is needed"""
-        message_lower = user_message.lower()
-        
-        # Intent classification based on keywords and patterns
-        # LAYER_INFO: Questions about layers, data sources, structure
-        layer_info_keywords = [
-            "what layers", "layer info", "layer summary", "data source", "coordinate system",
-            "what data", "available layers", "layer type", "layer structure", "map layers",
-            "show layers", "list layers", "layer details", "what is this layer"
-        ]
-        
-        # FIELD_ANALYSIS: Questions about fields, attributes, statistics
-        field_analysis_keywords = [
-            "field", "attribute", "column", "statistics", "unique values", "frequency",
-            "values in", "domain", "empty values", "null values", "data types",
-            "field definitions", "attribute table", "distinct values", "count of"
-        ]
-        
-        # SELECTION: Operations to select features
-        selection_keywords = [
-            "select", "find", "filter", "where", "choose", "pick", "subset",
-            "features with", "records with", "spatial selection", "location",
-            "intersect", "within", "contains", "overlaps"
-        ]
-        
-        # SPATIAL_ANALYSIS: Spatial calculations and analysis
-        spatial_analysis_keywords = [
-            "area", "length", "distance", "buffer", "centroid", "spatial join",
-            "clip", "nearest", "spatial analysis", "geometry", "geographic",
-            "calculate area", "calculate length", "create buffer", "spatial relationship"
-        ]
-        
-        # DATA_OPERATIONS: Data manipulation and calculations
-        data_operations_keywords = [
-            "calculate field", "new field", "add field", "update field", "modify",
-            "attribute table", "table data", "edit data", "field calculation"
-        ]
-        
-        # SYSTEM: System information and paths
-        system_keywords = [
-            "project path", "database path", "default database", "system info",
-            "workspace", "geodatabase", "file location"
-        ]
-        
-        # Count matches for each category
-        intent_scores = {
-            "LAYER_INFO": sum(1 for keyword in layer_info_keywords if keyword in message_lower),
-            "FIELD_ANALYSIS": sum(1 for keyword in field_analysis_keywords if keyword in message_lower),
-            "SELECTION": sum(1 for keyword in selection_keywords if keyword in message_lower),
-            "SPATIAL_ANALYSIS": sum(1 for keyword in spatial_analysis_keywords if keyword in message_lower),
-            "DATA_OPERATIONS": sum(1 for keyword in data_operations_keywords if keyword in message_lower),
-            "SYSTEM": sum(1 for keyword in system_keywords if keyword in message_lower)
-        }
-        
-        # Find the intent with highest score
-        max_score = max(intent_scores.values())
-        if max_score == 0:
-            return "GENERAL"  # No specific intent detected, use general functions
-        
-        # Return the intent with highest score
-        for intent, score in intent_scores.items():
-            if score == max_score:
-                return intent
-                
-        return "GENERAL"
-
-    def _get_functions_by_intent(self, intent: str) -> List[Dict]:
-        """Get relevant functions based on classified intent"""
-        
-        # Function categories mapping
-        function_categories = {
-            "LAYER_INFO": [
-                "get_layer_summary", "get_layer_type", "get_data_source_info", 
-                "get_map_layers_info", "get_map_tables_info", "get_coordinate_system"
-            ],
-            "FIELD_ANALYSIS": [
-                "get_field_statistics", "get_field_definitions", "get_unique_values_count",
-                "get_values_frequency", "get_value_frequency", "calculate_empty_values",
-                "get_field_domain_values", "get_attribute_table"
-            ],
-            "SELECTION": [
-                "select_by_attribute", "select_by_location", "get_layer_summary",
-                "get_field_statistics", "get_unique_values_count"  # Support functions for selection
-            ],
-            "SPATIAL_ANALYSIS": [
-                "calculate_area", "calculate_length", "get_centroid", "create_buffer",
-                "calculate_distance", "spatial_join", "clip_layer", "create_nearest_neighbor_layer"
-            ],
-            "DATA_OPERATIONS": [
-                "calculate_new_field", "get_attribute_table", "get_field_definitions",
-                "get_field_statistics", "get_unique_values_count"
-            ],
-            "SYSTEM": [
-                "get_current_project_path", "get_default_db_path"
-            ],
-            "GENERAL": [
-                # Most commonly used functions for general queries
-                "get_layer_summary", "get_field_statistics", "select_by_attribute",
-                "select_by_location", "calculate_area", "get_unique_values_count",
-                "get_map_layers_info", "create_buffer", "get_attribute_table"
-            ]
-        }
-        
-        # Get function names for the intent
-        relevant_function_names = function_categories.get(intent, function_categories["GENERAL"])
-        
-        # Filter OpenAI functions to include only relevant ones
-        relevant_functions = []
-        for func in openai_functions:
-            if func["function"]["name"] in relevant_function_names:
-                relevant_functions.append(func)
-        
-        return relevant_functions    
-    
-
-    def _get_intelligent_function_selection(self, user_message: str, provider_format: str = "openai") -> Tuple[List[Dict], str]:
-        """Intelligently select functions based on user intent classification"""
-        # Classify the user's intent
-        intent = self._classify_user_intent(user_message)
-        
-        # Get relevant functions for the intent
-        relevant_functions = self._get_functions_by_intent(intent)
-        
-        # Convert to appropriate provider format if needed
-        if provider_format != "openai":
-            relevant_functions = self._convert_functions_to_provider_format(relevant_functions, provider_format)
-        
-        # Log the intelligent selection for debugging
-        logger.info(f"Intent classified as: {intent}")
-        logger.info(f"Selected {len(relevant_functions)} functions out of {len(openai_functions)} total")
-        
-        return relevant_functions, intent
-    
-    def _convert_functions_to_provider_format_simple(self, openai_functions: List[Dict], provider: str) -> List[Dict]:
-        """Convert OpenAI function format to provider-specific format (simple version)"""
-        if provider == "gemini":
-            # Convert to Gemini function format
-            gemini_functions = []
-            for func in openai_functions:
-                openai_func = func["function"]
-                gemini_func = {
-                    "name": openai_func["name"],
-                    "description": openai_func["description"],
-                    "parameters": openai_func["parameters"]
-                }
-                gemini_functions.append(gemini_func)
-            return gemini_functions
-        
-        elif provider == "claude":
-            # Convert to Claude tool format
-            claude_tools = []
-            for func in openai_functions:
-                openai_func = func["function"]
-                claude_tool = {
-                    "name": openai_func["name"],
-                    "description": openai_func["description"],
-                    "input_schema": openai_func["parameters"]
-                }
-                claude_tools.append(claude_tool)
-            return claude_tools
-        
-        # Default return OpenAI format
-        return openai_functions
-
-    # Function calling methods for each AI provider      
+    # Function calling methods for each AI provider
     
     async def _generate_openai_response_with_functions(self, messages: List[Dict], model_config: Dict, user_message: str) -> Dict[str, Any]:
         """Generate OpenAI response with function calling support"""
         try:
-            # Use intelligent function selection to reduce token usage
-            selected_functions, intent = self._get_intelligent_function_selection(user_message)
-            
+            # Use all available functions
             payload = {
                 "model": model_config.get("model", "gpt-4"),
                 "messages": messages,
                 "temperature": model_config["temperature"],
                 "max_tokens": model_config["max_tokens"],
-                "tools": selected_functions,
+                "tools": openai_functions,
                 "tool_choice": "auto"
             }
             
@@ -495,15 +310,12 @@ When you need to analyze data or perform spatial operations, use the available f
                 role = "user" if msg["role"] == "user" else "model"
                 contents.append({
                     "role": role,
-                    "parts": [{"text": msg["content"]}]
-                })
-              # Get intelligent function selection
-            selected_functions, user_intent = self._get_intelligent_function_selection(user_message, "gemini")
-            
+                    "parts": [{"text": msg["content"]}]                })
+              # Use all available Gemini functions
             payload = {
                 "contents": contents,
                 "tools": [{
-                    "function_declarations": selected_functions
+                    "function_declarations": gemini_functions
                 }],
                 "generationConfig": {
                     "temperature": model_config["temperature"],
@@ -565,18 +377,15 @@ When you need to analyze data or perform spatial operations, use the available f
             for msg in messages:
                 if msg["role"] == "system":
                     system_message = msg["content"]
-                else:
-                    claude_messages.append(msg)
-              # Get intelligent function selection
-            selected_functions, user_intent = self._get_intelligent_function_selection(user_message, "claude")
-            
+                else:                    claude_messages.append(msg)
+              # Use all available Claude tools
             payload = {
                 "model": model_config.get("model", "claude-3-5-sonnet-20241022"),
                 "system": system_message,
                 "messages": claude_messages,
                 "temperature": model_config["temperature"],
                 "max_tokens": model_config["max_tokens"],
-                "tools": selected_functions
+                "tools": claude_tools
             }
             
             headers = {
@@ -635,17 +444,14 @@ When you need to analyze data or perform spatial operations, use the available f
             if not self.ollama_service:
                 logger.error("Ollama service not available")
                 raise Exception("Ollama service not available")
-            
-            # Get the model name from config
+              # Get the model name from config
             model_name = model_config.get("model", "llama3.2:latest")
             logger.info(f"Using Ollama model: {model_name}")
-              # Get intelligent function selection (using openai format for ollama)
-            selected_functions, user_intent = self._get_intelligent_function_selection(user_message, "openai")
-            
+              # Use all available functions (using openai format for ollama)
             # Use Ollama service to generate response with function calling
             result = await self.ollama_service.generate_with_functions(
                 messages=messages,
-                functions=selected_functions,  # Use intelligent function selection instead of all functions
+                functions=openai_functions,  # Use all available functions
                 model=model_name
             )
             
@@ -755,17 +561,14 @@ When you need to analyze data or perform spatial operations, use the available f
                     "role": "tool",
                     "tool_call_id": result["id"],
                     "content": json.dumps(result_content)
-                })
-              # Use essential functions only for follow-up to save tokens
-            essential_functions = self._get_essential_openai_functions()
-            
+                })              # Use all available functions for follow-up
             # Get final response
             payload = {
                 "model": model_config.get("model", "gpt-4o"),
                 "messages": messages,
                 "temperature": model_config["temperature"],
                 "max_tokens": model_config["max_tokens"],
-                "tools": essential_functions  # Use reduced function set
+                "tools": openai_functions  # Use all functions
             }
             
             headers = {
@@ -946,14 +749,11 @@ When you need to analyze data or perform spatial operations, use the available f
             for msg in reversed(messages):
                 if msg["role"] == "user":
                     user_message = msg["content"]
-                    break
-              # Get intelligent function selection for this context
-            selected_functions, intent = self._get_intelligent_function_selection(user_message, "gemini")
-            
+                    break              # Use all available Gemini functions for follow-up
             payload = {
                 "contents": contents,
                 "tools": [{
-                    "function_declarations": selected_functions
+                    "function_declarations": gemini_functions
                 }],
                 "generationConfig": {
                     "temperature": model_config["temperature"],
@@ -1063,17 +863,14 @@ When you need to analyze data or perform spatial operations, use the available f
             for msg in reversed(messages):
                 if msg["role"] == "user":
                     user_message = msg["content"]
-                    break
-              # Get intelligent function selection for this context
-            selected_functions, intent = self._get_intelligent_function_selection(user_message, "claude")
-            
+                    break              # Use all available Claude tools for follow-up
             payload = {
                 "model": model_config.get("model", "claude-3-5-sonnet-20241022"),
                 "system": system_message,
                 "messages": claude_messages,
                 "temperature": model_config["temperature"],
                 "max_tokens": model_config["max_tokens"],
-                "tools": selected_functions
+                "tools": claude_tools
             }
             
             headers = {

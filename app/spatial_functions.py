@@ -39,41 +39,42 @@ logger = logging.getLogger(__name__)
 class SpatialFunctions:
     def __init__(self):
         self.supported_formats = ['.shp', '.geojson', '.kml', '.gpx', '.gml']
-        # Dictionary of available functions with integer keys
         self.AVAILABLE_FUNCTIONS = {
-            1: "get_function_details",
+            1: "get_function_details | Use this function to get the signature and description of another function by providing its function_id (integer).",
             2: "select_by_attribute",
-            3: "get_field_statistics",
-            4: "get_layer_summary",
-            5: "calculate_area",
-            6: "calculate_length",
-            7: "get_centroid",
-            8: "create_buffer",
-            9: "spatial_join",
-            10: "clip_layer",
-            11: "calculate_distance",
-            12: "get_current_project_path",
-            13: "get_default_db_path",
-            14: "get_field_definitions",
-            15: "get_layer_type",
-            16: "get_data_source_info",
-            17: "create_nearest_neighbor_layer",
-            18: "get_unique_values_count",
-            19: "calculate_empty_values",
-            20: "get_map_layers_info",
-            21: "get_map_tables_info",
-            22: "get_values_frequency",
-            23: "get_value_frequency",
-            24: "get_coordinate_system",
-            25: "get_attribute_table",
-            26: "get_field_domain_values",
-            27: "calculate_new_field"
+            3: "select_by_location",
+            4: "get_field_statistics",
+            5: "get_layer_summary",
+            6: "calculate_area",
+            7: "calculate_length",
+            8: "get_centroid",
+            9: "create_buffer",
+            10: "spatial_join",
+            11: "clip_layer",
+            12: "calculate_distance",
+            13: "get_current_project_path",
+            14: "get_default_db_path",
+            15: "get_field_definitions",
+            16: "get_layer_type",
+            17: "get_list_of_layer_fields",
+            18: "get_data_source_info",
+            19: "create_nearest_neighbor_layer",
+            20: "get_unique_values_count",
+            21: "calculate_empty_values",
+            22: "get_map_layers_info",
+            23: "get_map_tables_info",
+            24: "get_values_frequency",
+            25: "get_value_frequency",
+            26: "get_coordinate_system",
+            27: "get_attribute_table",
+            28: "get_field_domain_values",
+            29: "calculate_new_field"
         }
         
 
     def get_function_details(self, function_id: int) -> dict:
         """
-        Returns the signature and description string for a function given its id.
+        Returns the signature and description of another function by providing its function_id (integer).
         """
         function_lines = [
             "select_by_attribute(layer_name, where_clause, selection_type): Executes attribute-based selection on layer.",
@@ -91,6 +92,7 @@ class SpatialFunctions:
             "get_default_db_path(): Gets the default geodatabase path for current project.",
             "get_field_definitions(layer_name): Returns detailed information about all fields in the specified layer. For each field, provides its name, data type, length, alias, and whether it is nullable.",
             "get_layer_type(layer_name): Gets the geometry type of a layer.",
+            "get_list_of_layer_fields(layer_name): Gets a list of field names for a given layer.",
             "get_data_source_info(layer_name): Gets data source information for a given layer.",
             "create_nearest_neighbor_layer(layer_name, field_id): Creates a new layer from the target layer with new NEAREST_ID & NEAREST_DIST fields. also returns some statistics one the NEAREST_DIST field that includes min, max, mean.",
             "get_unique_values_count(layer_name, field_name): Get the count of unique values in a field for a given layer.",
@@ -807,6 +809,35 @@ class SpatialFunctions:
             logger.error(f"get_layer_type error: {str(e)}")
             return {"success": False, "error": str(e)}
 
+    def get_list_of_layer_fields(self, layer_name: str) -> Dict:
+        """Get a list of field names for a given layer"""
+        logger.info(f"Getting list of fields for layer: {layer_name}")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            lyr = None
+            for l in map_obj.listLayers():
+                if l.name == layer_name:
+                    lyr = l
+                    break
+            
+            if not lyr:
+                return {"success": False, "error": f"Layer {layer_name} not found"}
+            
+            field_names = [field.name for field in arcpy.ListFields(lyr)]
+            
+            result = {
+                "function_executed": "get_list_of_layer_fields",
+                "layer_name": layer_name,
+                "success": True,
+                "fields": field_names
+            }
+            logger.info(f"Field names: {field_names}")
+            return result
+        except Exception as e:
+            logger.error(f"get_list_of_layer_fields error: {str(e)}")
+            return {"success": False, "error": str(e)}
+        
     def get_data_source_info(self, layer_name: str) -> Dict:
         """Get data source information for a given layer"""
         logger.info(f"Getting data source info for: {layer_name}")
