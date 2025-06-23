@@ -12,6 +12,7 @@ import uuid
 
 from .websocket_manager import WebSocketManager
 from .ai_service import AIService
+from .ai.ai_response_handler import AIResponseHandler
 from .spatial_functions import SpatialFunctions
 from .config import settings
 from .monitoring import monitoring_service
@@ -188,7 +189,6 @@ async def handle_user_message(client_id: str, user_message: str):
             user_message=user_message,
             conversation_history=history,
             arcgis_state=arcgis_state,
-            available_functions=spatial_functions.AVAILABLE_FUNCTIONS
         )
         
         # Process AI response for function calling or final response
@@ -208,7 +208,7 @@ async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
         
         if response_type == "function_calls":
             # AI wants to call functions
-            function_calls = ai_service.parse_function_calls(ai_response)
+            function_calls = AIResponseHandler.parse_function_calls(ai_response, ai_service.current_model)
             
             if function_calls:
                 # CRITICAL: Add assistant message with function calls to conversation history
