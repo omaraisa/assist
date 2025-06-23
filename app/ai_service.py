@@ -1,9 +1,7 @@
-import asyncio
 import json
 import re
 import logging
-import requests
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 import aiohttp
 from .config import settings, get_model_config
 from .function_declarations import openai_functions, gemini_functions, claude_tools, functions_summary
@@ -582,16 +580,52 @@ When you need to analyze data or perform spatial operations, use the available f
                 if response.status == 200:
                     data = await response.json()
                     message = data["choices"][0]["message"]
-                    content = message.get("content")                    # Handle null content from OpenAI API
+                    content = message.get("content")
+                    # Handle null content from OpenAI API
                     if content is None:
-                        # Extract function results for fallback response
-                        content = self._generate_fallback_response(function_results)                    
-                    
-                    else:
-                        # Check if content looks like raw JSON or function result
-                        if self._is_raw_function_result(content):
-                            logger.info("Detected raw function result, generating user-friendly response")
-                            content = self._generate_fallback_response(function_results)
+                        # Resend with a shorter payload and explicit instruction to summarize results
+                        logger.warning("OpenAI API returned no content. Retrying with limited context and explicit summarization instruction.")
+                        # Keep only the last 4 messages plus the tool messages
+                        limited_messages = []
+                        # Find the last system message if present
+                        for msg in reversed(messages):
+                            if msg["role"] == "system":
+                                limited_messages.append(msg)
+                                break
+                        # Add last 3 non-system messages
+                        non_system_msgs = [m for m in messages if m["role"] != "system"]
+                        limited_messages += non_system_msgs[-3:]
+                        # Add tool messages (function results)
+                        tool_msgs = [m for m in messages if m.get("role") == "tool"]
+                        limited_messages += tool_msgs
+                        # Add explicit instruction to summarize
+                        limited_messages.append({
+                            "role": "system",
+                            "content": (
+                                "IMPORTANT: The previous function results are provided above. "
+                                "You must read and summarize these results for the user in a clear, helpful, and user-friendly way. "
+                                "Do not repeat the raw JSON or function output. Respond directly to the user's request."
+                            )
+                        })
+                        retry_payload = {
+                            "model": model_config.get("model", "gpt-4o"),
+                            "messages": limited_messages,
+                            "temperature": model_config["temperature"],
+                            "max_tokens": model_config["max_tokens"],
+                            "tools": openai_functions
+                        }
+                        async with self.session.post(model_config["endpoint"], json=retry_payload, headers=headers) as retry_response:
+                            if retry_response.status == 200:
+                                retry_data = await retry_response.json()
+                                retry_message = retry_data["choices"][0]["message"]
+                                retry_content = retry_message.get("content", "")
+                                return {
+                                    "type": "text",
+                                    "content": retry_content
+                                }
+                            else:
+                                error_text = await retry_response.text()
+                                raise Exception(f"OpenAI API retry error {retry_response.status}: {error_text}")
 
                     return {
                         "type": "text",
@@ -1260,110 +1294,7 @@ When you need to analyze data or perform spatial operations, use the available f
         else:
             return functions  # Return original if unknown provider
 
-# =======================
-    # PHASE 1, STEP 2: ADVANCED ARCGIS STATE PAYLOAD REDUCTION
-    # =======================
-    
-    def _get_relevant_arcgis_state_by_intent(self, intent: str, full_state: Dict, user_message: str) -> Dict:
-        """Get only relevant ArcGIS state based on user intent to reduce token usage"""
-        if not full_state:
-            return {}
-        
-        # Extract layer names and field names mentioned in user message
-        mentioned_layers = self._extract_mentioned_layers(user_message, full_state)
-        mentioned_fields = self._extract_mentioned_fields(user_message, full_state)
-        
-        simplified = {}
-        
-        # Always include basic project info (minimal tokens)
-        if "workspace" in full_state:
-            simplified["workspace"] = full_state["workspace"]
-        if "default_gdb" in full_state:
-            simplified["default_gdb"] = full_state["default_gdb"]
-        
-        # Intent-specific state reduction
-        if intent in ["LAYER_INFO", "GENERAL"]:
-            # For layer info queries, include layer names and types only
-            if "layers_info" in full_state:
-                simplified["layers"] = {}
-                for layer_name, layer_info in full_state["layers_info"].items():
-                    # Only include layers mentioned in query or first 5 layers if none mentioned
-                    if mentioned_layers and layer_name not in mentioned_layers:
-                        continue
-                    simplified["layers"][layer_name] = {
-                        "type": layer_info.get("type", "Unknown"),
-                        "feature_count": layer_info.get("feature_count", 0),
-                        "geometry_type": layer_info.get("geometry_type", "Unknown")
-                    }
-                
-                # If no specific layers mentioned, include only first 5 layers
-                if not mentioned_layers and len(simplified["layers"]) == 0:
-                    layer_names = list(full_state["layers_info"].keys())[:5]
-                    for layer_name in layer_names:
-                        layer_info = full_state["layers_info"][layer_name]
-                        simplified["layers"][layer_name] = {
-                            "type": layer_info.get("type", "Unknown"),
-                            "feature_count": layer_info.get("feature_count", 0),
-                            "geometry_type": layer_info.get("geometry_type", "Unknown")
-                        }
-        
-        elif intent == "FIELD_ANALYSIS":
-            # For field analysis, include relevant field information
-            if "layers_info" in full_state:
-                simplified["layers"] = {}
-                for layer_name, layer_info in full_state["layers_info"].items():
-                    # Include layer if mentioned or if fields are mentioned for this layer
-                    include_layer = (not mentioned_layers or layer_name in mentioned_layers or
-                                   any(field in str(layer_info.get("fields", {})).lower() for field in mentioned_fields))
-                    
-                    if include_layer:
-                        simplified["layers"][layer_name] = {
-                            "fields": self._filter_relevant_fields(layer_info.get("fields", {}), mentioned_fields),
-                            "feature_count": layer_info.get("feature_count", 0)
-                        }
-        
-        elif intent in ["SELECTION", "SPATIAL_ANALYSIS"]:
-            # For selection and spatial analysis, include fields and geometry info
-            if "layers_info" in full_state:
-                simplified["layers"] = {}
-                for layer_name, layer_info in full_state["layers_info"].items():
-                    if not mentioned_layers or layer_name in mentioned_layers:
-                        simplified["layers"][layer_name] = {
-                            "fields": self._filter_relevant_fields(layer_info.get("fields", {}), mentioned_fields),
-                            "geometry_type": layer_info.get("geometry_type", "Unknown"),
-                            "feature_count": layer_info.get("feature_count", 0),
-                            "definition_query": layer_info.get("definition_query", "")
-                        }
-        
-        elif intent == "DATA_OPERATIONS":
-            # For data operations, include field structure and attribute info
-            if "layers_info" in full_state:
-                simplified["layers"] = {}
-                for layer_name, layer_info in full_state["layers_info"].items():
-                    if not mentioned_layers or layer_name in mentioned_layers:
-                        simplified["layers"][layer_name] = {
-                            "fields": layer_info.get("fields", {}),
-                            "feature_count": layer_info.get("feature_count", 0)
-                        }
-        
-        elif intent == "SYSTEM":
-            # For system queries, minimal info needed
-            pass  # Already included workspace and default_gdb
-        
-        # Include layer types if available (small payload)
-        if "layer_types" in full_state:
-            if mentioned_layers:
-                simplified["layer_types"] = {k: v for k, v in full_state["layer_types"].items() 
-                                           if k in mentioned_layers}
-            else:
-                simplified["layer_types"] = dict(list(full_state["layer_types"].items())[:5])
-        
-        # Include basemap only for spatial analysis
-        if intent == "SPATIAL_ANALYSIS" and "basemap" in full_state:
-            simplified["basemap"] = full_state["basemap"]
-        
-        logger.info(f"Reduced ArcGIS state from {len(str(full_state))} to {len(str(simplified))} characters for intent: {intent}")
-        return simplified
+
     
     def _extract_mentioned_layers(self, user_message: str, arcgis_state: Dict) -> List[str]:
         """Extract layer names mentioned in user message"""
@@ -1426,402 +1357,3 @@ When you need to analyze data or perform spatial operations, use the available f
             # Return first 10 fields if none specifically mentioned
             return dict(list(fields.items())[:10])
     
-    # =======================
-    # PHASE 1, STEP 3: CONVERSATION SUMMARIZATION
-    # =======================
-    
-    def _optimize_conversation_history(self, conversation_history: List[Dict], user_message: str) -> List[Dict]:
-        """Optimize conversation history to reduce token usage while preserving context"""
-        if len(conversation_history) <= 6:
-            return conversation_history  # No optimization needed for short conversations
-        
-        # Keep the most recent 4 messages always
-        recent_messages = conversation_history[-4:]
-        older_messages = conversation_history[:-4]
-        
-        # Summarize older messages if there are more than 6 total
-        if len(older_messages) > 2:
-            summarized_context = self._create_conversation_summary(older_messages, user_message)
-            
-            # Return summary + recent messages
-            optimized_history = [
-                {"role": "system", "content": f"Previous conversation summary: {summarized_context}"}
-            ] + recent_messages
-            
-            logger.info(f"Compressed conversation from {len(conversation_history)} to {len(optimized_history)} messages")
-            return optimized_history
-        else:
-            return conversation_history
-    
-    def _create_conversation_summary(self, messages: List[Dict], current_user_message: str) -> str:
-        """Create a concise summary of conversation context"""
-        if not messages:
-            return "No previous context."
-        
-        # Extract key information from conversation
-        topics = []
-        layers_mentioned = set()
-        operations_performed = []
-        
-        for msg in messages:
-            if msg["role"] == "user":
-                content = msg["content"].lower()
-                  # Extract topics
-                if any(word in content for word in ["layer", "map", "data"]):
-                    topics.append("layer information")
-                if any(word in content for word in ["field", "attribute", "column"]):
-                    topics.append("field analysis")
-                if any(word in content for word in ["select", "filter", "find"]):
-                    topics.append("feature selection")
-                if any(word in content for word in ["area", "buffer", "distance", "spatial"]):
-                    topics.append("spatial analysis")
-                if any(word in content for word in ["calculate", "compute", "count"]):
-                    topics.append("calculations")
-                
-                # Extract layer names (basic pattern matching)
-                words = content.split()
-                for word in words:
-                    if len(word) > 3 and not word in ["the", "and", "for", "with", "from", "this", "that"]:
-                        if any(char.isupper() for char in word) or "_" in word:
-                            layers_mentioned.add(word)
-            
-            elif msg["role"] == "assistant":
-                content = msg["content"].lower()
-                if "function" in content or "executed" in content:
-                    operations_performed.append("data analysis")
-        
-        # Create concise summary
-        summary_parts = []
-        
-        if topics:
-            unique_topics = list(set(topics))
-            summary_parts.append(f"Topics discussed: {', '.join(unique_topics[:3])}")
-        
-        if layers_mentioned:
-            summary_parts.append(f"Layers referenced: {', '.join(list(layers_mentioned)[:3])}")
-        
-        if operations_performed:
-            summary_parts.append(f"Operations: {', '.join(set(operations_performed))}")
-        
-        if not summary_parts:
-            summary_parts.append("General GIS assistance conversation")
-        
-        return ". ".join(summary_parts) + "."
-    
-    # =======================
-    # UPDATED MESSAGE PREPARATION WITH OPTIMIZATIONS
-    # =======================
-    
-    def _prepare_optimized_messages(
-        self, 
-        user_message: str, 
-        conversation_history: List[Dict], 
-        arcgis_state: Dict,
-        intent: str
-    ) -> List[Dict]:
-        """Prepare optimized messages with reduced payload for AI model"""
-        
-        # Get intent-specific ArcGIS state (Phase 1, Step 2)
-        optimized_state = self._get_relevant_arcgis_state_by_intent(intent, arcgis_state, user_message)
-        
-        # Optimize conversation history (Phase 1, Step 3)
-        optimized_history = self._optimize_conversation_history(conversation_history, user_message)
-        
-        # System prompt with optimized state
-        system_prompt = self._get_optimized_system_prompt(optimized_state, intent)
-        
-        # Build message history
-        messages = [{"role": "system", "content": system_prompt}]
-        
-        # Add optimized conversation history (excluding system messages)
-        for msg in optimized_history:
-            if msg["role"] != "system":
-                messages.append({
-                    "role": msg["role"],
-                    "content": msg["content"]
-                })
-            elif "previous conversation summary" in msg["content"].lower():
-                # Include conversation summary as assistant message for better context
-                messages.append({
-                    "role": "assistant", 
-                    "content": f"Context: {msg['content']}"
-                })
-        
-        # Add current user message
-        messages.append({"role": "user", "content": user_message})
-        
-        return messages
-    
-    def _get_optimized_system_prompt(self, optimized_state: Dict, intent: str) -> str:
-        """Get optimized system prompt tailored to intent"""
-        
-        # Get model-specific identity
-        model_identity = self._get_model_identity()
-        
-        # Intent-specific instructions
-        intent_instructions = {
-            "LAYER_INFO": "Focus on providing layer information, structure, and metadata.",
-            "FIELD_ANALYSIS": "Focus on field analysis, statistics, and attribute information.",
-            "SELECTION": "Focus on feature selection and filtering operations.",
-            "SPATIAL_ANALYSIS": "Focus on spatial calculations, geometry operations, and geographic analysis.",
-            "DATA_OPERATIONS": "Focus on data manipulation, field calculations, and attribute operations.",
-            "SYSTEM": "Focus on system information and workspace details.",
-            "GENERAL": "Provide comprehensive GIS assistance using available functions."
-        }
-        
-        specific_instruction = intent_instructions.get(intent, intent_instructions["GENERAL"])
-        
-        return f"""You are {model_identity}, an ArcGIS Pro Intelligent Assistant with access to spatial analysis functions.
-
-IMPORTANT: When a user asks about your identity, always respond with: I am {model_identity}
-
-LANGUAGE INSTRUCTION: Always respond in the same language as the user's question.
-
-Current Task Focus: {specific_instruction}
-
-Key Guidelines:
-1. Use function calls to gather information before providing answers
-2. Never invent data - only use information from function results  
-3. Be precise and factual in your responses
-4. When you receive function results, provide a clear, user-friendly summary
-
-Current ArcGIS Pro State: {json.dumps(optimized_state)}
-
-Use the available functions to analyze data and provide accurate, helpful responses."""
-
-    # =======================
-    # UPDATED FUNCTION CALLING METHODS
-    # =======================
-    
-    # ...existing code...
-    
-    def _generate_fallback_response(self, function_results: List[Dict]) -> str:
-        """Generate a user-friendly fallback response from function results"""
-        if not function_results:
-            return "I processed your request successfully."
-        
-        # Process each function result
-        responses = []
-        for result in function_results:
-            function_name = result.get("name", "unknown_function")
-            result_data = result.get("result", {})
-              # Generate specific responses based on function type
-            if function_name == "get_map_layers_info":
-                response = self._process_layers_info_result(result_data)
-            elif function_name == "get_field_statistics":
-                response = self._process_field_stats_result(result_data)
-            elif function_name == "get_unique_values_count":
-                response = self._process_unique_values_result(result_data)
-            elif function_name == "get_value_frequency":
-                response = self._process_value_frequency_result(result_data)
-            elif function_name == "select_by_attribute":
-                response = self._process_selection_result(result_data)
-            elif function_name == "calculate_area":
-                response = self._process_area_calculation_result(result_data)
-            else:
-                # Generic processing for other functions
-                response = self._process_generic_result(function_name, result_data)
-            
-            if response:
-                responses.append(response)
-        
-        return "\n\n".join(responses) if responses else "I processed your request successfully."
-    
-    def _process_layers_info_result(self, result_data: Dict) -> str:
-        """Process get_map_layers_info result into user-friendly text"""
-        if not result_data.get("success"):
-            return "I couldn't retrieve layer information from the map."
-        
-        layers = result_data.get("layers", [])
-        if not layers:
-            return "There are no layers currently loaded in the map."
-        
-        # Count different layer types
-        layer_counts = {}
-        visible_layers = []
-        hidden_layers = []
-        
-        for layer in layers:
-            layer_type = layer.get("type", "Unknown")
-            layer_counts[layer_type] = layer_counts.get(layer_type, 0) + 1
-            
-            if layer.get("visible", True):
-                visible_layers.append(layer["name"])
-            else:
-                hidden_layers.append(layer["name"])
-        
-        # Build response
-        response_parts = [f"**Current Map Layers ({len(layers)} total):**"]
-        
-        # Layer summary by type
-        if layer_counts:
-            type_summary = []
-            for layer_type, count in layer_counts.items():
-                type_summary.append(f"{count} {layer_type.lower()} layer{'s' if count > 1 else ''}")
-            response_parts.append(f"- {', '.join(type_summary)}")
-        
-        # Visible layers
-        if visible_layers:
-            response_parts.append(f"\n**Visible Layers ({len(visible_layers)}):**")
-            for layer in visible_layers:
-                layer_info = next((l for l in layers if l["name"] == layer), {})
-                layer_type = layer_info.get("type", "Unknown")
-                response_parts.append(f"- {layer} ({layer_type})")
-        
-        # Hidden layers (if any)
-        if hidden_layers:
-            response_parts.append(f"\n**Hidden Layers ({len(hidden_layers)}):**")
-            for layer in hidden_layers:
-                response_parts.append(f"- {layer}")
-        
-        return "\n".join(response_parts)
-    
-    def _process_field_stats_result(self, result_data: Dict) -> str:
-        """Process field statistics result into user-friendly text"""
-        if not result_data.get("success"):
-            return "I couldn't retrieve field statistics."
-        
-        stats = result_data.get("statistics", {})
-        field_name = result_data.get("field_name", "field")
-        layer_name = result_data.get("layer_name", "layer")
-        
-        if not stats:
-            return f"No statistics available for {field_name} in {layer_name}."
-        
-        response_parts = [f"**Statistics for {field_name} in {layer_name}:**"]
-        
-        # Format statistics based on field type
-        if "count" in stats:
-            response_parts.append(f"- Total records: {stats['count']:,}")
-        if "unique_count" in stats:
-            response_parts.append(f"- Unique values: {stats['unique_count']:,}")
-        if "null_count" in stats:
-            response_parts.append(f"- Null/empty values: {stats['null_count']:,}")
-        if "min" in stats and "max" in stats:
-            response_parts.append(f"- Range: {stats['min']} to {stats['max']}")
-        if "mean" in stats:
-            response_parts.append(f"- Average: {stats['mean']:.2f}")
-        
-        return "\n".join(response_parts)
-    
-    def _process_unique_values_result(self, result_data: Dict) -> str:
-        """Process unique values result into user-friendly text"""
-        if not result_data.get("success"):
-            return "I couldn't retrieve unique values."
-
-        unique_values = result_data.get("unique_values", [])
-        field_name = result_data.get("field_name", "field")
-        layer_name = result_data.get("layer_name", "layer")
-        
-        if not unique_values:
-            return f"No unique values found for {field_name} in {layer_name}."
-        
-        response_parts = [f"**Unique values in {field_name} ({layer_name}):**"]
-        response_parts.append(f"Total unique values: {len(unique_values)}")
-        
-        # Show first 10 values
-        display_values = unique_values[:10]
-        for value in display_values:
-            response_parts.append(f"- {value}")
-        
-        if len(unique_values) > 10:
-            response_parts.append(f"... and {len(unique_values) - 10} more values")
-        
-        return "\n".join(response_parts)
-    
-    def _process_value_frequency_result(self, result_data: Dict) -> str:
-        """Process get_value_frequency result into user-friendly text"""
-        if not result_data.get("success"):
-            return "I couldn't retrieve the value frequency."
-        
-        field_name = result_data.get("field_name", "field")
-        layer_name = result_data.get("layer_name", "layer")
-        lookup_value = result_data.get("lookup_value", "value")
-        value_count = result_data.get("value_count", 0)
-        total_count = result_data.get("total_count", 0)
-        percentage = result_data.get("percentage", 0)
-        
-        if value_count == 0:
-            return f"No records found with {field_name} = '{lookup_value}' in {layer_name}."
-        
-        response_parts = [f"**Count for {field_name} = '{lookup_value}' in {layer_name}:**"]
-        response_parts.append(f"- Found: **{value_count:,} records**")
-        response_parts.append(f"- Total records in layer: {total_count:,}")
-        response_parts.append(f"- Percentage: {percentage:.1f}%")
-        
-        return "\n".join(response_parts)
-    
-    def _process_selection_result(self, result_data: Dict) -> str:
-        """Process selection result into user-friendly text"""
-        if not result_data.get("success"):
-            return "The selection operation was not successful."
-        
-        selected_count = result_data.get("selected_count", 0)
-        layer_name = result_data.get("layer_name", "layer")
-        
-        if selected_count == 0:
-            return f"No features were selected in {layer_name} with the specified criteria."
-        elif selected_count == 1:
-            return f"1 feature was selected in {layer_name}."
-        else:
-            return f"{selected_count:,} features were selected in {layer_name}."
-    
-    def _process_area_calculation_result(self, result_data: Dict) -> str:
-        """Process area calculation result into user-friendly text"""
-        if not result_data.get("success"):
-            return "The area calculation was not successful."
-        
-        total_area = result_data.get("total_area", 0)
-        unit = result_data.get("unit", "square units")
-        layer_name = result_data.get("layer_name", "layer")
-        feature_count = result_data.get("feature_count", 0)
-        
-        if feature_count == 0:
-            return f"No features found for area calculation in {layer_name}."
-        
-        # Format area with appropriate units
-        if "square meters" in unit.lower() or "sq m" in unit.lower():
-            if total_area >= 1000000:  # Convert to km²
-                area_km2 = total_area / 1000000
-                return f"Total area of {feature_count:,} feature{'s' if feature_count > 1 else ''} in {layer_name}: {area_km2:.2f} km²"
-            elif total_area >= 10000:  # Convert to hectares
-                area_ha = total_area / 10000
-                return f"Total area of {feature_count:,} feature{'s' if feature_count > 1 else ''} in {layer_name}: {area_ha:.2f} hectares"
-        
-        return f"Total area of {feature_count:,} feature{'s' if feature_count > 1 else ''} in {layer_name}: {total_area:,.2f} {unit}"
-    
-    def _process_generic_result(self, function_name: str, result_data: Dict) -> str:
-        """Process generic function result into user-friendly text"""
-        if not result_data.get("success"):
-            return f"The {function_name.replace('_', ' ')} operation was not successful."
-        
-        # Check for common result patterns
-        if "message" in result_data:
-            return result_data["message"]
-        elif "summary" in result_data:
-            return result_data["summary"]
-        elif "result" in result_data:
-            return f"✓ {function_name.replace('_', ' ').title()}: {result_data['result']}"
-        else:
-            return f"✓ {function_name.replace('_', ' ').title()}: Completed successfully"
-    
-    def _is_raw_function_result(self, content: str) -> bool:
-        """Check if content appears to be a raw function result that needs processing"""
-        if not content:
-            return False
-        
-        stripped = content.strip()
-        
-        # Check for JSON-like structure
-        if (stripped.startswith('{') and stripped.endswith('}')) or (stripped.startswith('[') and stripped.endswith(']')):
-            return True
-        
-        # Check for function result patterns
-        if any(pattern in stripped for pattern in ['"success":', '"function_executed":', '"layers":', '"result":']):
-            return True
-        
-        # Check if it's just repeating the raw function result
-        if stripped.startswith("Based on the function results:") and "✓" in stripped:
-            return True
-        
-        return False
