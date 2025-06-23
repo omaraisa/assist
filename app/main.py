@@ -254,8 +254,24 @@ async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
         })
 
 async def execute_function_calls(client_id: str, function_calls: List[Dict], original_response: Dict):
-    """Execute function calls via ArcGIS Pro"""
+    """Execute function calls via ArcGIS Pro - handles chains by batching all results"""
     try:
+        # Check if this is a chain of multiple function calls
+        is_function_chain = len(function_calls) > 1
+        
+        if is_function_chain:
+            logger.info(f"Detected function chain with {len(function_calls)} functions. Will batch results.")
+            # For chains, we'll collect all results before sending to LLM
+            chain_context = {
+                "client_id": client_id,
+                "original_response": original_response,
+                "total_functions": len(function_calls),
+                "completed_functions": 0,
+                "function_results": [],
+                "is_chain": True
+            }
+            websocket_manager.store_chain_context(client_id, chain_context)
+        
         # Send function call request to ArcGIS Pro
         for func_call in function_calls:
             # Create function execution request
@@ -275,14 +291,17 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
                 await websocket_manager.send_to_client(arcgis_clients[0], function_request)
                 
                 # Store function call context for response handling
+                context = {
+                    "client_id": client_id,
+                    "function_call": func_call,
+                    "original_response": original_response,
+                    "is_function_calling": True,
+                    "is_chain": is_function_chain
+                }
+                
                 websocket_manager.store_function_context(
                     function_request["session_id"], 
-                    {
-                        "client_id": client_id,
-                        "function_call": func_call,
-                        "original_response": original_response,
-                        "is_function_calling": True
-                    }
+                    context
                 )
             else:
                 logger.error("No ArcGIS Pro client connected for function execution")
@@ -290,6 +309,7 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
                     "type": "error",
                     "message": "ArcGIS Pro is not connected. Please ensure ArcGIS Pro is running and connected."
                 })
+                return
                 
     except Exception as e:
         logger.error(f"Error executing function calls: {str(e)}")
@@ -417,6 +437,7 @@ async def handle_function_calling_response(session_id: str, message: Dict, conte
         client_id = context["client_id"]
         function_call = context["function_call"]
         original_response = context["original_response"]
+        is_chain = context.get("is_chain", False)
         
         # Prepare function result
         function_result = {
@@ -426,25 +447,44 @@ async def handle_function_calling_response(session_id: str, message: Dict, conte
             "result": message.get("data", {})
         }
         
+        # Handle chain vs single function call differently
+        if is_chain:
+            # This is part of a function chain - collect the result
+            chain_context = websocket_manager.get_chain_context(client_id)
+            if chain_context:
+                chain_context["completed_functions"] += 1
+                chain_context["function_results"].append(function_result)
+                
+                logger.info(f"Function chain progress: {chain_context['completed_functions']}/{chain_context['total_functions']}")
+                
+                # Check if all functions in the chain are complete
+                if chain_context["completed_functions"] >= chain_context["total_functions"]:
+                    logger.info("All functions in chain completed. Sending batch results to LLM.")
+                    await handle_chain_completion(client_id, chain_context)
+                else:
+                    # Still waiting for more functions to complete - don't send anything to user yet
+                    logger.info(f"Waiting for {chain_context['total_functions'] - chain_context['completed_functions']} more functions to complete.")
+            else:
+                logger.error("Chain context not found - falling back to single function handling")
+                await handle_single_function_result(client_id, function_result, original_response)
+        else:
+            # Single function call - handle immediately
+            await handle_single_function_result(client_id, function_result, original_response)
+        
+    except Exception as e:
+        logger.error(f"Error handling function calling response: {str(e)}")
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error",
+            "message": f"Error processing function result: {str(e)}"
+        })
+
+async def handle_single_function_result(client_id: str, function_result: Dict, original_response: Dict):
+    """Handle a single function result"""
+    try:
         # Get conversation history and prepare messages for AI
         history = websocket_manager.get_conversation_history(client_id)
         arcgis_state = websocket_manager.get_arcgis_state()
         
-        # Log the conversation history to debug any Gemini API issues
-        if ai_service.current_model.startswith("GEMINI"):
-            logger.info(f"Conversation history before function response (last 3 messages): {json.dumps(history[-3:], indent=2)}")
-        
-        # Verify that the assistant message with function calls is in history
-        function_call_in_history = False
-        for msg in history:
-            if msg.get("role") == "assistant" and "function_calls" in msg:
-                function_call_in_history = True
-                logger.info("Found assistant message with function_calls in history")
-                break
-        
-        if not function_call_in_history and ai_service.current_model.startswith("GEMINI"):
-            logger.warning("No assistant message with function_calls found in history, this may cause Gemini API errors")
-                
         # Build messages for function response
         messages = ai_service._prepare_messages(
             original_response.get("content", ""),
@@ -453,7 +493,7 @@ async def handle_function_calling_response(session_id: str, message: Dict, conte
         )
         
         # Add the function call response to conversation
-        logger.info(f"Sending function result to AI for final response: {function_call['name']}")
+        logger.info(f"Sending single function result to AI: {function_result['name']}")
         final_response = await ai_service.handle_function_response(messages, [function_result])
         
         # Send final response to user
@@ -466,15 +506,53 @@ async def handle_function_calling_response(session_id: str, message: Dict, conte
         else:
             # Handle unexpected response type
             await send_final_response(client_id, "I processed your request successfully.")
+            
+    except Exception as e:
+        logger.error(f"Error handling single function result: {str(e)}")
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error", 
+            "message": f"Error processing function result: {str(e)}"
+        })
+
+async def handle_chain_completion(client_id: str, chain_context: Dict):
+    """Handle completion of a function chain by sending all results to LLM at once"""
+    try:
+        # Get conversation history 
+        history = websocket_manager.get_conversation_history(client_id)
+        original_response = chain_context["original_response"]
+        function_results = chain_context["function_results"]
         
-        # Clean up function context
-        websocket_manager.remove_function_context(session_id)
+        # Build messages for function response - no need for ArcGIS state for chain completion
+        messages = ai_service._prepare_messages(
+            original_response.get("content", ""),
+            history,
+            {}  # Empty state - we only need history + function results
+        )
+        
+        logger.info(f"Sending {len(function_results)} function results to AI for chain completion")
+        
+        # Send all function results together to AI for final response
+        final_response = await ai_service.handle_function_response(messages, function_results)
+        
+        # Send final response to user
+        if final_response.get("type") == "text":
+            content = final_response.get("content", "I completed all the requested tasks successfully.")
+            await send_final_response(client_id, content)
+            
+            # Add to conversation history
+            websocket_manager.add_to_history(client_id, "assistant", content)
+        else:
+            # Handle unexpected response type
+            await send_final_response(client_id, "I completed all the requested tasks successfully.")
+        
+        # Clean up chain context
+        websocket_manager.clear_chain_context(client_id)
         
     except Exception as e:
-        logger.error(f"Error handling function calling response: {str(e)}")
-        await websocket_manager.send_to_client(context.get("client_id"), {
-            "type": "error",
-            "message": f"Error processing function result: {str(e)}"
+        logger.error(f"Error handling chain completion: {str(e)}")
+        websocket_manager.clear_chain_context(client_id)
+        await websocket_manager.send_to_client(client_id, {            "type": "error",
+            "message": f"Error completing function chain: {str(e)}"
         })
 
 async def handle_function_response(client_id: str, message: Dict):

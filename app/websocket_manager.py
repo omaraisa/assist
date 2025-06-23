@@ -34,6 +34,9 @@ class WebSocketManager:
         
         # Store function calling contexts (for new function calling system)
         self.function_contexts: Dict[str, Dict] = {}
+        
+        # Chain context management for function calling chains
+        self.chain_contexts: Dict[str, Dict] = {}
     
     async def connect(self, websocket: WebSocket, client_id: str):
         """Accept a new WebSocket connection"""
@@ -216,6 +219,21 @@ class WebSocketManager:
         if session_id in self.function_contexts:
             del self.function_contexts[session_id]
             logger.info(f"Removed function context for session {session_id}")
+    
+    def store_chain_context(self, client_id: str, context: Dict):
+        """Store context for a function calling chain"""
+        self.chain_contexts[client_id] = context
+        logger.info(f"Stored chain context for client {client_id}")
+
+    def get_chain_context(self, client_id: str) -> Optional[Dict]:
+        """Get context for a function calling chain"""
+        return self.chain_contexts.get(client_id)
+
+    def clear_chain_context(self, client_id: str):
+        """Clear context for a function calling chain"""
+        if client_id in self.chain_contexts:
+            del self.chain_contexts[client_id]
+            logger.info(f"Cleared chain context for client {client_id}")
     
     def get_clients_by_type(self, client_type: str) -> List[str]:
         """Get all client IDs of a specific type"""

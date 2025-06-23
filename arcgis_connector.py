@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-ArcGIS Pro Smart Assistant Connector - FastAPI Version
-This script connects ArcGIS Pro to the FastAPI-based Smart Assistant server
-"""
 
 import asyncio
 import websockets
@@ -11,8 +7,7 @@ import logging
 import traceback
 import time
 import webbrowser
-from typing import Dict, Optional, Any
-import concurrent.futures
+from typing import Dict
 import arcpy
 
 # Setup logging
