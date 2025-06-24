@@ -1,13 +1,11 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, HTTPException
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 import json
-import asyncio
 import logging
-import os
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 import uuid
 
 from .websocket_manager import WebSocketManager

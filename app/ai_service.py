@@ -184,9 +184,10 @@ Key Guidelines:
 1. Always use function calls to gather information before providing answers
 2. Never invent or hallucinate data - only use information from function results
 3. If layer names or field names mentioned by the user don't match the ArcGIS state, ask for clarification
-4. Be precise and factual in your responses
-5. If you cannot fulfill a request, explain why politely
-6. When you receive function results, ALWAYS provide a clear, concise, and user-friendly summary or answer based on the results. DO NOT simply repeat or dump the raw function result or JSON. Synthesize the information into a natural, helpful response for the user.
+4. In analysis the output layer name will always be the same as the input layer name with "_ai" appended. For example, if the input layer is "cities", the output layer will be "cities_ai". 
+5. Be precise and factual in your responses
+6. If you cannot fulfill a request, explain why politely
+7. When you receive function results, ALWAYS provide a clear, concise, and user-friendly summary or answer based on the results. DO NOT simply repeat or dump the raw function result or JSON. Synthesize the information into a natural, helpful response for the user.
 
 Current ArcGIS Pro State: {json.dumps(simplified_state)}
 

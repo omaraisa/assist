@@ -453,7 +453,7 @@ class SpatialFunctions:
         except Exception as e:
             logger.error(f"get_centroid error: {str(e)}")
             return {"success": False, "error": str(e)}
-        
+    
     def create_buffer(self, layer_name: str, distance: float, units: str = "meters") -> Dict:
         """Create buffer around features"""
         logger.info(f"Creating buffer for layer: {layer_name}, distance: {distance} {units}")
@@ -481,7 +481,7 @@ class SpatialFunctions:
                 buffer_distance = f"{distance} Miles"
             
             # Create output path
-            output_buffer = f"{layer_name}_buffer_{distance}m"
+            output_buffer = f"{layer_name}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_buffer)
             
@@ -542,9 +542,8 @@ class SpatialFunctions:
                 "closest": "CLOSEST"
             }
             arcpy_join_op = join_op_map.get(join_operation.lower(), "INTERSECT")
-            
-            # Create output path
-            output_name = f"{target_layer}_joined"
+              # Create output path
+            output_name = f"{target_layer}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_name)
             
@@ -596,9 +595,8 @@ class SpatialFunctions:
                 return {"success": False, "error": f"Input layer {input_layer} not found"}
             if not clip_lyr:
                 return {"success": False, "error": f"Clip layer {clip_layer} not found"}
-            
-            # Create output path
-            output_name = f"{input_layer}_clipped"
+              # Create output path
+            output_name = f"{input_layer}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_name)
             
@@ -884,10 +882,8 @@ class SpatialFunctions:
                     lyr = l
                     break
             if not lyr:
-                return {"success": False, "error": f"Layer {layer_name} not found"}
-
-            # Prepare output
-            output_name = f"{layer_name}_nearest"
+                return {"success": False, "error": f"Layer {layer_name} not found"}            # Prepare output
+            output_name = f"{layer_name}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_name)
             

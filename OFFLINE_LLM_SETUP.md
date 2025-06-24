@@ -12,7 +12,19 @@ Follow these steps to get started:
     ```
 
 3. **🐍 Install Required Python Modules**  
-    In your Python environment, install the following modules:  
+    **Make sure to use the project's virtual environment:**
+    
+    **Option A: Use the project's activation script (Recommended)**
     ```bash
+    # First activate the project environment
+    call activate_environment.bat
+    
+    # Then install the modules
     pip install chromadb sentence-transformers langchain
+    ```
+    
+    **Option B: Use the virtual environment directly**
+    ```bash
+    # Use the project's virtual environment pip directly
+    venv\Scripts\pip install chromadb sentence-transformers langchain
     ```
