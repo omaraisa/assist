@@ -546,7 +546,8 @@ class SpatialFunctions:
             output_name = f"{target_layer}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_name)
-            
+            # Add the joined layer to the map
+            joined_layer = map_obj.addDataFromPath(output_path)
             # Perform spatial join
             arcpy.SpatialJoin_analysis(target_lyr, join_lyr, output_path, 
                                      match_option=arcpy_join_op)
@@ -599,6 +600,8 @@ class SpatialFunctions:
             output_name = f"{input_layer}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_name)
+            # Add the joined layer to the map
+            clipped_layer = map_obj.addDataFromPath(output_path)
             
             # Get original feature count
             original_count = int(arcpy.GetCount_management(input_lyr)[0])
@@ -886,7 +889,8 @@ class SpatialFunctions:
             output_name = f"{layer_name}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_name)
-            
+            # Add the layer to the map
+            ouput_layer = map_obj.addDataFromPath(output_path)
 
             # Copy features to new layer
             arcpy.CopyFeatures_management(lyr, output_path)
