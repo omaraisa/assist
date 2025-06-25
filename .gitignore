@@ -1,14 +1,44 @@
+# Logs
 /logs
+*.log
+
+# Python cache and compiled files
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
 *.pyo
+*.pyd
+.Python
+
+# Environment files
 .env
-/.history
-/venv
-/rag_db
+.venv
+env/
+venv/
 /venv_backup
+
+# Project specific
+/.history
+/rag_db
 environment_info.txt
 start_smartassistant.bat
 activate_environment.bat
 connect_arcgis.bat
+
+# ArcGIS specific
+*.aprx.lock
+*.tbx.lock
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
 
