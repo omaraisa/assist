@@ -10,6 +10,7 @@ import uuid
 
 from .websocket_manager import WebSocketManager
 from .ai_service import AIService
+from .ai.function_declarations import FunctionDeclaration
 from .ai.ai_response_handler import AIResponseHandler
 from .spatial_functions import SpatialFunctions
 from .config import settings
@@ -251,6 +252,23 @@ async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
             "message": f"Error processing AI response: {str(e)}"
         })
 
+
+    def get_functions_declaration(self, function_ids: list[int]) -> dict:
+        """
+        Returns the signature and description of another function by providing its function_id (integer).
+        """
+        functions_declaration = FunctionDeclaration.functions_declarations
+        
+        # Filter and return only the requested function declarations
+        result = {}
+        for func_id in function_ids:
+            if func_id in self.AVAILABLE_FUNCTIONS:
+                func_name = self.AVAILABLE_FUNCTIONS[func_id]
+                if func_name in functions_declaration:
+                    result[func_name] = functions_declaration[func_name]
+            
+        return result
+    
 async def execute_function_calls(client_id: str, function_calls: List[Dict], original_response: Dict):
     """Execute function calls via ArcGIS Pro - handles chains by batching all results"""
     try:
@@ -269,9 +287,13 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
                 "is_chain": True
             }
             websocket_manager.store_chain_context(client_id, chain_context)
-        
-        # Send function call request to ArcGIS Pro
+          # Send function call request to ArcGIS Pro
         for func_call in function_calls:
+            # Handle get_functions_declaration locally instead of sending to ArcGIS Pro
+            if func_call["name"] == "get_functions_declaration":
+                logger.info(f"Handling get_functions_declaration locally with IDs: {func_call['parameters']['function_ids']}")
+                await handle_local_function_declaration(client_id, func_call, original_response, is_function_chain)
+                continue
             # Create function execution request
             function_request = {
                 "type": "execute_function",
@@ -313,7 +335,155 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
         logger.error(f"Error executing function calls: {str(e)}")
         await websocket_manager.send_to_client(client_id, {
             "type": "error",
-            "message": f"Error executing functions: {str(e)}"
+            "message": f"Error executing functions: {str(e)}"        })
+
+async def handle_local_function_declaration(client_id: str, func_call: Dict, original_response: Dict, is_function_chain: bool):
+    """Handle get_functions_declaration function call locally without sending to ArcGIS Pro"""
+    try:
+        logger.info(f"Processing get_functions_declaration locally for client {client_id}")
+        
+        # Get function IDs from parameters
+        function_ids = func_call["parameters"]["function_ids"]
+        logger.info(f"Requested function IDs: {function_ids}")
+        
+        # Create spatial functions instance to get the raw function declarations
+        spatial_functions = SpatialFunctions()
+        raw_declarations = spatial_functions.get_functions_declaration(function_ids)
+        
+        # Process the raw declarations based on the AI model to format them correctly
+        ai_model = original_response.get("model", "gemini")  # Default to gemini if not specified
+        
+        # Convert raw declarations to appropriate format for the AI model
+        formatted_declarations = {}
+        if "openai" in ai_model.lower():
+            # Convert to OpenAI format
+            for func_name, func_def in raw_declarations.items():
+                openai_func = {
+                    "type": "function",
+                    "function": {
+                        "name": func_def["name"],
+                        "description": func_def["description"],
+                        "parameters": {
+                            "type": "object",
+                            "properties": {},
+                            "required": func_def["required"]
+                        }
+                    }
+                }
+                
+                # Convert parameters to OpenAI format
+                for param_name, param_def in func_def["parameters"].items():
+                    openai_param = {
+                        "type": param_def["type"],
+                        "description": param_def["description"]
+                    }
+                    
+                    if "enum" in param_def:
+                        openai_param["enum"] = param_def["enum"]
+                    if "items" in param_def:
+                        openai_param["items"] = param_def["items"]
+                    
+                    openai_func["function"]["parameters"]["properties"][param_name] = openai_param
+                
+                formatted_declarations[func_name] = openai_func
+                
+        elif "claude" in ai_model.lower():
+            # Convert to Claude format
+            for func_name, func_def in raw_declarations.items():
+                claude_tool = {
+                    "name": func_def["name"],
+                    "description": func_def["description"],
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {},
+                        "required": func_def["required"]
+                    }
+                }
+                
+                # Convert parameters to Claude format
+                for param_name, param_def in func_def["parameters"].items():
+                    claude_param = {
+                        "type": param_def["type"],
+                        "description": param_def["description"]
+                    }
+                    
+                    if "enum" in param_def:
+                        claude_param["enum"] = param_def["enum"]
+                    if "items" in param_def:
+                        claude_param["items"] = param_def["items"]
+                    
+                    claude_tool["input_schema"]["properties"][param_name] = claude_param
+                
+                formatted_declarations[func_name] = claude_tool
+        else:
+            # Default to Gemini format or keep raw format
+            for func_name, func_def in raw_declarations.items():
+                gemini_func = {
+                    "name": func_def["name"],
+                    "description": func_def["description"],
+                    "parameters": {
+                        "type": "object",
+                        "properties": {},
+                        "required": func_def["required"]
+                    }
+                }
+                
+                # Convert parameters to Gemini format
+                for param_name, param_def in func_def["parameters"].items():
+                    gemini_param = {
+                        "type": param_def["type"],
+                        "description": param_def["description"]
+                    }
+                    
+                    if "enum" in param_def:
+                        gemini_param["enum"] = param_def["enum"]
+                    if "items" in param_def:
+                        gemini_param["items"] = param_def["items"]
+                    
+                    gemini_func["parameters"]["properties"][param_name] = gemini_param
+                
+                formatted_declarations[func_name] = gemini_func
+        
+        # Create the function result
+        function_result = {
+            "id": func_call["id"],
+            "name": func_call["name"],
+            "parameters": func_call["parameters"],
+            "result": {
+                "success": True,
+                "function_declarations": formatted_declarations,
+                "requested_function_ids": function_ids
+            }
+        }
+        
+        # Handle the result the same way as other function results
+        if is_function_chain:
+            # This is part of a function chain - add to chain context
+            chain_context = websocket_manager.get_chain_context(client_id)
+            if chain_context:
+                chain_context["completed_functions"] += 1
+                chain_context["function_results"].append(function_result)
+                
+                logger.info(f"Function chain progress: {chain_context['completed_functions']}/{chain_context['total_functions']}")
+                
+                # Check if all functions in the chain are complete
+                if chain_context["completed_functions"] >= chain_context["total_functions"]:
+                    logger.info("All functions in chain completed. Sending batch results to LLM.")
+                    await handle_chain_completion(client_id, chain_context)
+                else:
+                    logger.info(f"Waiting for {chain_context['total_functions'] - chain_context['completed_functions']} more functions to complete.")
+            else:
+                logger.error("Chain context not found - falling back to single function handling")
+                await handle_single_function_result(client_id, function_result, original_response)
+        else:
+            # Single function call - handle immediately
+            await handle_single_function_result(client_id, function_result, original_response)
+            
+    except Exception as e:
+        logger.error(f"Error handling local function declaration: {str(e)}")
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error",
+            "message": f"Error processing function declaration request: {str(e)}"
         })
 
 async def process_ai_response(client_id: str, ai_response: str):

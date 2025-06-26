@@ -76,32 +76,6 @@ class SpatialFunctions:
         """
         Returns the signature and description of another function by providing its function_id (integer).
         """
-        logger.info(f"Fired !!!!!!!!!!!! ###########3 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉")
-        logger.info(f"Fired !!!!!!!!!!!! ###########3 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉")
-        logger.info(f"Fired !!!!!!!!!!!! ###########3 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉")
-        logger.info(f"Fired !!!!!!!!!!!! ###########3 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉")
-        logger.info(f"Fired !!!!!!!!!!!! ###########3 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉")
-        return {
-            "name": "select_by_attribute",
-            "description": "Execute attribute-based selection on a GIS layer using SQL-like WHERE clause conditions.",
-            "parameters": {
-                "layer_name": {
-                    "type": "string",
-                    "description": "The name of the layer to perform selection on"
-                },
-                "where_clause": {
-                    "type": "string",
-                    "description": "SQL WHERE clause for attribute selection (e.g., 'POPULATION > 1000000')"
-                },
-                "selection_type": {
-                    "type": "string",
-                    "description": "Type of selection to perform",
-                    "enum": ["NEW_SELECTION", "ADD_TO_SELECTION", "REMOVE_FROM_SELECTION", "SUBSET_SELECTION"],
-                    "default": "NEW_SELECTION"
-                }
-            },
-            "required": ["layer_name", "where_clause"]
-        }
         functions_declaration = FunctionDeclaration.functions_declarations
         
         # Filter and return only the requested function declarations
