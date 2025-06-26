@@ -156,24 +156,35 @@ class ArcGISProConnector:
             
             # Add the app directory to Python path to import spatial_functions
             app_dir = os.path.join(os.path.dirname(__file__), "app")
+            logger.info(f"Determined app_dir: {app_dir}")
             if app_dir not in sys.path:
                 sys.path.append(app_dir)
-            
-            from spatial_functions import SpatialFunctions
-            
+                logger.info(f"Added '{app_dir}' to sys.path")
+            else:
+                logger.info(f"'{app_dir}' already in sys.path")
+
+            from app.spatial_functions import SpatialFunctions
+            logger.info("Imported SpatialFunctions from app.spatial_functions")
+
             # Create spatial functions instance
             spatial_functions = SpatialFunctions()
-            
+            logger.info("Created SpatialFunctions instance")
+
             # Check if function exists
             if not hasattr(spatial_functions, function_name):
+                logger.error(f"Function '{function_name}' not found in SpatialFunctions")
                 raise Exception(f"Function '{function_name}' not found")
-            
+            logger.info(f"Function '{function_name}' found in SpatialFunctions")
+
             # Get the function
             func = getattr(spatial_functions, function_name)
-            
+            logger.info(f"Obtained function '{function_name}' from SpatialFunctions")
+
             # Execute the function
+            logger.info(f"Executing '{function_name}' with parameters: {parameters}")
             result = func(**parameters)
-            
+            logger.info(f"Executed '{function_name}', result: {result}")
+
             # Decode any Arabic text
             result = self.decode_arabic_text(result)
             

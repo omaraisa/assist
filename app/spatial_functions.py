@@ -5,7 +5,8 @@ Spatial Functions Module - GIS analysis operations
 import os
 import logging
 import math
-from typing import Dict, Optional, Tuple
+from typing import Dict, Tuple
+from .ai.function_declarations import FunctionDeclaration
 
 # Import arcpy only when available (in ArcGIS Pro environment)
 try:
@@ -40,80 +41,80 @@ class SpatialFunctions:
     def __init__(self):
         self.supported_formats = ['.shp', '.geojson', '.kml', '.gpx', '.gml']
         self.AVAILABLE_FUNCTIONS = {
-            1: "get_function_details | Use this function to get the signature and description of another function by providing its function_id (integer).",
-            2: "select_by_attribute",
-            3: "select_by_location",
-            4: "get_field_statistics",
-            5: "get_layer_summary",
-            6: "calculate_area",
-            7: "calculate_length",
-            8: "get_centroid",
-            9: "create_buffer",
-            10: "spatial_join",
-            11: "clip_layer",
-            12: "calculate_distance",
-            13: "get_current_project_path",
-            14: "get_default_db_path",
-            15: "get_field_definitions",
-            16: "get_layer_type",
-            17: "get_list_of_layer_fields",
-            18: "get_data_source_info",
-            19: "create_nearest_neighbor_layer",
-            20: "get_unique_values_count",
-            21: "calculate_empty_values",
-            22: "get_map_layers_info",
-            23: "get_map_tables_info",
-            24: "get_values_frequency",
-            25: "get_value_frequency",
-            26: "get_coordinate_system",
-            27: "get_attribute_table",
-            28: "get_field_domain_values",
-            29: "calculate_new_field"
+            1: "select_by_attribute",
+            2: "select_by_location",
+            3: "get_field_statistics",
+            4: "get_layer_summary",
+            5: "calculate_area",
+            6: "calculate_length",
+            7: "get_centroid",
+            8: "create_buffer",
+            9: "spatial_join",
+            10: "clip_layer",
+            11: "calculate_distance",
+            12: "get_current_project_path",
+            13: "get_default_db_path",
+            14: "get_field_definitions",
+            15: "get_layer_type",
+            16: "get_list_of_layer_fields",
+            17: "get_data_source_info",
+            18: "create_nearest_neighbor_layer",
+            19: "get_unique_values_count",
+            20: "calculate_empty_values",
+            21: "get_map_layers_info",
+            22: "get_map_tables_info",
+            23: "get_values_frequency",
+            24: "get_value_frequency",
+            25: "get_coordinate_system",
+            26: "get_attribute_table",
+            27: "get_field_domain_values",
+            28: "calculate_new_field"
         }
         
 
-    def get_function_details(self, function_id: int) -> dict:
+    def get_functions_declaration(self, function_ids: list[int]) -> dict:
         """
         Returns the signature and description of another function by providing its function_id (integer).
         """
-        function_lines = [
-            "select_by_attribute(layer_name, where_clause, selection_type): Executes attribute-based selection on layer.",
-            "select_by_location(input_layer, select_layer, relationship): Executes spatial selection between layers. Valid relationships are: INTERSECT, WITHIN, CONTAINS, WITHIN_A_DISTANCE, HAVE_THEIR_CENTER_IN, COMPLETELY_CONTAINS, COMPLETELY_WITHIN, CLOSEST, BOUNDARY_TOUCHES, SHARE_A_LINE_SEGMENT_WITH, CROSSED_BY_THE_OUTLINE_OF.",
-            "get_field_statistics(layer_name, field_name, where_clause): Calculates field statistics returning count, mean, min, max, std_dev, and median.",
-            "get_layer_summary(layer_name): Gets comprehensive layer information including geometry_type, feature_count, field_count, data_source, spatial_reference, and fields array.",
-            "calculate_area(layer_name, units): Calculates area measurements for all polygon features or selected features, returns total_area, average_area, min_area,max_area,feature_count.",
-            "calculate_length(layer_name, units): Calculates length measurements for line features, returns the total_length, average_length, min_length, max_length and feature_count.",
-            "get_centroid(layer_name): Gets centroid coordinates (X, Y) for all features in a layer, returns array of centroids with objectid, x, and y coordinates for each feature.",
-            "create_buffer(layer_name, distance, units): Creates buffer zones around features.",
-            "spatial_join(target_layer, join_layer, join_operation): Performs spatial join between two layers. Returns joined_features count, unmatched_features count, output_layer name and output_path in geodatabase.",
-            "clip_layer(input_layer, clip_layer): Clips input layer by clip layer boundary.",
-            "calculate_distance(coordinate1, coordinate2, units): Calculates distance between two points. Input: coordinate1 and coordinate2 as tuples or arrays of [longitude, latitude] (e.g., (lon, lat)), units as 'meters', 'kilometers', or 'miles'. Output: a float value representing the distance between the two points in the specified units.",
-            "get_current_project_path(): Gets the current ArcGIS Pro project path.",
-            "get_default_db_path(): Gets the default geodatabase path for current project.",
-            "get_field_definitions(layer_name): Returns detailed information about all fields in the specified layer. For each field, provides its name, data type, length, alias, and whether it is nullable.",
-            "get_layer_type(layer_name): Gets the geometry type of a layer.",
-            "get_list_of_layer_fields(layer_name): Gets a list of field names for a given layer.",
-            "get_data_source_info(layer_name): Gets data source information for a given layer.",
-            "create_nearest_neighbor_layer(layer_name, field_id): Creates a new layer from the target layer with new NEAREST_ID & NEAREST_DIST fields. also returns some statistics one the NEAREST_DIST field that includes min, max, mean.",
-            "get_unique_values_count(layer_name, field_name): Get the count of unique values in a field for a given layer.",
-            "calculate_empty_values(layer_name, field_name): Calculates number of empty values in a field.",
-            "get_map_layers_info(): Gets information about all layers in current ArcGIS Pro map.",
-            "get_map_tables_info(): Gets information about all standalone tables in current map.",
-            "get_values_frequency(layer_name, field_name): Gets frequency distribution of field values.",
-            "get_value_frequency(layer_name, field_name, lookup_value): Gets frequency distribution of certain field value.",
-            "get_coordinate_system(layer_name): Gets coordinate system information for a layer.",
-            "get_attribute_table(layer_name, start_row, row_count): Gets the entire attribute table data. would return huge dataset with incautious usage",
-            "get_field_domain_values(layer_name, field_name): Gets domain values for coded value fields.",
-            "calculate_new_field(layer_name, new_field_name, field_value, field_type): Adds a new field to a layer and calculates its values. field_value can be a static value or a Python expression."
-        ]
-        idx = function_id - 1
-        if idx < 0 or idx >= len(function_lines):
-            return {"success": False, "error": f"Function id {function_id} not found."}
+        logger.info(f"Fired !!!!!!!!!!!! ###########3 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉")
+        logger.info(f"Fired !!!!!!!!!!!! ###########3 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉")
+        logger.info(f"Fired !!!!!!!!!!!! ###########3 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉")
+        logger.info(f"Fired !!!!!!!!!!!! ###########3 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉")
+        logger.info(f"Fired !!!!!!!!!!!! ###########3 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉")
         return {
-            "success": True,
-            "function_id": function_id,
-            "detail": function_lines[idx]
+            "name": "select_by_attribute",
+            "description": "Execute attribute-based selection on a GIS layer using SQL-like WHERE clause conditions.",
+            "parameters": {
+                "layer_name": {
+                    "type": "string",
+                    "description": "The name of the layer to perform selection on"
+                },
+                "where_clause": {
+                    "type": "string",
+                    "description": "SQL WHERE clause for attribute selection (e.g., 'POPULATION > 1000000')"
+                },
+                "selection_type": {
+                    "type": "string",
+                    "description": "Type of selection to perform",
+                    "enum": ["NEW_SELECTION", "ADD_TO_SELECTION", "REMOVE_FROM_SELECTION", "SUBSET_SELECTION"],
+                    "default": "NEW_SELECTION"
+                }
+            },
+            "required": ["layer_name", "where_clause"]
         }
+        functions_declaration = FunctionDeclaration.functions_declarations
+        
+        # Filter and return only the requested function declarations
+        result = {}
+        for func_id in function_ids:
+            if func_id in self.AVAILABLE_FUNCTIONS:
+                func_name = self.AVAILABLE_FUNCTIONS[func_id]
+                if func_name in functions_declaration:
+                    result[func_name] = functions_declaration[func_name]
+            
+        return result
+        
+        
     def select_by_attribute(self, layer_name, where_clause, selection_type="NEW_SELECTION"):
         """Execute attribute-based selection"""
         logger.info(f"Executing select_by_attribute with layer: {layer_name}, where: {where_clause}")
@@ -203,7 +204,10 @@ class SpatialFunctions:
         except Exception as e:
             logger.error(f"select_by_location error: {str(e)}")
             return {"success": False, "error": str(e)}
+
+        # ... Rest of functions 
         
+
     def get_field_statistics(self, layer_name, field_name, where_clause=None):
         """Calculate field statistics"""
         logger.info(f"Executing get_field_statistics with layer: {layer_name}, field: {field_name}")
@@ -1558,4 +1562,3 @@ class SpatialFunctions:
         except Exception as e:
             logger.error(f"calculate_new_field error: {str(e)}")
             return {"success": False, "error": str(e)}
-    

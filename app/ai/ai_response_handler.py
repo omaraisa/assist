@@ -4,7 +4,7 @@
 import json
 from typing import Dict, List, Any
 from ..config import  get_model_config
-from ..function_declarations import openai_functions, gemini_functions, claude_tools, functions_summary
+from ..function_declaration_generator import openai_functions, gemini_functions, claude_tools, functions_summary
 import logging
 logger = logging.getLogger(__name__)
 

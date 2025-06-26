@@ -161,15 +161,14 @@ class AIService:
         
         # Get model-specific identity
         model_identity = self._get_model_identity()
-        
-        # Get all available functions from SpatialFunctions
+          # Get all available functions from SpatialFunctions
         spatial_functions = SpatialFunctions()
         available_functions = spatial_functions.AVAILABLE_FUNCTIONS
         
         # Format the available functions for the prompt
         functions_list = "\n".join([f"{func_id}: {description}" for func_id, description in available_functions.items()])
         
-        return f"""You are {model_identity}, an ArcGIS Pro Intelligent Assistant with access to spatial analysis functions. 
+        return f"""You are {model_identity}, an ArcGIS Pro Intelligent Assistant with access to spatial analysis functions.
 
 IMPORTANT: When a user asks about your identity, always respond with: I am {model_identity}
 
@@ -177,8 +176,16 @@ LANGUAGE INSTRUCTION: Always respond in the same language as the user's question
 
 You have access to various GIS functions that you can call to analyze spatial data, perform calculations, and retrieve information. Use these functions to provide accurate, data-driven responses.
 
-AVAILABLE FUNCTIONS:
+FUNCTION DISCOVERY:
+Before you can use any spatial functions, you MUST first call the `get_functions_declaration` function to discover what functions are available. This function returns the signatures and descriptions of the specific functions you can call.
+
+AVAILABLE FUNCTIONS (by ID):
 {functions_list}
+
+WORKFLOW:
+1. For any user request involving GIS operations, FIRST call `get_functions_declaration` with the function IDs you think you need
+2. Once you have the function signatures, then call the specific functions to perform the analysis
+3. Always start by calling `get_functions_declaration` with relevant function IDs based on the user's request
 
 Key Guidelines:
 1. Always use function calls to gather information before providing answers
@@ -192,7 +199,13 @@ Key Guidelines:
 
 Current ArcGIS Pro State: {json.dumps(simplified_state)}
 
-When you need to analyze data or perform spatial operations, use the available functions. Provide clear, informative responses based on the actual results."""
+EXAMPLE WORKFLOW:
+User: "Create a buffer around schools"
+1. First call: get_functions_declaration([8, 21]) // 8=create_buffer, 21=get_map_layers_info  
+2. Then call: get_map_layers_info() to see available layers
+3. Finally call: create_buffer(layer_name="schools", distance=1000, units="meters")
+
+When you need to analyze data or perform spatial operations, follow this workflow and use the available functions. Provide clear, informative responses based on the actual results."""
 
     def _simplify_arcgis_state(self, state: Dict) -> Dict:
         """Simplify ArcGIS state to reduce payload while keeping essential information"""
@@ -218,9 +231,9 @@ When you need to analyze data or perform spatial operations, use the available f
         
         # Include layer types
         if "layer_types" in state:
-            simplified["layer_types"] = state["layer_types"]
-        
-        # Include basemap info        if "basemap" in state:
+            simplified["layer_types"] = state["layer_types"]        
+        # Include basemap info
+        if "basemap" in state:
             simplified["basemap"] = state["basemap"]
         
         return simplified
@@ -481,7 +494,7 @@ When you need to analyze data or perform spatial operations, use the available f
 
     def _convert_functions_to_provider_format(self, functions: List[Dict], provider: str) -> List[Dict]:
         """Convert function definitions to the specific format required by each AI provider"""
-        from .function_declarations import FunctionDeclarationGenerator
+        from .function_declaration_generator import FunctionDeclarationGenerator
           # Create a temporary function declaration generator with the selected functions
         generator = FunctionDeclarationGenerator()
         
