@@ -17,7 +17,7 @@ from .config import settings
 from .monitoring import monitoring_service
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
@@ -175,22 +175,31 @@ async def handle_websocket_message(client_id: str, message: Dict):
 async def handle_user_message(client_id: str, user_message: str):
     """Handle user chat messages and generate AI responses"""
     try:
+        logger.info(f"🔵 HANDLE_USER_MESSAGE: Client {client_id}, Message: {user_message}")
+        
         # Get current conversation history for this client
         history = websocket_manager.get_conversation_history(client_id)
+        logger.info(f"📚 Conversation history length: {len(history)}")
         
         # Add user message to history
         websocket_manager.add_to_history(client_id, "user", user_message)
         
         # Get current ArcGIS Pro state
-        arcgis_state = websocket_manager.get_arcgis_state()        # Generate AI response
+        arcgis_state = websocket_manager.get_arcgis_state()
+        logger.info(f"🗺️ ArcGIS state available: {bool(arcgis_state)}")
+        
+        # Generate AI response
+        logger.info(f"🤖 Calling AI service to generate response...")
         ai_response = await ai_service.generate_response(
             user_message=user_message,
             conversation_history=history,
             arcgis_state=arcgis_state,
             client_id=client_id
         )
+        logger.info(f"✅ AI response received: type={ai_response.get('type')}, content_length={len(str(ai_response.get('content', '')))}")
         
         # Process AI response for function calling or final response
+        logger.info(f"🔄 Processing AI response through function pipeline...")
         await process_ai_response_with_functions(client_id, ai_response)
         
     except Exception as e:
@@ -204,12 +213,19 @@ async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
     """Process AI response with function calling support"""
     try:
         response_type = ai_response.get("type")
+        logger.info(f"🔄 PROCESS_AI_RESPONSE: Client {client_id}, Type: {response_type}")
         
         if response_type == "function_calls":
+            logger.info(f"🔧 AI wants to call functions")
             # AI wants to call functions
             function_calls = AIResponseHandler.parse_function_calls(ai_response, ai_service.current_model)
+            logger.info(f"📞 Parsed {len(function_calls) if function_calls else 0} function calls")
             
             if function_calls:
+                # Log each function call
+                for i, call in enumerate(function_calls):
+                    logger.info(f"  📞 Function {i+1}: {call.get('name')} with params: {call.get('parameters')}")
+                
                 # CRITICAL: Add assistant message with function calls to conversation history
                 # This is required for Gemini API to properly match function calls with responses
                 assistant_content = ai_response.get("content", "")
@@ -247,18 +263,21 @@ async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
             
     except Exception as e:
         logger.error(f"Error processing AI response with functions: {str(e)}")
-        await websocket_manager.send_to_client(client_id, {            "type": "error",
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error",
             "message": f"Error processing AI response: {str(e)}"
         })
 
 async def execute_function_calls(client_id: str, function_calls: List[Dict], original_response: Dict):
     """Execute function calls via ArcGIS Pro - handles chains by batching all results"""
     try:
+        logger.info(f"🚀 EXECUTE_FUNCTION_CALLS: Client {client_id}, {len(function_calls)} function(s)")
+        
         # Check if this is a chain of multiple function calls
         is_function_chain = len(function_calls) > 1
         
         if is_function_chain:
-            logger.info(f"Detected function chain with {len(function_calls)} functions. Will batch results.")
+            logger.info(f"🔗 Detected function chain with {len(function_calls)} functions. Will batch results.")
             # For chains, we'll collect all results before sending to LLM
             chain_context = {
                 "client_id": client_id,
@@ -269,8 +288,13 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
                 "is_chain": True
             }
             websocket_manager.store_chain_context(client_id, chain_context)
-          # Send function call request to ArcGIS Pro
-        for func_call in function_calls:
+        else:
+            logger.info(f"📞 Single function call execution")
+        
+        # Send function call request to ArcGIS Pro
+        for i, func_call in enumerate(function_calls):
+            logger.info(f"📞 Executing function {i+1}/{len(function_calls)}: {func_call.get('name')}")
+            # Handle get_functions_declaration locally instead of sending to ArcGIS Pro
             # Handle get_functions_declaration locally instead of sending to ArcGIS Pro
             if func_call["name"] == "get_functions_declaration":
                 logger.info(f"Handling get_functions_declaration locally with IDs: {func_call['parameters']['function_ids']}")
@@ -425,8 +449,7 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
                     gemini_func["parameters"]["properties"][param_name] = gemini_param
                 
                 formatted_declarations[func_name] = gemini_func
-        
-        # Create the function result
+          # Create the function result with enhanced autonomous behavior metadata
         function_result = {
             "id": func_call["id"],
             "name": func_call["name"],
@@ -434,10 +457,18 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
             "result": {
                 "success": True,
                 "function_declarations": formatted_declarations,
-                "requested_function_ids": function_ids
+                "requested_function_ids": function_ids,
+                # Add strong autonomous agent metadata flags
+                "_autonomous_execution_required": True,
+                "_continue_execution_immediately": True,
+                "_execution_phase": "function_discovery_completed",
+                "_next_phase": "execute_gis_functions",
+                "_autonomous_directive": "Execute GIS functions immediately to complete the task",
+                "_workflow_status": "in_progress",
+                "_is_final_response": False
             }
-        }
-          # Handle the result the same way as other function results
+        }        # Handle the result differently than other function results
+        # For function discovery, we need to inject the functions and let AI continue planning
         if is_function_chain:
             # This is part of a function chain - add to chain context
             chain_context = websocket_manager.get_chain_context(client_id)
@@ -448,7 +479,6 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
                 logger.info(f"Function chain progress: {chain_context['completed_functions']}/{chain_context['total_functions']}")
                 
                 # CRITICAL: Dynamically inject discovered functions into AI's available functions
-                # This allows the AI to call the functions it just discovered
                 await inject_discovered_functions_for_client(client_id, raw_declarations)
                 
                 # Check if all functions in the chain are complete
@@ -459,11 +489,13 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
                     logger.info(f"Waiting for {chain_context['total_functions'] - chain_context['completed_functions']} more functions to complete.")
             else:
                 logger.error("Chain context not found - falling back to single function handling")
-                await handle_single_function_result(client_id, function_result, original_response)
+                # For function discovery, inject functions and let AI continue planning
+                await inject_discovered_functions_for_client(client_id, raw_declarations)
+                await handle_function_discovery_response(client_id, function_result, original_response)
         else:
-            # Single function call - inject discovered functions and handle immediately
+            # Single function discovery - inject functions and let AI continue planning
             await inject_discovered_functions_for_client(client_id, raw_declarations)
-            await handle_single_function_result(client_id, function_result, original_response)
+            await handle_function_discovery_response(client_id, function_result, original_response)
             
     except Exception as e:
         logger.error(f"Error handling local function declaration: {str(e)}")
@@ -643,29 +675,107 @@ async def handle_single_function_result(client_id: str, function_result: Dict, o
         messages = ai_service._prepare_messages(
             original_response.get("content", ""),
             history,
-            arcgis_state
-        )
+            arcgis_state        )
         
         # Add the function call response to conversation
         logger.info(f"Sending single function result to AI: {function_result['name']}")
-        final_response = await ai_service.handle_function_response(messages, [function_result])
+        ai_response = await ai_service.handle_function_response(messages, [function_result])
         
-        # Send final response to user
-        if final_response.get("type") == "text":
-            content = final_response.get("content", "I processed your request successfully.")
-            await send_final_response(client_id, content)
-            
-            # Add to conversation history
-            websocket_manager.add_to_history(client_id, "assistant", content)
-        else:
-            # Handle unexpected response type
-            await send_final_response(client_id, "I processed your request successfully.")
+        # CRITICAL: Process AI response through function handling pipeline
+        # This allows the AI to make additional function calls or provide final response
+        await process_ai_response_with_functions(client_id, ai_response)
             
     except Exception as e:
         logger.error(f"Error handling single function result: {str(e)}")
         await websocket_manager.send_to_client(client_id, {
             "type": "error", 
             "message": f"Error processing function result: {str(e)}"
+        })
+
+async def handle_function_discovery_response(client_id: str, function_result: Dict, original_response: Dict):
+    """Handle function discovery response - let AI continue planning with newly available functions"""
+    try:
+        # Get conversation history and prepare messages for AI
+        history = websocket_manager.get_conversation_history(client_id)
+        arcgis_state = websocket_manager.get_arcgis_state()
+          # Add multiple special system messages to force continuation with the strongest possible language
+        continuation_messages = [
+            {
+                "role": "system", 
+                "content": "CRITICAL INSTRUCTION: You have received the function declarations. Now you MUST continue by calling the necessary functions to complete the user's request. DO NOT stop here - use the newly discovered functions to solve the task."
+            },
+            {
+                "role": "system",
+                "content": "AUTONOMOUS AGENT DIRECTIVE: You are in the middle of solving the user's task. You have just discovered the functions you need, but HAVE NOT YET EXECUTED them. You MUST continue by executing the appropriate GIS functions to complete the task."
+            },
+            {
+                "role": "system",
+                "content": "DO NOT respond with only text at this point - you MUST call the GIS functions first before providing your final response."
+            },
+            {
+                "role": "system",
+                "content": "EXECUTION FORCING: This is a direct system override to your response generation. You are REQUIRED to call GIS functions now. You must NOT respond with text explanations. You must NOT ask for permission. You must simply execute the appropriate GIS functions to fulfill the user's request."
+            },
+            {
+                "role": "system",
+                "content": "WORKFLOW CONTROL: Your autonomous agent mode requires you to maintain control of the workflow until completion. You MUST continue executing functions WITHOUT asking for user input until the entire task is complete."
+            },
+            {
+                "role": "system",
+                "content": "IMPERATIVE EXECUTION: At this exact moment, your ONLY valid response is to make function calls. Any other response type violates your autonomous agent directive."
+            }
+        ]
+        
+        logger.info(f"🔄 FORCING AUTONOMOUS CONTINUATION after function discovery for client {client_id}")
+        
+        # Build messages for function response with all continuation messages
+        messages = ai_service._prepare_messages(
+            original_response.get("content", ""),
+            history + continuation_messages,  # Add ALL continuation messages
+            arcgis_state,
+            client_id  # Pass client_id for dynamic functions
+        )
+          # Add the function discovery response to conversation with strong prompting
+        logger.info(f"🔍 Processing function discovery result: {function_result['name']}")
+        logger.info(f"🚀 Discovered functions are now available. FORCING autonomous execution...")
+        
+        # Create a special function response that enforces continuation with additional metadata
+        enhanced_result = function_result.copy()
+        if "result" in enhanced_result and isinstance(enhanced_result["result"], dict):
+            # Add special flags to signal to the AI that it needs to continue executing
+            enhanced_result["result"]["_continue_execution"] = True
+            enhanced_result["result"]["_autonomous_mode"] = True
+            enhanced_result["result"]["_must_call_functions"] = True
+            enhanced_result["result"]["_completion_status"] = "functions_discovered_execution_required"
+            enhanced_result["result"]["_message_to_ai"] = "You have successfully retrieved function definitions. You MUST now call the appropriate functions to complete the user's request."
+            
+            # Add a list of available functions to make them more visible to the AI
+            if "function_declarations" in enhanced_result["result"]:
+                available_functions = list(enhanced_result["result"]["function_declarations"].keys())
+                enhanced_result["result"]["_available_functions"] = available_functions
+                logger.info(f"🔧 Available functions highlighted to AI: {available_functions}")
+            
+        # Force the AI to continue by adding clear directives to the function result
+        logger.info(f"🤖 Sending enhanced discovery result to force continuation of autonomous execution")
+        ai_response = await ai_service.handle_function_response(messages, [enhanced_result])
+        
+        # Log the next steps
+        logger.info(f"🔄 FORCED autonomous execution with AI response type: {ai_response.get('type')}")
+        if ai_response.get('type') == 'function_calls':
+            logger.info(f"✅ SUCCESS: AI is continuing with function calls")
+        else:
+            logger.warning(f"⚠️ WARNING: AI returned text response instead of function calls - autonomous execution may be broken")
+        
+        # CRITICAL: Process AI response through function handling pipeline
+        # This allows the AI to make function calls with the newly discovered functions
+        logger.info(f"🔁 Continuing execution pipeline for autonomous behavior")
+        await process_ai_response_with_functions(client_id, ai_response)
+            
+    except Exception as e:
+        logger.error(f"Error handling function discovery result: {str(e)}")
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error", 
+            "message": f"Error processing function discovery: {str(e)}"
         })
 
 async def handle_chain_completion(client_id: str, chain_context: Dict):
@@ -685,19 +795,12 @@ async def handle_chain_completion(client_id: str, chain_context: Dict):
         
         logger.info(f"Sending {len(function_results)} function results to AI for chain completion")
         
-        # Send all function results together to AI for final response
-        final_response = await ai_service.handle_function_response(messages, function_results)
+        # Send all function results together to AI for processing
+        ai_response = await ai_service.handle_function_response(messages, function_results)
         
-        # Send final response to user
-        if final_response.get("type") == "text":
-            content = final_response.get("content", "I completed all the requested tasks successfully.")
-            await send_final_response(client_id, content)
-            
-            # Add to conversation history
-            websocket_manager.add_to_history(client_id, "assistant", content)
-        else:
-            # Handle unexpected response type
-            await send_final_response(client_id, "I completed all the requested tasks successfully.")
+        # CRITICAL: Process AI response through function handling pipeline
+        # This allows the AI to make additional function calls or provide final response
+        await process_ai_response_with_functions(client_id, ai_response)
         
         # Clean up chain context
         websocket_manager.clear_chain_context(client_id)
@@ -797,6 +900,9 @@ async def complete_investigation_session(client_id: str, session_id: str):
 async def send_final_response(client_id: str, response: str):
     """Send final response to chatbot client"""
     try:
+        logger.info(f"📤 SEND_FINAL_RESPONSE: Client {client_id}, Response length: {len(response)}")
+        logger.debug(f"📝 Response content: {response[:200]}...")
+        
         # Add to conversation history
         websocket_manager.add_to_history(client_id, "assistant", response)
         
@@ -805,6 +911,8 @@ async def send_final_response(client_id: str, response: str):
             "type": "assistant_message",
             "content": response
         })
+        
+        logger.info(f"✅ Final response sent successfully to client {client_id}")
         
     except Exception as e:
         logger.error(f"Error sending final response: {str(e)}")
