@@ -8,11 +8,9 @@ from .spatial_functions import SpatialFunctions
 
 class FunctionDeclarationGenerator:
     """Generate function declarations for different AI models"""
-    
     def __init__(self):
         self.spatial_functions = SpatialFunctions()
         self._function_definitions = self._generate_base_definitions()
-    
     def _generate_base_definitions(self) -> Dict[str, Dict]:
         """Generate base function definitions with parameters and descriptions"""
         # Only provide the discovery function - all other functions must be discovered dynamically
@@ -33,10 +31,12 @@ class FunctionDeclarationGenerator:
             }
         }
         
-        # Do NOT add all the spatial function declarations here
-        # They should be discovered dynamically via get_functions_declaration
-        
+        # DO NOT add all spatial functions here - they should be discovered dynamically
         return base_definitions
+    
+    def add_dynamic_functions(self, discovered_functions: Dict[str, Dict]):
+        """Dynamically add discovered functions to the available function list"""
+        self._function_definitions.update(discovered_functions)
     
     def get_openai_functions(self) -> List[Dict[str, Any]]:
         """Generate OpenAI function calling format"""

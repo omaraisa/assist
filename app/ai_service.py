@@ -24,6 +24,8 @@ class AIService:
         self.ollama_service = None
         self.rag_service = None
         self.response_handler = None
+        # Track dynamically discovered functions per client
+        self.client_dynamic_functions = {}
     
     async def initialize(self):
         """Initialize the AI service"""
@@ -72,26 +74,31 @@ class AIService:
             logger.info(f"AI model changed to: {model_key}")
         else:
             raise ValueError(f"Unknown AI model: {model_key}")
-    
     async def generate_response(
         self, 
         user_message: str, 
         conversation_history: List[Dict], 
         arcgis_state: Dict,
+        client_id: str = None
     ) -> Dict[str, Any]:
         """Generate AI response with function calling support"""
         try:
             logger.info(f"Generating response for model: {self.current_model}")
             logger.info(f"User message: {user_message[:100]}...")
-            
             model_config = get_model_config(self.current_model)
             logger.info(f"Model config retrieved for: {model_config.get('name', 'unknown')}")
             
-            # Prepare messages with all available functions
+            # Set client context for dynamic functions
+            if self.response_handler and client_id:
+                self.response_handler.set_client_context(client_id, self)
+            
+            # Prepare messages with client-specific available functions
             messages = self._prepare_messages(
                 user_message, 
                 conversation_history, 
-                arcgis_state            )
+                arcgis_state,
+                client_id
+            )
             
             logger.info(f"Messages prepared, count: {len(messages)}")
             
@@ -124,13 +131,14 @@ class AIService:
                 "type": "error",
                 "content": f"Error generating response: {str(e)}",
                 "model": self.current_model
-            }
-
+            }    
+        
     def _prepare_messages(
         self, 
         user_message: str, 
         conversation_history: List[Dict], 
-        arcgis_state: Dict
+        arcgis_state: Dict,
+        client_id: str = None
     ) -> List[Dict]:
         """Prepare messages for AI model with function calling context"""
         
@@ -604,3 +612,30 @@ When you need to analyze data or perform spatial operations, follow this workflo
         self.response_handler.current_model = self.current_model
         
         return await self.response_handler.handle_function_response(messages, function_results)
+
+    def add_dynamic_functions_for_client(self, client_id: str, discovered_functions: Dict):
+        """Add dynamically discovered functions for a specific client"""
+        if client_id not in self.client_dynamic_functions:
+            self.client_dynamic_functions[client_id] = {}
+        
+        self.client_dynamic_functions[client_id].update(discovered_functions)
+        logger.info(f"Added {len(discovered_functions)} dynamic functions for client {client_id}")
+    
+    def get_available_functions_for_client(self, client_id: str) -> Dict:
+        """Get all available functions (base + dynamic) for a specific client"""
+        from .function_declaration_generator import function_declarations
+        
+        # Start with base functions (just get_functions_declaration)
+        available_functions = function_declarations._function_definitions.copy()
+        
+        # Add any dynamically discovered functions for this client
+        if client_id in self.client_dynamic_functions:
+            available_functions.update(self.client_dynamic_functions[client_id])
+        
+        return available_functions
+    
+    def clear_dynamic_functions_for_client(self, client_id: str):
+        """Clear dynamic functions for a client (e.g., when conversation ends)"""
+        if client_id in self.client_dynamic_functions:
+            del self.client_dynamic_functions[client_id]
+            logger.info(f"Cleared dynamic functions for client {client_id}")

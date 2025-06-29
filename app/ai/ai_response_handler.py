@@ -1,10 +1,7 @@
-
-
-
 import json
 from typing import Dict, List, Any
 from ..config import  get_model_config
-from ..function_declaration_generator import openai_functions, gemini_functions, claude_tools, functions_summary
+from ..function_declaration_generator import function_declarations
 import logging
 logger = logging.getLogger(__name__)
 
@@ -18,10 +15,47 @@ class AIResponseHandler:
         self.session = session
         self.ollama_service = ollama_service
         self.current_model = None  # Will be set by AI service when needed
+        self.client_id = None  # Will be set when needed for dynamic functions
+        self.ai_service = None  # Reference to AI service for dynamic functions
+    
+    def set_client_context(self, client_id: str, ai_service):
+        """Set client context for dynamic function access"""
+        self.client_id = client_id
+        self.ai_service = ai_service
+    
+    def get_functions_for_current_client(self, format_type: str):
+        """Get functions in the specified format for the current client"""
+        if self.ai_service and self.client_id:
+            # Get client-specific functions (base + dynamic)
+            available_functions = self.ai_service.get_available_functions_for_client(self.client_id)
             
+            # Create a temporary generator with these functions
+            from ..function_declaration_generator import FunctionDeclarationGenerator
+            temp_generator = FunctionDeclarationGenerator()
+            temp_generator._function_definitions = available_functions
+            
+            # Return in requested format
+            if format_type == "openai":
+                return temp_generator.get_openai_functions()
+            elif format_type == "gemini":
+                return temp_generator.get_gemini_functions()
+            elif format_type == "claude":
+                return temp_generator.get_claude_tools()
+        
+        # Fallback to static functions if no client context
+        if format_type == "openai":
+            return function_declarations.get_openai_functions()
+        elif format_type == "gemini":
+            return function_declarations.get_gemini_functions()
+        elif format_type == "claude":
+            return function_declarations.get_claude_tools()
+        
+        return []
+
     async def _generate_openai_response_with_functions(self, messages: List[Dict], model_config: Dict, user_message: str) -> Dict[str, Any]:
         """Generate OpenAI response with function calling support"""
         try:
+            openai_functions = self.get_functions_for_current_client("openai")
             # Use all available functions
             payload = {
                 "model": model_config.get("model", "gpt-4"),
@@ -65,6 +99,7 @@ class AIResponseHandler:
     async def _generate_gemini_response_with_functions(self, messages: List[Dict], model_config: Dict, user_message: str = "") -> Dict[str, Any]:
         """Generate Gemini response with function calling support"""
         try:
+            gemini_functions = self.get_functions_for_current_client("gemini")
             # Convert messages to Gemini format
             contents = []
             for msg in messages:
@@ -139,15 +174,14 @@ class AIResponseHandler:
                     system_message = msg["content"]
                 else:
                     claude_messages.append(msg)
-            
-            # Use all available Claude tools
+              # Use client-specific Claude tools
             payload = {
                 "model": model_config.get("model", "claude-3-5-sonnet-20241022"),
                 "system": system_message,
                 "messages": claude_messages,
                 "temperature": model_config["temperature"],
                 "max_tokens": model_config["max_tokens"],
-                "tools": claude_tools
+                "tools": self.get_functions_for_current_client("claude")
             }
             
             headers = {
@@ -212,7 +246,7 @@ class AIResponseHandler:
             # Use Ollama service to generate response with function calling
             result = await self.ollama_service.generate_with_functions(
                 messages=messages,
-                functions=openai_functions,  # Use all available functions
+                functions=self.get_functions_for_current_client("openai"),  # Use client-specific functions
                 model=model_name
             )
             
@@ -325,6 +359,7 @@ class AIResponseHandler:
                     "tool_call_id": result["id"],
                     "content": json.dumps(result_content)
                 })              # Use all available functions for follow-up
+            openai_functions = self.get_functions_for_current_client("openai")
             # Get final response
             payload = {
                 "model": model_config.get("model", "gpt-4o"),
@@ -425,6 +460,7 @@ class AIResponseHandler:
     ) -> Dict[str, Any]:
         """Handle Gemini function calling response"""
         try:
+            gemini_functions = self.get_functions_for_current_client("gemini")
           
             contents = []
             # Track whether we've found the assistant message with function calls
@@ -662,14 +698,14 @@ class AIResponseHandler:
             for msg in reversed(messages):
                 if msg["role"] == "user":
                     user_message = msg["content"]
-                    break              # Use all available Claude tools for follow-up
+                    break            # Use client-specific Claude tools for follow-up
             payload = {
                 "model": model_config.get("model", "claude-3-5-sonnet-20241022"),
                 "system": system_message,
                 "messages": claude_messages,
                 "temperature": model_config["temperature"],
                 "max_tokens": model_config["max_tokens"],
-                "tools": claude_tools
+                "tools": self.get_functions_for_current_client("claude")
             }
             
             headers = {

@@ -182,12 +182,12 @@ async def handle_user_message(client_id: str, user_message: str):
         websocket_manager.add_to_history(client_id, "user", user_message)
         
         # Get current ArcGIS Pro state
-        arcgis_state = websocket_manager.get_arcgis_state()
-          # Generate AI response
+        arcgis_state = websocket_manager.get_arcgis_state()        # Generate AI response
         ai_response = await ai_service.generate_response(
             user_message=user_message,
             conversation_history=history,
             arcgis_state=arcgis_state,
+            client_id=client_id
         )
         
         # Process AI response for function calling or final response
@@ -247,28 +247,10 @@ async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
             
     except Exception as e:
         logger.error(f"Error processing AI response with functions: {str(e)}")
-        await websocket_manager.send_to_client(client_id, {
-            "type": "error",
+        await websocket_manager.send_to_client(client_id, {            "type": "error",
             "message": f"Error processing AI response: {str(e)}"
         })
 
-
-    def get_functions_declaration(self, function_ids: list[int]) -> dict:
-        """
-        Returns the signature and description of another function by providing its function_id (integer).
-        """
-        functions_declaration = FunctionDeclaration.functions_declarations
-        
-        # Filter and return only the requested function declarations
-        result = {}
-        for func_id in function_ids:
-            if func_id in self.AVAILABLE_FUNCTIONS:
-                func_name = self.AVAILABLE_FUNCTIONS[func_id]
-                if func_name in functions_declaration:
-                    result[func_name] = functions_declaration[func_name]
-            
-        return result
-    
 async def execute_function_calls(client_id: str, function_calls: List[Dict], original_response: Dict):
     """Execute function calls via ArcGIS Pro - handles chains by batching all results"""
     try:
@@ -455,8 +437,7 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
                 "requested_function_ids": function_ids
             }
         }
-        
-        # Handle the result the same way as other function results
+          # Handle the result the same way as other function results
         if is_function_chain:
             # This is part of a function chain - add to chain context
             chain_context = websocket_manager.get_chain_context(client_id)
@@ -465,6 +446,10 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
                 chain_context["function_results"].append(function_result)
                 
                 logger.info(f"Function chain progress: {chain_context['completed_functions']}/{chain_context['total_functions']}")
+                
+                # CRITICAL: Dynamically inject discovered functions into AI's available functions
+                # This allows the AI to call the functions it just discovered
+                await inject_discovered_functions_for_client(client_id, raw_declarations)
                 
                 # Check if all functions in the chain are complete
                 if chain_context["completed_functions"] >= chain_context["total_functions"]:
@@ -476,7 +461,8 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
                 logger.error("Chain context not found - falling back to single function handling")
                 await handle_single_function_result(client_id, function_result, original_response)
         else:
-            # Single function call - handle immediately
+            # Single function call - inject discovered functions and handle immediately
+            await inject_discovered_functions_for_client(client_id, raw_declarations)
             await handle_single_function_result(client_id, function_result, original_response)
             
     except Exception as e:
@@ -852,6 +838,22 @@ async def handle_model_change(client_id: str, model_key: str):
             "type": "error", 
             "message": f"Failed to change AI model: {str(e)}"
         })
+
+async def inject_discovered_functions_for_client(client_id: str, discovered_functions: Dict):
+    """Dynamically inject discovered functions into the AI's available functions for this client"""
+    try:
+        if discovered_functions:
+            logger.info(f"Injecting {len(discovered_functions)} discovered functions for client {client_id}")
+            
+            # Store the discovered functions in the AI service for this client/conversation
+            ai_service.add_dynamic_functions_for_client(client_id, discovered_functions)
+            
+            logger.info(f"Successfully injected functions: {list(discovered_functions.keys())}")
+        else:
+            logger.info("No functions to inject")
+            
+    except Exception as e:
+        logger.error(f"Error injecting discovered functions: {str(e)}")
 
 # Startup event
 @app.on_event("startup")
