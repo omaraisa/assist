@@ -617,11 +617,12 @@ When you need to analyze data or perform spatial operations, maintain autonomous
                     any(keyword in field_name.lower() for keyword in mentioned_fields) or
                     field_name.lower() in important_fields):
                     relevant_fields[field_name] = field_info
-              return relevant_fields
+            return relevant_fields
         else:
             # Return first 10 fields if none specifically mentioned
             return dict(list(fields.items())[:10])
-              async def handle_function_response(
+              
+    async def handle_function_response(
         self, 
         messages: List[Dict], 
         function_results: List[Dict]

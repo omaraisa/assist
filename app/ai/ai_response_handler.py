@@ -1,9 +1,25 @@
-import json
 from typing import Dict, List, Any
-from ..config import  get_model_config
+import json
+import uuid
+import time
+from ..config import get_model_config
 from ..function_declaration_generator import function_declarations
+from ..optimize_performance import truncate_for_logging, log_efficiently, optimize_payload
 import logging
 logger = logging.getLogger(__name__)
+
+# Helper function to truncate large objects for logging
+def _truncate_for_logging(obj, max_length=500):
+    """Truncate large objects for logging to avoid performance issues"""
+    if isinstance(obj, str) and len(obj) > max_length:
+        return obj[:max_length] + "... [truncated]"
+    elif isinstance(obj, dict):
+        return {k: _truncate_for_logging(v) for k, v in list(obj.items())[:10]}
+    elif isinstance(obj, list):
+        if len(obj) > 10:
+            return [_truncate_for_logging(o) for o in obj[:10]] + ["... and more"]
+        return [_truncate_for_logging(o) for o in obj]
+    return obj
 
 
 
@@ -552,8 +568,7 @@ class AIResponseHandler:
                                 "parts": function_call_parts
                             })
                         
-                        break
-              # Now add the function responses that match the function calls
+                        break            # Now add the function responses that match the function calls
             # Ensure the order of function responses matches the order of function calls
             function_response_parts = []
             for result in function_results:
@@ -564,18 +579,59 @@ class AIResponseHandler:
                 elif not isinstance(result_data, (dict, list, str, int, float, bool)):
                     result_data = {"success": True, "message": str(result_data)}
                 
+                # Enhanced result processing for autonomous agent behavior
+                if isinstance(result_data, dict):
+                    # Check if this is a function discovery response
+                    is_discovery = result.get("name") == "get_functions_declaration"
+                    is_get_function = result.get("name", "").startswith("get_")
+                    
+                    # Add autonomous agent metadata to ensure continuation
+                    result_data["_autonomous_agent"] = True
+                    result_data["_requires_continuation"] = True
+                    result_data["_workflow_status"] = "in_progress"
+                    
+                    # Add specific guidance based on function type
+                    if is_discovery:
+                        result_data["_action_required"] = "execute_discovered_functions"
+                        result_data["_autonomous_directive"] = "You must now call the specific GIS functions you need"
+                    elif is_get_function:
+                        result_data["_action_required"] = "use_retrieved_data"
+                        result_data["_autonomous_directive"] = "You must now use this data to perform spatial operations"
+                
                 function_response_parts.append({
                     "functionResponse": {
                         "name": result["name"],
                         "response": result_data
                     }
                 })
-            
-            # Add function responses as a user message
-            contents.append({
+              # Add function responses as a user message with enhanced autonomous directives
+            function_user_message = {
                 "role": "user",
                 "parts": function_response_parts
-            })
+            }
+            
+            # Check for specific function responses that need special handling for autonomous behavior
+            is_discovery_response = any(r.get("name") == "get_functions_declaration" for r in function_results)
+            is_get_data_response = any(r.get("name", "").startswith("get_") for r in function_results)
+            
+            # Add special autonomous agent directives with the function response
+            if is_discovery_response:
+                # For function discovery, force immediate execution of discovered functions
+                function_user_message["parts"].append({
+                    "text": "AUTONOMOUS DIRECTIVE: You now have the function declarations. You MUST immediately call the appropriate GIS functions to complete my request. DO NOT describe the functions - EXECUTE them."
+                })
+            elif is_get_data_response:
+                # For data retrieval, force using this data to execute spatial operations
+                function_user_message["parts"].append({
+                    "text": "AUTONOMOUS DIRECTIVE: You now have the data you requested. You MUST immediately use this data to perform the spatial operations needed to complete my request."
+                })
+            else:
+                # For other functions, ensure workflow completion
+                function_user_message["parts"].append({
+                    "text": "AUTONOMOUS DIRECTIVE: Continue the GIS workflow until my entire request is complete. If additional operations are needed, execute them now."
+                })
+            
+            contents.append(function_user_message)
             
             # Log the constructed conversation
             logger.info(f"Gemini conversation with function calls: {json.dumps(contents, indent=2)}")
@@ -584,7 +640,7 @@ class AIResponseHandler:
             for msg in reversed(messages):
                 if msg["role"] == "user":
                     user_message = msg["content"]
-                    break              # Use all available Gemini functions for follow-up
+                    break            # Use all available Gemini functions for follow-up with enhanced configuration
             payload = {
                 "contents": contents,
                 "tools": [{
@@ -592,8 +648,25 @@ class AIResponseHandler:
                 }],
                 "generationConfig": {
                     "temperature": model_config["temperature"],
-                    "maxOutputTokens": model_config["max_tokens"]
+                    "maxOutputTokens": model_config["max_tokens"],
+                    # The following settings encourage function calling for autonomous behavior
+                    "topP": 0.95,  # Slightly increase diversity while maintaining coherence
+                    "topK": 40,    # Increase the number of candidates considered
+                    "responseMimeType": "application/json",  # Encourage structured JSON-based responses
+                    # Explicitly pushing the AI to prioritize function calls
+                    "candidate_count": 1,  # Focus on a single high-quality response
                 }
+            }
+            
+            # Add special system instructions to payload
+            payload["systemInstruction"] = {
+                "role": "system",
+                "parts": [{
+                    "text": "You are an autonomous GIS agent that maintains control until tasks are complete. " +
+                            "When you receive function results, immediately determine if more operations are needed " +
+                            "and execute them. NEVER stop after receiving function results unless the entire workflow " +
+                            "is complete. Always prioritize calling functions over providing text responses until the task is done."
+                }]
             }
             
             url = f"{model_config['endpoint']}?key={model_config['api_key']}"
@@ -619,18 +692,44 @@ class AIResponseHandler:
                     if "content" not in candidate or "parts" not in candidate["content"]:
                         logger.error(f"Invalid Gemini response structure: {json.dumps(candidate, indent=2)}")
                         raise Exception("Invalid Gemini API response structure")
-                    
                     content_parts = candidate["content"]["parts"]
                     
+                    # Check if response contains function calls (autonomous behavior)
+                    has_function_calls = False
+                    function_calls = []
                     text_content = ""
+                    
                     for part in content_parts:
-                        if "text" in part:
+                        if "functionCall" in part:
+                            has_function_calls = True
+                            function_calls.append({
+                                "id": str(uuid.uuid4())[:8],
+                                "name": part["functionCall"]["name"],
+                                "parameters": part["functionCall"].get("args", {})
+                            })
+                        elif "text" in part:
                             text_content += part["text"]
                     
-                    return {
-                        "type": "text",
-                        "content": text_content
-                    }
+                    # Prioritize function calls over text for autonomous behavior
+                    if has_function_calls:
+                        logger.info(f"✅ SUCCESS: Gemini responded with function calls after function results - autonomous behavior working correctly")
+                        return {
+                            "type": "function_calls",
+                            "content": text_content,
+                            "function_calls": function_calls,
+                            "model": self.current_model
+                        }
+                    else:
+                        # If no function calls in response, check if this response indicates a completed task
+                        is_completed = any(phrase in text_content.lower() for phrase in ["i have completed", "successfully", "finished", "complete", "done"])
+                        
+                        if not is_completed:
+                            logger.warning(f"⚠️ WARNING: Gemini responded with text instead of function calls - autonomous behavior may be broken")
+                        
+                        return {
+                            "type": "text",
+                            "content": text_content
+                        }
                 else:
                     error_text = await response.text()
                     logger.error(f"Gemini API error: {error_text}")
@@ -670,8 +769,7 @@ class AIResponseHandler:
                     system_message = msg["content"]
                 else:
                     claude_messages.append(msg)
-            
-            # Add function call results
+              # Add function call results with enhanced autonomous behavior metadata
             tool_result_content = []
             for result in function_results:
                 # Ensure result content is properly formatted
@@ -679,6 +777,24 @@ class AIResponseHandler:
                 if result_content is None:
                     result_content = "Function executed successfully with no return value."
                 elif isinstance(result_content, dict):
+                    # Check if this is a function discovery or data retrieval response for special handling
+                    is_discovery = result.get("name") == "get_functions_declaration"
+                    is_get_data = result.get("name", "").startswith("get_")
+                    
+                    # Add autonomous agent metadata to enhance continuation behavior
+                    result_content["_autonomous_agent"] = True
+                    result_content["_requires_continuation"] = True
+                    result_content["_workflow_status"] = "in_progress"
+                    
+                    # Add specific directives based on function type
+                    if is_discovery:
+                        result_content["_action_required"] = "execute_discovered_functions"
+                        result_content["_autonomous_directive"] = "You must now call the specific GIS functions you need"
+                    elif is_get_data:
+                        result_content["_action_required"] = "use_retrieved_data"
+                        result_content["_autonomous_directive"] = "You must now use this data to perform spatial operations"
+                    
+                    # Convert to JSON string for Claude
                     result_content = json.dumps(result_content)
                 elif not isinstance(result_content, str):
                     result_content = str(result_content)
@@ -698,14 +814,34 @@ class AIResponseHandler:
             for msg in reversed(messages):
                 if msg["role"] == "user":
                     user_message = msg["content"]
-                    break            # Use client-specific Claude tools for follow-up
+                    break            # Use client-specific Claude tools for follow-up with enhanced autonomous behavior
+            # Check for specific function responses that need special handling 
+            is_discovery_response = any(r.get("name") == "get_functions_declaration" for r in function_results)
+            is_get_data_response = any(r.get("name", "").startswith("get_") for r in function_results)
+            
+            # Enhance system message for autonomous behavior based on function type
+            autonomous_directive = "You are an autonomous GIS agent that maintains control until tasks are complete. "
+            if is_discovery_response:
+                autonomous_directive += "You have just discovered the available functions. You MUST immediately call the appropriate GIS functions to complete the user's request. DO NOT provide a summary of the functions - EXECUTE them."
+            elif is_get_data_response:
+                autonomous_directive += "You have retrieved data. You MUST use this data to execute the spatial operations needed to complete the user's request. Do not stop at information gathering."
+            else:
+                autonomous_directive += "Continue the workflow until the entire task is complete. If additional operations are needed, execute them immediately."
+            
+            # Append autonomous directives to system message
+            enhanced_system = system_message + "\n\n" + autonomous_directive + "\n\nCRITICAL INSTRUCTION: Prioritize function calls over text responses until the entire task is complete."
+            
+            # Use client-specific Claude tools for follow-up with enhanced configuration
             payload = {
                 "model": model_config.get("model", "claude-3-5-sonnet-20241022"),
-                "system": system_message,
+                "system": enhanced_system,
                 "messages": claude_messages,
                 "temperature": model_config["temperature"],
                 "max_tokens": model_config["max_tokens"],
-                "tools": self.get_functions_for_current_client("claude")
+                "tools": self.get_functions_for_current_client("claude"),
+                # The following settings encourage function calling for autonomous behavior
+                "top_p": 0.95,  # Slightly increase diversity while maintaining coherence
+                "top_k": 40     # Increase the number of candidates considered
             }
             
             headers = {
@@ -721,27 +857,52 @@ class AIResponseHandler:
                     data = await response.json()
                     content = data["content"]
                     
+                    # Check for function calls in the response - key for autonomous behavior
+                    function_calls = []
                     text_content = ""
+                    
                     for item in content:
-                        if item["type"] == "text":
+                        if item["type"] == "tool_use":
+                            function_calls.append({
+                                "id": item["id"],
+                                "name": item["name"],
+                                "parameters": item["input"]
+                            })
+                        elif item["type"] == "text":
                             text_content += item["text"]
                     
-                    # Ensure we have some content
-                    if not text_content:
-                        # Extract function results for fallback response
-                        results_summary = []
-                        for result in function_results:
-                            if isinstance(result.get("result"), dict) and result["result"].get("success"):
-                                results_summary.append(f"✓ {result['name']}: {result['result'].get('summary', 'Completed successfully')}")
-                            else:
-                                results_summary.append(f"✓ {result['name']}: Executed successfully")
+                    # Prioritize function calls over text for autonomous behavior
+                    if function_calls:
+                        logger.info(f"✅ SUCCESS: Claude responded with function calls after function results - autonomous behavior working correctly")
+                        return {
+                            "type": "function_calls",
+                            "content": text_content,
+                            "function_calls": function_calls,
+                            "model": self.current_model
+                        }
+                    else:
+                        # If no function calls, check if the response indicates task completion
+                        is_completed = any(phrase in text_content.lower() for phrase in ["i have completed", "successfully", "finished", "complete", "done"])
                         
-                        text_content = "Based on the function results:\n\n" + "\n".join(results_summary)
-                    
-                    return {
-                        "type": "text",
-                        "content": text_content
-                    }
+                        if not is_completed and (is_discovery_response or is_get_data_response):
+                            logger.warning(f"⚠️ WARNING: Claude responded with text instead of function calls - autonomous behavior may be broken")
+                        
+                        # Ensure we have some content
+                        if not text_content:
+                            # Extract function results for fallback response
+                            results_summary = []
+                            for result in function_results:
+                                if isinstance(result.get("result"), dict) and result["result"].get("success"):
+                                    results_summary.append(f"✓ {result['name']}: {result['result'].get('summary', 'Completed successfully')}")
+                                else:
+                                    results_summary.append(f"✓ {result['name']}: Executed successfully")
+                            
+                            text_content = "Based on the function results:\n\n" + "\n".join(results_summary)
+                        
+                        return {
+                            "type": "text",
+                            "content": text_content
+                        }
                 else:
                     error_text = await response.text()
                     logger.error(f"Claude API error: {error_text}")

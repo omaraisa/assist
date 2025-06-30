@@ -17,7 +17,7 @@ from .config import settings
 from .monitoring import monitoring_service
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)  # Changed from DEBUG to INFO for better performance
 logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
