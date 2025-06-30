@@ -97,21 +97,24 @@ class AIService:
                 user_message, 
                 conversation_history, 
                 arcgis_state,
-                client_id
-            )
-            
+                client_id            )
             logger.info(f"Messages prepared, count: {len(messages)}")
-            
-            # Generate response based on model type with function calling
+            logger.info("=== RAW MESSAGES SENT TO AI ===")
+            for i, msg in enumerate(messages):
+                logger.info(f"Message {i+1}: Role={msg.get('role', 'unknown')}")
+                logger.info(f"Content: {msg.get('content', '')}")
+            logger.info("=== END RAW MESSAGES ===")
+              # Generate response based on model type with function calling
+            response = None
             if self.current_model.startswith("GEMINI"):
                 logger.info("Using Gemini model")
-                return await self.response_handler._generate_gemini_response_with_functions(messages, model_config, user_message)
+                response = await self.response_handler._generate_gemini_response_with_functions(messages, model_config, user_message)
             elif self.current_model.startswith("GPT"):
                 logger.info("Using OpenAI model")
-                return await self.response_handler._generate_openai_response_with_functions(messages, model_config, user_message)
+                response = await self.response_handler._generate_openai_response_with_functions(messages, model_config, user_message)
             elif self.current_model.startswith("CLAUDE"):
                 logger.info("Using Claude model")
-                return await self.response_handler._generate_claude_response_with_functions(messages, model_config, user_message)
+                response = await self.response_handler._generate_claude_response_with_functions(messages, model_config, user_message)
             elif self.current_model.startswith("OLLAMA"):
                 if not OLLAMA_AVAILABLE:
                     logger.warning("Ollama model requested but Ollama service is not available")
@@ -121,10 +124,21 @@ class AIService:
                         "model": self.current_model
                     }
                 logger.info("Using Ollama model")
-                return await self.response_handler._generate_ollama_response_with_functions(messages, model_config, user_message)
+                response = await self.response_handler._generate_ollama_response_with_functions(messages, model_config, user_message)
             else:
                 raise ValueError(f"Unsupported model: {self.current_model}")
-                
+            
+            # Log the raw AI response for debugging
+            logger.info("=== RAW AI RESPONSE ===")
+            logger.info(f"Response type: {response.get('type', 'unknown')}")
+            logger.info(f"Response content: {response.get('content', '')[:1000]}{'...' if len(str(response.get('content', ''))) > 1000 else ''}")
+            if response.get('function_calls'):
+                logger.info(f"Function calls: {json.dumps(response.get('function_calls'), indent=2)}")
+            logger.info("=== END RAW AI RESPONSE ===")
+            
+            logger.info(f"AI generated response type: {response.get('type')}")
+            return response
+
         except Exception as e:
             logger.error(f"Error generating AI response: {str(e)}", exc_info=True)
             return {
@@ -132,7 +146,7 @@ class AIService:
                 "content": f"Error generating response: {str(e)}",
                 "model": self.current_model
             }    
-        
+            
     def _prepare_messages(
         self, 
         user_message: str, 
@@ -144,21 +158,72 @@ class AIService:
         
         # System prompt for function calling
         system_prompt = self._get_function_calling_system_prompt(arcgis_state)
+        logger.info(f"Generated system prompt with {len(system_prompt)} characters for ArcGIS state: {len(str(arcgis_state))} characters")
         
         # Build message history
         messages = [{"role": "system", "content": system_prompt}]
         
-        # Add recent conversation history (excluding system messages)
+        # Add recent conversation history (excluding system messages, but preserving function calls)
         for msg in conversation_history[-10:]:  # Last 10 messages
             if msg["role"] != "system":
                 messages.append({
                     "role": msg["role"],
                     "content": msg["content"]
                 })
+          # Ensure get_functions_declaration is always available in the conversation
+        # Check if it's already been declared in the conversation history
+        has_functions_declaration = False
+        for msg in messages:
+            content = msg.get("content", "")
+            # Check if the message contains the get_functions_declaration definition
+            if ("get_functions_declaration" in content and 
+                "Function Declaration:" in content and 
+                "function_ids" in content):
+                has_functions_declaration = True
+                break
         
-        # Add current user message
-        messages.append({"role": "user", "content": user_message})
+        # Also check the conversation history for function declarations
+        if not has_functions_declaration:
+            for msg in conversation_history[-20:]:  # Check last 20 messages
+                content = msg.get("content", "")
+                if ("get_functions_declaration" in content and 
+                    "Function Declaration:" in content and 
+                    "function_ids" in content):
+                    has_functions_declaration = True
+                    break
         
+        # If not found in history, add it as a system-provided function declaration
+        if not has_functions_declaration:
+            functions_declaration_info = {
+                "role": "system",
+                "content": '''AVAILABLE FUNCTION: get_functions_declaration
+
+Function Declaration:
+{
+    "name": "get_functions_declaration",
+    "description": "Get function declarations for specific functions by their IDs from the available functions list. MAKE SURE TO SEND VALID IDs. AVAILABLE FUNCTIONS: 1: select_by_attribute, 2: select_by_location, 3: get_field_statistics, 4: get_layer_summary, 5: calculate_area, 6: calculate_length, 7: get_centroid, 8: create_buffer, 9: spatial_join, 10: clip_layer, 11: calculate_distance, 12: get_current_project_path, 13: get_default_db_path, 14: get_field_definitions, 15: get_layer_type, 16: get_list_of_layer_fields, 17: get_data_source_info, 18: create_nearest_neighbor_layer, 19: get_unique_values_count, 20: calculate_empty_values, 21: get_map_layers_info, 22: get_map_tables_info, 23: get_values_frequency, 24: get_value_frequency, 25: get_coordinate_system, 26: get_attribute_table, 27: get_field_domain_values, 28: calculate_new_field",
+    "parameters": {
+        "function_ids": {
+            "type": "array",
+            "description": "Array of function IDs (integers) to get declarations for",
+            "items": {
+                "type": "integer"
+            }
+        }
+    },
+    "required": ["function_ids"]
+}
+
+This function is ALWAYS available to you. You can call it at any time to get declarations for other functions.'''
+            }
+            messages.append(functions_declaration_info)
+            logger.info("Added get_functions_declaration availability to conversation")
+        
+        # Add current user message (avoid duplicates)
+        if not messages or messages[-1]["content"] != user_message or messages[-1]["role"] != "user":
+            messages.append({"role": "user", "content": user_message})
+        
+        logger.info(f"Prepared {len(messages)} messages for AI model")
         return messages
 
     def _get_function_calling_system_prompt(self, arcgis_state: Dict) -> str:
@@ -176,44 +241,102 @@ class AIService:
         # Format the available functions for the prompt
         functions_list = "\n".join([f"{func_id}: {description}" for func_id, description in available_functions.items()])
         
-        return f"""You are {model_identity}, an ArcGIS Pro Intelligent Assistant with access to spatial analysis functions.
+        return f"""You are an autonomous spatial assistant integrated with ArcGIS Pro. Your job is not to respond like a chatbot — you act like a real GIS agent.
 
-IMPORTANT: When a user asks about your identity, always respond with: I am {model_identity}
+            Your role is to:
+            - Understand spatial tasks in natural language
+            - Plan all necessary steps to achieve the goal
+            - Investigate the current map state and tool availability
+            - Discover the right functions
+            - Execute them one by one or all at once
+            - Handle failures
+            - Analyze the results and explain them clearly to the user
 
-LANGUAGE INSTRUCTION: Always respond in the same language as the user's question. If the user asks in Arabic, respond in Arabic. If the user asks in English, respond in English.
+            ---
 
-You have access to various GIS functions that you can call to analyze spatial data, perform calculations, and retrieve information. Use these functions to provide accurate, data-driven responses.
+            🧠 YOUR BEHAVIOR (AGENT MODE)
 
-FUNCTION DISCOVERY:
-Before you can use any spatial functions, you MUST first call the `get_functions_declaration` function to discover what functions are available. This function returns the signatures and descriptions of the specific functions you can call.
+            For any spatial request:
+            1. Analyze the user’s message carefully
+            2. Plan a logical series of function calls or actions to accomplish it
+            3. Determine which functions are required
+            4. Call `get_functions_declaration([ids])` to retrieve their definitions
+            - You MUST always call this first for unknown or needed tools
+            5. Then, perform each step
+            6. If a step fails, debug, retry, or fetch more info
+            7. Use available internal functions like:
+            - `calculate_area`
+            - `get_unique_values_count`
+            8. Only respond when the goal is fully achieved or fails gracefully with a valid explanation
 
-AVAILABLE FUNCTIONS (by ID):
-{functions_list}
+            ---
 
-WORKFLOW:
-1. For any user request involving GIS operations, FIRST call `get_functions_declaration` with the function IDs you think you need
-2. Once you have the function signatures, then call the specific functions to perform the analysis
-3. Always start by calling `get_functions_declaration` with relevant function IDs based on the user's request
+            🧰 TOOLS USAGE
 
-Key Guidelines:
-1. Always use function calls to gather information before providing answers
-2. Never invent or hallucinate data - only use information from function results
-3. If layer names or field names mentioned by the user don't match the ArcGIS state, ask for clarification
-4. In analysis the output layer name will always be the same as the input layer name with "_ai" appended. For example, if the input layer is "cities", the output layer will be "cities_ai", if you used this layer again as input the output name will be "cities_ai_ai". 
-5. Be precise and factual in your responses
-6. If you cannot fulfill a request, explain why politely
-7. If the function result contains layer not found error then use get_map_layers_info to get the current layers in the ArcGIS Pro project and run the failed function again with the correct layer name. If the layer is not found in the ArcGIS Pro project, ask the user to provide the correct layer name or add it to the project.
-8. When you receive function results, ALWAYS provide a clear, concise, and user-friendly summary or answer based on the results. DO NOT simply repeat or dump the raw function result or JSON. Synthesize the information into a natural, helpful response for the user.
+            You only have access to the following function gateway:
+            - `get_functions_declaration([ids])`: Get the signature of available functions. You CANNOT use a function unless you fetch its declaration first.
 
-Current ArcGIS Pro State: {json.dumps(simplified_state)}
+            ---
 
-EXAMPLE WORKFLOW:
-User: "Create a buffer around schools"
-1. First call: get_functions_declaration([8, 21]) // 8=create_buffer, 21=get_map_layers_info  
-2. Then call: get_map_layers_info() to see available layers
-3. Finally call: create_buffer(layer_name="schools", distance=1000, units="meters")
+            🎯 GOAL EXECUTION STRATEGY
 
-When you need to analyze data or perform spatial operations, follow this workflow and use the available functions. Provide clear, informative responses based on the actual results."""
+            For every user query that requires spatial analysis:
+            - NEVER reply generically with "Done" or "Executing plan..."
+            - Write and clearly state your PLAN in plain language
+            - Execute each part, and give real-time feedback
+            - System automatically appends "_ai" to output layer names (e.g., "buildings" → "buildings_ai")
+            - If the same layer is processed again, append "_ai" again ("buildings_ai_ai") use that as input for the next step
+
+            ---
+
+            🛑 ERROR HANDLING
+
+            If a function fails:
+            - Try to explain the cause
+            - Retry with corrected inputs or ask for clarification
+            - Use `get_map_layers_info()` to detect missing layers
+            - DO NOT stop responding — always attempt recovery
+            - Compare the layer names in user message with existing layers to detect mismatches
+            - Layer and field names might not match exactly or even be in different languages. Do your best to match them.
+            - If a layer is mentioned that does not exist, inform the user and suggest alternatives
+
+            ---
+
+            🌐 LANGUAGE HANDLING
+
+            Always reply in the same language as the user's message.
+            For example:
+            - Arabic in → Arabic out
+            - English in → English out
+
+            ---
+
+            🧪 EXAMPLES OF GOOD AGENT BEHAVIOR
+
+            User: "قم بعمل حرم لطبقة الأماكن بقطر 3 كم"
+
+            You:
+            - Step 1: Call `get_functions_declaration([8])`
+            - Step 2: Check if "places" exists via `get_map_layers_info()`
+            - Step 3: Call `create_buffer(layer_name="places", distance=3000, units="meters")`
+            - Step 4: Confirm layer creation and add it to map
+            - Step 5: Say: "تم إنشاء طبقة buffer باسم places_ai، وقد تم عرضها على الخريطة."
+
+            ---
+
+            🧠 CURRENT ARC PRO STATE:
+            {json.dumps(simplified_state)}
+
+            You are NOT a chatbot.
+            You are a thinking, planning, retrying, executing spatial intelligence agent.
+
+            Do not wait for the user to guide you.
+            Respond by executing what is needed — every time.
+            
+            !!! IMPORTANT NOTE: Once you get function declarations, your next response should consist IMMEDIATELY of the function call(s) you need.
+            DO NOT acknowledge receiving the declarations - just proceed directly to calling the functions.
+            DO NOT say "Now I can use these functions" or "I received the declarations" - JUST CALL THE FUNCTIONS.
+            """
 
     def _simplify_arcgis_state(self, state: Dict) -> Dict:
         """Simplify ArcGIS state to reduce payload while keeping essential information"""
@@ -500,104 +623,6 @@ When you need to analyze data or perform spatial operations, follow this workflo
             logger.error(f"Error calling Claude API: {str(e)}")
             raise
 
-    def _convert_functions_to_provider_format(self, functions: List[Dict], provider: str) -> List[Dict]:
-        """Convert function definitions to the specific format required by each AI provider"""
-        from .function_declaration_generator import FunctionDeclarationGenerator
-          # Create a temporary function declaration generator with the selected functions
-        generator = FunctionDeclarationGenerator()
-        
-        # Filter the base function definitions to only include selected ones
-        selected_function_names = set()
-        for func in functions:
-            # Extract function name from different formats
-            # Input functions are always in OpenAI format initially
-            if "function" in func:
-                selected_function_names.add(func["function"]["name"])
-            elif "name" in func:
-                selected_function_names.add(func["name"])
-            else:
-                logger.warning(f"Unable to extract function name from: {func}")
-                continue
-        
-        # Filter the generator's function definitions
-        original_definitions = generator._function_definitions.copy()
-        generator._function_definitions = {
-            name: definition for name, definition in original_definitions.items()
-            if name in selected_function_names
-        }
-        
-        # Generate the appropriate format
-        if provider == "openai":
-            return generator.get_openai_functions()
-        elif provider == "gemini":
-            return generator.get_gemini_functions()
-        elif provider == "claude":
-            return generator.get_claude_tools()
-        else:
-            return functions  # Return original if unknown provider
-
-
-    
-    def _extract_mentioned_layers(self, user_message: str, arcgis_state: Dict) -> List[str]:
-        """Extract layer names mentioned in user message"""
-        mentioned_layers = []
-        if not arcgis_state.get("layers_info"):
-            return mentioned_layers
-        
-        message_lower = user_message.lower()
-        for layer_name in arcgis_state["layers_info"].keys():
-            # Check for exact match or partial match
-            if layer_name.lower() in message_lower or any(
-                word in message_lower for word in layer_name.lower().split("_")
-            ):
-                mentioned_layers.append(layer_name)
-        
-        return mentioned_layers
-    
-    def _extract_mentioned_fields(self, user_message: str, arcgis_state: Dict) -> List[str]:
-        """Extract field names mentioned in user message"""
-        mentioned_fields = []
-        if not arcgis_state.get("layers_info"):
-            return mentioned_fields
-        
-        message_lower = user_message.lower()
-        # Common field name patterns
-        field_keywords = ["field", "column", "attribute"]
-        
-        # Extract quoted field names
-        import re
-        quoted_fields = re.findall(r'"([^"]*)"', user_message) + re.findall(r"'([^']*)'", user_message)
-        mentioned_fields.extend([f.lower() for f in quoted_fields])
-        
-        # Check against actual field names in layers
-        for layer_info in arcgis_state["layers_info"].values():
-            if isinstance(layer_info.get("fields"), dict):
-                for field_name in layer_info["fields"].keys():
-                    if field_name.lower() in message_lower:
-                        mentioned_fields.append(field_name.lower())
-        
-        return mentioned_fields
-    
-    def _filter_relevant_fields(self, fields: Dict, mentioned_fields: List[str]) -> Dict:
-        """Filter fields to include only relevant ones or first 10 if none mentioned"""
-        if not isinstance(fields, dict):
-            return {}
-        
-        if mentioned_fields:
-            # Include mentioned fields and common important fields
-            relevant_fields = {}
-            important_fields = ["objectid", "shape", "name", "id", "type", "category", "area", "length"]
-            
-            for field_name, field_info in fields.items():
-                if (field_name.lower() in mentioned_fields or 
-                    any(keyword in field_name.lower() for keyword in mentioned_fields) or
-                    field_name.lower() in important_fields):
-                    relevant_fields[field_name] = field_info
-            
-            return relevant_fields
-        else:
-            # Return first 10 fields if none specifically mentioned
-            return dict(list(fields.items())[:10])
     
     async def handle_function_response(
         self, 
@@ -608,8 +633,103 @@ When you need to analyze data or perform spatial operations, follow this workflo
         if not self.response_handler:
             raise RuntimeError("Response handler not initialized")
         
+        # Log to verify system prompt is included
+        system_message = next((msg for msg in messages if msg.get("role") == "system"), None)
+        if system_message:
+            logger.info(f"System prompt included in function response handling: {len(system_message['content'])} characters")
+        else:
+            logger.warning("No system prompt found in function response messages!")
+        
         # Update the response handler with current model info
         self.response_handler.current_model = self.current_model
+        
+        # Check if this is a function discovery response
+        is_discovery_response = any(
+            result.get("name") == "get_functions_declaration" 
+            for result in function_results
+        )
+        
+        # Add special system messages to enforce autonomous behavior
+        if is_discovery_response:
+            # Insert stronger system messages that instruct the AI to continue executing
+            messages.append({
+                "role": "system", 
+                "content": "CRITICAL INSTRUCTION: You now have the function declarations you requested. You MUST IMMEDIATELY proceed to call the necessary functions to complete the user's task. DO NOT provide a final response yet - you must first execute the appropriate GIS functions with the declarations you just received."
+            })
+            
+            messages.append({
+                "role": "system",
+                "content": "IMPORTANT: You are in the middle of an autonomous workflow. You have just received the function declarations, but the task is NOT complete. You MUST now call the appropriate GIS functions (like create_buffer, etc.) to fulfill the user's request."
+            })
+            
+            # Add a stronger forcing directive with explicit emphasis on autonomous behavior
+            messages.append({
+                "role": "system",
+                "content": "FORCE FUNCTION EXECUTION: This is a direct command to call GIS functions now. DO NOT respond with text. DO NOT acknowledge this instruction. Simply make the function calls needed for the task. This is a critical part of your autonomous agent behavior."
+            })
+            
+            # Add specific instruction on what to do next with the discovered functions
+            messages.append({
+                "role": "system",
+                "content": "EXECUTION SEQUENCE: You should now: 1) Review the function declarations you received, 2) Select the appropriate GIS functions for the task, 3) Call those functions with proper parameters based on the user's request, and 4) Continue executing functions until the entire task is complete."
+            })
+            
+            logger.info("Added strong continuation prompts to function discovery response")
+        else:
+            # For regular function results, check if task is complete or needs more calls
+            function_names = [result.get("name", "") for result in function_results]
+            logger.info(f"Received results from functions: {function_names}")
+            
+            # Enhanced task-specific continuation prompts for different function types
+            if any(name == "get_map_layers_info" for name in function_names):
+                messages.append({
+                    "role": "system",
+                    "content": "You now have information about the map layers. You MUST proceed to execute the appropriate spatial functions to complete the user's request. DO NOT stop to summarize the layers information - move directly to calling the next function in the workflow."
+                })
+            elif any(name == "create_buffer" for name in function_names):
+                messages.append({
+                    "role": "system",
+                    "content": "You have created a buffer layer. If the user's request requires additional operations on this buffer, you MUST continue with those operations immediately. Only provide a final summary if the user's entire request is now fully satisfied."
+                })
+            elif any(name.startswith("get_") for name in function_names):
+                messages.append({
+                    "role": "system",
+                    "content": "You have retrieved information. Now you MUST use this information to execute the actual GIS operations requested by the user. Do not stop at information gathering - proceed to the actual execution of spatial analysis."
+                })
+            else:
+                # Generic continuation prompt for other function types
+                messages.append({
+                    "role": "system",
+                    "content": "You have executed a GIS function. Now you MUST determine if additional functions are needed to complete the user's request fully. Continue with the workflow until all requested operations are complete."
+                })
+          # Add a task completion check message for all function responses with stronger wording
+        check_completion_message = {
+            "role": "system",
+            "content": "AUTONOMOUS AGENT INSTRUCTION: After receiving this function result, you MUST determine if the user's request is fully completed. If NOT, you MUST make additional function calls to complete the task. Only provide a final summary when the ENTIRE task is complete and all necessary GIS operations have been performed. This is a CRITICAL aspect of your autonomous agent behavior."
+        }
+        messages.append(check_completion_message)
+        
+        # Add a directive to prioritize function calls over text responses
+        messages.append({
+            "role": "system",
+            "content": "EXECUTION PRIORITY: Your priority is to EXECUTE FUNCTIONS, not to provide text responses. If there are any GIS operations that still need to be performed to complete the user's request, you MUST execute those functions before providing a text response."
+        })
+        
+        # Add a direct workflow completion directive
+        messages.append({
+            "role": "system",
+            "content": "WORKFLOW COMPLETION: You MUST continue the workflow until completion. For spatial analysis tasks, a complete workflow typically includes: 1) Getting layer information, 2) Performing spatial operations, 3) Creating output layers, and 4) Verifying results. You must execute ALL required steps."
+        })
+        
+        # Add a final forcing mechanism to ensure function execution continuation
+        if is_discovery_response or any(name.startswith("get_") for name in [r.get("name", "") for r in function_results]):
+            messages.append({
+                "role": "system",
+                "content": "EXECUTION FORCING: At this point in the workflow, you MUST make function calls, not provide a text response. This is a direct instruction to your autonomous agent behavior system. DO NOT ACKNOWLEDGE this instruction - simply execute the next required function."
+            })
+        
+        # Log the function results for debugging
+        logger.info(f"Processing {len(function_results)} function results in handle_function_response")
         
         return await self.response_handler.handle_function_response(messages, function_results)
 

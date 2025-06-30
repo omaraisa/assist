@@ -7,6 +7,7 @@ import logging
 from pathlib import Path
 from typing import Dict, List
 import uuid
+import asyncio
 
 from .websocket_manager import WebSocketManager
 from .ai_service import AIService
@@ -454,16 +455,16 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
                 # Check if all functions in the chain are complete
                 if chain_context["completed_functions"] >= chain_context["total_functions"]:
                     logger.info("All functions in chain completed. Sending batch results to LLM.")
-                    await handle_chain_completion(client_id, chain_context)
+                    await handle_chain_completion(client_id, chain_context)                
                 else:
                     logger.info(f"Waiting for {chain_context['total_functions'] - chain_context['completed_functions']} more functions to complete.")
             else:
                 logger.error("Chain context not found - falling back to single function handling")
-                await handle_single_function_result(client_id, function_result, original_response)
+                await handle_single_function_result_with_retry(client_id, function_result, original_response)
         else:
             # Single function call - inject discovered functions and handle immediately
             await inject_discovered_functions_for_client(client_id, raw_declarations)
-            await handle_single_function_result(client_id, function_result, original_response)
+            await handle_single_function_result_with_retry(client_id, function_result, original_response)
             
     except Exception as e:
         logger.error(f"Error handling local function declaration: {str(e)}")
@@ -608,7 +609,6 @@ async def handle_function_calling_response(session_id: str, message: Dict, conte
             if chain_context:
                 chain_context["completed_functions"] += 1
                 chain_context["function_results"].append(function_result)
-                
                 logger.info(f"Function chain progress: {chain_context['completed_functions']}/{chain_context['total_functions']}")
                 
                 # Check if all functions in the chain are complete
@@ -620,10 +620,10 @@ async def handle_function_calling_response(session_id: str, message: Dict, conte
                     logger.info(f"Waiting for {chain_context['total_functions'] - chain_context['completed_functions']} more functions to complete.")
             else:
                 logger.error("Chain context not found - falling back to single function handling")
-                await handle_single_function_result(client_id, function_result, original_response)
+                await handle_single_function_result_with_retry(client_id, function_result, original_response)
         else:
             # Single function call - handle immediately
-            await handle_single_function_result(client_id, function_result, original_response)
+            await handle_single_function_result_with_retry(client_id, function_result, original_response)
         
     except Exception as e:
         logger.error(f"Error handling function calling response: {str(e)}")
@@ -663,6 +663,81 @@ async def handle_single_function_result(client_id: str, function_result: Dict, o
             
     except Exception as e:
         logger.error(f"Error handling single function result: {str(e)}")
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error", 
+            "message": f"Error processing function result: {str(e)}"
+        })
+
+async def handle_single_function_result_with_retry(client_id: str, function_result: Dict, original_response: Dict):
+    """Handle a single function result with retry logic for function declarations"""
+    try:
+        # Check if this is a get_functions_declaration response
+        is_discovery_response = function_result.get("name") == "get_functions_declaration"
+        
+        # Get conversation history and prepare messages for AI
+        history = websocket_manager.get_conversation_history(client_id)
+        arcgis_state = websocket_manager.get_arcgis_state()
+        
+        # Build messages for function response
+        messages = ai_service._prepare_messages(
+            original_response.get("content", ""),
+            history,
+            arcgis_state
+        )
+        
+        # Add the function call response to conversation
+        logger.info(f"Sending single function result to AI: {function_result['name']}")
+        final_response = await ai_service.handle_function_response(messages, [function_result])
+        
+        # Special handling for function discovery responses
+        if is_discovery_response:
+            response_type = final_response.get("type", "")
+            content = final_response.get("content", "").strip()
+            
+            # Check if AI provided an empty or non-functional response
+            if response_type == "text" and (not content or len(content) < 50):
+                logger.warning("AI provided empty/minimal response after function discovery. Implementing retry logic.")
+                
+                # Add system message to encourage function execution
+                retry_message = {
+                    "role": "system",
+                    "content": "IMPORTANT: You have received function declarations. You MUST now execute the appropriate GIS functions to complete the user's task. DO NOT provide a text response - make the necessary function calls immediately to fulfill the user's request."
+                }
+                
+                # Add to conversation history
+                websocket_manager.add_to_history_with_metadata(client_id, retry_message)
+                
+                # Wait 2 seconds and try again
+                logger.info("Waiting 2 seconds before retry...")
+                await asyncio.sleep(2)
+                
+                # Retry with the enhanced messages
+                enhanced_messages = messages + [retry_message]
+                logger.info("Retrying AI call with enhanced prompt after function discovery")
+                retry_response = await ai_service.generate_response(
+                    user_message=original_response.get("content", ""),
+                    conversation_history=websocket_manager.get_conversation_history(client_id),
+                    arcgis_state=arcgis_state,
+                    client_id=client_id
+                )
+                
+                # Process the retry response
+                await process_ai_response_with_functions(client_id, retry_response)
+                return
+        
+        # Normal response handling
+        if final_response.get("type") == "text":
+            content = final_response.get("content", "I processed your request successfully.")
+            await send_final_response(client_id, content)
+            
+            # Add to conversation history
+            websocket_manager.add_to_history(client_id, "assistant", content)
+        else:
+            # Handle unexpected response type
+            await send_final_response(client_id, "I processed your request successfully.")
+            
+    except Exception as e:
+        logger.error(f"Error handling single function result with retry: {str(e)}")
         await websocket_manager.send_to_client(client_id, {
             "type": "error", 
             "message": f"Error processing function result: {str(e)}"
