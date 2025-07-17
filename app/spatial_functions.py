@@ -5,6 +5,7 @@ Spatial Functions Module - GIS analysis operations
 import os
 import logging
 import math
+import json
 from typing import Dict, Tuple, List
 from .ai.function_declarations import FunctionDeclaration
 
@@ -70,7 +71,8 @@ class SpatialFunctions:
             27: "get_field_domain_values",
             28: "calculate_new_field",
             29: "analyze_layer_fields",
-            30: "generate_dashboard_insights"
+            30: "generate_dashboard_insights",
+            31: "generate_smart_dashboard_layout"
         }
         
 
@@ -1679,7 +1681,8 @@ class SpatialFunctions:
             with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
                 for row in cursor:
                     value = row[0]
-                    if value is None or value == '':
+                    # Treat None, empty string, and whitespace-only as null
+                    if value is None or str(value).strip() == '':
                         null_count += 1
                     else:
                         values.append(str(value).strip())
@@ -1922,6 +1925,362 @@ class SpatialFunctions:
         recommendations.sort(key=lambda x: x.get("suitability_score", 0), reverse=True)
         
         return recommendations[:10]  # Return top 10 recommendations
+    
+    def generate_smart_dashboard_layout(self, layer_name: str) -> Dict:
+        """
+        Stage 2: Enhanced Chart Recommendation Engine with Layout Planning
+        Generates intelligent chart recommendations with 12x9 grid layout planning
+        """
+        logger.info(f"Generating smart dashboard layout for layer: {layer_name}")
+        
+        try:
+            # First get the field analysis
+            field_analysis_result = self.analyze_layer_fields(layer_name)
+            if not field_analysis_result.get("success", True):
+                return field_analysis_result
+            
+            field_insights = field_analysis_result["field_insights"]
+            
+            # Generate intelligent chart recommendations
+            smart_recommendations = self._generate_intelligent_chart_recommendations(field_insights)
+            
+            # Create layout plan for 12x9 grid
+            layout_plan = self._create_dashboard_layout_plan(smart_recommendations)
+            
+            # Generate chart configurations
+            chart_configurations = self._generate_chart_configurations(smart_recommendations, field_insights)
+            
+            # Create the enhanced dashboard structure
+            dashboard_structure = {
+                "layer_name": layer_name,
+                "analysis_timestamp": self._get_timestamp(),
+                "dashboard_metadata": {
+                    "grid_system": "12x9",
+                    "total_charts": len(smart_recommendations),
+                    "layout_strategy": "priority_based",
+                    "version": "2.0"
+                },
+                "field_insights": field_insights,
+                "chart_recommendations": smart_recommendations,
+                "layout_plan": layout_plan,
+                "chart_configurations": chart_configurations,
+                "dashboard_themes": self._get_dashboard_themes()
+            }
+            
+            # Save to enhanced dashboard file
+            dashboard_file = os.path.join(os.getcwd(), "smart_dashboard.json")
+            with open(dashboard_file, 'w', encoding='utf-8') as f:
+                json.dump(dashboard_structure, f, indent=2, ensure_ascii=False)
+            
+            logger.info(f"Smart dashboard layout saved to: {dashboard_file}")
+            
+            return {
+                "success": True,
+                "message": f"Smart dashboard layout generated successfully for layer '{layer_name}'",
+                "charts_recommended": len(smart_recommendations),
+                "layout_grid": "12x9",
+                "dashboard_file": dashboard_file,
+                "dashboard_structure": dashboard_structure
+            }
+            
+        except Exception as e:
+            logger.error(f"Error generating smart dashboard layout: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_intelligent_chart_recommendations(self, field_insights: Dict) -> List[Dict]:
+        """Generate intelligent chart recommendations based on field characteristics"""
+        recommendations = []
+        chart_id = 1
+        
+        # Categorize fields by type and characteristics
+        categorical_fields = []
+        numeric_fields = []
+        binary_fields = []
+        text_fields = []
+        
+        for field_name, field_info in field_insights.items():
+            data_category = field_info.get("data_category", "unknown")
+            unique_count = field_info.get("unique_count", 0)
+            
+            if data_category == "categorical_text" and unique_count <= 30:
+                categorical_fields.append(field_info)
+            elif data_category == "categorical_numeric" and unique_count <= 10:
+                if unique_count == 2:
+                    binary_fields.append(field_info)
+                else:
+                    categorical_fields.append(field_info)
+            elif data_category in ["continuous_numeric", "categorical_numeric"]:
+                numeric_fields.append(field_info)
+            elif data_category == "free_text":
+                text_fields.append(field_info)
+        
+        # 1. Single-field visualizations (high priority)
+        for field in categorical_fields:
+            if field["unique_count"] <= 20:  # Good for pie/donut charts
+                recommendations.append({
+                    "chart_id": chart_id,
+                    "chart_type": "pie",
+                    "priority": 1,
+                    "title": f"Distribution of {field['field_name']}",
+                    "primary_field": field['field_name'],
+                    "description": f"Pie chart showing the distribution of {field['unique_count']} categories in {field['field_name']}",
+                    "suitability_score": 0.9,
+                    "data_insight": f"Categorical breakdown with {field['unique_count']} unique values",
+                    "recommended_size": "medium"
+                })
+                chart_id += 1
+                
+                # Also recommend bar chart for same data
+                recommendations.append({
+                    "chart_id": chart_id,
+                    "chart_type": "bar",
+                    "priority": 2,
+                    "title": f"Count by {field['field_name']}",
+                    "primary_field": field['field_name'],
+                    "description": f"Bar chart showing counts for {field['unique_count']} categories in {field['field_name']}",
+                    "suitability_score": 0.85,
+                    "data_insight": f"Frequency analysis of {field['field_name']} categories",
+                    "recommended_size": "large"
+                })
+                chart_id += 1
+        
+        # 2. Numeric field distributions
+        for field in numeric_fields:
+            if field.get("data_category") == "continuous_numeric":
+                recommendations.append({
+                    "chart_id": chart_id,
+                    "chart_type": "histogram",
+                    "priority": 1,
+                    "title": f"Distribution of {field['field_name']}",
+                    "primary_field": field['field_name'],
+                    "description": f"Histogram showing the distribution of {field['field_name']} values",
+                    "suitability_score": 0.9,
+                    "data_insight": f"Value distribution from {field.get('min_value', 'N/A')} to {field.get('max_value', 'N/A')}",
+                    "recommended_size": "medium"
+                })
+                chart_id += 1
+        
+        # 3. Binary field analysis
+        for field in binary_fields:
+            recommendations.append({
+                "chart_id": chart_id,
+                "chart_type": "donut",
+                "priority": 1,
+                "title": f"{field['field_name']} Status",
+                "primary_field": field['field_name'],
+                "description": f"Donut chart showing binary distribution of {field['field_name']}",
+                "suitability_score": 0.85,
+                "data_insight": f"Binary indicator with {field.get('average_value', 0):.1%} positive rate",
+                "recommended_size": "small"
+            })
+            chart_id += 1
+        
+        # 4. Cross-field relationships (medium priority)
+        for i, field1 in enumerate(categorical_fields):
+            for field2 in categorical_fields[i+1:]:
+                if field1["unique_count"] <= 15 and field2["unique_count"] <= 15:
+                    recommendations.append({
+                        "chart_id": chart_id,
+                        "chart_type": "heatmap",
+                        "priority": 3,
+                        "title": f"{field1['field_name']} vs {field2['field_name']}",
+                        "primary_field": field1['field_name'],
+                        "secondary_field": field2['field_name'],
+                        "description": f"Heatmap showing relationship between {field1['field_name']} and {field2['field_name']}",
+                        "suitability_score": 0.75,
+                        "data_insight": "Cross-tabulation analysis",
+                        "recommended_size": "large"
+                    })
+                    chart_id += 1
+        
+        # 5. Numeric correlations
+        for i, field1 in enumerate(numeric_fields):
+            for field2 in numeric_fields[i+1:]:
+                recommendations.append({
+                    "chart_id": chart_id,
+                    "chart_type": "scatter",
+                    "priority": 4,
+                    "title": f"{field1['field_name']} vs {field2['field_name']}",
+                    "x_field": field1['field_name'],
+                    "y_field": field2['field_name'],
+                    "description": f"Scatter plot comparing {field1['field_name']} and {field2['field_name']}",
+                    "suitability_score": 0.7,
+                    "data_insight": "Correlation analysis between numeric variables",
+                    "recommended_size": "medium"
+                })
+                chart_id += 1
+        
+        # 6. Mixed-type relationships
+        for cat_field in categorical_fields[:3]:  # Limit to top 3 categorical
+            for num_field in numeric_fields[:2]:  # Limit to top 2 numeric
+                recommendations.append({
+                    "chart_id": chart_id,
+                    "chart_type": "box_plot",
+                    "priority": 3,
+                    "title": f"{num_field['field_name']} by {cat_field['field_name']}",
+                    "primary_field": num_field['field_name'],
+                    "group_by_field": cat_field['field_name'],
+                    "description": f"Box plot showing {num_field['field_name']} distribution across {cat_field['field_name']} categories",
+                    "suitability_score": 0.8,
+                    "data_insight": "Statistical distribution by category",
+                    "recommended_size": "large"
+                })
+                chart_id += 1
+        
+        # Sort by priority and suitability score
+        recommendations.sort(key=lambda x: (x["priority"], -x["suitability_score"]))
+        
+        # Return top 8 recommendations for optimal dashboard
+        return recommendations[:8]
+    
+    def _create_dashboard_layout_plan(self, recommendations: List[Dict]) -> Dict:
+        """Create a 12x9 grid layout plan for the dashboard"""
+        layout_plan = {
+            "grid_dimensions": {"width": 12, "height": 9},
+            "chart_positions": [],
+            "layout_strategy": "priority_and_size_optimized"
+        }
+        
+        # Define size templates
+        size_templates = {
+            "small": {"width": 3, "height": 3},
+            "medium": {"width": 4, "height": 3},
+            "large": {"width": 6, "height": 3},
+            "wide": {"width": 8, "height": 3},
+            "tall": {"width": 4, "height": 4}
+        }
+        
+        # Current position tracker
+        current_x, current_y = 0, 0
+        
+        for rec in recommendations:
+            size_template = size_templates.get(rec.get("recommended_size", "medium"))
+            
+            # Check if chart fits in current row
+            if current_x + size_template["width"] > 12:
+                current_x = 0
+                current_y += 3  # Move to next row
+            
+            # Check if we have vertical space
+            if current_y + size_template["height"] > 9:
+                break  # Dashboard is full
+            
+            chart_position = {
+                "chart_id": rec["chart_id"],
+                "chart_type": rec["chart_type"],
+                "title": rec["title"],
+                "grid_position": {
+                    "x": current_x,
+                    "y": current_y,
+                    "width": size_template["width"],
+                    "height": size_template["height"]
+                },
+                "priority": rec["priority"],
+                "z_index": rec["priority"]
+            }
+            
+            layout_plan["chart_positions"].append(chart_position)
+            current_x += size_template["width"]
+        
+        return layout_plan
+    
+    def _generate_chart_configurations(self, recommendations: List[Dict], field_insights: Dict) -> Dict:
+        """Generate detailed chart configurations for rendering"""
+        configurations = {}
+        
+        color_palettes = {
+            "categorical": ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#98D8C8"],
+            "sequential": ["#FFF5F0", "#FEE0D2", "#FCBBA1", "#FC9272", "#FB6A4A", "#EF3B2C", "#CB181D"],
+            "diverging": ["#d73027", "#f46d43", "#fdae61", "#fee08b", "#e6f598", "#abdda4", "#66c2a5"]
+        }
+        
+        for rec in recommendations:
+            chart_config = {
+                "chart_id": rec["chart_id"],
+                "chart_type": rec["chart_type"],
+                "title": rec["title"],
+                "data_source": {
+                    "primary_field": rec.get("primary_field"),
+                    "secondary_field": rec.get("secondary_field"),
+                    "x_field": rec.get("x_field"),
+                    "y_field": rec.get("y_field"),
+                    "group_by_field": rec.get("group_by_field")
+                },
+                "styling": {
+                    "color_palette": color_palettes["categorical"],
+                    "theme": "modern",
+                    "show_legend": True,
+                    "show_grid": rec["chart_type"] in ["scatter", "line", "bar"],
+                    "animation": True
+                },
+                "interactivity": {
+                    "hover_enabled": True,
+                    "click_enabled": True,
+                    "zoom_enabled": rec["chart_type"] in ["scatter", "histogram"],
+                    "filter_enabled": True
+                }
+            }
+            
+            # Chart-specific configurations
+            if rec["chart_type"] in ["pie", "donut"]:
+                chart_config["styling"]["show_percentages"] = True
+                chart_config["styling"]["inner_radius"] = 40 if rec["chart_type"] == "donut" else 0
+                
+            elif rec["chart_type"] == "histogram":
+                field_info = field_insights.get(rec.get("primary_field", ""), {})
+                chart_config["histogram_config"] = {
+                    "bins": min(20, max(10, int(field_info.get("unique_count", 20) / 10))),
+                    "x_axis_title": rec.get("primary_field", "Value"),
+                    "y_axis_title": "Frequency"
+                }
+                
+            elif rec["chart_type"] == "bar":
+                chart_config["bar_config"] = {
+                    "orientation": "vertical",
+                    "sort_by": "value",
+                    "show_values": True
+                }
+                
+            elif rec["chart_type"] == "scatter":
+                chart_config["scatter_config"] = {
+                    "point_size": 6,
+                    "opacity": 0.7,
+                    "trend_line": True
+                }
+                
+            elif rec["chart_type"] == "heatmap":
+                chart_config["heatmap_config"] = {
+                    "color_scale": "viridis",
+                    "show_values": True,
+                    "normalize": True
+                }
+            
+            configurations[f"chart_{rec['chart_id']}"] = chart_config
+        
+        return configurations
+    
+    def _get_dashboard_themes(self) -> Dict:
+        """Get available dashboard themes"""
+        return {
+            "default": {
+                "background_color": "#ffffff",
+                "text_color": "#333333",
+                "grid_color": "#e0e0e0",
+                "accent_color": "#007acc"
+            },
+            "dark": {
+                "background_color": "#1e1e1e",
+                "text_color": "#ffffff",
+                "grid_color": "#404040",
+                "accent_color": "#00d4ff"
+            },
+            "professional": {
+                "background_color": "#f8f9fa",
+                "text_color": "#212529",
+                "grid_color": "#dee2e6",
+                "accent_color": "#0d6efd"
+            }
+        }
     
     def _get_timestamp(self) -> str:
         """Get current timestamp in ISO format"""

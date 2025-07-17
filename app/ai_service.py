@@ -201,7 +201,7 @@ class AIService:
 Function Declaration:
 {
     "name": "get_functions_declaration",
-    "description": "Get function declarations for specific functions by their IDs from the available functions list. MAKE SURE TO SEND VALID IDs. AVAILABLE FUNCTIONS: 1: select_by_attribute, 2: select_by_location, 3: get_field_statistics, 4: get_layer_summary, 5: calculate_area, 6: calculate_length, 7: get_centroid, 8: create_buffer, 9: spatial_join, 10: clip_layer, 11: calculate_distance, 12: get_current_project_path, 13: get_default_db_path, 14: get_field_definitions, 15: get_layer_type, 16: get_list_of_layer_fields, 17: get_data_source_info, 18: create_nearest_neighbor_layer, 19: get_unique_values_count, 20: calculate_empty_values, 21: get_map_layers_info, 22: get_map_tables_info, 23: get_values_frequency, 24: get_value_frequency, 25: get_coordinate_system, 26: get_attribute_table, 27: get_field_domain_values, 28: calculate_new_field, 29: analyze_layer_fields, 30: generate_dashboard_insights",
+    "description": "Get function declarations for specific functions by their IDs from the available functions list. MAKE SURE TO SEND VALID IDs. AVAILABLE FUNCTIONS: 1: select_by_attribute, 2: select_by_location, 3: get_field_statistics, 4: get_layer_summary, 5: calculate_area, 6: calculate_length, 7: get_centroid, 8: create_buffer, 9: spatial_join, 10: clip_layer, 11: calculate_distance, 12: get_current_project_path, 13: get_default_db_path, 14: get_field_definitions, 15: get_layer_type, 16: get_list_of_layer_fields, 17: get_data_source_info, 18: create_nearest_neighbor_layer, 19: get_unique_values_count, 20: calculate_empty_values, 21: get_map_layers_info, 22: get_map_tables_info, 23: get_values_frequency, 24: get_value_frequency, 25: get_coordinate_system, 26: get_attribute_table, 27: get_field_domain_values, 28: calculate_new_field, 29: analyze_layer_fields, 30: generate_dashboard_insights, 31: generate_smart_dashboard_layout",
     "parameters": {
         "function_ids": {
             "type": "array",
@@ -276,11 +276,15 @@ This function is ALWAYS available to you. You can call it at any time to get dec
             📊 DASHBOARD ANALYSIS CAPABILITIES
 
             For dashboard and data analysis requests:
-            - Use `analyze_layer_fields(layer_name)` to get detailed field characteristics
-            - Use `generate_dashboard_insights(layer_name)` to create comprehensive dashboard analysis
+            - Use `generate_smart_dashboard_layout(layer_name)` for intelligent 12x9 grid layout generation
             - These functions analyze field types, unique values, null percentages, and recommend chart types
             - Results are saved to dashboard.json for further processing
             - Support requests like "analyze this layer for dashboard", "create dashboard insights", etc.
+            
+            CRITICAL: For requests like "Generate a smart dashboard layout", you MUST:
+            1. Call get_functions_declaration([31]) to get generate_smart_dashboard_layout
+            2. IMMEDIATELY call generate_smart_dashboard_layout(layer_name) - DO NOT STOP OR WAIT
+            3. The function will automatically handle all analysis and create smart_dashboard.json
 
             ---
 
@@ -686,6 +690,14 @@ This function is ALWAYS available to you. You can call it at any time to get dec
                 "role": "system",
                 "content": "EXECUTION SEQUENCE: You should now: 1) Review the function declarations you received, 2) Select the appropriate GIS functions for the task, 3) Call those functions with proper parameters based on the user's request, and 4) Continue executing functions until the entire task is complete."
             })
+            
+            # Special handling for dashboard-related function discoveries
+            requested_functions = [result.get("requested_function_ids", []) for result in function_results if result.get("name") == "get_functions_declaration"]
+            if requested_functions and any(31 in ids for ids in requested_functions):
+                messages.append({
+                    "role": "system", 
+                    "content": "DASHBOARD GENERATION DIRECTIVE: You have just received the declaration for generate_smart_dashboard_layout (ID 31). You MUST NOW call this function with the layer name 'roads' to create the smart dashboard. DO NOT WAIT - CALL THE FUNCTION IMMEDIATELY: generate_smart_dashboard_layout with parameter layer_name='roads'"
+                })
             
             logger.info("Added strong continuation prompts to function discovery response")
         else:
