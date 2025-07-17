@@ -495,5 +495,26 @@ class FunctionDeclaration:
                 }
             },
             "required": ["layer_name"]
+        },
+        "optimize_dashboard_layout": {
+    "name": "optimize_dashboard_layout",
+    "description": "Stage 3: Advanced Layout Planner with dynamic optimization and templates. Optimizes existing dashboard layouts with smart positioning, layout templates (focus, comparison, overview, analytical), and responsive design. Requires existing smart_dashboard.json from Stage 2.",
+    "parameters": {
+        "layer_name": {
+            "type": "string",
+            "description": "The name of the layer to optimize dashboard layout for"
+        },
+        "layout_template": {
+            "type": "string",
+            "description": "Layout template to apply: 'focus', 'comparison', 'overview', 'analytical', or 'auto'",
+            "default": "auto"
+        },
+        "target_size": {
+            "type": "string",
+            "description": "Target screen size: 'mobile', 'tablet', or 'desktop'",
+            "default": "desktop"
         }
+    },
+    "required": ["layer_name"]
+}
     }

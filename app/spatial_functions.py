@@ -8,6 +8,7 @@ import math
 import json
 from typing import Dict, Tuple, List
 from .ai.function_declarations import FunctionDeclaration
+from copy import deepcopy
 
 # Import arcpy only when available (in ArcGIS Pro environment)
 try:
@@ -72,7 +73,8 @@ class SpatialFunctions:
             28: "calculate_new_field",
             29: "analyze_layer_fields",
             30: "generate_dashboard_insights",
-            31: "generate_smart_dashboard_layout"
+            31: "generate_smart_dashboard_layout",
+            32: "optimize_dashboard_layout"
         }
         
 
@@ -1954,6 +1956,7 @@ class SpatialFunctions:
             dashboard_structure = {
                 "layer_name": layer_name,
                 "analysis_timestamp": self._get_timestamp(),
+               
                 "dashboard_metadata": {
                     "grid_system": "12x9",
                     "total_charts": len(smart_recommendations),
@@ -2286,3 +2289,335 @@ class SpatialFunctions:
         """Get current timestamp in ISO format"""
         from datetime import datetime
         return datetime.now().isoformat()
+    
+    def optimize_dashboard_layout(self, layer_name: str, layout_template: str = "auto", 
+                            target_size: str = "desktop") -> Dict:
+        """
+        Stage 3: Advanced Layout Planner with dynamic optimization and templates
+        Optimizes existing dashboard layouts with smart positioning and templates
+        """
+        logger.info(f"Optimizing dashboard layout for layer: {layer_name}")
+        
+        try:
+            # Load existing smart dashboard
+            dashboard_file = os.path.join(os.getcwd(), "smart_dashboard.json")
+            if not os.path.exists(dashboard_file):
+                return {"success": False, "error": "No existing smart dashboard found. Run generate_smart_dashboard_layout first."}
+            
+            with open(dashboard_file, 'r', encoding='utf-8') as f:
+                existing_dashboard = json.load(f)
+            
+            # Apply layout optimization
+            optimized_layout = self._optimize_layout_with_template(
+                existing_dashboard["layout_plan"], 
+                existing_dashboard["chart_recommendations"],
+                layout_template,
+                target_size
+            )
+            
+            # Generate responsive variations
+            responsive_layouts = self._generate_responsive_layouts(optimized_layout)
+            
+            # Validate and resolve conflicts
+            validated_layout = self._validate_and_resolve_layout_conflicts(optimized_layout)
+            
+            # Create optimized dashboard structure
+            optimized_dashboard = {
+                **existing_dashboard,
+                "layout_optimization": {
+                    "template_applied": layout_template,
+                    "target_size": target_size,
+                    "optimization_timestamp": self._get_timestamp(),
+                    "version": "3.0"
+                },
+                "optimized_layout_plan": validated_layout,
+                "responsive_layouts": responsive_layouts,
+                "layout_analytics": self._analyze_layout_performance(validated_layout)
+            }
+            
+            # Save optimized dashboard
+            optimized_file = os.path.join(os.getcwd(), "optimized_dashboard.json")
+            with open(optimized_file, 'w', encoding='utf-8') as f:
+                json.dump(optimized_dashboard, f, indent=2, ensure_ascii=False)
+            
+            return {
+                "success": True,
+                "message": f"Dashboard layout optimized with template: {layout_template}",
+                "template_applied": layout_template,
+                "charts_repositioned": len(validated_layout["chart_positions"]),
+                "optimization_file": optimized_file,
+                "layout_score": optimized_dashboard["layout_analytics"]["overall_score"]
+            }
+            
+        except Exception as e:
+            logger.error(f"Error optimizing dashboard layout: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def _optimize_layout_with_template(self, current_layout: Dict, recommendations: List[Dict], 
+                                 template: str, target_size: str) -> Dict:
+        """Apply layout template optimization"""
+        
+        layout_templates = {
+            "focus": self._apply_focus_template,
+            "comparison": self._apply_comparison_template, 
+            "overview": self._apply_overview_template,
+            "analytical": self._apply_analytical_template,
+            "auto": self._apply_auto_template
+        }
+        
+        template_func = layout_templates.get(template, self._apply_auto_template)
+        return template_func(current_layout, recommendations, target_size)
+
+    def _apply_focus_template(self, layout: Dict, recommendations: List[Dict], target_size: str) -> Dict:
+        """Focus template: Emphasizes the most important chart"""
+        optimized = deepcopy(layout)
+        
+        # Find highest priority chart
+        top_chart = min(recommendations, key=lambda x: x["priority"])
+        
+        # Make it larger and central
+        for pos in optimized["chart_positions"]:
+            if pos["chart_id"] == top_chart["chart_id"]:
+                pos["grid_position"].update({
+                    "x": 2, "y": 0, "width": 8, "height": 5
+                })
+                pos["emphasis"] = "primary"
+            else:
+                # Arrange others in smaller sizes below
+                idx = optimized["chart_positions"].index(pos) - 1
+                pos["grid_position"].update({
+                    "x": (idx % 4) * 3, "y": 5,
+                    "width": 3, "height": 2
+                })
+                pos["emphasis"] = "secondary"
+        
+        optimized["template_type"] = "focus"
+        return optimized
+
+    def _apply_comparison_template(self, layout: Dict, recommendations: List[Dict], target_size: str) -> Dict:
+        """Comparison template: Side-by-side comparisons of key metrics"""
+        optimized = deepcopy(layout)
+        
+        # Select top 4 charts for comparison
+        top_charts = sorted(recommendations, key=lambda x: x["priority"])[:4]
+        
+        # Arrange in 2x2 grid
+        for idx, rec in enumerate(top_charts):
+            pos = optimized["chart_positions"][idx]
+            pos["grid_position"].update({
+                "x": (idx % 2) * 6, "y": 0,
+                "width": 6, "height": 4
+            })
+            pos["emphasis"] = "primary"
+        
+        # Add a summary chart below if space permits
+        if len(top_charts) == 4:
+            summary_chart = top_charts[0]  # Just an example, could be a dedicated summary chart
+            pos = optimized["chart_positions"][4]
+            pos["grid_position"].update({
+                "x": 0, "y": 4,
+                "width": 12, "height": 3
+            })
+            pos["emphasis"] = "secondary"
+        
+        optimized["template_type"] = "comparison"
+        return optimized
+
+    def _apply_overview_template(self, layout: Dict, recommendations: List[Dict], target_size: str) -> Dict:
+        """Overview template: High-level overview with key metrics and trends"""
+        optimized = deepcopy(layout)
+        
+        # Select key metrics (top 3 charts)
+        key_metrics = sorted(recommendations, key=lambda x: x["priority"])[:3]
+        
+        # Arrange in a single row
+        for idx, rec in enumerate(key_metrics):
+            pos = optimized["chart_positions"][idx]
+            pos["grid_position"].update({
+                "x": idx * 4, "y": 0,
+                "width": 4, "height": 3
+            })
+            pos["emphasis"] = "primary"
+        
+        # Add trend chart below (if available)
+        if len(recommendations) > 3:
+            trend_chart = recommendations[3]  # Assuming the 4th chart is a trend chart
+            pos = optimized["chart_positions"][3]
+            pos["grid_position"].update({
+                "x": 0, "y": 3,
+                "width": 12, "height": 3
+            })
+            pos["emphasis"] = "secondary"
+        
+        optimized["template_type"] = "overview"
+        return optimized
+
+    def _apply_analytical_template(self, layout: Dict, recommendations: List[Dict], target_size: str) -> Dict:
+        """Analytical template: Detailed analysis with multiple charts"""
+        optimized = deepcopy(layout)
+        
+        # Select top 6 charts for analysis
+        analysis_charts = sorted(recommendations, key=lambda x: x["priority"])[:6]
+        
+        # Arrange in 3x2 grid
+        for idx, rec in enumerate(analysis_charts):
+            pos = optimized["chart_positions"][idx]
+            pos["grid_position"].update({
+                "x": (idx % 3) * 4, "y": (idx // 3) * 3,
+                "width": 4, "height": 3
+            })
+            pos["emphasis"] = "primary"
+        
+        optimized["template_type"] = "analytical"
+        return optimized
+
+    def _apply_auto_template(self, layout: Dict, recommendations: List[Dict], target_size: str) -> Dict:
+        """Auto template: Automatically arranges charts based on type and priority"""
+        optimized = deepcopy(layout)
+        
+        # Default positions
+        x, y = 0, 0
+        row_height = 3
+        
+        for rec in recommendations:
+            pos = optimized["chart_positions"][rec["chart_id"] - 1] # Assuming chart_id starts from 1
+            
+            # Update position based on priority
+            if rec["priority"] == 1:
+                pos["grid_position"].update({"x": 0, "y": 0, "width": 12, "height": 4})
+            elif rec["priority"] == 2:
+                pos["grid_position"].update({"x": 0, "y": 4, "width": 6, "height": 3})
+            elif rec["priority"] == 3:
+                pos["grid_position"].update({"x": 6, "y": 4, "width": 6, "height": 3})
+            else:
+                # Default to next available position
+                pos["grid_position"].update({"x": x, "y": y, "width": 4, "height": row_height})
+                x += 4
+                if x >= 12:
+                    x = 0
+                    y += row_height
+        
+        optimized["template_type"] = "auto"
+        return optimized
+
+    def _generate_responsive_layouts(self, layout: Dict) -> Dict:
+        """Generate responsive layouts for different screen sizes"""
+        responsive_layouts = {}
+        
+        # Break down the main layout into sections
+        sections = {
+            "header": layout["chart_positions"][:1],
+            "main": layout["chart_positions"][1:],
+            "footer": layout["chart_positions"][-1:]
+        }
+        
+        # Define responsive behavior
+        for size in ["mobile", "tablet", "desktop"]:
+            responsive_layout = {
+                "grid_dimensions": {"width": 12, "height": 9},
+                "chart_positions": [],
+                "layout_strategy": "responsive"
+            }
+            
+            # Header: Full width on top
+            if sections["header"]:
+                header_pos = sections["header"][0]["grid_position"]
+                responsive_layout["chart_positions"].append({
+                    "chart_id": sections["header"][0]["chart_id"],
+                    "chart_type": sections["header"][0]["chart_type"],
+                    "title": sections["header"][0]["title"],
+                    "grid_position": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 12,
+                        "height": header_pos["height"]
+                    },
+                    "priority": sections["header"][0]["priority"],
+                    "z_index": sections["header"][0]["priority"]
+                })
+            
+            # Main: Responsive columns
+            if sections["main"]:
+                column_count = 2 if size in ["tablet", "desktop"] else 1
+                for idx, pos in enumerate(sections["main"]):
+                    x_pos = (idx % column_count) * 6
+                    y_pos = (idx // column_count) * 3 + (1 if sections["header"] else 0)
+                    
+                    responsive_layout["chart_positions"].append({
+                        "chart_id": pos["chart_id"],
+                        "chart_type": pos["chart_type"],
+                        "title": pos["title"],
+                        "grid_position": {
+                            "x": x_pos,
+                            "y": y_pos,
+                            "width": 6,
+                            "height": 3
+                        },
+                        "priority": pos["priority"],
+                        "z_index": pos["priority"]
+                    })
+            
+            # Footer: Full width at the bottom
+            if sections["footer"]:
+                footer_pos = sections["footer"][0]["grid_position"]
+                responsive_layout["chart_positions"].append({
+                    "chart_id": sections["footer"][0]["chart_id"],
+                    "chart_type": sections["footer"][0]["chart_type"],
+                    "title": sections["footer"][0]["title"],
+                    "grid_position": {
+                        "x": 0,
+                        "y": 9 - footer_pos["height"],
+                        "width": 12,
+                        "height": footer_pos["height"]
+                    },
+                    "priority": sections["footer"][0]["priority"],
+                    "z_index": sections["footer"][0]["priority"]
+                })
+            
+            responsive_layouts[size] = responsive_layout
+        
+        return responsive_layouts
+
+    def _validate_and_resolve_layout_conflicts(self, layout: Dict) -> Dict:
+        """Validate and resolve any conflicts in the layout"""
+        validated = deepcopy(layout)
+        
+        # Check for overlapping positions
+        positions = [pos["grid_position"] for pos in validated["chart_positions"]]
+        unique_positions = [dict(t) for t in {tuple(p.items()) for p in positions}]
+        
+        if len(unique_positions) < len(positions):
+            logger.warning("Overlapping chart positions detected, resolving...")
+            # Simple resolution: Offset overlapping charts
+            for pos in positions:
+                if positions.count(pos) > 1:
+                    idx = positions.index(pos)
+                    pos["y"] += 1  # Move down
+                    # Ensure it stays within bounds
+                    if pos["y"] + pos["height"] > validated["grid_dimensions"]["height"]:
+                        pos["y"] = validated["grid_dimensions"]["height"] - pos["height"]
+        
+        validated["chart_positions"] = [{
+            **pos,
+            "grid_position": {
+                "x": pos["grid_position"]["x"],
+                "y": pos["grid_position"]["y"],
+                "width": pos["grid_position"]["width"],
+                "height": pos["grid_position"]["height"]
+            }
+        } for pos in validated["chart_positions"]]
+        
+        return validated
+
+    def _analyze_layout_performance(self, layout: Dict) -> Dict:
+        """Analyze the layout for performance insights"""
+        total_charts = len(layout["chart_positions"])
+        filled_positions = sum(1 for pos in layout["chart_positions"] if pos["grid_position"]["y"] >= 0)
+        
+        return {
+            "success": True,
+            "total_charts": total_charts,
+            "filled_positions": filled_positions,
+            "empty_positions": total_charts - filled_positions,
+            "overall_score": round((filled_positions / total_charts) * 100, 2) if total_charts > 0 else 0
+        }
