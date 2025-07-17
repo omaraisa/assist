@@ -5,7 +5,7 @@ Spatial Functions Module - GIS analysis operations
 import os
 import logging
 import math
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 from .ai.function_declarations import FunctionDeclaration
 
 # Import arcpy only when available (in ArcGIS Pro environment)
@@ -68,7 +68,9 @@ class SpatialFunctions:
             25: "get_coordinate_system",
             26: "get_attribute_table",
             27: "get_field_domain_values",
-            28: "calculate_new_field"
+            28: "calculate_new_field",
+            29: "analyze_layer_fields",
+            30: "generate_dashboard_insights"
         }
         
 
@@ -1536,3 +1538,392 @@ class SpatialFunctions:
         except Exception as e:
             logger.error(f"calculate_new_field error: {str(e)}")
             return {"success": False, "error": str(e)}
+    
+    def analyze_layer_fields(self, layer_name: str) -> Dict:
+        """
+        Analyze all fields in a layer to understand their characteristics for dashboard generation.
+        Returns detailed field metadata including data types, unique values, null percentages, etc.
+        """
+        logger.info(f"Starting field analysis for layer: {layer_name}")
+        
+        try:
+            # Get current project and map
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            
+            # Find the layer
+            target_layer = None
+            for layer in map_obj.listLayers():
+                if layer.name == layer_name:
+                    target_layer = layer
+                    break
+            
+            if not target_layer:
+                return {"success": False, "error": f"Layer '{layer_name}' not found"}
+            
+            if not target_layer.isFeatureLayer:
+                return {"success": False, "error": f"Layer '{layer_name}' is not a feature layer"}
+            
+            # Get field definitions
+            fields = arcpy.ListFields(target_layer)
+            field_analysis = {}
+            
+            # Get total feature count
+            total_count = int(arcpy.GetCount_management(target_layer)[0])
+            
+            # Analyze each field
+            for field in fields:
+                # Skip system fields like OBJECTID, Shape, etc.
+                if field.name.upper() in ['OBJECTID', 'SHAPE', 'SHAPE_LENGTH', 'SHAPE_AREA', 'GLOBALID']:
+                    continue
+                
+                field_info = {
+                    "field_name": field.name,
+                    "field_type": field.type,
+                    "field_length": field.length if hasattr(field, 'length') else None,
+                    "field_precision": field.precision if hasattr(field, 'precision') else None,
+                    "field_scale": field.scale if hasattr(field, 'scale') else None,
+                    "total_records": total_count
+                }
+                
+                # Calculate field statistics based on type
+                if field.type in ['SmallInteger', 'Integer', 'Single', 'Double']:
+                    # Numeric field analysis
+                    field_info.update(self._analyze_numeric_field(target_layer, field.name, total_count))
+                elif field.type in ['String', 'Text']:
+                    # Text field analysis
+                    field_info.update(self._analyze_text_field(target_layer, field.name, total_count))
+                elif field.type == 'Date':
+                    # Date field analysis
+                    field_info.update(self._analyze_date_field(target_layer, field.name, total_count))
+                else:
+                    # Generic analysis for other types
+                    field_info.update(self._analyze_generic_field(target_layer, field.name, total_count))
+                
+                field_analysis[field.name] = field_info
+            
+            result = {
+                "success": True,
+                "layer_name": layer_name,
+                "total_features": total_count,
+                "fields_analyzed": len(field_analysis),
+                "field_insights": field_analysis,
+                "analysis_timestamp": self._get_timestamp()
+            }
+            
+            logger.info(f"Field analysis completed for {layer_name}: {len(field_analysis)} fields analyzed")
+            return result
+            
+        except Exception as e:
+            logger.error(f"analyze_layer_fields error: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _analyze_numeric_field(self, layer, field_name: str, total_count: int) -> Dict:
+        """Analyze numeric field characteristics"""
+        try:
+            # Get all values using SearchCursor
+            values = []
+            null_count = 0
+            
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for row in cursor:
+                    value = row[0]
+                    if value is None:
+                        null_count += 1
+                    else:
+                        values.append(value)
+            
+            if not values:
+                return {
+                    "data_category": "numeric",
+                    "unique_count": 0,
+                    "null_count": null_count,
+                    "null_percentage": 100.0,
+                    "sample_values": []
+                }
+            
+            # Calculate statistics
+            unique_values = list(set(values))
+            min_val = min(values)
+            max_val = max(values)
+            avg_val = sum(values) / len(values)
+            
+            # Determine if it's categorical (low unique count) or continuous
+            unique_count = len(unique_values)
+            is_categorical = unique_count <= 20 and unique_count < total_count * 0.1
+            
+            analysis = {
+                "data_category": "categorical_numeric" if is_categorical else "continuous_numeric",
+                "unique_count": unique_count,
+                "null_count": null_count,
+                "null_percentage": round((null_count / total_count) * 100, 2),
+                "min_value": min_val,
+                "max_value": max_val,
+                "average_value": round(avg_val, 3),
+                "sample_values": unique_values[:10] if is_categorical else [min_val, max_val, round(avg_val, 3)]
+            }
+            
+            return analysis
+            
+        except Exception as e:
+            logger.error(f"Error analyzing numeric field {field_name}: {str(e)}")
+            return {"data_category": "numeric", "error": str(e)}
+    
+    def _analyze_text_field(self, layer, field_name: str, total_count: int) -> Dict:
+        """Analyze text field characteristics"""
+        try:
+            # Get all values using SearchCursor
+            values = []
+            null_count = 0
+            
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for row in cursor:
+                    value = row[0]
+                    if value is None or value == '':
+                        null_count += 1
+                    else:
+                        values.append(str(value).strip())
+            
+            if not values:
+                return {
+                    "data_category": "text",
+                    "unique_count": 0,
+                    "null_count": null_count,
+                    "null_percentage": 100.0,
+                    "sample_values": []
+                }
+            
+            # Calculate statistics
+            unique_values = list(set(values))
+            unique_count = len(unique_values)
+            
+            # Determine if it's categorical or free text
+            is_categorical = unique_count <= 50 and unique_count < total_count * 0.3
+            
+            analysis = {
+                "data_category": "categorical_text" if is_categorical else "free_text",
+                "unique_count": unique_count,
+                "null_count": null_count,
+                "null_percentage": round((null_count / total_count) * 100, 2),
+                "sample_values": unique_values[:10],
+                "avg_length": round(sum(len(v) for v in values) / len(values), 1) if values else 0
+            }
+            
+            return analysis
+            
+        except Exception as e:
+            logger.error(f"Error analyzing text field {field_name}: {str(e)}")
+            return {"data_category": "text", "error": str(e)}
+    
+    def _analyze_date_field(self, layer, field_name: str, total_count: int) -> Dict:
+        """Analyze date field characteristics"""
+        try:
+            # Get all values using SearchCursor
+            values = []
+            null_count = 0
+            
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for row in cursor:
+                    value = row[0]
+                    if value is None:
+                        null_count += 1
+                    else:
+                        values.append(value)
+            
+            if not values:
+                return {
+                    "data_category": "date",
+                    "unique_count": 0,
+                    "null_count": null_count,
+                    "null_percentage": 100.0,
+                    "sample_values": []
+                }
+            
+            # Calculate statistics
+            unique_count = len(set(values))
+            min_date = min(values)
+            max_date = max(values)
+            
+            analysis = {
+                "data_category": "date",
+                "unique_count": unique_count,
+                "null_count": null_count,
+                "null_percentage": round((null_count / total_count) * 100, 2),
+                "min_date": str(min_date),
+                "max_date": str(max_date),
+                "sample_values": [str(v) for v in sorted(set(values))[:5]]
+            }
+            
+            return analysis
+            
+        except Exception as e:
+            logger.error(f"Error analyzing date field {field_name}: {str(e)}")
+            return {"data_category": "date", "error": str(e)}
+    
+    def _analyze_generic_field(self, layer, field_name: str, total_count: int) -> Dict:
+        """Generic analysis for other field types"""
+        try:
+            # Get basic statistics
+            null_count = 0
+            value_count = 0
+            
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for row in cursor:
+                    if row[0] is None:
+                        null_count += 1
+                    else:
+                        value_count += 1
+            
+            analysis = {
+                "data_category": "other",
+                "null_count": null_count,
+                "value_count": value_count,
+                "null_percentage": round((null_count / total_count) * 100, 2)
+            }
+            
+            return analysis
+            
+        except Exception as e:
+            logger.error(f"Error analyzing generic field {field_name}: {str(e)}")
+            return {"data_category": "other", "error": str(e)}
+    
+    def generate_dashboard_insights(self, layer_name: str, output_file: str = "dashboard.json") -> Dict:
+        """
+        Generate comprehensive dashboard insights for a layer and save to JSON file.
+        This function combines field analysis with dashboard recommendations.
+        """
+        logger.info(f"Generating dashboard insights for layer: {layer_name}")
+        
+        try:
+            # First, analyze all fields
+            field_analysis_result = self.analyze_layer_fields(layer_name)
+            
+            if not field_analysis_result.get("success", False):
+                return field_analysis_result
+            
+            # Generate dashboard recommendations based on field analysis
+            insights = {
+                "layer_name": layer_name,
+                "analysis_timestamp": self._get_timestamp(),
+                "layer_summary": {
+                    "total_features": field_analysis_result["total_features"],
+                    "fields_analyzed": field_analysis_result["fields_analyzed"]
+                },
+                "field_insights": field_analysis_result["field_insights"],
+                "dashboard_recommendations": self._generate_chart_recommendations(field_analysis_result["field_insights"])
+            }
+            
+            # Save to JSON file
+            import json
+            output_path = Path(__file__).parent.parent / output_file
+            
+            with open(output_path, 'w', encoding='utf-8') as f:
+                json.dump(insights, f, indent=2, ensure_ascii=False, default=str)
+            
+            result = {
+                "success": True,
+                "layer_name": layer_name,
+                "output_file": str(output_path),
+                "insights_generated": True,
+                "total_fields_analyzed": field_analysis_result["fields_analyzed"],
+                "chart_recommendations": len(insights["dashboard_recommendations"])
+            }
+            
+            logger.info(f"Dashboard insights saved to {output_path}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"generate_dashboard_insights error: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_chart_recommendations(self, field_insights: Dict) -> List[Dict]:
+        """Generate chart recommendations based on field analysis"""
+        recommendations = []
+        
+        numeric_fields = []
+        categorical_fields = []
+        date_fields = []
+        
+        # Categorize fields
+        for field_name, field_info in field_insights.items():
+            category = field_info.get("data_category", "other")
+            
+            if "numeric" in category:
+                numeric_fields.append((field_name, field_info))
+            elif "categorical" in category:
+                categorical_fields.append((field_name, field_info))
+            elif category == "date":
+                date_fields.append((field_name, field_info))
+        
+        # Generate recommendations
+        
+        # 1. Pie charts for categorical fields with reasonable unique counts
+        for field_name, field_info in categorical_fields:
+            if field_info.get("unique_count", 0) <= 10 and field_info.get("null_percentage", 100) < 50:
+                recommendations.append({
+                    "chart_type": "pie",
+                    "title": f"Distribution of {field_name}",
+                    "field": field_name,
+                    "description": f"Pie chart showing the distribution of {field_info.get('unique_count', 0)} unique values in {field_name}",
+                    "suitability_score": 0.9
+                })
+        
+        # 2. Bar charts for categorical fields with more unique values
+        for field_name, field_info in categorical_fields:
+            if 10 < field_info.get("unique_count", 0) <= 20 and field_info.get("null_percentage", 100) < 50:
+                recommendations.append({
+                    "chart_type": "bar",
+                    "title": f"Count by {field_name}",
+                    "field": field_name,
+                    "description": f"Bar chart showing counts for {field_info.get('unique_count', 0)} categories in {field_name}",
+                    "suitability_score": 0.8
+                })
+        
+        # 3. Histograms for continuous numeric fields
+        for field_name, field_info in numeric_fields:
+            if field_info.get("data_category") == "continuous_numeric" and field_info.get("null_percentage", 100) < 50:
+                recommendations.append({
+                    "chart_type": "histogram",
+                    "title": f"Distribution of {field_name}",
+                    "field": field_name,
+                    "description": f"Histogram showing the distribution of values in {field_name}",
+                    "range": f"{field_info.get('min_value', 'N/A')} to {field_info.get('max_value', 'N/A')}",
+                    "suitability_score": 0.85
+                })
+        
+        # 4. Scatter plots for pairs of numeric fields
+        if len(numeric_fields) >= 2:
+            for i, (field1_name, field1_info) in enumerate(numeric_fields):
+                for field2_name, field2_info in numeric_fields[i+1:]:
+                    if (field1_info.get("null_percentage", 100) < 30 and 
+                        field2_info.get("null_percentage", 100) < 30):
+                        recommendations.append({
+                            "chart_type": "scatter",
+                            "title": f"{field1_name} vs {field2_name}",
+                            "x_field": field1_name,
+                            "y_field": field2_name,
+                            "description": f"Scatter plot comparing {field1_name} and {field2_name}",
+                            "suitability_score": 0.7
+                        })
+        
+        # 5. Time series for date fields
+        for field_name, field_info in date_fields:
+            if field_info.get("null_percentage", 100) < 50:
+                recommendations.append({
+                    "chart_type": "timeline",
+                    "title": f"Timeline of {field_name}",
+                    "field": field_name,
+                    "description": f"Timeline visualization of {field_name}",
+                    "date_range": f"{field_info.get('min_date', 'N/A')} to {field_info.get('max_date', 'N/A')}",
+                    "suitability_score": 0.75
+                })
+        
+        # Sort by suitability score
+        recommendations.sort(key=lambda x: x.get("suitability_score", 0), reverse=True)
+        
+        return recommendations[:10]  # Return top 10 recommendations
+    
+    def _get_timestamp(self) -> str:
+        """Get current timestamp in ISO format"""
+        from datetime import datetime
+        return datetime.now().isoformat()

@@ -1,0 +1,235 @@
+{
+  "layer_name": "roads",
+  "analysis_timestamp": "2025-07-17T10:47:24.195683",
+  "layer_summary": {
+    "total_features": 61657,
+    "fields_analyzed": 7
+  },
+  "field_insights": {
+    "osm_id": {
+      "field_name": "osm_id",
+      "field_type": "Double",
+      "field_length": 8,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 61657,
+      "data_category": "continuous_numeric",
+      "unique_count": 61657,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 26281313.0,
+      "max_value": 1342387326.0,
+      "average_value": 627801700.056,
+      "sample_values": [
+        26281313.0,
+        1342387326.0,
+        627801700.056
+      ]
+    },
+    "name": {
+      "field_name": "name",
+      "field_type": "String",
+      "field_length": 48,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 61657,
+      "data_category": "free_text",
+      "unique_count": 1251,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "sample_values": [
+        "",
+        "زيد بن عمرو",
+        "ابي المظفر الواسطي",
+        "طلعت رضا",
+        "علي باحميد",
+        "Nahdat Al Fikr",
+        "شارع حسان بن مالك",
+        "Mawakib An Nasr",
+        "أبي محمد بن بري",
+        "زينب بنت ابي سلمة"
+      ],
+      "avg_length": 0.6
+    },
+    "ref": {
+      "field_name": "ref",
+      "field_type": "String",
+      "field_length": 16,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 61657,
+      "data_category": "categorical_text",
+      "unique_count": 20,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "sample_values": [
+        "",
+        "304",
+        "301",
+        "285",
+        "271",
+        "320",
+        "15",
+        "20",
+        "289",
+        "294"
+      ],
+      "avg_length": 0.0
+    },
+    "type": {
+      "field_name": "type",
+      "field_type": "String",
+      "field_length": 16,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 61657,
+      "data_category": "categorical_text",
+      "unique_count": 26,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "sample_values": [
+        "track",
+        "tertiary_link",
+        "service",
+        "services",
+        "construction",
+        "proposed",
+        "pedestrian",
+        "cycleway",
+        "primary_link",
+        "steps"
+      ],
+      "avg_length": 10.0
+    },
+    "oneway": {
+      "field_name": "oneway",
+      "field_type": "SmallInteger",
+      "field_length": 2,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 61657,
+      "data_category": "categorical_numeric",
+      "unique_count": 2,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 1,
+      "average_value": 0.196,
+      "sample_values": [
+        0,
+        1
+      ]
+    },
+    "bridge": {
+      "field_name": "bridge",
+      "field_type": "SmallInteger",
+      "field_length": 2,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 61657,
+      "data_category": "categorical_numeric",
+      "unique_count": 2,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 1,
+      "average_value": 0.011,
+      "sample_values": [
+        0,
+        1
+      ]
+    },
+    "maxspeed": {
+      "field_name": "maxspeed",
+      "field_type": "SmallInteger",
+      "field_length": 2,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 61657,
+      "data_category": "categorical_numeric",
+      "unique_count": 15,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 140,
+      "average_value": 1.014,
+      "sample_values": [
+        0,
+        100,
+        70,
+        40,
+        10,
+        140,
+        110,
+        80,
+        50,
+        20
+      ]
+    }
+  },
+  "dashboard_recommendations": [
+    {
+      "chart_type": "histogram",
+      "title": "Distribution of osm_id",
+      "field": "osm_id",
+      "description": "Histogram showing the distribution of values in osm_id",
+      "range": "26281313.0 to 1342387326.0",
+      "suitability_score": 0.85
+    },
+    {
+      "chart_type": "bar",
+      "title": "Count by ref",
+      "field": "ref",
+      "description": "Bar chart showing counts for 20 categories in ref",
+      "suitability_score": 0.8
+    },
+    {
+      "chart_type": "scatter",
+      "title": "osm_id vs oneway",
+      "x_field": "osm_id",
+      "y_field": "oneway",
+      "description": "Scatter plot comparing osm_id and oneway",
+      "suitability_score": 0.7
+    },
+    {
+      "chart_type": "scatter",
+      "title": "osm_id vs bridge",
+      "x_field": "osm_id",
+      "y_field": "bridge",
+      "description": "Scatter plot comparing osm_id and bridge",
+      "suitability_score": 0.7
+    },
+    {
+      "chart_type": "scatter",
+      "title": "osm_id vs maxspeed",
+      "x_field": "osm_id",
+      "y_field": "maxspeed",
+      "description": "Scatter plot comparing osm_id and maxspeed",
+      "suitability_score": 0.7
+    },
+    {
+      "chart_type": "scatter",
+      "title": "oneway vs bridge",
+      "x_field": "oneway",
+      "y_field": "bridge",
+      "description": "Scatter plot comparing oneway and bridge",
+      "suitability_score": 0.7
+    },
+    {
+      "chart_type": "scatter",
+      "title": "oneway vs maxspeed",
+      "x_field": "oneway",
+      "y_field": "maxspeed",
+      "description": "Scatter plot comparing oneway and maxspeed",
+      "suitability_score": 0.7
+    },
+    {
+      "chart_type": "scatter",
+      "title": "bridge vs maxspeed",
+      "x_field": "bridge",
+      "y_field": "maxspeed",
+      "description": "Scatter plot comparing bridge and maxspeed",
+      "suitability_score": 0.7
+    }
+  ]
+}

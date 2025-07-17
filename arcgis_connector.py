@@ -79,8 +79,8 @@ class ArcGISProConnector:
                             fields[field.name] = field.type
                         
                         layers_info[layer_name] = {
-                            # "fields": fields,
-                            # "definition_query": getattr(layer, 'definitionQuery', ''),
+                            "fields": fields,
+                            "definition_query": getattr(layer, 'definitionQuery', ''),
                             "visible": layer.visible
                         }
                     except Exception as e:

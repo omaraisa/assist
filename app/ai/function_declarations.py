@@ -454,5 +454,34 @@ class FunctionDeclaration:
                 }
             },
             "required": ["layer_name", "new_field_name", "field_value"]
+        },
+        
+        "analyze_layer_fields": {
+            "name": "analyze_layer_fields",
+            "description": "Analyze all fields in a GIS layer to understand their characteristics for dashboard generation. Returns detailed field metadata including data types, unique values, null percentages, statistical summaries, and data categories (numeric, categorical, date, etc.).",
+            "parameters": {
+                "layer_name": {
+                    "type": "string",
+                    "description": "The name of the layer to analyze"
+                }
+            },
+            "required": ["layer_name"]
+        },
+        
+        "generate_dashboard_insights": {
+            "name": "generate_dashboard_insights",
+            "description": "Generate comprehensive dashboard insights for a layer including field analysis and chart recommendations. Saves results to a JSON file for dashboard generation. This is the main function for Stage 1 of dashboard analysis.",
+            "parameters": {
+                "layer_name": {
+                    "type": "string",
+                    "description": "The name of the layer to analyze for dashboard insights"
+                },
+                "output_file": {
+                    "type": "string",
+                    "description": "Name of the output JSON file to save insights",
+                    "default": "dashboard.json"
+                }
+            },
+            "required": ["layer_name"]
         }
     }
