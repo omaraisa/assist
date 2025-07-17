@@ -1039,9 +1039,24 @@ def transform_dashboard_for_frontend(dashboard_data):
     """Transform backend dashboard data to frontend-compatible format"""
     try:
         # Check if it's an optimized dashboard
-        if "optimized_layout" in dashboard_data:
-            chart_configs = dashboard_data.get("optimized_layout", {}).get("chart_configs", [])
-            layout_template = dashboard_data.get("optimized_layout", {}).get("template", "auto")
+        if "optimized_layout_plan" in dashboard_data:
+            # Handle optimized layout structure
+            layout_plan = dashboard_data.get("optimized_layout_plan", {})
+            chart_positions = layout_plan.get("chart_positions", [])
+            layout_template = dashboard_data.get("layout_optimization", {}).get("template_applied", "auto")
+            
+            # Convert chart positions to chart configs
+            chart_configs = []
+            for pos in chart_positions:
+                chart_config = {
+                    "chart_id": pos.get("chart_id"),
+                    "chart_type": pos.get("chart_type"),
+                    "title": pos.get("title", f"Chart {pos.get('chart_id', 1)}"),
+                    "recommended_size": pos.get("recommended_size", "medium"),
+                    "priority": pos.get("priority", 1),
+                    "position": pos.get("grid_position", {})
+                }
+                chart_configs.append(chart_config)
         elif "chart_recommendations" in dashboard_data:
             chart_configs = dashboard_data.get("chart_recommendations", [])
             layout_template = "auto"
@@ -1063,12 +1078,20 @@ def transform_dashboard_for_frontend(dashboard_data):
                 "data": chart_data,
                 "layout": {
                     "size": chart.get("recommended_size", chart.get("size", "medium")),
-                    "column": chart.get("position", {}).get("column", 1),
-                    "row": chart.get("position", {}).get("row", 1),
-                    "width": chart.get("position", {}).get("width", 4),
-                    "height": chart.get("position", {}).get("height", 3)
+                    "template": layout_template
                 }
             }
+            
+            # Only include explicit positioning for non-auto templates
+            if layout_template != "auto" and chart.get("position"):
+                position = chart.get("position", {})
+                if position.get("x") is not None and position.get("y") is not None:
+                    frontend_chart["layout"].update({
+                        "column": position.get("x", 1) + 1,  # CSS grid is 1-based
+                        "row": position.get("y", 1) + 1,     # CSS grid is 1-based
+                        "width": position.get("width", 4),
+                        "height": position.get("height", 3)
+                    })
             charts.append(frontend_chart)
         
         return {

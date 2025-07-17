@@ -550,12 +550,31 @@ class DashboardRenderer {
         const size = layout.size || 'medium';
         container.classList.add(`chart-${size}`);
         
-        // If specific position is provided, use it
-        if (layout.column && layout.row) {
+        // Debug logging
+        console.log(`Creating chart ${index}:`, {
+            title: chartConfig.title,
+            size: size,
+            template: layout.template,
+            hasExplicitPosition: !!(layout.column && layout.row),
+            layout: layout
+        });
+        
+        // Only use explicit positioning if we have specific positioning data
+        // Otherwise let CSS grid auto-placement handle positioning with size classes
+        const useExplicitPositioning = layout.column && layout.row && 
+                                     layout.template && layout.template !== 'auto';
+        
+        if (useExplicitPositioning) {
             const width = layout.width || this.getSizeWidth(size);
             const height = layout.height || this.getSizeHeight(size);
             container.style.gridColumn = `${layout.column} / span ${width}`;
             container.style.gridRow = `${layout.row} / span ${height}`;
+            console.log(`Applied explicit positioning to chart ${index}:`, {
+                gridColumn: container.style.gridColumn,
+                gridRow: container.style.gridRow
+            });
+        } else {
+            console.log(`Using CSS auto-placement for chart ${index} with size class: chart-${size}`);
         }
         // Otherwise let CSS handle it with the size class
         

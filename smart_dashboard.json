@@ -1,6 +1,6 @@
 {
-  "layer_name": "roads",
-  "analysis_timestamp": "2025-07-17T15:17:40.866032",
+  "layer_name": "District",
+  "analysis_timestamp": "2025-07-17T15:38:42.220439",
   "dashboard_metadata": {
     "grid_system": "12x9",
     "total_charts": 8,
@@ -8,164 +8,411 @@
     "version": "2.0"
   },
   "field_insights": {
-    "osm_id": {
-      "field_name": "osm_id",
+    "ARNAME": {
+      "field_name": "ARNAME",
+      "field_type": "String",
+      "field_length": 50,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "free_text",
+      "unique_count": 212,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "sample_values": [
+        "المحجر-1",
+        "الرواسي",
+        "الجزيرة",
+        "المسرة",
+        "الروابي",
+        "الوسام",
+        "الحمراء",
+        "الشرفية",
+        "حكومي-2",
+        "سليتة"
+      ],
+      "avg_length": 7.5
+    },
+    "ENNAME": {
+      "field_name": "ENNAME",
+      "field_type": "String",
+      "field_length": 50,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "free_text",
+      "unique_count": 113,
+      "null_count": 91,
+      "null_percentage": 42.92,
+      "sample_values": [
+        "AL FARDOUS",
+        "AL QRYENAH",
+        "AL HAMADHNYAH",
+        "AL HENDAWEYYAH",
+        "AL QRYAT",
+        "BURAIMAN",
+        "BETRUMEEN",
+        "AL BALAD",
+        "AL MARJAN",
+        "ALWISAM"
+      ],
+      "avg_length": 11.3
+    },
+    "OFFICIALAR": {
+      "field_name": "OFFICIALAR",
       "field_type": "Double",
       "field_length": 8,
       "field_precision": 0,
       "field_scale": 0,
-      "total_records": 61657,
+      "total_records": 212,
       "data_category": "continuous_numeric",
-      "unique_count": 61657,
+      "unique_count": 212,
       "null_count": 0,
       "null_percentage": 0.0,
-      "min_value": 26281313.0,
-      "max_value": 1342387326.0,
-      "average_value": 627801700.056,
+      "min_value": 0.117637810206,
+      "max_value": 80.8022778953,
+      "average_value": 11.112,
       "sample_values": [
-        26281313.0,
-        1342387326.0,
-        627801700.056
+        0.117637810206,
+        80.8022778953,
+        11.112
       ]
     },
-    "name": {
-      "field_name": "name",
-      "field_type": "String",
-      "field_length": 48,
+    "DISTRICTCO": {
+      "field_name": "DISTRICTCO",
+      "field_type": "Integer",
+      "field_length": 4,
       "field_precision": 0,
       "field_scale": 0,
-      "total_records": 61657,
-      "data_category": "free_text",
-      "unique_count": 1250,
-      "null_count": 58926,
-      "null_percentage": 95.57,
-      "sample_values": [
-        "شجرة الصنوبر",
-        "شارع الحمرا",
-        "درنه",
-        "خولة بنت مالك",
-        "الامير ماجد - السبعين",
-        "شارع الامير ماجد",
-        "محمد بن أبي ذئب",
-        "عبدالله عبدان",
-        "عمر عبدربه",
-        "Creativity Avenue"
-      ],
-      "avg_length": 14.6
-    },
-    "ref": {
-      "field_name": "ref",
-      "field_type": "String",
-      "field_length": 16,
-      "field_precision": 0,
-      "field_scale": 0,
-      "total_records": 61657,
-      "data_category": "categorical_text",
-      "unique_count": 19,
-      "null_count": 61325,
-      "null_percentage": 99.46,
-      "sample_values": [
-        "20",
-        "site visit 26 Ju",
-        "289",
-        "303",
-        "294",
-        "304",
-        "45",
-        "301",
-        "285",
-        "320"
-      ],
-      "avg_length": 2.3
-    },
-    "type": {
-      "field_name": "type",
-      "field_type": "String",
-      "field_length": 16,
-      "field_precision": 0,
-      "field_scale": 0,
-      "total_records": 61657,
-      "data_category": "categorical_text",
-      "unique_count": 26,
-      "null_count": 0,
-      "null_percentage": 0.0,
-      "sample_values": [
-        "construction",
-        "unclassified",
-        "road",
-        "disused",
-        "secondary_link",
-        "footway",
-        "cycleway",
-        "motorway_link",
-        "service",
-        "track"
-      ],
-      "avg_length": 10.0
-    },
-    "oneway": {
-      "field_name": "oneway",
-      "field_type": "SmallInteger",
-      "field_length": 2,
-      "field_precision": 0,
-      "field_scale": 0,
-      "total_records": 61657,
+      "total_records": 212,
       "data_category": "categorical_numeric",
-      "unique_count": 2,
+      "unique_count": 1,
       "null_count": 0,
       "null_percentage": 0.0,
       "min_value": 0,
-      "max_value": 1,
-      "average_value": 0.196,
+      "max_value": 0,
+      "average_value": 0.0,
       "sample_values": [
-        0,
-        1
+        0
       ]
     },
-    "bridge": {
-      "field_name": "bridge",
-      "field_type": "SmallInteger",
-      "field_length": 2,
+    "NOOFSUBDIS": {
+      "field_name": "NOOFSUBDIS",
+      "field_type": "Integer",
+      "field_length": 4,
       "field_precision": 0,
       "field_scale": 0,
-      "total_records": 61657,
+      "total_records": 212,
       "data_category": "categorical_numeric",
-      "unique_count": 2,
+      "unique_count": 13,
       "null_count": 0,
       "null_percentage": 0.0,
       "min_value": 0,
-      "max_value": 1,
-      "average_value": 0.011,
+      "max_value": 12,
+      "average_value": 1.873,
       "sample_values": [
         0,
-        1
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
       ]
     },
-    "maxspeed": {
-      "field_name": "maxspeed",
-      "field_type": "SmallInteger",
-      "field_length": 2,
+    "SUBMUNICIP": {
+      "field_name": "SUBMUNICIP",
+      "field_type": "Integer",
+      "field_length": 4,
       "field_precision": 0,
       "field_scale": 0,
-      "total_records": 61657,
+      "total_records": 212,
       "data_category": "categorical_numeric",
-      "unique_count": 15,
+      "unique_count": 17,
       "null_count": 0,
       "null_percentage": 0.0,
-      "min_value": 0,
-      "max_value": 140,
-      "average_value": 1.014,
+      "min_value": 1,
+      "max_value": 21,
+      "average_value": 10.538,
       "sample_values": [
-        0,
-        100,
-        70,
-        40,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
         10,
-        140,
-        110,
-        80,
-        50,
-        20
+        11
+      ]
+    },
+    "DISTRICTID": {
+      "field_name": "DISTRICTID",
+      "field_type": "Integer",
+      "field_length": 4,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 211,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 30,
+      "max_value": 13520,
+      "average_value": 1849.278,
+      "sample_values": [
+        30,
+        13520,
+        1849.278
+      ]
+    },
+    "OFFICIALDI": {
+      "field_name": "OFFICIALDI",
+      "field_type": "Integer",
+      "field_length": 4,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 148,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 415,
+      "average_value": 248.623,
+      "sample_values": [
+        0,
+        415,
+        248.623
+      ]
+    },
+    "SHAPE_Leng": {
+      "field_name": "SHAPE_Leng",
+      "field_type": "Double",
+      "field_length": 8,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 212,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 1791.38150974,
+      "max_value": 74819.7672774,
+      "average_value": 15244.679,
+      "sample_values": [
+        1791.38150974,
+        74819.7672774,
+        15244.679
+      ]
+    },
+    "Index_Code": {
+      "field_name": "Index_Code",
+      "field_type": "String",
+      "field_length": 254,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "free_text",
+      "unique_count": 211,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "sample_values": [
+        "6-222",
+        "9-104",
+        "8-229",
+        "9-108",
+        "18-121",
+        "15-410",
+        "21-259",
+        "12-265",
+        "13-315",
+        "6-219"
+      ],
+      "avg_length": 5.6
+    },
+    "DIST_ID": {
+      "field_name": "DIST_ID",
+      "field_type": "Integer",
+      "field_length": 4,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 212,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 1,
+      "max_value": 212,
+      "average_value": 106.5,
+      "sample_values": [
+        1,
+        212,
+        106.5
+      ]
+    },
+    "Garden": {
+      "field_name": "Garden",
+      "field_type": "Integer",
+      "field_length": 4,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 174,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 6698,
+      "average_value": 735.887,
+      "sample_values": [
+        0,
+        6698,
+        735.887
+      ]
+    },
+    "Lighting": {
+      "field_name": "Lighting",
+      "field_type": "Integer",
+      "field_length": 4,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 166,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 6071,
+      "average_value": 859.491,
+      "sample_values": [
+        0,
+        6071,
+        859.491
+      ]
+    },
+    "Tree": {
+      "field_name": "Tree",
+      "field_type": "Integer",
+      "field_length": 4,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 176,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 31120,
+      "average_value": 3147.75,
+      "sample_values": [
+        0,
+        31120,
+        3147.75
+      ]
+    },
+    "Parcel": {
+      "field_name": "Parcel",
+      "field_type": "Integer",
+      "field_length": 4,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 163,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 18413,
+      "average_value": 1615.25,
+      "sample_values": [
+        0,
+        18413,
+        1615.25
+      ]
+    },
+    "Middle_Island": {
+      "field_name": "Middle_Island",
+      "field_type": "Integer",
+      "field_length": 4,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 114,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 514,
+      "average_value": 64.241,
+      "sample_values": [
+        0,
+        514,
+        64.241
+      ]
+    },
+    "Building": {
+      "field_name": "Building",
+      "field_type": "Integer",
+      "field_length": 4,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 195,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 23134,
+      "average_value": 2722.434,
+      "sample_values": [
+        0,
+        23134,
+        2722.434
+      ]
+    },
+    "Sport": {
+      "field_name": "Sport",
+      "field_type": "Integer",
+      "field_length": 4,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 35,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 73,
+      "average_value": 6.123,
+      "sample_values": [
+        0,
+        73,
+        6.123
+      ]
+    },
+    "Street": {
+      "field_name": "Street",
+      "field_type": "Integer",
+      "field_length": 4,
+      "field_precision": 0,
+      "field_scale": 0,
+      "total_records": 212,
+      "data_category": "continuous_numeric",
+      "unique_count": 174,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 6698,
+      "average_value": 735.887,
+      "sample_values": [
+        0,
+        6698,
+        735.887
       ]
     }
   },
@@ -174,92 +421,89 @@
       "chart_id": 1,
       "chart_type": "pie",
       "priority": 1,
-      "title": "Distribution of ref",
-      "primary_field": "ref",
-      "description": "Pie chart showing the distribution of 19 categories in ref",
+      "title": "Distribution of DISTRICTCO",
+      "primary_field": "DISTRICTCO",
+      "description": "Pie chart showing the distribution of 1 categories in DISTRICTCO",
       "suitability_score": 0.9,
-      "data_insight": "Categorical breakdown with 19 unique values",
+      "data_insight": "Categorical breakdown with 1 unique values",
       "recommended_size": "medium"
     },
     {
       "chart_id": 3,
       "chart_type": "histogram",
       "priority": 1,
-      "title": "Distribution of osm_id",
-      "primary_field": "osm_id",
-      "description": "Histogram showing the distribution of osm_id values",
+      "title": "Distribution of OFFICIALAR",
+      "primary_field": "OFFICIALAR",
+      "description": "Histogram showing the distribution of OFFICIALAR values",
       "suitability_score": 0.9,
-      "data_insight": "Value distribution from 26281313.0 to 1342387326.0",
+      "data_insight": "Value distribution from 0.117637810206 to 80.8022778953",
       "recommended_size": "medium"
     },
     {
       "chart_id": 4,
-      "chart_type": "donut",
+      "chart_type": "histogram",
       "priority": 1,
-      "title": "oneway Status",
-      "primary_field": "oneway",
-      "description": "Donut chart showing binary distribution of oneway",
-      "suitability_score": 0.85,
-      "data_insight": "Binary indicator with 19.6% positive rate",
-      "recommended_size": "small"
+      "title": "Distribution of DISTRICTID",
+      "primary_field": "DISTRICTID",
+      "description": "Histogram showing the distribution of DISTRICTID values",
+      "suitability_score": 0.9,
+      "data_insight": "Value distribution from 30 to 13520",
+      "recommended_size": "medium"
     },
     {
       "chart_id": 5,
-      "chart_type": "donut",
+      "chart_type": "histogram",
       "priority": 1,
-      "title": "bridge Status",
-      "primary_field": "bridge",
-      "description": "Donut chart showing binary distribution of bridge",
-      "suitability_score": 0.85,
-      "data_insight": "Binary indicator with 1.1% positive rate",
-      "recommended_size": "small"
+      "title": "Distribution of OFFICIALDI",
+      "primary_field": "OFFICIALDI",
+      "description": "Histogram showing the distribution of OFFICIALDI values",
+      "suitability_score": 0.9,
+      "data_insight": "Value distribution from 0 to 415",
+      "recommended_size": "medium"
     },
     {
-      "chart_id": 2,
-      "chart_type": "bar",
-      "priority": 2,
-      "title": "Count by ref",
-      "primary_field": "ref",
-      "description": "Bar chart showing counts for 19 categories in ref",
-      "suitability_score": 0.85,
-      "data_insight": "Frequency analysis of ref categories",
-      "recommended_size": "large"
+      "chart_id": 6,
+      "chart_type": "histogram",
+      "priority": 1,
+      "title": "Distribution of SHAPE_Leng",
+      "primary_field": "SHAPE_Leng",
+      "description": "Histogram showing the distribution of SHAPE_Leng values",
+      "suitability_score": 0.9,
+      "data_insight": "Value distribution from 1791.38150974 to 74819.7672774",
+      "recommended_size": "medium"
     },
     {
       "chart_id": 7,
-      "chart_type": "box_plot",
-      "priority": 3,
-      "title": "osm_id by ref",
-      "primary_field": "osm_id",
-      "group_by_field": "ref",
-      "description": "Box plot showing osm_id distribution across ref categories",
-      "suitability_score": 0.8,
-      "data_insight": "Statistical distribution by category",
-      "recommended_size": "large"
+      "chart_type": "histogram",
+      "priority": 1,
+      "title": "Distribution of DIST_ID",
+      "primary_field": "DIST_ID",
+      "description": "Histogram showing the distribution of DIST_ID values",
+      "suitability_score": 0.9,
+      "data_insight": "Value distribution from 1 to 212",
+      "recommended_size": "medium"
     },
     {
       "chart_id": 8,
-      "chart_type": "box_plot",
-      "priority": 3,
-      "title": "maxspeed by ref",
-      "primary_field": "maxspeed",
-      "group_by_field": "ref",
-      "description": "Box plot showing maxspeed distribution across ref categories",
-      "suitability_score": 0.8,
-      "data_insight": "Statistical distribution by category",
-      "recommended_size": "large"
+      "chart_type": "histogram",
+      "priority": 1,
+      "title": "Distribution of Garden",
+      "primary_field": "Garden",
+      "description": "Histogram showing the distribution of Garden values",
+      "suitability_score": 0.9,
+      "data_insight": "Value distribution from 0 to 6698",
+      "recommended_size": "medium"
     },
     {
       "chart_id": 9,
-      "chart_type": "box_plot",
-      "priority": 3,
-      "title": "osm_id by type",
-      "primary_field": "osm_id",
-      "group_by_field": "type",
-      "description": "Box plot showing osm_id distribution across type categories",
-      "suitability_score": 0.8,
-      "data_insight": "Statistical distribution by category",
-      "recommended_size": "large"
+      "chart_type": "histogram",
+      "priority": 1,
+      "title": "Distribution of Lighting",
+      "primary_field": "Lighting",
+      "description": "Histogram showing the distribution of Lighting values",
+      "suitability_score": 0.9,
+      "data_insight": "Value distribution from 0 to 6071",
+      "recommended_size": "medium"
     }
   ],
   "layout_plan": {
@@ -271,7 +515,8 @@
       {
         "chart_id": 1,
         "chart_type": "pie",
-        "title": "Distribution of ref",
+        "title": "Distribution of DISTRICTCO",
+        "recommended_size": "medium",
         "grid_position": {
           "x": 0,
           "y": 0,
@@ -284,7 +529,8 @@
       {
         "chart_id": 3,
         "chart_type": "histogram",
-        "title": "Distribution of osm_id",
+        "title": "Distribution of OFFICIALAR",
+        "recommended_size": "medium",
         "grid_position": {
           "x": 4,
           "y": 0,
@@ -296,12 +542,13 @@
       },
       {
         "chart_id": 4,
-        "chart_type": "donut",
-        "title": "oneway Status",
+        "chart_type": "histogram",
+        "title": "Distribution of DISTRICTID",
+        "recommended_size": "medium",
         "grid_position": {
           "x": 8,
           "y": 0,
-          "width": 3,
+          "width": 4,
           "height": 3
         },
         "priority": 1,
@@ -309,55 +556,73 @@
       },
       {
         "chart_id": 5,
-        "chart_type": "donut",
-        "title": "bridge Status",
+        "chart_type": "histogram",
+        "title": "Distribution of OFFICIALDI",
+        "recommended_size": "medium",
         "grid_position": {
           "x": 0,
           "y": 3,
-          "width": 3,
+          "width": 4,
           "height": 3
         },
         "priority": 1,
         "z_index": 1
       },
       {
-        "chart_id": 2,
-        "chart_type": "bar",
-        "title": "Count by ref",
+        "chart_id": 6,
+        "chart_type": "histogram",
+        "title": "Distribution of SHAPE_Leng",
+        "recommended_size": "medium",
         "grid_position": {
-          "x": 3,
+          "x": 4,
           "y": 3,
-          "width": 6,
+          "width": 4,
           "height": 3
         },
-        "priority": 2,
-        "z_index": 2
+        "priority": 1,
+        "z_index": 1
       },
       {
         "chart_id": 7,
-        "chart_type": "box_plot",
-        "title": "osm_id by ref",
+        "chart_type": "histogram",
+        "title": "Distribution of DIST_ID",
+        "recommended_size": "medium",
         "grid_position": {
-          "x": 0,
-          "y": 6,
-          "width": 6,
+          "x": 8,
+          "y": 3,
+          "width": 4,
           "height": 3
         },
-        "priority": 3,
-        "z_index": 3
+        "priority": 1,
+        "z_index": 1
       },
       {
         "chart_id": 8,
-        "chart_type": "box_plot",
-        "title": "maxspeed by ref",
+        "chart_type": "histogram",
+        "title": "Distribution of Garden",
+        "recommended_size": "medium",
         "grid_position": {
-          "x": 6,
+          "x": 0,
           "y": 6,
-          "width": 6,
+          "width": 4,
           "height": 3
         },
-        "priority": 3,
-        "z_index": 3
+        "priority": 1,
+        "z_index": 1
+      },
+      {
+        "chart_id": 9,
+        "chart_type": "histogram",
+        "title": "Distribution of Lighting",
+        "recommended_size": "medium",
+        "grid_position": {
+          "x": 4,
+          "y": 6,
+          "width": 4,
+          "height": 3
+        },
+        "priority": 1,
+        "z_index": 1
       }
     ],
     "layout_strategy": "priority_and_size_optimized"
@@ -366,9 +631,9 @@
     "chart_1": {
       "chart_id": 1,
       "chart_type": "pie",
-      "title": "Distribution of ref",
+      "title": "Distribution of DISTRICTCO",
       "data_source": {
-        "primary_field": "ref",
+        "primary_field": "DISTRICTCO",
         "secondary_field": null,
         "x_field": null,
         "y_field": null,
@@ -401,9 +666,9 @@
     "chart_3": {
       "chart_id": 3,
       "chart_type": "histogram",
-      "title": "Distribution of osm_id",
+      "title": "Distribution of OFFICIALAR",
       "data_source": {
-        "primary_field": "osm_id",
+        "primary_field": "OFFICIALAR",
         "secondary_field": null,
         "x_field": null,
         "y_field": null,
@@ -432,16 +697,16 @@
       },
       "histogram_config": {
         "bins": 20,
-        "x_axis_title": "osm_id",
+        "x_axis_title": "OFFICIALAR",
         "y_axis_title": "Frequency"
       }
     },
     "chart_4": {
       "chart_id": 4,
-      "chart_type": "donut",
-      "title": "oneway Status",
+      "chart_type": "histogram",
+      "title": "Distribution of DISTRICTID",
       "data_source": {
-        "primary_field": "oneway",
+        "primary_field": "DISTRICTID",
         "secondary_field": null,
         "x_field": null,
         "y_field": null,
@@ -460,23 +725,26 @@
         "theme": "modern",
         "show_legend": true,
         "show_grid": false,
-        "animation": true,
-        "show_percentages": true,
-        "inner_radius": 40
+        "animation": true
       },
       "interactivity": {
         "hover_enabled": true,
         "click_enabled": true,
-        "zoom_enabled": false,
+        "zoom_enabled": true,
         "filter_enabled": true
+      },
+      "histogram_config": {
+        "bins": 20,
+        "x_axis_title": "DISTRICTID",
+        "y_axis_title": "Frequency"
       }
     },
     "chart_5": {
       "chart_id": 5,
-      "chart_type": "donut",
-      "title": "bridge Status",
+      "chart_type": "histogram",
+      "title": "Distribution of OFFICIALDI",
       "data_source": {
-        "primary_field": "bridge",
+        "primary_field": "OFFICIALDI",
         "secondary_field": null,
         "x_field": null,
         "y_field": null,
@@ -495,23 +763,26 @@
         "theme": "modern",
         "show_legend": true,
         "show_grid": false,
-        "animation": true,
-        "show_percentages": true,
-        "inner_radius": 40
+        "animation": true
       },
       "interactivity": {
         "hover_enabled": true,
         "click_enabled": true,
-        "zoom_enabled": false,
+        "zoom_enabled": true,
         "filter_enabled": true
+      },
+      "histogram_config": {
+        "bins": 14,
+        "x_axis_title": "OFFICIALDI",
+        "y_axis_title": "Frequency"
       }
     },
-    "chart_2": {
-      "chart_id": 2,
-      "chart_type": "bar",
-      "title": "Count by ref",
+    "chart_6": {
+      "chart_id": 6,
+      "chart_type": "histogram",
+      "title": "Distribution of SHAPE_Leng",
       "data_source": {
-        "primary_field": "ref",
+        "primary_field": "SHAPE_Leng",
         "secondary_field": null,
         "x_field": null,
         "y_field": null,
@@ -529,31 +800,31 @@
         ],
         "theme": "modern",
         "show_legend": true,
-        "show_grid": true,
+        "show_grid": false,
         "animation": true
       },
       "interactivity": {
         "hover_enabled": true,
         "click_enabled": true,
-        "zoom_enabled": false,
+        "zoom_enabled": true,
         "filter_enabled": true
       },
-      "bar_config": {
-        "orientation": "vertical",
-        "sort_by": "value",
-        "show_values": true
+      "histogram_config": {
+        "bins": 20,
+        "x_axis_title": "SHAPE_Leng",
+        "y_axis_title": "Frequency"
       }
     },
     "chart_7": {
       "chart_id": 7,
-      "chart_type": "box_plot",
-      "title": "osm_id by ref",
+      "chart_type": "histogram",
+      "title": "Distribution of DIST_ID",
       "data_source": {
-        "primary_field": "osm_id",
+        "primary_field": "DIST_ID",
         "secondary_field": null,
         "x_field": null,
         "y_field": null,
-        "group_by_field": "ref"
+        "group_by_field": null
       },
       "styling": {
         "color_palette": [
@@ -573,20 +844,25 @@
       "interactivity": {
         "hover_enabled": true,
         "click_enabled": true,
-        "zoom_enabled": false,
+        "zoom_enabled": true,
         "filter_enabled": true
+      },
+      "histogram_config": {
+        "bins": 20,
+        "x_axis_title": "DIST_ID",
+        "y_axis_title": "Frequency"
       }
     },
     "chart_8": {
       "chart_id": 8,
-      "chart_type": "box_plot",
-      "title": "maxspeed by ref",
+      "chart_type": "histogram",
+      "title": "Distribution of Garden",
       "data_source": {
-        "primary_field": "maxspeed",
+        "primary_field": "Garden",
         "secondary_field": null,
         "x_field": null,
         "y_field": null,
-        "group_by_field": "ref"
+        "group_by_field": null
       },
       "styling": {
         "color_palette": [
@@ -606,20 +882,25 @@
       "interactivity": {
         "hover_enabled": true,
         "click_enabled": true,
-        "zoom_enabled": false,
+        "zoom_enabled": true,
         "filter_enabled": true
+      },
+      "histogram_config": {
+        "bins": 17,
+        "x_axis_title": "Garden",
+        "y_axis_title": "Frequency"
       }
     },
     "chart_9": {
       "chart_id": 9,
-      "chart_type": "box_plot",
-      "title": "osm_id by type",
+      "chart_type": "histogram",
+      "title": "Distribution of Lighting",
       "data_source": {
-        "primary_field": "osm_id",
+        "primary_field": "Lighting",
         "secondary_field": null,
         "x_field": null,
         "y_field": null,
-        "group_by_field": "type"
+        "group_by_field": null
       },
       "styling": {
         "color_palette": [
@@ -639,8 +920,13 @@
       "interactivity": {
         "hover_enabled": true,
         "click_enabled": true,
-        "zoom_enabled": false,
+        "zoom_enabled": true,
         "filter_enabled": true
+      },
+      "histogram_config": {
+        "bins": 16,
+        "x_axis_title": "Lighting",
+        "y_axis_title": "Frequency"
       }
     }
   },

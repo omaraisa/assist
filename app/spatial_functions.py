@@ -2172,6 +2172,7 @@ class SpatialFunctions:
                 "chart_id": rec["chart_id"],
                 "chart_type": rec["chart_type"],
                 "title": rec["title"],
+                "recommended_size": rec.get("recommended_size", "medium"),
                 "grid_position": {
                     "x": current_x,
                     "y": current_y,
@@ -2472,30 +2473,37 @@ class SpatialFunctions:
         return optimized
 
     def _apply_auto_template(self, layout: Dict, recommendations: List[Dict], target_size: str) -> Dict:
-        """Auto template: Automatically arranges charts based on type and priority"""
+        """Auto template: Let CSS grid auto-placement handle positioning based on size classes"""
         optimized = deepcopy(layout)
         
-        # Default positions
-        x, y = 0, 0
-        row_height = 3
-        
+        # For auto template, we primarily rely on CSS grid auto-placement
+        # Just ensure charts have appropriate sizes based on priority
         for rec in recommendations:
             pos = optimized["chart_positions"][rec["chart_id"] - 1] # Assuming chart_id starts from 1
             
-            # Update position based on priority
+            # Assign sizes based on priority, but let CSS handle positioning
             if rec["priority"] == 1:
-                pos["grid_position"].update({"x": 0, "y": 0, "width": 12, "height": 4})
+                # Highest priority gets large size
+                pos["recommended_size"] = "large"
+                pos["grid_position"].update({"width": 6, "height": 4})
             elif rec["priority"] == 2:
-                pos["grid_position"].update({"x": 0, "y": 4, "width": 6, "height": 3})
+                # Second priority gets medium size
+                pos["recommended_size"] = "medium"  
+                pos["grid_position"].update({"width": 4, "height": 3})
             elif rec["priority"] == 3:
-                pos["grid_position"].update({"x": 6, "y": 4, "width": 6, "height": 3})
+                # Third priority gets medium size
+                pos["recommended_size"] = "medium"
+                pos["grid_position"].update({"width": 4, "height": 3})
             else:
-                # Default to next available position
-                pos["grid_position"].update({"x": x, "y": y, "width": 4, "height": row_height})
-                x += 4
-                if x >= 12:
-                    x = 0
-                    y += row_height
+                # Lower priority gets small size
+                pos["recommended_size"] = "small"
+                pos["grid_position"].update({"width": 3, "height": 2})
+            
+            # Remove explicit x,y positioning for auto template to enable CSS auto-placement
+            if "x" in pos["grid_position"]:
+                del pos["grid_position"]["x"]
+            if "y" in pos["grid_position"]:
+                del pos["grid_position"]["y"]
         
         optimized["template_type"] = "auto"
         return optimized
