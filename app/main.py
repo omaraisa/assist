@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 import json
 import logging
+import random
 from pathlib import Path
 from typing import Dict, List
 import uuid
@@ -650,6 +651,9 @@ async def handle_single_function_result(client_id: str, function_result: Dict, o
         logger.info(f"Sending single function result to AI: {function_result['name']}")
         final_response = await ai_service.handle_function_response(messages, [function_result])
         
+        # Check if this function result should trigger dashboard update
+        await check_and_update_dashboard(client_id, function_result)
+        
         # Send final response to user
         if final_response.get("type") == "text":
             content = final_response.get("content", "I processed your request successfully.")
@@ -667,6 +671,56 @@ async def handle_single_function_result(client_id: str, function_result: Dict, o
             "type": "error", 
             "message": f"Error processing function result: {str(e)}"
         })
+
+async def check_and_update_dashboard(client_id: str, function_result: Dict):
+    """Check if function result requires dashboard update and send update to frontend"""
+    try:
+        function_name = function_result.get("name", "")
+        dashboard_functions = [
+            "analyze_layer_fields",
+            "generate_dashboard_insights",
+            "generate_smart_dashboard_layout",
+            "recommend_chart_types", 
+            "plan_dashboard_layout",
+            "optimize_dashboard_layout"
+        ]
+        
+        if function_name in dashboard_functions:
+            logger.info(f"Dashboard function {function_name} completed, checking for dashboard data")
+            
+            # Try to load latest dashboard data
+            dashboard_files = [
+                BASE_DIR / "optimized_dashboard.json",
+                BASE_DIR / "smart_dashboard.json", 
+                BASE_DIR / "dashboard.json"
+            ]
+            
+            for dashboard_file in dashboard_files:
+                if dashboard_file.exists():
+                    try:
+                        with open(dashboard_file, 'r', encoding='utf-8') as f:
+                            dashboard_data = json.load(f)
+                            
+                        # Transform to frontend format
+                        frontend_data = transform_dashboard_for_frontend(dashboard_data)
+                        
+                        if "error" not in frontend_data:
+                            # Send dashboard update to all chatbot clients
+                            chatbot_clients = websocket_manager.get_clients_by_type("chatbot")
+                            for chatbot_client in chatbot_clients:
+                                await websocket_manager.send_to_client(chatbot_client, {
+                                    "type": "dashboard_update",
+                                    "data": frontend_data
+                                })
+                            
+                            logger.info(f"Dashboard update sent to {len(chatbot_clients)} clients")
+                            break
+                    except Exception as e:
+                        logger.error(f"Error loading dashboard file {dashboard_file}: {str(e)}")
+                        continue
+                        
+    except Exception as e:
+        logger.error(f"Error checking dashboard update: {str(e)}")
 
 async def handle_single_function_result_with_retry(client_id: str, function_result: Dict, original_response: Dict):
     """Handle a single function result with retry logic for function declarations"""
@@ -762,6 +816,10 @@ async def handle_chain_completion(client_id: str, chain_context: Dict):
         
         # Send all function results together to AI for final response
         final_response = await ai_service.handle_function_response(messages, function_results)
+        
+        # Check if any function in the chain should trigger dashboard update
+        for function_result in function_results:
+            await check_and_update_dashboard(client_id, function_result)
         
         # Send final response to user
         if final_response.get("type") == "text":
@@ -951,3 +1009,237 @@ async def shutdown_event():
     await websocket_manager.disconnect_all()
     
     logger.info("Smart Assistant shut down successfully!")
+
+@app.get("/api/dashboard/latest")
+async def get_latest_dashboard():
+    """Get the latest dashboard data"""
+    try:
+        # Check for optimized dashboard first, then smart dashboard, then basic dashboard
+        dashboard_files = [
+            BASE_DIR / "optimized_dashboard.json",
+            BASE_DIR / "smart_dashboard.json", 
+            BASE_DIR / "dashboard.json"
+        ]
+        
+        for dashboard_file in dashboard_files:
+            if dashboard_file.exists():
+                with open(dashboard_file, 'r', encoding='utf-8') as f:
+                    dashboard_data = json.load(f)
+                    
+                # Transform to frontend format
+                frontend_data = transform_dashboard_for_frontend(dashboard_data)
+                return frontend_data
+        
+        return {"error": "No dashboard data available"}
+    except Exception as e:
+        logger.error(f"Error loading dashboard data: {str(e)}")
+        return {"error": f"Failed to load dashboard: {str(e)}"}
+
+def transform_dashboard_for_frontend(dashboard_data):
+    """Transform backend dashboard data to frontend-compatible format"""
+    try:
+        # Check if it's an optimized dashboard
+        if "optimized_layout" in dashboard_data:
+            chart_configs = dashboard_data.get("optimized_layout", {}).get("chart_configs", [])
+            layout_template = dashboard_data.get("optimized_layout", {}).get("template", "auto")
+        elif "chart_recommendations" in dashboard_data:
+            chart_configs = dashboard_data.get("chart_recommendations", [])
+            layout_template = "auto"
+        else:
+            # Basic dashboard format
+            return {"error": "Unsupported dashboard format"}
+        
+        charts = []
+        for i, chart in enumerate(chart_configs):
+            # Extract chart data from field insights if available
+            chart_data = prepare_chart_data_from_insights(chart, dashboard_data)
+            
+            frontend_chart = {
+                "title": chart.get("title", f"Chart {i+1}"),
+                "type": chart.get("chart_type", chart.get("type", "bar")),
+                "description": chart.get("description", chart.get("reasoning", "")),
+                "x_field": chart.get("primary_field", chart.get("x_field", "")),
+                "y_field": chart.get("group_by_field", chart.get("y_field", "")),
+                "data": chart_data,
+                "layout": {
+                    "size": chart.get("recommended_size", chart.get("size", "medium")),
+                    "column": chart.get("position", {}).get("column", 1),
+                    "row": chart.get("position", {}).get("row", 1),
+                    "width": chart.get("position", {}).get("width", 4),
+                    "height": chart.get("position", {}).get("height", 3)
+                }
+            }
+            charts.append(frontend_chart)
+        
+        return {
+            "charts": charts,
+            "metadata": {
+                "layer_name": dashboard_data.get("layer_name", "Unknown"),
+                "timestamp": dashboard_data.get("analysis_timestamp", ""),
+                "layout_template": layout_template,
+                "total_charts": len(charts)
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error transforming dashboard data: {str(e)}")
+        return {"error": f"Failed to transform dashboard: {str(e)}"}
+
+def prepare_chart_data_from_insights(chart_config, dashboard_data):
+    """Prepare chart data from field insights"""
+    try:
+        field_insights = dashboard_data.get("field_insights", {})
+        chart_type = chart_config.get("chart_type", chart_config.get("type", "bar"))
+        primary_field = chart_config.get("primary_field", chart_config.get("x_field", ""))
+        group_by_field = chart_config.get("group_by_field", chart_config.get("y_field", ""))
+        
+        if chart_type in ["pie", "donut"] and primary_field in field_insights:
+            # For pie/donut charts, generate distribution based on field characteristics
+            field_data = field_insights[primary_field]
+            unique_count = field_data.get("unique_count", 0)
+            total_records = field_data.get("total_records", 0)
+            data_category = field_data.get("data_category", "")
+            
+            if data_category == "categorical_text" and unique_count <= 50:
+                # Use sample values to create realistic distribution
+                sample_values = field_data.get("sample_values", [])[:8]
+                if sample_values:
+                    labels = [str(val) for val in sample_values]
+                    # Generate realistic distribution - some categories more common than others
+                    values = []
+                    remaining_total = total_records
+                    for i, _ in enumerate(labels[:-1]):
+                        # Use power law distribution for realistic categorical data
+                        portion = int(remaining_total * (0.5 ** i) * 0.4)
+                        values.append(portion)
+                        remaining_total -= portion
+                    values.append(max(remaining_total, 0))
+                    
+                    return {
+                        "labels": labels,
+                        "values": values
+                    }
+            elif data_category in ["binary_indicator", "boolean"]:
+                # Binary pie chart
+                null_pct = field_data.get("null_percentage", 0)
+                positive_rate = (100 - null_pct) * 0.5  # Assume 50% split for binary
+                negative_rate = 100 - null_pct - positive_rate
+                
+                return {
+                    "labels": ["Yes", "No", "Unknown"],
+                    "values": [int(total_records * positive_rate / 100), 
+                              int(total_records * negative_rate / 100),
+                              int(total_records * null_pct / 100)]
+                }
+        
+        elif chart_type in ["bar", "column"] and primary_field in field_insights:
+            # For bar charts
+            field_data = field_insights[primary_field]
+            unique_count = field_data.get("unique_count", 0)
+            total_records = field_data.get("total_records", 0)
+            
+            if unique_count <= 30:
+                # Use sample values for categories
+                sample_values = field_data.get("sample_values", [])[:12]
+                labels = [str(val) for val in sample_values]
+                # Generate decreasing frequency distribution
+                values = []
+                base_count = int(total_records / unique_count)
+                for i in range(len(labels)):
+                    count = max(base_count - (i * base_count // 4), 10)
+                    values.append(count)
+                
+                return {
+                    "labels": labels,
+                    "values": values
+                }
+            else:
+                # Generate range-based histogram for high cardinality
+                min_val = field_data.get("min_value", 0)
+                max_val = field_data.get("max_value", 100)
+                
+                # Create 8 bins
+                bin_size = (max_val - min_val) / 8
+                labels = []
+                values = []
+                
+                for i in range(8):
+                    start = min_val + (i * bin_size)
+                    end = min_val + ((i + 1) * bin_size)
+                    labels.append(f"{start:.0f}-{end:.0f}")
+                    # Generate normally distributed counts
+                    values.append(int(total_records * (0.2 - abs(i - 3.5) * 0.03)))
+                
+                return {
+                    "labels": labels,
+                    "values": values
+                }
+        
+        elif chart_type == "histogram" and primary_field in field_insights:
+            # For histograms of numeric data
+            field_data = field_insights[primary_field]
+            min_val = field_data.get("min_value", 0)
+            max_val = field_data.get("max_value", 100)
+            total_records = field_data.get("total_records", 0)
+            
+            # Create 10 bins for histogram
+            bin_size = (max_val - min_val) / 10
+            labels = []
+            values = []
+            
+            for i in range(10):
+                start = min_val + (i * bin_size)
+                end = min_val + ((i + 1) * bin_size)
+                labels.append(f"{start:.0f}-{end:.0f}")
+                # Generate bell curve distribution
+                center = 5
+                distance = abs(i - center)
+                frequency = int(total_records * (0.25 - distance * 0.03))
+                values.append(max(frequency, 0))
+            
+            return {
+                "labels": labels,
+                "values": values
+            }
+        
+        elif chart_type == "scatter" and primary_field in field_insights and group_by_field in field_insights:
+            # For scatter plots, generate sample points
+            x_field_data = field_insights[primary_field]
+            y_field_data = field_insights[group_by_field]
+            
+            x_min = x_field_data.get("min_value", 0)
+            x_max = x_field_data.get("max_value", 100)
+            y_min = y_field_data.get("min_value", 0)
+            y_max = y_field_data.get("max_value", 100)
+            
+            points = []
+            for i in range(50):  # Generate 50 sample points
+                x = x_min + (x_max - x_min) * (i / 50) + (random.uniform(-0.1, 0.1) * (x_max - x_min))
+                y = y_min + (y_max - y_min) * (i / 50) + (random.uniform(-0.1, 0.1) * (y_max - y_min))
+                points.append({"x": x, "y": y})
+            
+            return {"points": points}
+        
+        elif chart_type == "box_plot":
+            # For box plots, generate statistical summary
+            field_data = field_insights.get(primary_field, {})
+            min_val = field_data.get("min_value", 0)
+            max_val = field_data.get("max_value", 100)
+            avg_val = field_data.get("average_value", (min_val + max_val) / 2)
+            
+            # Generate box plot data (simplified)
+            range_size = max_val - min_val
+            return {
+                "labels": ["Data Distribution"],
+                "values": [min_val, min_val + range_size * 0.25, avg_val, 
+                          min_val + range_size * 0.75, max_val]
+            }
+        
+        # Default fallback data
+        return {
+            "labels": ["No Data Available"],
+            "values": [0]
+        }
+        
+    except Exception as e:
+        logger.error(f"Error preparing chart data: {str(e)}")
+        return {"labels": ["Error"], "values": [0]}

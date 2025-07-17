@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArcGIS Pro Smart Assistant</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 </head>
 <body>
-    <main class="chat-container">
+    <div class="app-layout">
+        <main class="chat-container">
         <header class="chat-header">
             <h1>ArcGIS Pro Smart Assistant</h1>
             <div class="header-controls">
@@ -54,6 +57,27 @@
             </form>
         </footer>
     </main>
+
+    <!-- Dashboard Panel -->
+    <aside id="dashboard-panel" class="dashboard-panel">
+        <header class="dashboard-header">
+            <h2>Dashboard</h2>
+            <div class="dashboard-controls">
+                <button id="toggle-dashboard" class="btn-secondary">Hide</button>
+                <button id="refresh-dashboard" class="btn-primary">Refresh</button>
+            </div>
+        </header>
+        
+        <div class="dashboard-content">
+            <div id="dashboard-grid" class="dashboard-grid">
+                <div class="dashboard-placeholder">
+                    <h3>No Dashboard Available</h3>
+                    <p>Ask the AI to analyze a layer to generate dashboard insights</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+    </div>
 
     <!-- Loading indicator -->
     <div id="loading-indicator" class="loading-indicator" style="display: none;">

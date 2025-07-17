@@ -23,8 +23,37 @@ class SmartAssistantClient {
             apiKeySection: document.querySelector('.api-key-section'),
             apiKeyInput: document.getElementById('api-key-input'),
             saveApiKeyBtn: document.getElementById('save-api-key'),
-            loadingIndicator: document.getElementById('loading-indicator')
+            loadingIndicator: document.getElementById('loading-indicator'),
+            // Dashboard elements
+            dashboardPanel: document.getElementById('dashboard-panel'),
+            dashboardGrid: document.getElementById('dashboard-grid'),
+            toggleDashboard: document.getElementById('toggle-dashboard'),
+            refreshDashboard: document.getElementById('refresh-dashboard')
         };
+        
+        // Initialize dashboard
+        this.dashboard = new DashboardRenderer(this.elements.dashboardGrid);
+        
+        // Check for existing dashboard data on init
+        this.checkInitialDashboardData();
+    }
+    
+    async checkInitialDashboardData() {
+        try {
+            const response = await fetch('/api/dashboard/latest');
+            if (response.ok) {
+                const dashboardData = await response.json();
+                if (!dashboardData.error) {
+                    this.dashboard.render(dashboardData);
+                    // Don't auto-show on page load, user should manually show or it will appear when new data comes
+                } else {
+                    this.dashboard.showPlaceholder();
+                }
+            }
+        } catch (error) {
+            console.log('No existing dashboard data found');
+            this.dashboard.showPlaceholder();
+        }
     }
     
     setupEventListeners() {
@@ -53,6 +82,15 @@ class SmartAssistantClient {
         // API key management
         this.elements.saveApiKeyBtn.addEventListener('click', () => {
             this.saveApiKey();
+        });
+        
+        // Dashboard controls
+        this.elements.toggleDashboard.addEventListener('click', () => {
+            this.toggleDashboard();
+        });
+        
+        this.elements.refreshDashboard.addEventListener('click', () => {
+            this.refreshDashboard();
         });
         
         // Show/hide API key section based on model
@@ -153,7 +191,12 @@ class SmartAssistantClient {
             case 'software_state_updated':
                 console.log('ArcGIS Pro state updated:', message.data);
                 break;
-                  case 'error':
+                
+            case 'dashboard_update':
+                this.handleDashboardUpdate(message.data);
+                break;
+                
+            case 'error':
                 this.addMessage('System', `Error: ${message.message}`, 'error');
                 this.hideLoading();
                 break;
@@ -383,6 +426,346 @@ class SmartAssistantClient {
         
         // Update API key section visibility
         this.toggleApiKeySection();
+    }
+    
+    // Dashboard methods
+    toggleDashboard() {
+        const panel = this.elements.dashboardPanel;
+        const button = this.elements.toggleDashboard;
+        const appLayout = document.querySelector('.app-layout');
+        
+        if (panel.classList.contains('active')) {
+            panel.classList.remove('active');
+            appLayout.classList.remove('dashboard-active');
+            button.textContent = 'Show';
+        } else {
+            panel.classList.add('active');
+            appLayout.classList.add('dashboard-active');
+            button.textContent = 'Hide';
+        }
+    }
+    
+    async refreshDashboard() {
+        try {
+            const response = await fetch('/api/dashboard/latest');
+            if (response.ok) {
+                const dashboardData = await response.json();
+                if (dashboardData.error) {
+                    console.log('No dashboard data available');
+                    this.dashboard.showPlaceholder();
+                } else {
+                    this.dashboard.render(dashboardData);
+                    this.showDashboard(); // Show dashboard when manually refreshed and data is available
+                }
+            }
+        } catch (error) {
+            console.error('Failed to refresh dashboard:', error);
+            this.dashboard.showPlaceholder();
+        }
+    }
+    
+    updateDashboard(dashboardData) {
+        if (dashboardData && this.dashboard) {
+            this.dashboard.render(dashboardData);
+        }
+    }
+    
+    handleDashboardUpdate(dashboardData) {
+        console.log('Dashboard update received:', dashboardData);
+        if (dashboardData && this.dashboard) {
+            this.dashboard.render(dashboardData);
+            
+            // Show dashboard panel automatically when new data is available
+            this.showDashboard();
+        }
+    }
+    
+    showDashboard() {
+        const panel = this.elements.dashboardPanel;
+        const button = this.elements.toggleDashboard;
+        const appLayout = document.querySelector('.app-layout');
+        
+        if (!panel.classList.contains('active')) {
+            panel.classList.add('active');
+            appLayout.classList.add('dashboard-active');
+            button.textContent = 'Hide';
+        }
+    }
+    
+    hideDashboard() {
+        const panel = this.elements.dashboardPanel;
+        const button = this.elements.toggleDashboard;
+        const appLayout = document.querySelector('.app-layout');
+        
+        panel.classList.remove('active');
+        appLayout.classList.remove('dashboard-active');
+        button.textContent = 'Show';
+    }
+}
+
+// Dashboard Renderer Class
+class DashboardRenderer {
+    constructor(gridElement) {
+        this.gridElement = gridElement;
+        this.charts = new Map();
+        this.currentData = null;
+    }
+    
+    render(dashboardData) {
+        if (!dashboardData || !dashboardData.charts) {
+            this.showPlaceholder();
+            return;
+        }
+        
+        this.currentData = dashboardData;
+        this.clearGrid();
+        
+        // Create chart containers based on layout
+        dashboardData.charts.forEach((chart, index) => {
+            this.createChartContainer(chart, index);
+        });
+    }
+    
+    clearGrid() {
+        this.gridElement.innerHTML = '';
+        this.charts.clear();
+    }
+    
+    showPlaceholder() {
+        this.gridElement.innerHTML = `
+            <div class="dashboard-placeholder">
+                <h3>No Dashboard Available</h3>
+                <p>Ask the AI to analyze a layer to generate dashboard insights</p>
+            </div>
+        `;
+    }
+    
+    createChartContainer(chartConfig, index) {
+        const container = document.createElement('div');
+        container.className = 'chart-container';
+        container.id = `chart-${index}`;
+        
+        // Apply grid positioning
+        const layout = chartConfig.layout || { size: 'medium' };
+        const size = layout.size || 'medium';
+        container.classList.add(`chart-${size}`);
+        
+        // If specific position is provided, use it
+        if (layout.column && layout.row) {
+            const width = layout.width || this.getSizeWidth(size);
+            const height = layout.height || this.getSizeHeight(size);
+            container.style.gridColumn = `${layout.column} / span ${width}`;
+            container.style.gridRow = `${layout.row} / span ${height}`;
+        }
+        // Otherwise let CSS handle it with the size class
+        
+        container.innerHTML = `
+            <div class="chart-header">
+                <h3 class="chart-title">${chartConfig.title || 'Chart'}</h3>
+                <span class="chart-type">${chartConfig.type.toUpperCase()}</span>
+            </div>
+            <div class="chart-canvas-wrapper">
+                <canvas class="chart-canvas" id="canvas-${index}"></canvas>
+            </div>
+            <div class="chart-info">
+                ${chartConfig.description || ''}
+            </div>
+        `;
+        
+        this.gridElement.appendChild(container);
+        
+        // Create the chart
+        setTimeout(() => {
+            this.createChart(chartConfig, `canvas-${index}`);
+        }, 100);
+    }
+    
+    getSizeWidth(size) {
+        const widthMap = {
+            'small': 3,
+            'medium': 4,
+            'large': 6,
+            'wide': 8,
+            'tall': 4,
+            'full': 12
+        };
+        return widthMap[size] || 4;
+    }
+    
+    getSizeHeight(size) {
+        const heightMap = {
+            'small': 2,
+            'medium': 3,
+            'large': 4,
+            'wide': 3,
+            'tall': 5,
+            'full': 4
+        };
+        return heightMap[size] || 3;
+    }
+    
+    createChart(config, canvasId) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        
+        // Prepare chart data and options based on type
+        const chartData = this.prepareChartData(config);
+        const chartOptions = this.getChartOptions(config);
+        
+        try {
+            const chart = new Chart(ctx, {
+                type: this.mapChartType(config.type),
+                data: chartData,
+                options: chartOptions
+            });
+            
+            this.charts.set(canvasId, chart);
+        } catch (error) {
+            console.error('Failed to create chart:', error);
+            this.showChartError(canvas.parentElement, error.message);
+        }
+    }
+    
+    mapChartType(type) {
+        const typeMap = {
+            'pie': 'pie',
+            'donut': 'doughnut',
+            'bar': 'bar',
+            'column': 'bar',
+            'histogram': 'bar',
+            'line': 'line',
+            'scatter': 'scatter',
+            'area': 'line',
+            'box_plot': 'bar'
+        };
+        return typeMap[type] || 'bar';
+    }
+    
+    prepareChartData(config) {
+        const data = config.data || {};
+        
+        // Handle different chart types
+        switch (config.type) {
+            case 'pie':
+            case 'donut':
+                return {
+                    labels: data.labels || [],
+                    datasets: [{
+                        data: data.values || [],
+                        backgroundColor: this.generateColors(data.labels?.length || 0),
+                        borderWidth: 1
+                    }]
+                };
+                
+            case 'bar':
+            case 'column':
+            case 'histogram':
+                return {
+                    labels: data.labels || [],
+                    datasets: [{
+                        label: config.y_field || 'Count',
+                        data: data.values || [],
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                };
+                
+            case 'line':
+            case 'area':
+                return {
+                    labels: data.labels || [],
+                    datasets: [{
+                        label: config.y_field || 'Value',
+                        data: data.values || [],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: config.type === 'area' ? 'rgba(75, 192, 192, 0.2)' : 'transparent',
+                        fill: config.type === 'area',
+                        tension: 0.1
+                    }]
+                };
+                
+            case 'scatter':
+                return {
+                    datasets: [{
+                        label: `${config.x_field} vs ${config.y_field}`,
+                        data: data.points || [],
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                };
+                
+            default:
+                return { labels: [], datasets: [] };
+        }
+    }
+    
+    getChartOptions(config) {
+        const baseOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: config.type !== 'histogram',
+                    position: 'bottom'
+                },
+                title: {
+                    display: false
+                }
+            }
+        };
+        
+        // Add scale options for non-pie charts
+        if (!['pie', 'donut'].includes(config.type)) {
+            baseOptions.scales = {
+                x: {
+                    title: {
+                        display: true,
+                        text: config.x_field || ''
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: config.y_field || 'Count'
+                    },
+                    beginAtZero: true
+                }
+            };
+        }
+        
+        return baseOptions;
+    }
+    
+    generateColors(count) {
+        const colors = [
+            'rgba(255, 99, 132, 0.8)',
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(255, 205, 86, 0.8)',
+            'rgba(75, 192, 192, 0.8)',
+            'rgba(153, 102, 255, 0.8)',
+            'rgba(255, 159, 64, 0.8)',
+            'rgba(199, 199, 199, 0.8)',
+            'rgba(83, 102, 255, 0.8)'
+        ];
+        
+        const result = [];
+        for (let i = 0; i < count; i++) {
+            result.push(colors[i % colors.length]);
+        }
+        return result;
+    }
+    
+    showChartError(container, message) {
+        const wrapper = container.querySelector('.chart-canvas-wrapper');
+        wrapper.innerHTML = `
+            <div class="dashboard-error">
+                <strong>Chart Error:</strong> ${message}
+            </div>
+        `;
     }
 }
 
