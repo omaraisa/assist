@@ -1,6 +1,6 @@
 {
   "layer_name": "District",
-  "analysis_timestamp": "2025-07-17T15:38:42.220439",
+  "analysis_timestamp": "2025-07-21T09:28:21.076733",
   "dashboard_metadata": {
     "grid_system": "12x9",
     "total_charts": 8,
@@ -20,16 +20,16 @@
       "null_count": 0,
       "null_percentage": 0.0,
       "sample_values": [
-        "المحجر-1",
-        "الرواسي",
-        "الجزيرة",
-        "المسرة",
-        "الروابي",
-        "الوسام",
-        "الحمراء",
-        "الشرفية",
-        "حكومي-2",
-        "سليتة"
+        "بلدة ثول",
+        "العقيق",
+        "جامعة",
+        "المعيلية",
+        "الخليج",
+        "الرياض",
+        "الروضة",
+        "البلد-3",
+        "المروج",
+        "حكومي-3"
       ],
       "avg_length": 7.5
     },
@@ -45,16 +45,16 @@
       "null_count": 91,
       "null_percentage": 42.92,
       "sample_values": [
-        "AL FARDOUS",
-        "AL QRYENAH",
-        "AL HAMADHNYAH",
-        "AL HENDAWEYYAH",
-        "AL QRYAT",
+        "AL BAGDADEYYAH AL GARBEYYAH 5",
+        "AL RAHMAH",
+        "AL AMWAJ",
+        "GULEEL",
+        "AL WADI",
+        "AL FAIHA|A",
+        "AL SAHEFAH",
+        "AL ADEL",
         "BURAIMAN",
-        "BETRUMEEN",
-        "AL BALAD",
-        "AL MARJAN",
-        "ALWISAM"
+        "AL RAWDHAH"
       ],
       "avg_length": 11.3
     },
@@ -222,16 +222,16 @@
       "null_count": 0,
       "null_percentage": 0.0,
       "sample_values": [
-        "6-222",
-        "9-104",
-        "8-229",
-        "9-108",
-        "18-121",
+        "11-232B",
         "15-410",
-        "21-259",
-        "12-265",
-        "13-315",
-        "6-219"
+        "1-303",
+        "8-111",
+        "18-119",
+        "9-203",
+        "12-214",
+        "6-221",
+        "8-113",
+        "12-250"
       ],
       "avg_length": 5.6
     },

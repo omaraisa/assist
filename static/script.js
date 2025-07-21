@@ -28,7 +28,8 @@ class SmartAssistantClient {
             dashboardPanel: document.getElementById('dashboard-panel'),
             dashboardGrid: document.getElementById('dashboard-grid'),
             toggleDashboard: document.getElementById('toggle-dashboard'),
-            refreshDashboard: document.getElementById('refresh-dashboard')
+            refreshDashboard: document.getElementById('refresh-dashboard'),
+            viewDashboardBtn: document.getElementById('view-dashboard-btn')
         };
         
         // Initialize dashboard
@@ -45,6 +46,7 @@ class SmartAssistantClient {
                 const dashboardData = await response.json();
                 if (!dashboardData.error) {
                     this.dashboard.render(dashboardData);
+                    this.showViewDashboardButton();
                     // Don't auto-show on page load, user should manually show or it will appear when new data comes
                 } else {
                     this.dashboard.showPlaceholder();
@@ -91,6 +93,10 @@ class SmartAssistantClient {
         
         this.elements.refreshDashboard.addEventListener('click', () => {
             this.refreshDashboard();
+        });
+        
+        this.elements.viewDashboardBtn.addEventListener('click', () => {
+            this.showDashboard();
         });
         
         // Show/hide API key section based on model
@@ -438,10 +444,15 @@ class SmartAssistantClient {
             panel.classList.remove('active');
             appLayout.classList.remove('dashboard-active');
             button.textContent = 'Show';
+            // Show view dashboard button when dashboard is hidden
+            if (this.dashboard && this.dashboard.currentData) {
+                this.showViewDashboardButton();
+            }
         } else {
             panel.classList.add('active');
             appLayout.classList.add('dashboard-active');
             button.textContent = 'Hide';
+            this.hideViewDashboardButton();
         }
     }
     
@@ -453,6 +464,7 @@ class SmartAssistantClient {
                 if (dashboardData.error) {
                     console.log('No dashboard data available');
                     this.dashboard.showPlaceholder();
+                    this.hideViewDashboardButton();
                 } else {
                     this.dashboard.render(dashboardData);
                     this.showDashboard(); // Show dashboard when manually refreshed and data is available
@@ -461,6 +473,7 @@ class SmartAssistantClient {
         } catch (error) {
             console.error('Failed to refresh dashboard:', error);
             this.dashboard.showPlaceholder();
+            this.hideViewDashboardButton();
         }
     }
     
@@ -474,6 +487,7 @@ class SmartAssistantClient {
         console.log('Dashboard update received:', dashboardData);
         if (dashboardData && this.dashboard) {
             this.dashboard.render(dashboardData);
+            this.showViewDashboardButton();
             
             // Show dashboard panel automatically when new data is available
             this.showDashboard();
@@ -489,6 +503,7 @@ class SmartAssistantClient {
             panel.classList.add('active');
             appLayout.classList.add('dashboard-active');
             button.textContent = 'Hide';
+            this.hideViewDashboardButton();
         }
     }
     
@@ -500,6 +515,19 @@ class SmartAssistantClient {
         panel.classList.remove('active');
         appLayout.classList.remove('dashboard-active');
         button.textContent = 'Show';
+        
+        // Show the view dashboard button if there's data available
+        if (this.dashboard && this.dashboard.currentData) {
+            this.showViewDashboardButton();
+        }
+    }
+    
+    showViewDashboardButton() {
+        this.elements.viewDashboardBtn.style.display = 'inline-block';
+    }
+    
+    hideViewDashboardButton() {
+        this.elements.viewDashboardBtn.style.display = 'none';
     }
 }
 

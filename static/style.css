@@ -151,6 +151,23 @@ body {
   background-color: #0073e0;
 }
 
+.btn-dashboard {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #28a745;
+  color: white;
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+.btn-dashboard:hover {
+  background-color: #218838;
+}
+
 #connection-status {
   font-size: 0.9rem;
   font-weight: 500;
