@@ -468,22 +468,6 @@ class FunctionDeclaration:
             "required": ["layer_name"]
         },
         
-        "generate_dashboard_insights": {
-            "name": "generate_dashboard_insights",
-            "description": "Generate comprehensive dashboard insights for a layer including field analysis and chart recommendations. Saves results to a JSON file for dashboard generation. This is the main function for Stage 1 of dashboard analysis.",
-            "parameters": {
-                "layer_name": {
-                    "type": "string",
-                    "description": "The name of the layer to analyze for dashboard insights"
-                },
-                "output_file": {
-                    "type": "string",
-                    "description": "Name of the output JSON file to save insights",
-                    "default": "dashboard.json"
-                }
-            },
-            "required": ["layer_name"]
-        },
 
         "generate_smart_dashboard_layout": {
             "name": "generate_smart_dashboard_layout",

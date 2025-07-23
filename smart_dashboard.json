@@ -1,11 +1,30 @@
 {
   "layer_name": "District",
-  "analysis_timestamp": "2025-07-21T09:28:21.076733",
+  "analysis_timestamp": "2025-07-23T11:37:23.945994",
   "dashboard_metadata": {
     "grid_system": "12x9",
     "total_charts": 8,
     "layout_strategy": "priority_based",
-    "version": "2.0"
+    "version": "2.1",
+    "field_filtering": {
+      "total_fields": 19,
+      "relevant_fields": 14,
+      "filtered_out": 5,
+      "categories": {
+        "free_text": 2,
+        "numeric": 5,
+        "constant": 1,
+        "categorical": 3,
+        "identifier": 3,
+        "mixed": 4,
+        "technical": 1
+      },
+      "filter_reasons": {
+        "Constant or near-constant values": 1,
+        "Identifier field with high uniqueness": 3,
+        "Technical/system field": 1
+      }
+    }
   },
   "field_insights": {
     "ARNAME": {
@@ -20,18 +39,26 @@
       "null_count": 0,
       "null_percentage": 0.0,
       "sample_values": [
-        "بلدة ثول",
-        "العقيق",
-        "جامعة",
-        "المعيلية",
-        "الخليج",
-        "الرياض",
-        "الروضة",
-        "البلد-3",
-        "المروج",
-        "حكومي-3"
+        "الثغر",
+        "التضامن",
+        "الياقوت",
+        "الأجواد",
+        "الرابية",
+        "العلاء",
+        "الندى",
+        "الحرازات",
+        "الفيحاء",
+        "المنتزه"
       ],
-      "avg_length": 7.5
+      "avg_length": 7.5,
+      "classification": {
+        "field_name": "ARNAME",
+        "category": "free_text",
+        "importance_score": 40,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "low"
+      }
     },
     "ENNAME": {
       "field_name": "ENNAME",
@@ -45,18 +72,26 @@
       "null_count": 91,
       "null_percentage": 42.92,
       "sample_values": [
-        "AL BAGDADEYYAH AL GARBEYYAH 5",
-        "AL RAHMAH",
+        "AL JAWHARAH",
+        "AL NAEEM",
+        "AL QOUZEEN",
         "AL AMWAJ",
-        "GULEEL",
-        "AL WADI",
-        "AL FAIHA|A",
-        "AL SAHEFAH",
-        "AL ADEL",
-        "BURAIMAN",
-        "AL RAWDHAH"
+        "AL FAROUK",
+        "MADAEN AL FAHAD",
+        "AL BAWADI",
+        "AL HENDAWEYYAH",
+        "AL NASEEM",
+        "OBHUR AL JANOUBEYYAH"
       ],
-      "avg_length": 11.3
+      "avg_length": 11.3,
+      "classification": {
+        "field_name": "ENNAME",
+        "category": "free_text",
+        "importance_score": 65,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "medium"
+      }
     },
     "OFFICIALAR": {
       "field_name": "OFFICIALAR",
@@ -76,25 +111,15 @@
         0.117637810206,
         80.8022778953,
         11.112
-      ]
-    },
-    "DISTRICTCO": {
-      "field_name": "DISTRICTCO",
-      "field_type": "Integer",
-      "field_length": 4,
-      "field_precision": 0,
-      "field_scale": 0,
-      "total_records": 212,
-      "data_category": "categorical_numeric",
-      "unique_count": 1,
-      "null_count": 0,
-      "null_percentage": 0.0,
-      "min_value": 0,
-      "max_value": 0,
-      "average_value": 0.0,
-      "sample_values": [
-        0
-      ]
+      ],
+      "classification": {
+        "field_name": "OFFICIALAR",
+        "category": "numeric",
+        "importance_score": 85,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     },
     "NOOFSUBDIS": {
       "field_name": "NOOFSUBDIS",
@@ -121,7 +146,15 @@
         7,
         8,
         9
-      ]
+      ],
+      "classification": {
+        "field_name": "NOOFSUBDIS",
+        "category": "categorical",
+        "importance_score": 100,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     },
     "SUBMUNICIP": {
       "field_name": "SUBMUNICIP",
@@ -148,27 +181,15 @@
         9,
         10,
         11
-      ]
-    },
-    "DISTRICTID": {
-      "field_name": "DISTRICTID",
-      "field_type": "Integer",
-      "field_length": 4,
-      "field_precision": 0,
-      "field_scale": 0,
-      "total_records": 212,
-      "data_category": "continuous_numeric",
-      "unique_count": 211,
-      "null_count": 0,
-      "null_percentage": 0.0,
-      "min_value": 30,
-      "max_value": 13520,
-      "average_value": 1849.278,
-      "sample_values": [
-        30,
-        13520,
-        1849.278
-      ]
+      ],
+      "classification": {
+        "field_name": "SUBMUNICIP",
+        "category": "categorical",
+        "importance_score": 100,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     },
     "OFFICIALDI": {
       "field_name": "OFFICIALDI",
@@ -188,72 +209,15 @@
         0,
         415,
         248.623
-      ]
-    },
-    "SHAPE_Leng": {
-      "field_name": "SHAPE_Leng",
-      "field_type": "Double",
-      "field_length": 8,
-      "field_precision": 0,
-      "field_scale": 0,
-      "total_records": 212,
-      "data_category": "continuous_numeric",
-      "unique_count": 212,
-      "null_count": 0,
-      "null_percentage": 0.0,
-      "min_value": 1791.38150974,
-      "max_value": 74819.7672774,
-      "average_value": 15244.679,
-      "sample_values": [
-        1791.38150974,
-        74819.7672774,
-        15244.679
-      ]
-    },
-    "Index_Code": {
-      "field_name": "Index_Code",
-      "field_type": "String",
-      "field_length": 254,
-      "field_precision": 0,
-      "field_scale": 0,
-      "total_records": 212,
-      "data_category": "free_text",
-      "unique_count": 211,
-      "null_count": 0,
-      "null_percentage": 0.0,
-      "sample_values": [
-        "11-232B",
-        "15-410",
-        "1-303",
-        "8-111",
-        "18-119",
-        "9-203",
-        "12-214",
-        "6-221",
-        "8-113",
-        "12-250"
       ],
-      "avg_length": 5.6
-    },
-    "DIST_ID": {
-      "field_name": "DIST_ID",
-      "field_type": "Integer",
-      "field_length": 4,
-      "field_precision": 0,
-      "field_scale": 0,
-      "total_records": 212,
-      "data_category": "continuous_numeric",
-      "unique_count": 212,
-      "null_count": 0,
-      "null_percentage": 0.0,
-      "min_value": 1,
-      "max_value": 212,
-      "average_value": 106.5,
-      "sample_values": [
-        1,
-        212,
-        106.5
-      ]
+      "classification": {
+        "field_name": "OFFICIALDI",
+        "category": "mixed",
+        "importance_score": 100,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     },
     "Garden": {
       "field_name": "Garden",
@@ -273,7 +237,15 @@
         0,
         6698,
         735.887
-      ]
+      ],
+      "classification": {
+        "field_name": "Garden",
+        "category": "numeric",
+        "importance_score": 100,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     },
     "Lighting": {
       "field_name": "Lighting",
@@ -293,7 +265,15 @@
         0,
         6071,
         859.491
-      ]
+      ],
+      "classification": {
+        "field_name": "Lighting",
+        "category": "mixed",
+        "importance_score": 100,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     },
     "Tree": {
       "field_name": "Tree",
@@ -313,7 +293,15 @@
         0,
         31120,
         3147.75
-      ]
+      ],
+      "classification": {
+        "field_name": "Tree",
+        "category": "numeric",
+        "importance_score": 100,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     },
     "Parcel": {
       "field_name": "Parcel",
@@ -333,7 +321,15 @@
         0,
         18413,
         1615.25
-      ]
+      ],
+      "classification": {
+        "field_name": "Parcel",
+        "category": "mixed",
+        "importance_score": 100,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     },
     "Middle_Island": {
       "field_name": "Middle_Island",
@@ -353,7 +349,15 @@
         0,
         514,
         64.241
-      ]
+      ],
+      "classification": {
+        "field_name": "Middle_Island",
+        "category": "mixed",
+        "importance_score": 100,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     },
     "Building": {
       "field_name": "Building",
@@ -373,7 +377,15 @@
         0,
         23134,
         2722.434
-      ]
+      ],
+      "classification": {
+        "field_name": "Building",
+        "category": "numeric",
+        "importance_score": 100,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     },
     "Sport": {
       "field_name": "Sport",
@@ -393,7 +405,15 @@
         0,
         73,
         6.123
-      ]
+      ],
+      "classification": {
+        "field_name": "Sport",
+        "category": "categorical",
+        "importance_score": 100,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     },
     "Street": {
       "field_name": "Street",
@@ -413,23 +433,20 @@
         0,
         6698,
         735.887
-      ]
+      ],
+      "classification": {
+        "field_name": "Street",
+        "category": "numeric",
+        "importance_score": 100,
+        "is_relevant": true,
+        "filter_reason": null,
+        "analytical_value": "high"
+      }
     }
   },
   "chart_recommendations": [
     {
       "chart_id": 1,
-      "chart_type": "pie",
-      "priority": 1,
-      "title": "Distribution of DISTRICTCO",
-      "primary_field": "DISTRICTCO",
-      "description": "Pie chart showing the distribution of 1 categories in DISTRICTCO",
-      "suitability_score": 0.9,
-      "data_insight": "Categorical breakdown with 1 unique values",
-      "recommended_size": "medium"
-    },
-    {
-      "chart_id": 3,
       "chart_type": "histogram",
       "priority": 1,
       "title": "Distribution of OFFICIALAR",
@@ -440,18 +457,7 @@
       "recommended_size": "medium"
     },
     {
-      "chart_id": 4,
-      "chart_type": "histogram",
-      "priority": 1,
-      "title": "Distribution of DISTRICTID",
-      "primary_field": "DISTRICTID",
-      "description": "Histogram showing the distribution of DISTRICTID values",
-      "suitability_score": 0.9,
-      "data_insight": "Value distribution from 30 to 13520",
-      "recommended_size": "medium"
-    },
-    {
-      "chart_id": 5,
+      "chart_id": 2,
       "chart_type": "histogram",
       "priority": 1,
       "title": "Distribution of OFFICIALDI",
@@ -462,29 +468,7 @@
       "recommended_size": "medium"
     },
     {
-      "chart_id": 6,
-      "chart_type": "histogram",
-      "priority": 1,
-      "title": "Distribution of SHAPE_Leng",
-      "primary_field": "SHAPE_Leng",
-      "description": "Histogram showing the distribution of SHAPE_Leng values",
-      "suitability_score": 0.9,
-      "data_insight": "Value distribution from 1791.38150974 to 74819.7672774",
-      "recommended_size": "medium"
-    },
-    {
-      "chart_id": 7,
-      "chart_type": "histogram",
-      "priority": 1,
-      "title": "Distribution of DIST_ID",
-      "primary_field": "DIST_ID",
-      "description": "Histogram showing the distribution of DIST_ID values",
-      "suitability_score": 0.9,
-      "data_insight": "Value distribution from 1 to 212",
-      "recommended_size": "medium"
-    },
-    {
-      "chart_id": 8,
+      "chart_id": 3,
       "chart_type": "histogram",
       "priority": 1,
       "title": "Distribution of Garden",
@@ -495,7 +479,7 @@
       "recommended_size": "medium"
     },
     {
-      "chart_id": 9,
+      "chart_id": 4,
       "chart_type": "histogram",
       "priority": 1,
       "title": "Distribution of Lighting",
@@ -503,6 +487,50 @@
       "description": "Histogram showing the distribution of Lighting values",
       "suitability_score": 0.9,
       "data_insight": "Value distribution from 0 to 6071",
+      "recommended_size": "medium"
+    },
+    {
+      "chart_id": 5,
+      "chart_type": "histogram",
+      "priority": 1,
+      "title": "Distribution of Tree",
+      "primary_field": "Tree",
+      "description": "Histogram showing the distribution of Tree values",
+      "suitability_score": 0.9,
+      "data_insight": "Value distribution from 0 to 31120",
+      "recommended_size": "medium"
+    },
+    {
+      "chart_id": 6,
+      "chart_type": "histogram",
+      "priority": 1,
+      "title": "Distribution of Parcel",
+      "primary_field": "Parcel",
+      "description": "Histogram showing the distribution of Parcel values",
+      "suitability_score": 0.9,
+      "data_insight": "Value distribution from 0 to 18413",
+      "recommended_size": "medium"
+    },
+    {
+      "chart_id": 7,
+      "chart_type": "histogram",
+      "priority": 1,
+      "title": "Distribution of Middle_Island",
+      "primary_field": "Middle_Island",
+      "description": "Histogram showing the distribution of Middle_Island values",
+      "suitability_score": 0.9,
+      "data_insight": "Value distribution from 0 to 514",
+      "recommended_size": "medium"
+    },
+    {
+      "chart_id": 8,
+      "chart_type": "histogram",
+      "priority": 1,
+      "title": "Distribution of Building",
+      "primary_field": "Building",
+      "description": "Histogram showing the distribution of Building values",
+      "suitability_score": 0.9,
+      "data_insight": "Value distribution from 0 to 23134",
       "recommended_size": "medium"
     }
   ],
@@ -514,11 +542,25 @@
     "chart_positions": [
       {
         "chart_id": 1,
-        "chart_type": "pie",
-        "title": "Distribution of DISTRICTCO",
+        "chart_type": "histogram",
+        "title": "Distribution of OFFICIALAR",
         "recommended_size": "medium",
         "grid_position": {
           "x": 0,
+          "y": 0,
+          "width": 4,
+          "height": 3
+        },
+        "priority": 1,
+        "z_index": 1
+      },
+      {
+        "chart_id": 2,
+        "chart_type": "histogram",
+        "title": "Distribution of OFFICIALDI",
+        "recommended_size": "medium",
+        "grid_position": {
+          "x": 4,
           "y": 0,
           "width": 4,
           "height": 3
@@ -529,21 +571,7 @@
       {
         "chart_id": 3,
         "chart_type": "histogram",
-        "title": "Distribution of OFFICIALAR",
-        "recommended_size": "medium",
-        "grid_position": {
-          "x": 4,
-          "y": 0,
-          "width": 4,
-          "height": 3
-        },
-        "priority": 1,
-        "z_index": 1
-      },
-      {
-        "chart_id": 4,
-        "chart_type": "histogram",
-        "title": "Distribution of DISTRICTID",
+        "title": "Distribution of Garden",
         "recommended_size": "medium",
         "grid_position": {
           "x": 8,
@@ -555,9 +583,9 @@
         "z_index": 1
       },
       {
-        "chart_id": 5,
+        "chart_id": 4,
         "chart_type": "histogram",
-        "title": "Distribution of OFFICIALDI",
+        "title": "Distribution of Lighting",
         "recommended_size": "medium",
         "grid_position": {
           "x": 0,
@@ -569,9 +597,9 @@
         "z_index": 1
       },
       {
-        "chart_id": 6,
+        "chart_id": 5,
         "chart_type": "histogram",
-        "title": "Distribution of SHAPE_Leng",
+        "title": "Distribution of Tree",
         "recommended_size": "medium",
         "grid_position": {
           "x": 4,
@@ -583,9 +611,9 @@
         "z_index": 1
       },
       {
-        "chart_id": 7,
+        "chart_id": 6,
         "chart_type": "histogram",
-        "title": "Distribution of DIST_ID",
+        "title": "Distribution of Parcel",
         "recommended_size": "medium",
         "grid_position": {
           "x": 8,
@@ -597,9 +625,9 @@
         "z_index": 1
       },
       {
-        "chart_id": 8,
+        "chart_id": 7,
         "chart_type": "histogram",
-        "title": "Distribution of Garden",
+        "title": "Distribution of Middle_Island",
         "recommended_size": "medium",
         "grid_position": {
           "x": 0,
@@ -611,9 +639,9 @@
         "z_index": 1
       },
       {
-        "chart_id": 9,
+        "chart_id": 8,
         "chart_type": "histogram",
-        "title": "Distribution of Lighting",
+        "title": "Distribution of Building",
         "recommended_size": "medium",
         "grid_position": {
           "x": 4,
@@ -630,41 +658,6 @@
   "chart_configurations": {
     "chart_1": {
       "chart_id": 1,
-      "chart_type": "pie",
-      "title": "Distribution of DISTRICTCO",
-      "data_source": {
-        "primary_field": "DISTRICTCO",
-        "secondary_field": null,
-        "x_field": null,
-        "y_field": null,
-        "group_by_field": null
-      },
-      "styling": {
-        "color_palette": [
-          "#FF6B6B",
-          "#4ECDC4",
-          "#45B7D1",
-          "#96CEB4",
-          "#FFEAA7",
-          "#DDA0DD",
-          "#98D8C8"
-        ],
-        "theme": "modern",
-        "show_legend": true,
-        "show_grid": false,
-        "animation": true,
-        "show_percentages": true,
-        "inner_radius": 0
-      },
-      "interactivity": {
-        "hover_enabled": true,
-        "click_enabled": true,
-        "zoom_enabled": false,
-        "filter_enabled": true
-      }
-    },
-    "chart_3": {
-      "chart_id": 3,
       "chart_type": "histogram",
       "title": "Distribution of OFFICIALAR",
       "data_source": {
@@ -701,46 +694,8 @@
         "y_axis_title": "Frequency"
       }
     },
-    "chart_4": {
-      "chart_id": 4,
-      "chart_type": "histogram",
-      "title": "Distribution of DISTRICTID",
-      "data_source": {
-        "primary_field": "DISTRICTID",
-        "secondary_field": null,
-        "x_field": null,
-        "y_field": null,
-        "group_by_field": null
-      },
-      "styling": {
-        "color_palette": [
-          "#FF6B6B",
-          "#4ECDC4",
-          "#45B7D1",
-          "#96CEB4",
-          "#FFEAA7",
-          "#DDA0DD",
-          "#98D8C8"
-        ],
-        "theme": "modern",
-        "show_legend": true,
-        "show_grid": false,
-        "animation": true
-      },
-      "interactivity": {
-        "hover_enabled": true,
-        "click_enabled": true,
-        "zoom_enabled": true,
-        "filter_enabled": true
-      },
-      "histogram_config": {
-        "bins": 20,
-        "x_axis_title": "DISTRICTID",
-        "y_axis_title": "Frequency"
-      }
-    },
-    "chart_5": {
-      "chart_id": 5,
+    "chart_2": {
+      "chart_id": 2,
       "chart_type": "histogram",
       "title": "Distribution of OFFICIALDI",
       "data_source": {
@@ -777,84 +732,8 @@
         "y_axis_title": "Frequency"
       }
     },
-    "chart_6": {
-      "chart_id": 6,
-      "chart_type": "histogram",
-      "title": "Distribution of SHAPE_Leng",
-      "data_source": {
-        "primary_field": "SHAPE_Leng",
-        "secondary_field": null,
-        "x_field": null,
-        "y_field": null,
-        "group_by_field": null
-      },
-      "styling": {
-        "color_palette": [
-          "#FF6B6B",
-          "#4ECDC4",
-          "#45B7D1",
-          "#96CEB4",
-          "#FFEAA7",
-          "#DDA0DD",
-          "#98D8C8"
-        ],
-        "theme": "modern",
-        "show_legend": true,
-        "show_grid": false,
-        "animation": true
-      },
-      "interactivity": {
-        "hover_enabled": true,
-        "click_enabled": true,
-        "zoom_enabled": true,
-        "filter_enabled": true
-      },
-      "histogram_config": {
-        "bins": 20,
-        "x_axis_title": "SHAPE_Leng",
-        "y_axis_title": "Frequency"
-      }
-    },
-    "chart_7": {
-      "chart_id": 7,
-      "chart_type": "histogram",
-      "title": "Distribution of DIST_ID",
-      "data_source": {
-        "primary_field": "DIST_ID",
-        "secondary_field": null,
-        "x_field": null,
-        "y_field": null,
-        "group_by_field": null
-      },
-      "styling": {
-        "color_palette": [
-          "#FF6B6B",
-          "#4ECDC4",
-          "#45B7D1",
-          "#96CEB4",
-          "#FFEAA7",
-          "#DDA0DD",
-          "#98D8C8"
-        ],
-        "theme": "modern",
-        "show_legend": true,
-        "show_grid": false,
-        "animation": true
-      },
-      "interactivity": {
-        "hover_enabled": true,
-        "click_enabled": true,
-        "zoom_enabled": true,
-        "filter_enabled": true
-      },
-      "histogram_config": {
-        "bins": 20,
-        "x_axis_title": "DIST_ID",
-        "y_axis_title": "Frequency"
-      }
-    },
-    "chart_8": {
-      "chart_id": 8,
+    "chart_3": {
+      "chart_id": 3,
       "chart_type": "histogram",
       "title": "Distribution of Garden",
       "data_source": {
@@ -891,8 +770,8 @@
         "y_axis_title": "Frequency"
       }
     },
-    "chart_9": {
-      "chart_id": 9,
+    "chart_4": {
+      "chart_id": 4,
       "chart_type": "histogram",
       "title": "Distribution of Lighting",
       "data_source": {
@@ -926,6 +805,158 @@
       "histogram_config": {
         "bins": 16,
         "x_axis_title": "Lighting",
+        "y_axis_title": "Frequency"
+      }
+    },
+    "chart_5": {
+      "chart_id": 5,
+      "chart_type": "histogram",
+      "title": "Distribution of Tree",
+      "data_source": {
+        "primary_field": "Tree",
+        "secondary_field": null,
+        "x_field": null,
+        "y_field": null,
+        "group_by_field": null
+      },
+      "styling": {
+        "color_palette": [
+          "#FF6B6B",
+          "#4ECDC4",
+          "#45B7D1",
+          "#96CEB4",
+          "#FFEAA7",
+          "#DDA0DD",
+          "#98D8C8"
+        ],
+        "theme": "modern",
+        "show_legend": true,
+        "show_grid": false,
+        "animation": true
+      },
+      "interactivity": {
+        "hover_enabled": true,
+        "click_enabled": true,
+        "zoom_enabled": true,
+        "filter_enabled": true
+      },
+      "histogram_config": {
+        "bins": 17,
+        "x_axis_title": "Tree",
+        "y_axis_title": "Frequency"
+      }
+    },
+    "chart_6": {
+      "chart_id": 6,
+      "chart_type": "histogram",
+      "title": "Distribution of Parcel",
+      "data_source": {
+        "primary_field": "Parcel",
+        "secondary_field": null,
+        "x_field": null,
+        "y_field": null,
+        "group_by_field": null
+      },
+      "styling": {
+        "color_palette": [
+          "#FF6B6B",
+          "#4ECDC4",
+          "#45B7D1",
+          "#96CEB4",
+          "#FFEAA7",
+          "#DDA0DD",
+          "#98D8C8"
+        ],
+        "theme": "modern",
+        "show_legend": true,
+        "show_grid": false,
+        "animation": true
+      },
+      "interactivity": {
+        "hover_enabled": true,
+        "click_enabled": true,
+        "zoom_enabled": true,
+        "filter_enabled": true
+      },
+      "histogram_config": {
+        "bins": 16,
+        "x_axis_title": "Parcel",
+        "y_axis_title": "Frequency"
+      }
+    },
+    "chart_7": {
+      "chart_id": 7,
+      "chart_type": "histogram",
+      "title": "Distribution of Middle_Island",
+      "data_source": {
+        "primary_field": "Middle_Island",
+        "secondary_field": null,
+        "x_field": null,
+        "y_field": null,
+        "group_by_field": null
+      },
+      "styling": {
+        "color_palette": [
+          "#FF6B6B",
+          "#4ECDC4",
+          "#45B7D1",
+          "#96CEB4",
+          "#FFEAA7",
+          "#DDA0DD",
+          "#98D8C8"
+        ],
+        "theme": "modern",
+        "show_legend": true,
+        "show_grid": false,
+        "animation": true
+      },
+      "interactivity": {
+        "hover_enabled": true,
+        "click_enabled": true,
+        "zoom_enabled": true,
+        "filter_enabled": true
+      },
+      "histogram_config": {
+        "bins": 11,
+        "x_axis_title": "Middle_Island",
+        "y_axis_title": "Frequency"
+      }
+    },
+    "chart_8": {
+      "chart_id": 8,
+      "chart_type": "histogram",
+      "title": "Distribution of Building",
+      "data_source": {
+        "primary_field": "Building",
+        "secondary_field": null,
+        "x_field": null,
+        "y_field": null,
+        "group_by_field": null
+      },
+      "styling": {
+        "color_palette": [
+          "#FF6B6B",
+          "#4ECDC4",
+          "#45B7D1",
+          "#96CEB4",
+          "#FFEAA7",
+          "#DDA0DD",
+          "#98D8C8"
+        ],
+        "theme": "modern",
+        "show_legend": true,
+        "show_grid": false,
+        "animation": true
+      },
+      "interactivity": {
+        "hover_enabled": true,
+        "click_enabled": true,
+        "zoom_enabled": true,
+        "filter_enabled": true
+      },
+      "histogram_config": {
+        "bins": 19,
+        "x_axis_title": "Building",
         "y_axis_title": "Frequency"
       }
     }

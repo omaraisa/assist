@@ -678,7 +678,6 @@ async def check_and_update_dashboard(client_id: str, function_result: Dict):
         function_name = function_result.get("name", "")
         dashboard_functions = [
             "analyze_layer_fields",
-            "generate_dashboard_insights",
             "generate_smart_dashboard_layout",
             "recommend_chart_types", 
             "plan_dashboard_layout",

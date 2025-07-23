@@ -72,9 +72,8 @@ class SpatialFunctions:
             27: "get_field_domain_values",
             28: "calculate_new_field",
             29: "analyze_layer_fields",
-            30: "generate_dashboard_insights",
-            31: "generate_smart_dashboard_layout",
-            32: "optimize_dashboard_layout"
+            30: "generate_smart_dashboard_layout",
+            31: "optimize_dashboard_layout"
         }
         
 
@@ -1792,55 +1791,7 @@ class SpatialFunctions:
             logger.error(f"Error analyzing generic field {field_name}: {str(e)}")
             return {"data_category": "other", "error": str(e)}
     
-    def generate_dashboard_insights(self, layer_name: str, output_file: str = "dashboard.json") -> Dict:
-        """
-        Generate comprehensive dashboard insights for a layer and save to JSON file.
-        This function combines field analysis with dashboard recommendations.
-        """
-        logger.info(f"Generating dashboard insights for layer: {layer_name}")
-        
-        try:
-            # First, analyze all fields
-            field_analysis_result = self.analyze_layer_fields(layer_name)
-            
-            if not field_analysis_result.get("success", False):
-                return field_analysis_result
-            
-            # Generate dashboard recommendations based on field analysis
-            insights = {
-                "layer_name": layer_name,
-                "analysis_timestamp": self._get_timestamp(),
-                "layer_summary": {
-                    "total_features": field_analysis_result["total_features"],
-                    "fields_analyzed": field_analysis_result["fields_analyzed"]
-                },
-                "field_insights": field_analysis_result["field_insights"],
-                "dashboard_recommendations": self._generate_chart_recommendations(field_analysis_result["field_insights"])
-            }
-            
-            # Save to JSON file
-            import json
-            output_path = Path(__file__).parent.parent / output_file
-            
-            with open(output_path, 'w', encoding='utf-8') as f:
-                json.dump(insights, f, indent=2, ensure_ascii=False, default=str)
-            
-            result = {
-                "success": True,
-                "layer_name": layer_name,
-                "output_file": str(output_path),
-                "insights_generated": True,
-                "total_fields_analyzed": field_analysis_result["fields_analyzed"],
-                "chart_recommendations": len(insights["dashboard_recommendations"])
-            }
-            
-            logger.info(f"Dashboard insights saved to {output_path}")
-            return result
-            
-        except Exception as e:
-            logger.error(f"generate_dashboard_insights error: {str(e)}")
-            return {"success": False, "error": str(e)}
-    
+   
     def _generate_chart_recommendations(self, field_insights: Dict) -> List[Dict]:
         """Generate chart recommendations based on field analysis"""
         recommendations = []
@@ -1941,16 +1892,21 @@ class SpatialFunctions:
             if not field_analysis_result.get("success", True):
                 return field_analysis_result
             
-            field_insights = field_analysis_result["field_insights"]
+            # Apply smart field filtering (Step 1)
+            filter_result = self._filter_relevant_fields(field_analysis_result["field_insights"])
+            filtered_field_insights = filter_result["filtered_insights"]
+            classification_summary = filter_result["classification_summary"]
             
-            # Generate intelligent chart recommendations
-            smart_recommendations = self._generate_intelligent_chart_recommendations(field_insights)
+            logger.info(f"Field filtering: {classification_summary['relevant_fields']}/{classification_summary['total_fields']} fields retained")
+            
+            # Generate intelligent chart recommendations using filtered fields
+            smart_recommendations = self._generate_intelligent_chart_recommendations(filtered_field_insights)
             
             # Create layout plan for 12x9 grid
             layout_plan = self._create_dashboard_layout_plan(smart_recommendations)
             
             # Generate chart configurations
-            chart_configurations = self._generate_chart_configurations(smart_recommendations, field_insights)
+            chart_configurations = self._generate_chart_configurations(smart_recommendations, filtered_field_insights)
             
             # Create the enhanced dashboard structure
             dashboard_structure = {
@@ -1961,9 +1917,10 @@ class SpatialFunctions:
                     "grid_system": "12x9",
                     "total_charts": len(smart_recommendations),
                     "layout_strategy": "priority_based",
-                    "version": "2.0"
+                    "version": "2.1",
+                    "field_filtering": classification_summary
                 },
-                "field_insights": field_insights,
+                "field_insights": filtered_field_insights,  # Use filtered fields
                 "chart_recommendations": smart_recommendations,
                 "layout_plan": layout_plan,
                 "chart_configurations": chart_configurations,
@@ -2628,4 +2585,217 @@ class SpatialFunctions:
             "filled_positions": filled_positions,
             "empty_positions": total_charts - filled_positions,
             "overall_score": round((filled_positions / total_charts) * 100, 2) if total_charts > 0 else 0
+        }
+
+    def _classify_field_importance(self, field_name: str, field_info: Dict) -> Dict:
+        """
+        Classify fields by their analytical importance and filter out irrelevant ones.
+        Returns classification with importance score (0-100).
+        """
+        field_name_lower = field_name.lower()
+        field_type = field_info.get('field_type', '').lower()
+        unique_count = field_info.get('unique_count', 0)
+        total_records = field_info.get('total_records', 1)
+        null_percentage = field_info.get('null_percentage', 0)
+        
+        # Calculate uniqueness ratio
+        uniqueness_ratio = unique_count / total_records if total_records > 0 else 0
+        
+        # Initialize classification
+        classification = {
+            'field_name': field_name,
+            'category': 'unknown',
+            'importance_score': 0,
+            'is_relevant': False,
+            'filter_reason': None,
+            'analytical_value': 'none'
+        }
+        
+        # Technical/System fields (EXCLUDE)
+        technical_patterns = [
+            'objectid', 'oid', 'fid', 'globalid', 'created_user', 'created_date',
+            'last_edited_user', 'last_edited_date', 'shape_length', 'shape_area',
+            'shape_leng', 'shape.stlength', 'shape.starea'
+        ]
+        
+        if any(pattern in field_name_lower for pattern in technical_patterns):
+            classification.update({
+                'category': 'technical',
+                'importance_score': 0,
+                'is_relevant': False,
+                'filter_reason': 'Technical/system field',
+                'analytical_value': 'none'
+            })
+            return classification
+        
+        # ID fields with high uniqueness (EXCLUDE if purely sequential)
+        id_patterns = ['id', '_id', 'code', '_code', 'key', '_key']
+        if any(pattern in field_name_lower for pattern in id_patterns):
+            if uniqueness_ratio > 0.9:  # Mostly unique values
+                classification.update({
+                    'category': 'identifier',
+                    'importance_score': 10,
+                    'is_relevant': False,
+                    'filter_reason': 'Identifier field with high uniqueness',
+                    'analytical_value': 'low'
+                })
+                return classification
+        
+        # Fields with very low variance (EXCLUDE)
+        if unique_count <= 1:
+            classification.update({
+                'category': 'constant',
+                'importance_score': 0,
+                'is_relevant': False,
+                'filter_reason': 'Constant or near-constant values',
+                'analytical_value': 'none'
+            })
+            return classification
+        
+        # Fields with too many nulls (EXCLUDE)
+        if null_percentage > 70:
+            classification.update({
+                'category': 'sparse',
+                'importance_score': 5,
+                'is_relevant': False,
+                'filter_reason': f'Too many null values ({null_percentage:.1f}%)',
+                'analytical_value': 'low'
+            })
+            return classification
+        
+        # Now classify RELEVANT fields based on DATA CHARACTERISTICS (language-agnostic)
+        
+        # Calculate data-driven scores based on statistical characteristics
+        base_score = 50
+        analytical_value = 'medium'
+        category = 'general'
+        
+        # 1. Uniqueness-based scoring (language-agnostic)
+        if 0.05 <= uniqueness_ratio <= 0.3:  # Good categorical distribution (5-30% unique)
+            base_score += 25
+            category = 'categorical'
+            analytical_value = 'high'
+        elif 0.3 < uniqueness_ratio <= 0.8:  # Moderate distribution
+            base_score += 15
+            category = 'mixed'
+            analytical_value = 'medium'
+        elif uniqueness_ratio > 0.95:  # Too unique (likely ID or text)
+            base_score -= 20
+            analytical_value = 'low'
+        
+        # 2. Data type scoring (language-agnostic)
+        if field_type in ['integer', 'double', 'float', 'single']:
+            base_score += 20  # Numeric fields are generally more analytical
+            if category == 'general':
+                category = 'numeric'
+        elif field_type in ['string', 'text']:
+            if unique_count < total_records * 0.2:  # Limited unique values = categorical
+                base_score += 15
+                category = 'categorical_text'
+            else:
+                base_score -= 10  # Free text is less analytical
+                category = 'free_text'
+        elif field_type == 'date':
+            base_score += 10
+            category = 'temporal'
+            analytical_value = 'medium'
+        
+        # 3. Data completeness scoring (language-agnostic)
+        if null_percentage < 5:
+            base_score += 10  # Complete data is better
+        elif null_percentage > 50:
+            base_score -= 15  # Incomplete data is worse
+        
+        # 4. Value range scoring for numeric fields (language-agnostic)
+        if field_type in ['integer', 'double', 'float', 'single']:
+            min_val = field_info.get('min_value', 0)
+            max_val = field_info.get('max_value', 0)
+            
+            # Check for meaningful numeric ranges
+            if max_val > min_val:
+                value_range = max_val - min_val
+                if value_range > 0:
+                    base_score += 5  # Has meaningful range
+                    
+                # Bonus for positive counts/measurements
+                if min_val >= 0 and max_val > 10:
+                    base_score += 5  # Likely count or measurement
+        
+        # 5. Sample value analysis (language-agnostic pattern detection)
+        sample_values = field_info.get('sample_values', [])
+        if sample_values:
+            # Check for numeric patterns
+            numeric_samples = [v for v in sample_values if isinstance(v, (int, float))]
+            if len(numeric_samples) > 0:
+                base_score += 5
+                
+            # Check for reasonable categorical size
+            if 2 <= len(sample_values) <= 20:
+                base_score += 10  # Good categorical size
+        
+        # Final classification
+        final_score = max(0, min(100, base_score))
+        is_relevant = final_score >= 40  # Threshold for relevance
+        
+        if final_score >= 70:
+            analytical_value = 'high'
+        elif final_score >= 50:
+            analytical_value = 'medium'
+        else:
+            analytical_value = 'low'
+        
+        classification.update({
+            'category': category,
+            'importance_score': final_score,
+            'is_relevant': is_relevant,
+            'analytical_value': analytical_value
+        })
+        
+        return classification
+        
+        return classification
+
+    def _filter_relevant_fields(self, field_insights: Dict) -> Dict:
+        """
+        Filter field insights to include only analytically relevant fields.
+        Returns filtered insights with classification metadata.
+        """
+        filtered_insights = {}
+        classification_summary = {
+            'total_fields': len(field_insights),
+            'relevant_fields': 0,
+            'filtered_out': 0,
+            'categories': {},
+            'filter_reasons': {}
+        }
+        
+        for field_name, field_info in field_insights.items():
+            classification = self._classify_field_importance(field_name, field_info)
+            
+            # Track statistics
+            category = classification['category']
+            if category not in classification_summary['categories']:
+                classification_summary['categories'][category] = 0
+            classification_summary['categories'][category] += 1
+            
+            if classification['is_relevant']:
+                # Add the field with its classification
+                filtered_insights[field_name] = {
+                    **field_info,
+                    'classification': classification
+                }
+                classification_summary['relevant_fields'] += 1
+            else:
+                # Track why it was filtered out
+                reason = classification.get('filter_reason', 'Low analytical value')
+                if reason not in classification_summary['filter_reasons']:
+                    classification_summary['filter_reasons'][reason] = 0
+                classification_summary['filter_reasons'][reason] += 1
+                classification_summary['filtered_out'] += 1
+        
+        logger.info(f"Field filtering results: {classification_summary['relevant_fields']}/{classification_summary['total_fields']} fields retained")
+        
+        return {
+            'filtered_insights': filtered_insights,
+            'classification_summary': classification_summary
         }
