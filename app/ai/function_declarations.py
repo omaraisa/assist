@@ -481,24 +481,57 @@ class FunctionDeclaration:
             "required": ["layer_name"]
         },
         "optimize_dashboard_layout": {
-    "name": "optimize_dashboard_layout",
-    "description": "Stage 3: Advanced Layout Planner with dynamic optimization and templates. Optimizes existing dashboard layouts with smart positioning, layout templates (focus, comparison, overview, analytical), and responsive design. Requires existing smart_dashboard.json from Stage 2.",
-    "parameters": {
-        "layer_name": {
-            "type": "string",
-            "description": "The name of the layer to optimize dashboard layout for"
+            "name": "optimize_dashboard_layout",
+            "description": "Stage 3: Advanced Layout Planner with dynamic optimization and templates. Optimizes existing dashboard layouts with smart positioning, layout templates (focus, comparison, overview, analytical), and responsive design. Requires existing smart_dashboard.json from Stage 2.",
+            "parameters": {
+                "layer_name": {
+                    "type": "string",
+                    "description": "The name of the layer to optimize dashboard layout for"
+                },
+                "layout_template": {
+                    "type": "string",
+                    "description": "Layout template to apply: 'focus', 'comparison', 'overview', 'analytical', or 'auto'",
+                    "default": "auto"
+                },
+                "target_size": {
+                    "type": "string",
+                    "description": "Target screen size: 'mobile', 'tablet', or 'desktop'",
+                    "default": "desktop"
+                }
+            },
+            "required": ["layer_name"]
         },
-        "layout_template": {
-            "type": "string",
-            "description": "Layout template to apply: 'focus', 'comparison', 'overview', 'analytical', or 'auto'",
-            "default": "auto"
+        "recommend_chart_types": {
+            "name": "recommend_chart_types",
+            "description": "AI-Powered Chart Type Recommendation System. Analyzes field characteristics and uses AI to intelligently recommend optimal chart types based on data patterns, distribution, and visualization best practices. Leverages existing retry mechanisms for reliable AI interactions.",
+            "parameters": {
+                "layer_name": {
+                    "type": "string",
+                    "description": "The name of the layer to analyze for chart recommendations"
+                },
+                "target_field": {
+                    "type": "string",
+                    "description": "Optional specific field to focus chart recommendations on"
+                }
+            },
+            "required": ["layer_name"]
         },
-        "target_size": {
-            "type": "string",
-            "description": "Target screen size: 'mobile', 'tablet', or 'desktop'",
-            "default": "desktop"
+        "plan_dashboard_layout": {
+            "name": "plan_dashboard_layout",
+            "description": "AI-Powered Dashboard Layout Planning System. Uses AI to create optimal dashboard layouts that maximize space utilization and visual effectiveness. Works with chart recommendations to create intelligent 12x9 grid layouts with proper positioning and sizing.",
+            "parameters": {
+                "layer_name": {
+                    "type": "string",
+                    "description": "The name of the layer to plan dashboard layout for"
+                },
+                "chart_recommendations": {
+                    "type": "array",
+                    "description": "Optional array of chart recommendation objects. If not provided, will use existing recommendations or generate new ones",
+                    "items": {
+                        "type": "object"
+                    }
+                }
+            },
+            "required": ["layer_name"]
         }
-    },
-    "required": ["layer_name"]
-}
     }

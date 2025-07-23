@@ -73,7 +73,9 @@ class SpatialFunctions:
             28: "calculate_new_field",
             29: "analyze_layer_fields",
             30: "generate_smart_dashboard_layout",
-            31: "optimize_dashboard_layout"
+            31: "optimize_dashboard_layout",
+            32: "recommend_chart_types",
+            33: "plan_dashboard_layout"
         }
         
 
@@ -1603,6 +1605,9 @@ class SpatialFunctions:
                     # Generic analysis for other types
                     field_info.update(self._analyze_generic_field(target_layer, field.name, total_count))
                 
+                # Step 2 Enhancement: Add AI-ready insights for better chart selection
+                field_info.update(self._generate_ai_insights(field_info, field.name))
+                
                 field_analysis[field.name] = field_info
             
             result = {
@@ -1651,6 +1656,22 @@ class SpatialFunctions:
             max_val = max(values)
             avg_val = sum(values) / len(values)
             
+            # Step 2 Enhancement: Add advanced statistical measures for AI insights
+            median_val = self._calculate_median(values)
+            std_dev = self._calculate_std_dev(values, avg_val) if len(values) > 1 else 0
+            value_range = max_val - min_val
+            
+            # Detect outliers using IQR method
+            outlier_info = self._detect_outliers(values) if len(values) >= 4 else {"outlier_count": 0, "outlier_percentage": 0}
+            
+            # Calculate skewness indicator (simplified)
+            skew_indicator = "symmetric"
+            if len(values) > 2:
+                if avg_val > median_val + (std_dev * 0.5):
+                    skew_indicator = "right_skewed"
+                elif avg_val < median_val - (std_dev * 0.5):
+                    skew_indicator = "left_skewed"
+            
             # Determine if it's categorical (low unique count) or continuous
             unique_count = len(unique_values)
             is_categorical = unique_count <= 20 and unique_count < total_count * 0.1
@@ -1663,6 +1684,13 @@ class SpatialFunctions:
                 "min_value": min_val,
                 "max_value": max_val,
                 "average_value": round(avg_val, 3),
+                "median_value": round(median_val, 3),
+                "standard_deviation": round(std_dev, 3),
+                "value_range": round(value_range, 3),
+                "coefficient_of_variation": round((std_dev / avg_val * 100), 2) if avg_val != 0 else 0,
+                "distribution_shape": skew_indicator,
+                "outlier_count": outlier_info["outlier_count"],
+                "outlier_percentage": round(outlier_info["outlier_percentage"], 2),
                 "sample_values": unique_values[:10] if is_categorical else [min_val, max_val, round(avg_val, 3)]
             }
             
@@ -1701,16 +1729,41 @@ class SpatialFunctions:
             unique_values = list(set(values))
             unique_count = len(unique_values)
             
+            # Step 2 Enhancement: Add detailed text analysis for AI insights
+            text_lengths = [len(v) for v in values]
+            avg_length = sum(text_lengths) / len(text_lengths) if text_lengths else 0
+            min_length = min(text_lengths) if text_lengths else 0
+            max_length = max(text_lengths) if text_lengths else 0
+            
+            # Analyze text patterns
+            text_patterns = self._analyze_text_patterns(values, unique_values)
+            
             # Determine if it's categorical or free text
             is_categorical = unique_count <= 50 and unique_count < total_count * 0.3
             
+            # Enhanced categorization based on text characteristics
+            if is_categorical and avg_length <= 20 and text_patterns["has_consistent_format"]:
+                data_category = "categorical_text"
+            elif is_categorical and text_patterns["likely_codes"]:
+                data_category = "categorical_codes"
+            elif avg_length > 100 or text_patterns["has_varied_length"]:
+                data_category = "free_text"
+            elif text_patterns["likely_names"]:
+                data_category = "name_field"
+            else:
+                data_category = "categorical_text" if is_categorical else "free_text"
+            
             analysis = {
-                "data_category": "categorical_text" if is_categorical else "free_text",
+                "data_category": data_category,
                 "unique_count": unique_count,
                 "null_count": null_count,
                 "null_percentage": round((null_count / total_count) * 100, 2),
                 "sample_values": unique_values[:10],
-                "avg_length": round(sum(len(v) for v in values) / len(values), 1) if values else 0
+                "avg_length": round(avg_length, 1),
+                "min_length": min_length,
+                "max_length": max_length,
+                "length_variability": round((max_length - min_length) / avg_length * 100, 1) if avg_length > 0 else 0,
+                "text_patterns": text_patterns
             }
             
             return analysis
@@ -1790,6 +1843,317 @@ class SpatialFunctions:
         except Exception as e:
             logger.error(f"Error analyzing generic field {field_name}: {str(e)}")
             return {"data_category": "other", "error": str(e)}
+    
+    def _generate_ai_insights(self, field_info: Dict, field_name: str) -> Dict:
+        """
+        Step 2 Enhancement: Generate AI-ready insights for better chart selection
+        Provides rich, descriptive analysis that enables intelligent chart recommendations
+        """
+        try:
+            data_category = field_info.get("data_category", "unknown")
+            unique_count = field_info.get("unique_count", 0)
+            total_records = field_info.get("total_records", 1)
+            null_percentage = field_info.get("null_percentage", 0)
+            
+            ai_insights = {
+                "data_story": "",
+                "visualization_potential": "low",
+                "chart_suitability": {},
+                "data_patterns": {},
+                "analytical_value": "medium",
+                "distribution_characteristics": "",
+                "visualization_priority": 5  # 1-10 scale
+            }
+            
+            # Generate data story based on field characteristics
+            if data_category == "categorical_text":
+                diversity_ratio = unique_count / total_records if total_records > 0 else 0
+                
+                if unique_count <= 5:
+                    ai_insights["data_story"] = f"'{field_name}' contains {unique_count} distinct categories with clear groupings, ideal for showing proportional relationships."
+                    ai_insights["visualization_potential"] = "high"
+                    ai_insights["visualization_priority"] = 9
+                    ai_insights["chart_suitability"] = {
+                        "pie": 0.95, "donut": 0.90, "bar": 0.85, "column": 0.80
+                    }
+                elif unique_count <= 15:
+                    ai_insights["data_story"] = f"'{field_name}' has {unique_count} categories, suitable for comparative analysis and ranking visualizations."
+                    ai_insights["visualization_potential"] = "high"
+                    ai_insights["visualization_priority"] = 8
+                    ai_insights["chart_suitability"] = {
+                        "bar": 0.90, "column": 0.85, "horizontal_bar": 0.80, "pie": 0.70
+                    }
+                elif unique_count <= 30:
+                    ai_insights["data_story"] = f"'{field_name}' contains {unique_count} categories, best visualized with scrollable or grouped displays."
+                    ai_insights["visualization_potential"] = "medium"
+                    ai_insights["visualization_priority"] = 6
+                    ai_insights["chart_suitability"] = {
+                        "bar": 0.75, "treemap": 0.70, "grouped_bar": 0.65
+                    }
+                else:
+                    ai_insights["data_story"] = f"'{field_name}' has high cardinality ({unique_count} categories), requiring aggregation or filtering for effective visualization."
+                    ai_insights["visualization_potential"] = "low"
+                    ai_insights["visualization_priority"] = 3
+                    ai_insights["chart_suitability"] = {
+                        "word_cloud": 0.60, "top_n_bar": 0.55
+                    }
+                    
+            elif data_category == "continuous_numeric":
+                value_range = field_info.get("max_value", 0) - field_info.get("min_value", 0)
+                avg_value = field_info.get("average_value", 0)
+                min_val = field_info.get("min_value", 0)
+                max_val = field_info.get("max_value", 0)
+                
+                # Analyze distribution characteristics
+                if value_range > 0:
+                    cv = (value_range / 4) / avg_value if avg_value != 0 else 0  # Approximate coefficient of variation
+                    
+                    if cv < 0.3:
+                        ai_insights["distribution_characteristics"] = "Low variability - values clustered around the mean"
+                        ai_insights["data_story"] = f"'{field_name}' shows consistent values (range: {min_val:.2f} to {max_val:.2f}), good for trend analysis."
+                    elif cv < 1.0:
+                        ai_insights["distribution_characteristics"] = "Moderate variability - normal distribution likely"
+                        ai_insights["data_story"] = f"'{field_name}' displays moderate variation (range: {min_val:.2f} to {max_val:.2f}), suitable for distribution analysis."
+                    else:
+                        ai_insights["distribution_characteristics"] = "High variability - potential outliers present"
+                        ai_insights["data_story"] = f"'{field_name}' shows high variation (range: {min_val:.2f} to {max_val:.2f}), may contain outliers worth investigating."
+                else:
+                    ai_insights["data_story"] = f"'{field_name}' contains constant or near-constant values, limited visualization value."
+                
+                ai_insights["visualization_potential"] = "high" if value_range > 0 else "low"
+                ai_insights["visualization_priority"] = 8 if value_range > 0 else 2
+                ai_insights["chart_suitability"] = {
+                    "histogram": 0.90, "box_plot": 0.85, "density_plot": 0.80, "violin_plot": 0.75
+                } if value_range > 0 else {"summary_stats": 0.30}
+                
+            elif data_category == "categorical_numeric":
+                ai_insights["data_story"] = f"'{field_name}' represents discrete numeric categories ({unique_count} values), ideal for count-based visualizations."
+                ai_insights["visualization_potential"] = "high"
+                ai_insights["visualization_priority"] = 7
+                ai_insights["chart_suitability"] = {
+                    "bar": 0.85, "column": 0.80, "pie": 0.75 if unique_count <= 8 else 0.50
+                }
+                
+            elif data_category == "free_text":
+                ai_insights["data_story"] = f"'{field_name}' contains free-form text with {unique_count} unique entries, suitable for text analysis."
+                ai_insights["visualization_potential"] = "low"
+                ai_insights["visualization_priority"] = 2
+                ai_insights["chart_suitability"] = {
+                    "word_cloud": 0.60, "text_length_histogram": 0.40
+                }
+                
+            elif data_category == "date":
+                ai_insights["data_story"] = f"'{field_name}' contains temporal data spanning from {field_info.get('min_date', 'unknown')} to {field_info.get('max_date', 'unknown')}."
+                ai_insights["visualization_potential"] = "high"
+                ai_insights["visualization_priority"] = 8
+                ai_insights["chart_suitability"] = {
+                    "timeline": 0.90, "line_chart": 0.85, "date_histogram": 0.80
+                }
+            
+            # Add data quality insights
+            if null_percentage > 50:
+                ai_insights["data_story"] += f" Data quality concern: {null_percentage:.1f}% missing values."
+                ai_insights["visualization_priority"] = max(1, ai_insights["visualization_priority"] - 3)
+            elif null_percentage > 20:
+                ai_insights["data_story"] += f" Note: {null_percentage:.1f}% missing values present."
+                ai_insights["visualization_priority"] = max(1, ai_insights["visualization_priority"] - 1)
+            
+            # Determine analytical value
+            if ai_insights["visualization_priority"] >= 8:
+                ai_insights["analytical_value"] = "high"
+            elif ai_insights["visualization_priority"] >= 5:
+                ai_insights["analytical_value"] = "medium"
+            else:
+                ai_insights["analytical_value"] = "low"
+            
+            # Add pattern detection for numeric fields
+            if data_category in ["continuous_numeric", "categorical_numeric"]:
+                ai_insights["data_patterns"] = self._detect_numeric_patterns(field_info)
+            
+            return {"ai_insights": ai_insights}
+            
+        except Exception as e:
+            logger.error(f"Error generating AI insights for {field_name}: {str(e)}")
+            return {"ai_insights": {"error": str(e), "data_story": "Analysis unavailable"}}
+    
+    def _detect_numeric_patterns(self, field_info: Dict) -> Dict:
+        """Detect patterns in numeric data for enhanced AI insights"""
+        try:
+            patterns = {}
+            min_val = field_info.get("min_value", 0)
+            max_val = field_info.get("max_value", 0)
+            avg_val = field_info.get("average_value", 0)
+            unique_count = field_info.get("unique_count", 0)
+            total_records = field_info.get("total_records", 1)
+            
+            # Range analysis
+            if min_val >= 0:
+                patterns["value_type"] = "positive_values"
+                if min_val == 0:
+                    patterns["includes_zero"] = True
+            elif max_val <= 0:
+                patterns["value_type"] = "negative_values"
+            else:
+                patterns["value_type"] = "mixed_values"
+            
+            # Detect potential count/measurement data
+            if min_val >= 0 and all(isinstance(sample, int) for sample in field_info.get("sample_values", [])[:3]):
+                patterns["likely_counts"] = True
+            
+            # Detect percentage-like data
+            if 0 <= min_val <= 1 and 0 <= max_val <= 1:
+                patterns["likely_percentage"] = True
+            elif 0 <= min_val <= 100 and 0 <= max_val <= 100:
+                patterns["likely_percentage_scale"] = True
+            
+            # Uniqueness patterns
+            uniqueness_ratio = unique_count / total_records if total_records > 0 else 0
+            if uniqueness_ratio > 0.9:
+                patterns["high_uniqueness"] = True
+            elif uniqueness_ratio < 0.1:
+                patterns["low_uniqueness"] = True
+                patterns["categorical_potential"] = True
+            
+            return patterns
+            
+        except Exception as e:
+            logger.error(f"Error detecting numeric patterns: {str(e)}")
+            return {"error": str(e)}
+    
+    def _calculate_median(self, values: List) -> float:
+        """Calculate median value from a list of numbers"""
+        try:
+            sorted_values = sorted(values)
+            n = len(sorted_values)
+            if n % 2 == 0:
+                return (sorted_values[n//2 - 1] + sorted_values[n//2]) / 2
+            else:
+                return sorted_values[n//2]
+        except Exception:
+            return 0.0
+    
+    def _calculate_std_dev(self, values: List, mean: float) -> float:
+        """Calculate standard deviation"""
+        try:
+            variance = sum((x - mean) ** 2 for x in values) / len(values)
+            return variance ** 0.5
+        except Exception:
+            return 0.0
+    
+    def _detect_outliers(self, values: List) -> Dict:
+        """Detect outliers using IQR method"""
+        try:
+            sorted_values = sorted(values)
+            n = len(sorted_values)
+            
+            q1_idx = n // 4
+            q3_idx = 3 * n // 4
+            q1 = sorted_values[q1_idx]
+            q3 = sorted_values[q3_idx]
+            iqr = q3 - q1
+            
+            lower_bound = q1 - 1.5 * iqr
+            upper_bound = q3 + 1.5 * iqr
+            
+            outliers = [v for v in values if v < lower_bound or v > upper_bound]
+            
+            return {
+                "outlier_count": len(outliers),
+                "outlier_percentage": (len(outliers) / len(values)) * 100 if values else 0,
+                "lower_bound": lower_bound,
+                "upper_bound": upper_bound
+            }
+        except Exception:
+            return {"outlier_count": 0, "outlier_percentage": 0}
+    
+    def _analyze_text_patterns(self, values: List[str], unique_values: List[str]) -> Dict:
+        """Analyze text patterns to provide better categorization insights"""
+        try:
+            import re
+            
+            patterns = {
+                "has_consistent_format": False,
+                "has_varied_length": False,
+                "likely_codes": False,
+                "likely_names": False,
+                "contains_numbers": False,
+                "contains_special_chars": False,
+                "common_prefixes": [],
+                "common_suffixes": []
+            }
+            
+            if not values:
+                return patterns
+            
+            # Analyze length consistency
+            lengths = [len(v) for v in values]
+            length_std = self._calculate_std_dev(lengths, sum(lengths) / len(lengths))
+            patterns["has_consistent_format"] = length_std < 3.0  # Low variation in length
+            patterns["has_varied_length"] = max(lengths) - min(lengths) > 50
+            
+            # Check for code-like patterns (alphanumeric, consistent format)
+            code_pattern = re.compile(r'^[A-Za-z0-9_-]+$')
+            code_like_count = sum(1 for v in unique_values[:20] if code_pattern.match(v))
+            patterns["likely_codes"] = code_like_count / min(len(unique_values), 20) > 0.8
+            
+            # Check for name-like patterns (title case, spaces)
+            name_patterns = [
+                re.compile(r'^[A-Z][a-z]+ [A-Z][a-z]+'),  # "First Last"
+                re.compile(r'^[A-Z][a-z]+$'),              # "Name"
+                re.compile(r'^[A-Z][a-z]+ [a-z]+ [A-Z][a-z]+')  # "First middle Last"
+            ]
+            name_like_count = 0
+            for v in unique_values[:20]:
+                if any(pattern.match(v) for pattern in name_patterns):
+                    name_like_count += 1
+            patterns["likely_names"] = name_like_count / min(len(unique_values), 20) > 0.6
+            
+            # Check for numbers and special characters
+            has_numbers = sum(1 for v in unique_values[:20] if any(c.isdigit() for c in v))
+            patterns["contains_numbers"] = has_numbers / min(len(unique_values), 20) > 0.3
+            
+            special_char_pattern = re.compile(r'[!@#$%^&*(),.?":{}|<>]')
+            has_special = sum(1 for v in unique_values[:20] if special_char_pattern.search(v))
+            patterns["contains_special_chars"] = has_special / min(len(unique_values), 20) > 0.2
+            
+            # Find common prefixes and suffixes (if categorical)
+            if len(unique_values) <= 50 and len(unique_values) > 1:
+                # Common prefixes
+                prefixes = {}
+                for value in unique_values:
+                    if len(value) >= 2:
+                        prefix = value[:2]
+                        prefixes[prefix] = prefixes.get(prefix, 0) + 1
+                
+                common_prefixes = [prefix for prefix, count in prefixes.items() 
+                                 if count >= max(2, len(unique_values) * 0.3)]
+                patterns["common_prefixes"] = common_prefixes[:3]
+                
+                # Common suffixes
+                suffixes = {}
+                for value in unique_values:
+                    if len(value) >= 2:
+                        suffix = value[-2:]
+                        suffixes[suffix] = suffixes.get(suffix, 0) + 1
+                
+                common_suffixes = [suffix for suffix, count in suffixes.items() 
+                                 if count >= max(2, len(unique_values) * 0.3)]
+                patterns["common_suffixes"] = common_suffixes[:3]
+            
+            return patterns
+            
+        except Exception as e:
+            logger.error(f"Error analyzing text patterns: {str(e)}")
+            return {
+                "has_consistent_format": False,
+                "has_varied_length": False,
+                "likely_codes": False,
+                "likely_names": False,
+                "contains_numbers": False,
+                "contains_special_chars": False,
+                "common_prefixes": [],
+                "common_suffixes": []
+            }
     
    
     def _generate_chart_recommendations(self, field_insights: Dict) -> List[Dict]:
@@ -2586,6 +2950,285 @@ class SpatialFunctions:
             "empty_positions": total_charts - filled_positions,
             "overall_score": round((filled_positions / total_charts) * 100, 2) if total_charts > 0 else 0
         }
+
+    def recommend_chart_types(self, layer_name: str, target_field: str = None) -> Dict:
+        """
+        AI-Powered Chart Type Recommendation (Step 3)
+        Uses AI to intelligently recommend optimal chart types based on field analysis and data patterns.
+        This function leverages the existing retry mechanisms from main.py for reliable AI interactions.
+        """
+        logger.info(f"AI-powered chart type recommendation for layer: {layer_name}")
+        
+        try:
+            # Get enhanced field analysis with AI insights
+            field_analysis_result = self.analyze_layer_fields(layer_name)
+            if not field_analysis_result.get("success", True):
+                return field_analysis_result
+            
+            field_insights = field_analysis_result["field_insights"]
+            
+            # Filter relevant fields for visualization
+            filter_result = self._filter_relevant_fields(field_insights)
+            relevant_fields = filter_result["filtered_insights"]
+            
+            if not relevant_fields:
+                return {
+                    "success": False, 
+                    "error": "No relevant fields found for chart recommendations"
+                }
+            
+            # Build AI prompt with enhanced field insights
+            ai_prompt = self._build_chart_recommendation_prompt(relevant_fields, target_field)
+            
+            # Store context for AI response handling (leverages existing retry infrastructure)
+            recommendation_context = {
+                "function_type": "chart_recommendation",
+                "layer_name": layer_name,
+                "target_field": target_field,
+                "field_insights": relevant_fields,
+                "timestamp": self._get_timestamp()
+            }
+            
+            # Return structured data that can be processed by AI service with retry mechanisms
+            result = {
+                "success": True,
+                "message": "Chart recommendation analysis ready for AI processing",
+                "layer_name": layer_name,
+                "relevant_fields_count": len(relevant_fields),
+                "ai_prompt": ai_prompt,
+                "context": recommendation_context,
+                "field_insights": relevant_fields,
+                "requires_ai_processing": True,  # Flag for main.py to handle with AI
+                "analysis_timestamp": self._get_timestamp()
+            }
+            
+            # Save intermediate data for AI processing
+            temp_file = os.path.join(os.getcwd(), f"chart_analysis_{layer_name}.json")
+            with open(temp_file, 'w', encoding='utf-8') as f:
+                json.dump(result, f, indent=2, ensure_ascii=False)
+            
+            logger.info(f"Chart recommendation analysis saved for AI processing: {temp_file}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error in recommend_chart_types: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def plan_dashboard_layout(self, layer_name: str, chart_recommendations: List[Dict] = None) -> Dict:
+        """
+        AI-Powered Dashboard Layout Planning (Step 5)
+        Uses AI to create optimal dashboard layouts that maximize space utilization.
+        Works with existing retry mechanisms for reliable AI interactions.
+        """
+        logger.info(f"AI-powered dashboard layout planning for layer: {layer_name}")
+        
+        try:
+            # Get chart recommendations if not provided
+            if not chart_recommendations:
+                chart_rec_result = self.recommend_chart_types(layer_name)
+                if not chart_rec_result.get("success", True):
+                    return chart_rec_result
+                chart_recommendations = chart_rec_result.get("chart_recommendations", [])
+            
+            # If still no recommendations, try to load from existing files
+            if not chart_recommendations:
+                dashboard_files = [
+                    os.path.join(os.getcwd(), "smart_dashboard.json"),
+                    os.path.join(os.getcwd(), "dashboard.json")
+                ]
+                
+                for file_path in dashboard_files:
+                    if os.path.exists(file_path):
+                        with open(file_path, 'r', encoding='utf-8') as f:
+                            dashboard_data = json.load(f)
+                        chart_recommendations = dashboard_data.get("chart_recommendations", [])
+                        if chart_recommendations:
+                            break
+            
+            if not chart_recommendations:
+                return {
+                    "success": False, 
+                    "error": "No chart recommendations available for layout planning"
+                }
+            
+            # Build AI prompt for layout optimization
+            layout_prompt = self._build_layout_planning_prompt(chart_recommendations, layer_name)
+            
+            # Prepare layout context for AI processing
+            layout_context = {
+                "function_type": "layout_planning",
+                "layer_name": layer_name,
+                "chart_count": len(chart_recommendations),
+                "grid_system": "12x9",
+                "chart_recommendations": chart_recommendations,
+                "timestamp": self._get_timestamp()
+            }
+            
+            # Return structured data for AI processing with retry mechanisms
+            result = {
+                "success": True,
+                "message": "Dashboard layout analysis ready for AI processing",
+                "layer_name": layer_name,
+                "chart_count": len(chart_recommendations),
+                "ai_prompt": layout_prompt,
+                "context": layout_context,
+                "chart_recommendations": chart_recommendations,
+                "requires_ai_processing": True,  # Flag for main.py to handle with AI
+                "analysis_timestamp": self._get_timestamp()
+            }
+            
+            # Save layout planning data
+            temp_file = os.path.join(os.getcwd(), f"layout_analysis_{layer_name}.json")
+            with open(temp_file, 'w', encoding='utf-8') as f:
+                json.dump(result, f, indent=2, ensure_ascii=False)
+            
+            logger.info(f"Layout planning analysis saved for AI processing: {temp_file}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error in plan_dashboard_layout: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _build_chart_recommendation_prompt(self, field_insights: Dict, target_field: str = None) -> str:
+        """Build comprehensive AI prompt for chart type recommendations"""
+        try:
+            prompt = f"""# Chart Type Recommendation Analysis
+
+## Objective
+Analyze the provided field data characteristics and recommend optimal chart types for data visualization.
+
+## Field Analysis Summary
+Total relevant fields: {len(field_insights)}
+"""
+            
+            if target_field:
+                prompt += f"Target field focus: {target_field}\n"
+            
+            prompt += "\n## Field Details:\n"
+            
+            for field_name, field_data in field_insights.items():
+                data_story = field_data.get("data_story", "No story available")
+                visualization_potential = field_data.get("visualization_potential", "unknown")
+                chart_suitability = field_data.get("chart_suitability", {})
+                
+                prompt += f"""
+### {field_name}
+- **Data Story**: {data_story}
+- **Visualization Potential**: {visualization_potential}
+- **Recommended Charts**: {', '.join([f"{chart}({score:.2f})" for chart, score in chart_suitability.items()])}
+- **Data Category**: {field_data.get('data_category', 'unknown')}
+- **Unique Values**: {field_data.get('unique_count', 0)}
+- **Completeness**: {100 - field_data.get('null_percentage', 0):.1f}%
+"""
+            
+            prompt += """
+## Chart Recommendation Guidelines
+1. **Prioritize High-Potential Fields**: Focus on fields with 'high' visualization potential
+2. **Consider Data Distribution**: Account for data categories and patterns
+3. **Optimize for Clarity**: Choose chart types that best tell the data story
+4. **Avoid Redundancy**: Don't create multiple similar charts
+5. **Space Efficiency**: Consider dashboard space (12x9 grid)
+
+## Required Output Format
+Provide chart recommendations as a JSON array with this structure:
+```json
+[
+  {
+    "chart_id": 1,
+    "chart_type": "pie|bar|histogram|scatter|line|donut|box_plot",
+    "field_name": "primary_field_name",
+    "secondary_field": "optional_secondary_field",
+    "title": "Descriptive Chart Title",
+    "reasoning": "Why this chart type is optimal for this data",
+    "priority": 1-10,
+    "size_recommendation": "small|medium|large",
+    "effectiveness_score": 0.0-1.0
+  }
+]
+```
+
+**Important**: Recommend 4-8 charts maximum for optimal dashboard space utilization.
+"""
+            
+            return prompt
+            
+        except Exception as e:
+            logger.error(f"Error building chart recommendation prompt: {str(e)}")
+            return "Error building prompt"
+    
+    def _build_layout_planning_prompt(self, chart_recommendations: List[Dict], layer_name: str) -> str:
+        """Build comprehensive AI prompt for dashboard layout planning"""
+        try:
+            prompt = f"""# Dashboard Layout Planning Analysis
+
+## Objective
+Create an optimal 12x9 grid layout for {len(chart_recommendations)} charts that maximizes space utilization and visual effectiveness.
+
+## Dashboard Specifications
+- **Grid System**: 12 columns x 9 rows
+- **Layer**: {layer_name}
+- **Chart Count**: {len(chart_recommendations)}
+
+## Chart Requirements:
+"""
+            
+            for i, chart in enumerate(chart_recommendations, 1):
+                prompt += f"""
+### Chart {i}: {chart.get('title', f'Chart {i}')}
+- **Type**: {chart.get('chart_type', 'unknown')}
+- **Priority**: {chart.get('priority', 5)}/10
+- **Recommended Size**: {chart.get('size_recommendation', chart.get('recommended_size', 'medium'))}
+- **Effectiveness**: {chart.get('effectiveness_score', chart.get('suitability_score', 0.5))}
+- **Field**: {chart.get('field_name', chart.get('primary_field', 'unknown'))}
+"""
+            
+            prompt += """
+## Layout Optimization Guidelines
+1. **Priority Placement**: High-priority charts get prominent positions (top-left area)
+2. **Size Efficiency**: Balance chart sizes to fill the 12x9 grid optimally
+3. **Visual Hierarchy**: Create clear reading flow (left-to-right, top-to-bottom)
+4. **Space Utilization**: Minimize empty grid cells
+5. **Chart Relationships**: Place related charts near each other
+
+## Size Templates Available
+- **small**: 3x3 (9 grid cells)
+- **medium**: 4x3 (12 grid cells)  
+- **large**: 6x3 (18 grid cells)
+- **wide**: 8x3 (24 grid cells)
+- **tall**: 4x4 (16 grid cells)
+
+## Required Output Format
+Provide layout recommendations as JSON:
+```json
+{
+  "layout_strategy": "description of approach",
+  "grid_utilization": "percentage of cells used",
+  "chart_positions": [
+    {
+      "chart_id": 1,
+      "title": "Chart Title",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "width": 4,
+        "height": 3
+      },
+      "size_template": "medium",
+      "justification": "why placed here"
+    }
+  ],
+  "optimization_notes": "key decisions made"
+}
+```
+
+**Important**: Ensure no chart positions overlap and all positions fit within the 12x9 grid.
+"""
+            
+            return prompt
+            
+        except Exception as e:
+            logger.error(f"Error building layout planning prompt: {str(e)}")
+            return "Error building prompt"
 
     def _classify_field_importance(self, field_name: str, field_info: Dict) -> Dict:
         """

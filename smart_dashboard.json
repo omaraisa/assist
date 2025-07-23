@@ -1,6 +1,6 @@
 {
   "layer_name": "District",
-  "analysis_timestamp": "2025-07-23T11:37:23.945994",
+  "analysis_timestamp": "2025-07-23T12:06:35.428911",
   "dashboard_metadata": {
     "grid_system": "12x9",
     "total_charts": 8,
@@ -39,18 +39,43 @@
       "null_count": 0,
       "null_percentage": 0.0,
       "sample_values": [
-        "الثغر",
-        "التضامن",
-        "الياقوت",
-        "الأجواد",
-        "الرابية",
-        "العلاء",
-        "الندى",
-        "الحرازات",
-        "الفيحاء",
-        "المنتزه"
+        "الفضل",
+        "النزلة الشرقية",
+        "غليل",
+        "الرحمة",
+        "الصوارى",
+        "البدور",
+        "الجامعة",
+        "الأمير فواز الشمالى",
+        "الروابي",
+        "الصحيفة"
       ],
       "avg_length": 7.5,
+      "min_length": 4,
+      "max_length": 24,
+      "length_variability": 266.7,
+      "text_patterns": {
+        "has_consistent_format": false,
+        "has_varied_length": false,
+        "likely_codes": false,
+        "likely_names": false,
+        "contains_numbers": false,
+        "contains_special_chars": false,
+        "common_prefixes": [],
+        "common_suffixes": []
+      },
+      "ai_insights": {
+        "data_story": "'ARNAME' contains free-form text with 212 unique entries, suitable for text analysis.",
+        "visualization_potential": "low",
+        "chart_suitability": {
+          "word_cloud": 0.6,
+          "text_length_histogram": 0.4
+        },
+        "data_patterns": {},
+        "analytical_value": "low",
+        "distribution_characteristics": "",
+        "visualization_priority": 2
+      },
       "classification": {
         "field_name": "ARNAME",
         "category": "free_text",
@@ -72,18 +97,43 @@
       "null_count": 91,
       "null_percentage": 42.92,
       "sample_values": [
-        "AL JAWHARAH",
+        "AL FARDOUS",
+        "MRAYKH",
         "AL NAEEM",
-        "AL QOUZEEN",
-        "AL AMWAJ",
-        "AL FAROUK",
-        "MADAEN AL FAHAD",
+        "AL SAHEFAH",
         "AL BAWADI",
-        "AL HENDAWEYYAH",
-        "AL NASEEM",
-        "OBHUR AL JANOUBEYYAH"
+        "AL AJAWEED",
+        "AL AMEER FAWAZ ALJANOUBY",
+        "AL SOROR",
+        "AL RAWABE",
+        "AL KANDARAH"
       ],
       "avg_length": 11.3,
+      "min_length": 6,
+      "max_length": 29,
+      "length_variability": 203.6,
+      "text_patterns": {
+        "has_consistent_format": false,
+        "has_varied_length": false,
+        "likely_codes": false,
+        "likely_names": false,
+        "contains_numbers": false,
+        "contains_special_chars": false,
+        "common_prefixes": [],
+        "common_suffixes": []
+      },
+      "ai_insights": {
+        "data_story": "'ENNAME' contains free-form text with 113 unique entries, suitable for text analysis. Note: 42.9% missing values present.",
+        "visualization_potential": "low",
+        "chart_suitability": {
+          "word_cloud": 0.6,
+          "text_length_histogram": 0.4
+        },
+        "data_patterns": {},
+        "analytical_value": "low",
+        "distribution_characteristics": "",
+        "visualization_priority": 1
+      },
       "classification": {
         "field_name": "ENNAME",
         "category": "free_text",
@@ -107,11 +157,36 @@
       "min_value": 0.117637810206,
       "max_value": 80.8022778953,
       "average_value": 11.112,
+      "median_value": 9.285,
+      "standard_deviation": 9.263,
+      "value_range": 80.685,
+      "coefficient_of_variation": 83.36,
+      "distribution_shape": "symmetric",
+      "outlier_count": 9,
+      "outlier_percentage": 4.25,
       "sample_values": [
         0.117637810206,
         80.8022778953,
         11.112
       ],
+      "ai_insights": {
+        "data_story": "'OFFICIALAR' shows high variation (range: 0.12 to 80.80), may contain outliers worth investigating.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "histogram": 0.9,
+          "box_plot": 0.85,
+          "density_plot": 0.8,
+          "violin_plot": 0.75
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "likely_percentage_scale": true,
+          "high_uniqueness": true
+        },
+        "analytical_value": "high",
+        "distribution_characteristics": "High variability - potential outliers present",
+        "visualization_priority": 8
+      },
       "classification": {
         "field_name": "OFFICIALAR",
         "category": "numeric",
@@ -135,6 +210,13 @@
       "min_value": 0,
       "max_value": 12,
       "average_value": 1.873,
+      "median_value": 0.0,
+      "standard_deviation": 2.521,
+      "value_range": 12,
+      "coefficient_of_variation": 134.63,
+      "distribution_shape": "right_skewed",
+      "outlier_count": 8,
+      "outlier_percentage": 3.77,
       "sample_values": [
         0,
         1,
@@ -147,6 +229,26 @@
         8,
         9
       ],
+      "ai_insights": {
+        "data_story": "'NOOFSUBDIS' represents discrete numeric categories (13 values), ideal for count-based visualizations.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "bar": 0.85,
+          "column": 0.8,
+          "pie": 0.5
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "includes_zero": true,
+          "likely_counts": true,
+          "likely_percentage_scale": true,
+          "low_uniqueness": true,
+          "categorical_potential": true
+        },
+        "analytical_value": "medium",
+        "distribution_characteristics": "",
+        "visualization_priority": 7
+      },
       "classification": {
         "field_name": "NOOFSUBDIS",
         "category": "categorical",
@@ -170,6 +272,13 @@
       "min_value": 1,
       "max_value": 21,
       "average_value": 10.538,
+      "median_value": 10.0,
+      "standard_deviation": 5.023,
+      "value_range": 20,
+      "coefficient_of_variation": 47.67,
+      "distribution_shape": "symmetric",
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
       "sample_values": [
         1,
         2,
@@ -182,6 +291,25 @@
         10,
         11
       ],
+      "ai_insights": {
+        "data_story": "'SUBMUNICIP' represents discrete numeric categories (17 values), ideal for count-based visualizations.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "bar": 0.85,
+          "column": 0.8,
+          "pie": 0.5
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "likely_counts": true,
+          "likely_percentage_scale": true,
+          "low_uniqueness": true,
+          "categorical_potential": true
+        },
+        "analytical_value": "medium",
+        "distribution_characteristics": "",
+        "visualization_priority": 7
+      },
       "classification": {
         "field_name": "SUBMUNICIP",
         "category": "categorical",
@@ -205,11 +333,35 @@
       "min_value": 0,
       "max_value": 415,
       "average_value": 248.623,
+      "median_value": 251.5,
+      "standard_deviation": 105.784,
+      "value_range": 415,
+      "coefficient_of_variation": 42.55,
+      "distribution_shape": "symmetric",
+      "outlier_count": 10,
+      "outlier_percentage": 4.72,
       "sample_values": [
         0,
         415,
         248.623
       ],
+      "ai_insights": {
+        "data_story": "'OFFICIALDI' displays moderate variation (range: 0.00 to 415.00), suitable for distribution analysis.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "histogram": 0.9,
+          "box_plot": 0.85,
+          "density_plot": 0.8,
+          "violin_plot": 0.75
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "includes_zero": true
+        },
+        "analytical_value": "high",
+        "distribution_characteristics": "Moderate variability - normal distribution likely",
+        "visualization_priority": 8
+      },
       "classification": {
         "field_name": "OFFICIALDI",
         "category": "mixed",
@@ -233,11 +385,35 @@
       "min_value": 0,
       "max_value": 6698,
       "average_value": 735.887,
+      "median_value": 421.5,
+      "standard_deviation": 896.204,
+      "value_range": 6698,
+      "coefficient_of_variation": 121.79,
+      "distribution_shape": "symmetric",
+      "outlier_count": 5,
+      "outlier_percentage": 2.36,
       "sample_values": [
         0,
         6698,
         735.887
       ],
+      "ai_insights": {
+        "data_story": "'Garden' shows high variation (range: 0.00 to 6698.00), may contain outliers worth investigating.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "histogram": 0.9,
+          "box_plot": 0.85,
+          "density_plot": 0.8,
+          "violin_plot": 0.75
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "includes_zero": true
+        },
+        "analytical_value": "high",
+        "distribution_characteristics": "High variability - potential outliers present",
+        "visualization_priority": 8
+      },
       "classification": {
         "field_name": "Garden",
         "category": "numeric",
@@ -261,11 +437,35 @@
       "min_value": 0,
       "max_value": 6071,
       "average_value": 859.491,
+      "median_value": 351.5,
+      "standard_deviation": 1112.759,
+      "value_range": 6071,
+      "coefficient_of_variation": 129.47,
+      "distribution_shape": "symmetric",
+      "outlier_count": 4,
+      "outlier_percentage": 1.89,
       "sample_values": [
         0,
         6071,
         859.491
       ],
+      "ai_insights": {
+        "data_story": "'Lighting' shows high variation (range: 0.00 to 6071.00), may contain outliers worth investigating.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "histogram": 0.9,
+          "box_plot": 0.85,
+          "density_plot": 0.8,
+          "violin_plot": 0.75
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "includes_zero": true
+        },
+        "analytical_value": "high",
+        "distribution_characteristics": "High variability - potential outliers present",
+        "visualization_priority": 8
+      },
       "classification": {
         "field_name": "Lighting",
         "category": "mixed",
@@ -289,11 +489,35 @@
       "min_value": 0,
       "max_value": 31120,
       "average_value": 3147.75,
+      "median_value": 1627.0,
+      "standard_deviation": 4225.047,
+      "value_range": 31120,
+      "coefficient_of_variation": 134.22,
+      "distribution_shape": "symmetric",
+      "outlier_count": 14,
+      "outlier_percentage": 6.6,
       "sample_values": [
         0,
         31120,
         3147.75
       ],
+      "ai_insights": {
+        "data_story": "'Tree' shows high variation (range: 0.00 to 31120.00), may contain outliers worth investigating.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "histogram": 0.9,
+          "box_plot": 0.85,
+          "density_plot": 0.8,
+          "violin_plot": 0.75
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "includes_zero": true
+        },
+        "analytical_value": "high",
+        "distribution_characteristics": "High variability - potential outliers present",
+        "visualization_priority": 8
+      },
       "classification": {
         "field_name": "Tree",
         "category": "numeric",
@@ -317,11 +541,35 @@
       "min_value": 0,
       "max_value": 18413,
       "average_value": 1615.25,
+      "median_value": 633.5,
+      "standard_deviation": 2388.447,
+      "value_range": 18413,
+      "coefficient_of_variation": 147.87,
+      "distribution_shape": "symmetric",
+      "outlier_count": 10,
+      "outlier_percentage": 4.72,
       "sample_values": [
         0,
         18413,
         1615.25
       ],
+      "ai_insights": {
+        "data_story": "'Parcel' shows high variation (range: 0.00 to 18413.00), may contain outliers worth investigating.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "histogram": 0.9,
+          "box_plot": 0.85,
+          "density_plot": 0.8,
+          "violin_plot": 0.75
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "includes_zero": true
+        },
+        "analytical_value": "high",
+        "distribution_characteristics": "High variability - potential outliers present",
+        "visualization_priority": 8
+      },
       "classification": {
         "field_name": "Parcel",
         "category": "mixed",
@@ -345,11 +593,35 @@
       "min_value": 0,
       "max_value": 514,
       "average_value": 64.241,
+      "median_value": 36.0,
+      "standard_deviation": 81.238,
+      "value_range": 514,
+      "coefficient_of_variation": 126.46,
+      "distribution_shape": "symmetric",
+      "outlier_count": 14,
+      "outlier_percentage": 6.6,
       "sample_values": [
         0,
         514,
         64.241
       ],
+      "ai_insights": {
+        "data_story": "'Middle_Island' shows high variation (range: 0.00 to 514.00), may contain outliers worth investigating.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "histogram": 0.9,
+          "box_plot": 0.85,
+          "density_plot": 0.8,
+          "violin_plot": 0.75
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "includes_zero": true
+        },
+        "analytical_value": "high",
+        "distribution_characteristics": "High variability - potential outliers present",
+        "visualization_priority": 8
+      },
       "classification": {
         "field_name": "Middle_Island",
         "category": "mixed",
@@ -373,11 +645,36 @@
       "min_value": 0,
       "max_value": 23134,
       "average_value": 2722.434,
+      "median_value": 1358.5,
+      "standard_deviation": 3292.604,
+      "value_range": 23134,
+      "coefficient_of_variation": 120.94,
+      "distribution_shape": "symmetric",
+      "outlier_count": 4,
+      "outlier_percentage": 1.89,
       "sample_values": [
         0,
         23134,
         2722.434
       ],
+      "ai_insights": {
+        "data_story": "'Building' shows high variation (range: 0.00 to 23134.00), may contain outliers worth investigating.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "histogram": 0.9,
+          "box_plot": 0.85,
+          "density_plot": 0.8,
+          "violin_plot": 0.75
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "includes_zero": true,
+          "high_uniqueness": true
+        },
+        "analytical_value": "high",
+        "distribution_characteristics": "High variability - potential outliers present",
+        "visualization_priority": 8
+      },
       "classification": {
         "field_name": "Building",
         "category": "numeric",
@@ -401,11 +698,36 @@
       "min_value": 0,
       "max_value": 73,
       "average_value": 6.123,
+      "median_value": 1.0,
+      "standard_deviation": 10.326,
+      "value_range": 73,
+      "coefficient_of_variation": 168.66,
+      "distribution_shape": "symmetric",
+      "outlier_count": 16,
+      "outlier_percentage": 7.55,
       "sample_values": [
         0,
         73,
         6.123
       ],
+      "ai_insights": {
+        "data_story": "'Sport' shows high variation (range: 0.00 to 73.00), may contain outliers worth investigating.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "histogram": 0.9,
+          "box_plot": 0.85,
+          "density_plot": 0.8,
+          "violin_plot": 0.75
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "includes_zero": true,
+          "likely_percentage_scale": true
+        },
+        "analytical_value": "high",
+        "distribution_characteristics": "High variability - potential outliers present",
+        "visualization_priority": 8
+      },
       "classification": {
         "field_name": "Sport",
         "category": "categorical",
@@ -429,11 +751,35 @@
       "min_value": 0,
       "max_value": 6698,
       "average_value": 735.887,
+      "median_value": 421.5,
+      "standard_deviation": 896.204,
+      "value_range": 6698,
+      "coefficient_of_variation": 121.79,
+      "distribution_shape": "symmetric",
+      "outlier_count": 5,
+      "outlier_percentage": 2.36,
       "sample_values": [
         0,
         6698,
         735.887
       ],
+      "ai_insights": {
+        "data_story": "'Street' shows high variation (range: 0.00 to 6698.00), may contain outliers worth investigating.",
+        "visualization_potential": "high",
+        "chart_suitability": {
+          "histogram": 0.9,
+          "box_plot": 0.85,
+          "density_plot": 0.8,
+          "violin_plot": 0.75
+        },
+        "data_patterns": {
+          "value_type": "positive_values",
+          "includes_zero": true
+        },
+        "analytical_value": "high",
+        "distribution_characteristics": "High variability - potential outliers present",
+        "visualization_priority": 8
+      },
       "classification": {
         "field_name": "Street",
         "category": "numeric",
