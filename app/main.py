@@ -275,7 +275,8 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
         for func_call in function_calls:
             # Handle get_functions_declaration locally instead of sending to ArcGIS Pro
             if func_call["name"] == "get_functions_declaration":
-                logger.info(f"Handling get_functions_declaration locally with IDs: {func_call['parameters']['function_ids']}")
+                function_ids_param = func_call.get("parameters", {}).get("function_ids", "unknown")
+                logger.info(f"Handling get_functions_declaration locally with IDs: {function_ids_param}")
                 await handle_local_function_declaration(client_id, func_call, original_response, is_function_chain)
                 continue
             # Create function execution request
@@ -326,13 +327,47 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
     try:
         logger.info(f"Processing get_functions_declaration locally for client {client_id}")
         
-        # Get function IDs from parameters
-        function_ids = func_call["parameters"]["function_ids"]
-        logger.info(f"Requested function IDs: {function_ids}")
+        # Get function IDs from parameters and handle both array and string formats
+        function_ids_raw = func_call["parameters"]["function_ids"]
+        
+        # Handle case where function_ids comes as a string like "[30,31]" instead of array
+        if isinstance(function_ids_raw, str):
+            try:
+                # Remove brackets and split by comma, then convert to integers
+                if function_ids_raw.startswith('[') and function_ids_raw.endswith(']'):
+                    function_ids_raw = function_ids_raw[1:-1]  # Remove brackets
+                function_ids = [int(id.strip()) for id in function_ids_raw.split(',') if id.strip()]
+            except (ValueError, AttributeError) as e:
+                logger.error(f"Error parsing function_ids string '{function_ids_raw}': {e}")
+                function_ids = []
+        elif isinstance(function_ids_raw, list):
+            function_ids = [int(id) for id in function_ids_raw if str(id).isdigit()]
+        else:
+            logger.error(f"Unexpected function_ids format: {type(function_ids_raw)} - {function_ids_raw}")
+            function_ids = []
+        
+        logger.info(f"Parsed function IDs: {function_ids}")
+        
+        if not function_ids:
+            logger.error("No valid function IDs provided")
+            await websocket_manager.send_to_client(client_id, {
+                "type": "error",
+                "message": "No valid function IDs provided"
+            })
+            return
         
         # Create spatial functions instance to get the raw function declarations
         spatial_functions = SpatialFunctions()
-        raw_declarations = spatial_functions.get_functions_declaration(function_ids)
+        try:
+            raw_declarations = spatial_functions.get_functions_declaration(function_ids)
+            logger.info(f"Successfully retrieved {len(raw_declarations)} function declarations")
+        except Exception as e:
+            logger.error(f"Error retrieving function declarations: {e}")
+            await websocket_manager.send_to_client(client_id, {
+                "type": "error",
+                "message": f"Error retrieving function declarations: {str(e)}"
+            })
+            return
         
         # Process the raw declarations based on the AI model to format them correctly
         ai_model = original_response.get("model", "gemini")  # Default to gemini if not specified

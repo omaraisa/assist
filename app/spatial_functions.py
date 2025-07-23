@@ -2953,11 +2953,12 @@ class SpatialFunctions:
 
     def recommend_chart_types(self, layer_name: str, target_field: str = None) -> Dict:
         """
-        AI-Powered Chart Type Recommendation (Step 3)
-        Uses AI to intelligently recommend optimal chart types based on field analysis and data patterns.
-        This function leverages the existing retry mechanisms from main.py for reliable AI interactions.
+        Enhanced AI-Powered Chart Type Recommendation (Step 3)
+        Analyzes both single-field characteristics and multi-field relationships 
+        to recommend diverse chart types, addressing the "too many histograms" problem.
+        Uses token-efficient prompts and leverages existing retry mechanisms.
         """
-        logger.info(f"AI-powered chart type recommendation for layer: {layer_name}")
+        logger.info(f"Enhanced AI-powered chart type recommendation for layer: {layer_name}")
         
         try:
             # Get enhanced field analysis with AI insights
@@ -2977,41 +2978,60 @@ class SpatialFunctions:
                     "error": "No relevant fields found for chart recommendations"
                 }
             
-            # Build AI prompt with enhanced field insights
-            ai_prompt = self._build_chart_recommendation_prompt(relevant_fields, target_field)
+            # NEW: Analyze field relationships for multi-field charts
+            field_relationships = self._analyze_field_relationships(relevant_fields)
             
-            # Store context for AI response handling (leverages existing retry infrastructure)
+            # NEW: Create token-efficient field summaries
+            field_summaries = self._create_field_summaries(relevant_fields)
+            
+            # Build enhanced AI prompt with relationships and token optimization
+            ai_prompt = self._build_enhanced_chart_recommendation_prompt(
+                field_summaries, field_relationships, target_field
+            )
+            
+            # Store enhanced context for AI response handling
             recommendation_context = {
-                "function_type": "chart_recommendation",
+                "function_type": "enhanced_chart_recommendation",
                 "layer_name": layer_name,
                 "target_field": target_field,
-                "field_insights": relevant_fields,
+                "field_count": len(relevant_fields),
+                "relationship_count": len(field_relationships),
+                "field_summaries": field_summaries,
+                "field_relationships": field_relationships,
                 "timestamp": self._get_timestamp()
             }
             
-            # Return structured data that can be processed by AI service with retry mechanisms
+            # Return structured data for AI processing with retry mechanisms
             result = {
                 "success": True,
-                "message": "Chart recommendation analysis ready for AI processing",
+                "message": "Enhanced chart recommendation analysis ready for AI processing",
                 "layer_name": layer_name,
                 "relevant_fields_count": len(relevant_fields),
+                "relationship_count": len(field_relationships),
                 "ai_prompt": ai_prompt,
                 "context": recommendation_context,
-                "field_insights": relevant_fields,
+                "field_summaries": field_summaries,
+                "field_relationships": field_relationships,
                 "requires_ai_processing": True,  # Flag for main.py to handle with AI
-                "analysis_timestamp": self._get_timestamp()
+                "analysis_timestamp": self._get_timestamp(),
+                "enhancement_features": [
+                    "multi_field_relationships",
+                    "token_optimization", 
+                    "chart_diversity_focus"
+                ]
             }
             
-            # Save intermediate data for AI processing
-            temp_file = os.path.join(os.getcwd(), f"chart_analysis_{layer_name}.json")
+            # Save enhanced analysis for AI processing
+            temp_file = os.path.join(os.getcwd(), f"enhanced_chart_analysis_{layer_name}.json")
             with open(temp_file, 'w', encoding='utf-8') as f:
                 json.dump(result, f, indent=2, ensure_ascii=False)
             
-            logger.info(f"Chart recommendation analysis saved for AI processing: {temp_file}")
+            logger.info(f"Enhanced chart recommendation analysis saved: {temp_file}")
+            logger.info(f"Analysis includes {len(field_relationships)} field relationships for diverse charts")
             return result
             
         except Exception as e:
-            logger.error(f"Error in recommend_chart_types: {str(e)}")
+            logger.error(f"Error in enhanced recommend_chart_types: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def plan_dashboard_layout(self, layer_name: str, chart_recommendations: List[Dict] = None) -> Dict:
@@ -3090,71 +3110,13 @@ class SpatialFunctions:
             return {"success": False, "error": str(e)}
     
     def _build_chart_recommendation_prompt(self, field_insights: Dict, target_field: str = None) -> str:
-        """Build comprehensive AI prompt for chart type recommendations"""
-        try:
-            prompt = f"""# Chart Type Recommendation Analysis
-
-## Objective
-Analyze the provided field data characteristics and recommend optimal chart types for data visualization.
-
-## Field Analysis Summary
-Total relevant fields: {len(field_insights)}
-"""
-            
-            if target_field:
-                prompt += f"Target field focus: {target_field}\n"
-            
-            prompt += "\n## Field Details:\n"
-            
-            for field_name, field_data in field_insights.items():
-                data_story = field_data.get("data_story", "No story available")
-                visualization_potential = field_data.get("visualization_potential", "unknown")
-                chart_suitability = field_data.get("chart_suitability", {})
-                
-                prompt += f"""
-### {field_name}
-- **Data Story**: {data_story}
-- **Visualization Potential**: {visualization_potential}
-- **Recommended Charts**: {', '.join([f"{chart}({score:.2f})" for chart, score in chart_suitability.items()])}
-- **Data Category**: {field_data.get('data_category', 'unknown')}
-- **Unique Values**: {field_data.get('unique_count', 0)}
-- **Completeness**: {100 - field_data.get('null_percentage', 0):.1f}%
-"""
-            
-            prompt += """
-## Chart Recommendation Guidelines
-1. **Prioritize High-Potential Fields**: Focus on fields with 'high' visualization potential
-2. **Consider Data Distribution**: Account for data categories and patterns
-3. **Optimize for Clarity**: Choose chart types that best tell the data story
-4. **Avoid Redundancy**: Don't create multiple similar charts
-5. **Space Efficiency**: Consider dashboard space (12x9 grid)
-
-## Required Output Format
-Provide chart recommendations as a JSON array with this structure:
-```json
-[
-  {
-    "chart_id": 1,
-    "chart_type": "pie|bar|histogram|scatter|line|donut|box_plot",
-    "field_name": "primary_field_name",
-    "secondary_field": "optional_secondary_field",
-    "title": "Descriptive Chart Title",
-    "reasoning": "Why this chart type is optimal for this data",
-    "priority": 1-10,
-    "size_recommendation": "small|medium|large",
-    "effectiveness_score": 0.0-1.0
-  }
-]
-```
-
-**Important**: Recommend 4-8 charts maximum for optimal dashboard space utilization.
-"""
-            
-            return prompt
-            
-        except Exception as e:
-            logger.error(f"Error building chart recommendation prompt: {str(e)}")
-            return "Error building prompt"
+        """Legacy chart recommendation prompt - deprecated in favor of enhanced version"""
+        logger.warning("Using legacy chart recommendation prompt. Consider using enhanced version.")
+        return self._build_enhanced_chart_recommendation_prompt(
+            self._create_field_summaries(field_insights), 
+            [], 
+            target_field
+        )
     
     def _build_layout_planning_prompt(self, chart_recommendations: List[Dict], layer_name: str) -> str:
         """Build comprehensive AI prompt for dashboard layout planning"""
@@ -3395,8 +3357,241 @@ Provide layout recommendations as JSON:
         })
         
         return classification
+
+    def _analyze_field_relationships(self, relevant_fields: Dict) -> List[Dict]:
+        """
+        Analyze relationships between fields to identify opportunities for multi-field charts.
+        Returns a list of field relationship patterns suitable for diverse chart types.
+        """
+        relationships = []
+        field_names = list(relevant_fields.keys())
         
-        return classification
+        try:
+            for i, field1 in enumerate(field_names):
+                field1_data = relevant_fields[field1]
+                field1_category = field1_data.get('data_category', 'unknown')
+                field1_uniqueness = field1_data.get('unique_count', 0) / field1_data.get('total_records', 1)
+                
+                for field2 in field_names[i+1:]:
+                    field2_data = relevant_fields[field2]
+                    field2_category = field2_data.get('data_category', 'unknown')
+                    field2_uniqueness = field2_data.get('unique_count', 0) / field2_data.get('total_records', 1)
+                    
+                    # Detect relationship patterns for different chart types
+                    relationship = self._detect_field_relationship_pattern(
+                        field1, field1_data, field1_category, field1_uniqueness,
+                        field2, field2_data, field2_category, field2_uniqueness
+                    )
+                    
+                    if relationship:
+                        relationships.append(relationship)
+            
+            logger.info(f"Detected {len(relationships)} field relationships for multi-field charts")
+            return relationships
+            
+        except Exception as e:
+            logger.error(f"Error analyzing field relationships: {str(e)}")
+            return []
+    
+    def _detect_field_relationship_pattern(self, field1, field1_data, field1_cat, field1_uniq, 
+                                         field2, field2_data, field2_cat, field2_uniq) -> Dict:
+        """
+        Detect specific relationship patterns between two fields that suggest optimal chart types.
+        """
+        try:
+            # Pattern 1: Numeric vs Categorical (ideal for grouped bar/column charts)
+            if ((field1_cat in ['continuous_numeric', 'categorical_numeric'] and 
+                 field2_cat in ['categorical_numeric'] and field2_uniq < 0.3) or
+                (field2_cat in ['continuous_numeric', 'categorical_numeric'] and 
+                 field1_cat in ['categorical_numeric'] and field1_uniq < 0.3)):
+                
+                numeric_field = field1 if field1_cat in ['continuous_numeric', 'categorical_numeric'] else field2
+                category_field = field2 if numeric_field == field1 else field1
+                
+                return {
+                    "relationship_type": "numeric_vs_categorical",
+                    "primary_field": numeric_field,
+                    "secondary_field": category_field,
+                    "recommended_charts": ["grouped_bar", "grouped_column", "box_plot"],
+                    "chart_suitability": {
+                        "grouped_bar": 0.85,
+                        "grouped_column": 0.80,
+                        "box_plot": 0.75
+                    },
+                    "relationship_strength": 0.8,
+                    "description": f"Compare {numeric_field} distribution across {category_field} categories"
+                }
+            
+            # Pattern 2: Two continuous numeric fields (ideal for scatter plots)
+            if (field1_cat == 'continuous_numeric' and field2_cat == 'continuous_numeric' and
+                field1_uniq > 0.3 and field2_uniq > 0.3):
+                
+                return {
+                    "relationship_type": "numeric_correlation",
+                    "primary_field": field1,
+                    "secondary_field": field2,
+                    "recommended_charts": ["scatter", "line_chart", "bubble"],
+                    "chart_suitability": {
+                        "scatter": 0.90,
+                        "line_chart": 0.70,
+                        "bubble": 0.65
+                    },
+                    "relationship_strength": 0.85,
+                    "description": f"Explore correlation between {field1} and {field2}"
+                }
+            
+            # Pattern 3: Two categorical fields (ideal for heatmap/cross-tabulation)
+            if (field1_cat in ['categorical_numeric', 'categorical'] and 
+                field2_cat in ['categorical_numeric', 'categorical'] and
+                field1_uniq < 0.4 and field2_uniq < 0.4):
+                
+                return {
+                    "relationship_type": "categorical_cross_analysis",
+                    "primary_field": field1,
+                    "secondary_field": field2,
+                    "recommended_charts": ["heatmap", "stacked_bar", "cross_table"],
+                    "chart_suitability": {
+                        "heatmap": 0.80,
+                        "stacked_bar": 0.75,
+                        "cross_table": 0.70
+                    },
+                    "relationship_strength": 0.75,
+                    "description": f"Cross-analysis of {field1} vs {field2} categories"
+                }
+            
+            # Pattern 4: Multiple numeric fields suitable for multi-series comparison
+            if (field1_cat in ['continuous_numeric', 'categorical_numeric'] and 
+                field2_cat in ['continuous_numeric', 'categorical_numeric']):
+                
+                return {
+                    "relationship_type": "multi_series_comparison",
+                    "primary_field": field1,
+                    "secondary_field": field2,
+                    "recommended_charts": ["dual_axis", "combo_chart", "parallel_coordinates"],
+                    "chart_suitability": {
+                        "dual_axis": 0.70,
+                        "combo_chart": 0.65,
+                        "parallel_coordinates": 0.60
+                    },
+                    "relationship_strength": 0.65,
+                    "description": f"Multi-series comparison of {field1} and {field2}"
+                }
+            
+            return None
+            
+        except Exception as e:
+            logger.error(f"Error detecting relationship pattern between {field1} and {field2}: {str(e)}")
+            return None
+    
+    def _create_field_summaries(self, relevant_fields: Dict) -> Dict:
+        """
+        Create token-efficient field summaries for AI processing.
+        Condenses field insights while preserving key characteristics.
+        """
+        summaries = {}
+        
+        try:
+            for field_name, field_data in relevant_fields.items():
+                # Extract key insights efficiently
+                ai_insights = field_data.get('ai_insights', {})
+                
+                summary = {
+                    "name": field_name,
+                    "type": field_data.get('data_category', 'unknown'),
+                    "uniqueness": round(field_data.get('unique_count', 0) / field_data.get('total_records', 1), 2),
+                    "completeness": round(100 - field_data.get('null_percentage', 0), 1),
+                    "viz_potential": ai_insights.get('visualization_potential', 'unknown'),
+                    "analytical_value": ai_insights.get('analytical_value', 'unknown'),
+                    "priority": ai_insights.get('visualization_priority', 5),
+                    "story": ai_insights.get('data_story', '')[:100] + "..." if len(ai_insights.get('data_story', '')) > 100 else ai_insights.get('data_story', ''),
+                    "top_charts": list(ai_insights.get('chart_suitability', {}).keys())[:3]  # Top 3 chart types
+                }
+                
+                # Add specific characteristics based on data type
+                if field_data.get('data_category') in ['continuous_numeric', 'categorical_numeric']:
+                    summary.update({
+                        "range": f"{field_data.get('min_value', 0):.1f}-{field_data.get('max_value', 0):.1f}",
+                        "distribution": ai_insights.get('distribution_characteristics', 'unknown')[:50]
+                    })
+                elif field_data.get('data_category') in ['categorical', 'categorical_text']:
+                    summary.update({
+                        "categories": field_data.get('unique_count', 0),
+                        "sample_values": field_data.get('sample_values', [])[:3]
+                    })
+                
+                summaries[field_name] = summary
+            
+            logger.info(f"Created token-efficient summaries for {len(summaries)} fields")
+            return summaries
+            
+        except Exception as e:
+            logger.error(f"Error creating field summaries: {str(e)}")
+            return {}
+    
+    def _build_enhanced_chart_recommendation_prompt(self, field_summaries: Dict, 
+                                                  field_relationships: List[Dict], 
+                                                  target_field: str = None) -> str:
+        """
+        Build token-efficient AI prompt focusing on chart diversity and field relationships.
+        """
+        try:
+            prompt = f"""# Enhanced Chart Recommendation Analysis
+
+## Mission: Diversify Dashboard Charts
+**Primary Goal**: Recommend 5-8 diverse chart types that avoid the "too many histograms" problem.
+**Data Fields**: {len(field_summaries)} relevant fields
+**Field Relationships**: {len(field_relationships)} multi-field opportunities identified
+
+## Token-Optimized Field Summaries:
+"""
+            
+            # Add condensed field information
+            for field_name, summary in field_summaries.items():
+                prompt += f"• **{field_name}** ({summary['type']}): {summary['viz_potential']} potential, "
+                prompt += f"Priority={summary['priority']}, Top charts: {', '.join(summary['top_charts'][:2])}\n"
+            
+            prompt += f"\n## Multi-Field Chart Opportunities ({len(field_relationships)} detected):\n"
+            
+            # Add relationship-based chart suggestions
+            for i, rel in enumerate(field_relationships[:4], 1):  # Limit to top 4 relationships
+                prompt += f"{i}. **{rel['relationship_type']}**: {rel['primary_field']} × {rel['secondary_field']} "
+                prompt += f"→ {', '.join(rel['recommended_charts'][:2])}\n"
+            
+            prompt += """
+## Chart Diversity Strategy:
+1. **Single-Field Charts** (40%): Best fields get histogram/bar/pie
+2. **Multi-Field Charts** (60%): Use relationships for scatter/grouped/heatmap
+3. **Avoid Redundancy**: Maximum 2 histograms, 1 pie chart
+4. **Prioritize Impact**: High-potential fields get prominent chart types
+
+## Required JSON Output:
+```json
+[
+  {
+    "chart_id": 1,
+    "chart_type": "scatter|grouped_bar|heatmap|box_plot|pie|histogram|line",
+    "primary_field": "field_name",
+    "secondary_field": "optional_for_multi_field_charts", 
+    "title": "Concise descriptive title",
+    "reasoning": "Why this chart type (max 50 chars)",
+    "diversity_impact": "high|medium|low",
+    "priority": 1-10,
+    "size": "small|medium|large"
+  }
+]
+```
+
+**CRITICAL**: Recommend exactly 5-8 charts with maximum diversity. Avoid chart type repetition.
+"""
+            
+            if target_field:
+                prompt += f"\n**FOCUS**: Ensure {target_field} gets a prominent, suitable chart.\n"
+            
+            return prompt
+            
+        except Exception as e:
+            logger.error(f"Error building enhanced chart recommendation prompt: {str(e)}")
+            return "Error building enhanced prompt"
 
     def _filter_relevant_fields(self, field_insights: Dict) -> Dict:
         """

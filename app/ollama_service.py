@@ -217,7 +217,7 @@ class OllamaService:
         
         # Add function calling instructions to system message
         function_prompt = """
-You have access to the following functions. When you need to call a function, respond with a JSON object in this exact format:
+CRITICAL: You have access to the following functions. When you need to call a function, you MUST respond with ONLY a JSON object in this EXACT format:
 
 ```json
 {
@@ -227,6 +227,23 @@ You have access to the following functions. When you need to call a function, re
       "arguments": {
         "parameter1": "value1",
         "parameter2": "value2"
+      }
+    }
+  ]
+}
+```
+
+DO NOT write any explanatory text. DO NOT say "I will call" or "Function call necessary". 
+ONLY output the JSON function call.
+
+Example for generate_smart_dashboard_layout:
+```json
+{
+  "function_calls": [
+    {
+      "name": "generate_smart_dashboard_layout",
+      "arguments": {
+        "layer_name": "District"
       }
     }
   ]
@@ -286,7 +303,32 @@ Available functions:
                         function_calls.extend(parsed["function_calls"])
                 except json.JSONDecodeError:
                     pass
-                    
+            
+            # Enhanced parsing for common AI response patterns
+            if not function_calls:
+                # Look for function call patterns like "Function: function_name(param="value")"
+                function_pattern = r'Function:\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\(\s*([^)]*)\s*\)'
+                matches = re.findall(function_pattern, response_text)
+                
+                for func_name, params_str in matches:
+                    try:
+                        # Parse parameters from string like 'layer_name="District"'
+                        params = {}
+                        if params_str.strip():
+                            # Simple parameter parsing for key="value" format
+                            param_pattern = r'([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*["\']([^"\']*)["\']'
+                            param_matches = re.findall(param_pattern, params_str)
+                            for key, value in param_matches:
+                                params[key] = value
+                        
+                        function_calls.append({
+                            "name": func_name,
+                            "arguments": params
+                        })
+                        logger.info(f"Parsed function call from text pattern: {func_name}")
+                    except Exception as e:
+                        logger.error(f"Error parsing function parameters: {e}")
+                        
         except Exception as e:
             logger.error(f"Error parsing function calls: {e}")
         

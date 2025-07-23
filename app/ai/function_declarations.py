@@ -503,11 +503,11 @@ class FunctionDeclaration:
         },
         "recommend_chart_types": {
             "name": "recommend_chart_types",
-            "description": "AI-Powered Chart Type Recommendation System. Analyzes field characteristics and uses AI to intelligently recommend optimal chart types based on data patterns, distribution, and visualization best practices. Leverages existing retry mechanisms for reliable AI interactions.",
+            "description": "Enhanced AI-Powered Chart Type Recommendation System (Step 3). Analyzes both single-field characteristics and multi-field relationships to recommend diverse chart types that avoid the 'too many histograms' problem. Features: field relationship detection for scatter plots/grouped charts, token-efficient AI prompts, chart diversity optimization, and integration with existing retry mechanisms.",
             "parameters": {
                 "layer_name": {
                     "type": "string",
-                    "description": "The name of the layer to analyze for chart recommendations"
+                    "description": "The name of the layer to analyze for enhanced chart recommendations"
                 },
                 "target_field": {
                     "type": "string",
