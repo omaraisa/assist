@@ -6,6 +6,7 @@ import aiohttp
 from .config import settings, get_model_config
 from .spatial_functions import SpatialFunctions
 from .ai.ai_response_handler import AIResponseHandler
+from .langchain_agent import LangChainAgent
 from .ai.utils import (
     OLLAMA_AVAILABLE,
     RAG_AVAILABLE,
@@ -24,6 +25,7 @@ class AIService:
         self.ollama_service = None
         self.rag_service = None
         self.response_handler = None
+        self.langchain_agent = None
         # Track dynamically discovered functions per client
         self.client_dynamic_functions = {}
     
@@ -33,6 +35,9 @@ class AIService:
         
         # Initialize the response handler
         self.response_handler = AIResponseHandler(self.session, None)  # ollama_service will be set later
+        
+        # Initialize LangChain agent
+        self.langchain_agent = LangChainAgent(self.current_model)
         
         # Initialize Ollama service if available
         logger.info(f"OLLAMA_AVAILABLE: {OLLAMA_AVAILABLE}")
@@ -71,9 +76,12 @@ class AIService:
         """Set the current AI model"""
         if model_key in settings.AI_MODELS:
             self.current_model = model_key
+            if self.langchain_agent:
+                self.langchain_agent.set_model(model_key)
             logger.info(f"AI model changed to: {model_key}")
         else:
             raise ValueError(f"Unknown AI model: {model_key}")
+
     async def generate_response(
         self, 
         user_message: str, 
@@ -85,31 +93,37 @@ class AIService:
         try:
             logger.info(f"Generating response for model: {self.current_model}")
             logger.info(f"User message: {user_message[:100]}...")
+            
+            if self.current_model.startswith("GEMINI"):
+                logger.info("Using LangChain agent for Gemini model")
+                if not self.langchain_agent:
+                    raise RuntimeError("LangChain agent is not initialized.")
+                
+                response = await self.langchain_agent.generate_response(
+                    user_message,
+                    conversation_history,
+                    arcgis_state,
+                    client_id
+                )
+                return {"type": "text", "content": response["output"], "model": self.current_model}
+
+            # Fallback to existing logic for other models
             model_config = get_model_config(self.current_model)
             logger.info(f"Model config retrieved for: {model_config.get('name', 'unknown')}")
             
-            # Set client context for dynamic functions
             if self.response_handler and client_id:
                 self.response_handler.set_client_context(client_id, self)
             
-            # Prepare messages with client-specific available functions
             messages = self._prepare_messages(
                 user_message, 
                 conversation_history, 
                 arcgis_state,
-                client_id            )
+                client_id
+            )
             logger.info(f"Messages prepared, count: {len(messages)}")
-            logger.info("=== RAW MESSAGES SENT TO AI ===")
-            for i, msg in enumerate(messages):
-                logger.info(f"Message {i+1}: Role={msg.get('role', 'unknown')}")
-                logger.info(f"Content: {msg.get('content', '')}")
-            logger.info("=== END RAW MESSAGES ===")
-              # Generate response based on model type with function calling
+            
             response = None
-            if self.current_model.startswith("GEMINI"):
-                logger.info("Using Gemini model")
-                response = await self.response_handler._generate_gemini_response_with_functions(messages, model_config, user_message)
-            elif self.current_model.startswith("GPT"):
+            if self.current_model.startswith("GPT"):
                 logger.info("Using OpenAI model")
                 response = await self.response_handler._generate_openai_response_with_functions(messages, model_config, user_message)
             elif self.current_model.startswith("CLAUDE"):
@@ -117,24 +131,15 @@ class AIService:
                 response = await self.response_handler._generate_claude_response_with_functions(messages, model_config, user_message)
             elif self.current_model.startswith("OLLAMA"):
                 if not OLLAMA_AVAILABLE:
-                    logger.warning("Ollama model requested but Ollama service is not available")
                     return {
                         "type": "error",
-                        "content": "Ollama service is not available. Please check if Ollama server is running or use a different AI model.",
+                        "content": "Ollama service is not available.",
                         "model": self.current_model
                     }
                 logger.info("Using Ollama model")
                 response = await self.response_handler._generate_ollama_response_with_functions(messages, model_config, user_message)
             else:
                 raise ValueError(f"Unsupported model: {self.current_model}")
-            
-            # Log the raw AI response for debugging
-            logger.info("=== RAW AI RESPONSE ===")
-            logger.info(f"Response type: {response.get('type', 'unknown')}")
-            logger.info(f"Response content: {response.get('content', '')[:1000]}{'...' if len(str(response.get('content', ''))) > 1000 else ''}")
-            if response.get('function_calls'):
-                logger.info(f"Function calls: {json.dumps(response.get('function_calls'), indent=2)}")
-            logger.info("=== END RAW AI RESPONSE ===")
             
             logger.info(f"AI generated response type: {response.get('type')}")
             return response

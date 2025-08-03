@@ -186,9 +186,6 @@ class SpatialFunctions:
             logger.error(f"select_by_location error: {str(e)}")
             return {"success": False, "error": str(e)}
 
-        # ... Rest of functions 
-        
-
     def get_field_statistics(self, layer_name, field_name, where_clause=None):
         """Calculate field statistics"""
         logger.info(f"Executing get_field_statistics with layer: {layer_name}, field: {field_name}")
@@ -1135,164 +1132,6 @@ class SpatialFunctions:
             logger.error(f"get_values_frequency error: {str(e)}")
             return {"success": False, "error": str(e)}
 
-    def calculate_empty_values(self, layer_name: str, field_name: str) -> Dict:
-        """
-        Calculate the number of empty (null or blank) values in a field for a given layer.
-        """
-        logger.info(f"Calculating empty values for {field_name} in {layer_name}")
-        try:
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            map_obj = aprx.activeMap
-            lyr = None
-            for l in map_obj.listLayers():
-                if l.name == layer_name:
-                    lyr = l
-                    break
-            if not lyr:
-                return {"success": False, "error": f"Layer {layer_name} not found"}
-            empty_count = 0
-            total = 0
-            for row in arcpy.da.SearchCursor(lyr, [field_name]):
-                total += 1
-                val = row[0]
-                if val is None or (isinstance(val, str) and val.strip() == ""):
-                    empty_count += 1
-            result = {
-                "function_executed": "calculate_empty_values",
-                "layer_name": layer_name,
-                "field_name": field_name,
-                "success": True,
-                "empty_count": empty_count,
-                "total_count": total
-            }
-            logger.info(f"Empty values calculation: {result}")
-            return result
-        except Exception as e:
-            logger.error(f"calculate_empty_values error: {str(e)}")
-            return {"success": False, "error": str(e)}
-            
-    def get_map_layers_info(self) -> Dict:
-        """
-        Get information about all layers in the current ArcGIS Pro map.
-        Returns a list of dictionaries with layer name, type, visibility, and data source.
-        """
-        logger.info("Getting map layers info")
-        try:
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            map_obj = aprx.activeMap
-            layers_info = []
-            for lyr in map_obj.listLayers():
-                try:
-                    desc = arcpy.Describe(lyr)
-                    layer_info = {
-                        "name": lyr.name,
-                        "visible": lyr.visible,
-                        "type": desc.shapeType if hasattr(desc, "shapeType") else "Unknown",
-                        "data_source": desc.dataSource if hasattr(desc, "dataSource") else ""
-                    }
-                except Exception as e:
-                    layer_info = {
-                        "name": lyr.name,
-                        "visible": lyr.visible,
-                        "type": "Unknown",
-                        "data_source": "",
-                        "error": str(e)
-                    }
-                layers_info.append(layer_info)
-            result = {
-                "function_executed": "get_map_layers_info",
-                "success": True,
-                "layers": layers_info
-            }
-            logger.info(f"Map layers info: {result}")
-            return result
-        except Exception as e:
-            logger.error(f"get_map_layers_info error: {str(e)}")
-            return {"success": False, "error": str(e)}
-
-    def get_map_tables_info(self) -> Dict:
-        """
-        Get information about all standalone tables in the current ArcGIS Pro map.
-        Returns a list of dictionaries with table name and data source.
-        """
-        logger.info("Getting map tables info")
-        try:
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            map_obj = aprx.activeMap
-            tables_info = []
-            for tbl in map_obj.listTables():
-                try:
-                    desc = arcpy.Describe(tbl)
-                    table_info = {
-                        "name": tbl.name,
-                        "data_source": desc.dataSource if hasattr(desc, "dataSource") else ""
-                    }
-                except Exception as e:
-                    table_info = {
-                        "name": tbl.name,
-                        "data_source": "",
-                        "error": str(e)
-                    }
-                tables_info.append(table_info)
-            result = {
-                "function_executed": "get_map_tables_info",
-                "success": True,
-                "tables": tables_info
-            }
-            logger.info(f"Map tables info: {result}")
-            return result
-        except Exception as e:
-            logger.error(f"get_map_tables_info error: {str(e)}")
-            return {"success": False, "error": str(e)}
-            
-    def get_values_frequency(self, layer_name: str, field_name: str) -> Dict:
-        """
-        Gets frequency distribution of field values.
-        Returns value-count pairs sorted by frequency.
-        """
-        logger.info(f"Getting values frequency for field {field_name} in layer {layer_name}")
-        try:
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            map_obj = aprx.activeMap
-            lyr = None
-            for l in map_obj.listLayers():
-                if l.name == layer_name:
-                    lyr = l
-                    break
-            
-            if not lyr:
-                return {"success": False, "error": f"Layer {layer_name} not found"}
-            
-            frequency_dict = {}
-            total_count = 0
-            
-            for row in arcpy.da.SearchCursor(lyr, [field_name]):
-                value = row[0]
-                total_count += 1
-                if value in frequency_dict:
-                    frequency_dict[value] += 1
-                else:
-                    frequency_dict[value] = 1
-            
-            # Sort by frequency (descending)
-            sorted_frequencies = sorted(frequency_dict.items(), key=lambda x: x[1], reverse=True)
-            
-            result = {
-                "function_executed": "get_values_frequency",
-                "layer_name": layer_name,
-                "field_name": field_name,
-                "success": True,
-                "total_features": total_count,
-                "unique_values": len(frequency_dict),
-                "frequency_distribution": sorted_frequencies
-            }
-            
-            logger.info(f"Values frequency: {result}")
-            return result
-        except Exception as e:
-            logger.error(f"get_values_frequency error: {str(e)}")
-            return {"success": False, "error": str(e)}
-
     def get_value_frequency(self, layer_name: str, field_name: str, lookup_value: str) -> Dict:
         """
         Gets frequency distribution of a specific field value.
@@ -1998,21 +1837,9 @@ class SpatialFunctions:
             
             # Detect potential count/measurement data
             if min_val >= 0 and all(isinstance(sample, int) for sample in field_info.get("sample_values", [])[:3]):
-                patterns["likely_counts"] = True
-            
-            # Detect percentage-like data
-            if 0 <= min_val <= 1 and 0 <= max_val <= 1:
-                patterns["likely_percentage"] = True
-            elif 0 <= min_val <= 100 and 0 <= max_val <= 100:
-                patterns["likely_percentage_scale"] = True
-            
-            # Uniqueness patterns
-            uniqueness_ratio = unique_count / total_records if total_records > 0 else 0
-            if uniqueness_ratio > 0.9:
-                patterns["high_uniqueness"] = True
-            elif uniqueness_ratio < 0.1:
-                patterns["low_uniqueness"] = True
-                patterns["categorical_potential"] = True
+                patterns["potential_type"] = "count_data"
+            else:
+                patterns["potential_type"] = "measurement_data"
             
             return patterns
             
@@ -2020,1620 +1847,203 @@ class SpatialFunctions:
             logger.error(f"Error detecting numeric patterns: {str(e)}")
             return {"error": str(e)}
     
-    def _calculate_median(self, values: List) -> float:
-        """Calculate median value from a list of numbers"""
-        try:
-            sorted_values = sorted(values)
-            n = len(sorted_values)
-            if n % 2 == 0:
-                return (sorted_values[n//2 - 1] + sorted_values[n//2]) / 2
-            else:
-                return sorted_values[n//2]
-        except Exception:
-            return 0.0
+    def _calculate_median(self, values: List[float]) -> float:
+        """Calculate median of a list of numbers"""
+        sorted_values = sorted(values)
+        n = len(sorted_values)
+        mid = n // 2
+        if n % 2 == 0:
+            return (sorted_values[mid - 1] + sorted_values[mid]) / 2
+        else:
+            return sorted_values[mid]
     
-    def _calculate_std_dev(self, values: List, mean: float) -> float:
+    def _calculate_std_dev(self, values: List[float], mean: float) -> float:
         """Calculate standard deviation"""
-        try:
-            variance = sum((x - mean) ** 2 for x in values) / len(values)
-            return variance ** 0.5
-        except Exception:
-            return 0.0
+        return math.sqrt(sum((x - mean) ** 2 for x in values) / (len(values) - 1))
     
-    def _detect_outliers(self, values: List) -> Dict:
-        """Detect outliers using IQR method"""
-        try:
-            sorted_values = sorted(values)
-            n = len(sorted_values)
-            
-            q1_idx = n // 4
-            q3_idx = 3 * n // 4
-            q1 = sorted_values[q1_idx]
-            q3 = sorted_values[q3_idx]
-            iqr = q3 - q1
-            
-            lower_bound = q1 - 1.5 * iqr
-            upper_bound = q3 + 1.5 * iqr
-            
-            outliers = [v for v in values if v < lower_bound or v > upper_bound]
-            
-            return {
-                "outlier_count": len(outliers),
-                "outlier_percentage": (len(outliers) / len(values)) * 100 if values else 0,
-                "lower_bound": lower_bound,
-                "upper_bound": upper_bound
-            }
-        except Exception:
-            return {"outlier_count": 0, "outlier_percentage": 0}
+    def _detect_outliers(self, values: List[float]) -> Dict:
+        """Detect outliers using the IQR method"""
+        sorted_values = sorted(values)
+        q1 = self._calculate_quartile(sorted_values, 1)
+        q3 = self._calculate_quartile(sorted_values, 3)
+        iqr = q3 - q1
+        lower_bound = q1 - 1.5 * iqr
+        upper_bound = q3 + 1.5 * iqr
+        
+        outliers = [v for v in values if v < lower_bound or v > upper_bound]
+        return {
+            "outlier_count": len(outliers),
+            "outlier_percentage": (len(outliers) / len(values)) * 100 if values else 0
+        }
+    
+    def _calculate_quartile(self, sorted_values: List[float], quartile: int) -> float:
+        """Calculate the specified quartile (1 or 3)"""
+        n = len(sorted_values)
+        index = (n + 1) * (quartile / 4)
+        if index.is_integer():
+            return sorted_values[int(index) - 1]
+        else:
+            lower = sorted_values[int(index) - 1]
+            upper = sorted_values[int(index)]
+            return lower + (upper - lower) * (index - int(index))
     
     def _analyze_text_patterns(self, values: List[str], unique_values: List[str]) -> Dict:
-        """Analyze text patterns to provide better categorization insights"""
-        try:
-            import re
-            
-            patterns = {
-                "has_consistent_format": False,
-                "has_varied_length": False,
-                "likely_codes": False,
-                "likely_names": False,
-                "contains_numbers": False,
-                "contains_special_chars": False,
-                "common_prefixes": [],
-                "common_suffixes": []
-            }
-            
-            if not values:
-                return patterns
-            
-            # Analyze length consistency
-            lengths = [len(v) for v in values]
-            length_std = self._calculate_std_dev(lengths, sum(lengths) / len(lengths))
-            patterns["has_consistent_format"] = length_std < 3.0  # Low variation in length
-            patterns["has_varied_length"] = max(lengths) - min(lengths) > 50
-            
-            # Check for code-like patterns (alphanumeric, consistent format)
-            code_pattern = re.compile(r'^[A-Za-z0-9_-]+$')
-            code_like_count = sum(1 for v in unique_values[:20] if code_pattern.match(v))
-            patterns["likely_codes"] = code_like_count / min(len(unique_values), 20) > 0.8
-            
-            # Check for name-like patterns (title case, spaces)
-            name_patterns = [
-                re.compile(r'^[A-Z][a-z]+ [A-Z][a-z]+'),  # "First Last"
-                re.compile(r'^[A-Z][a-z]+$'),              # "Name"
-                re.compile(r'^[A-Z][a-z]+ [a-z]+ [A-Z][a-z]+')  # "First middle Last"
-            ]
-            name_like_count = 0
-            for v in unique_values[:20]:
-                if any(pattern.match(v) for pattern in name_patterns):
-                    name_like_count += 1
-            patterns["likely_names"] = name_like_count / min(len(unique_values), 20) > 0.6
-            
-            # Check for numbers and special characters
-            has_numbers = sum(1 for v in unique_values[:20] if any(c.isdigit() for c in v))
-            patterns["contains_numbers"] = has_numbers / min(len(unique_values), 20) > 0.3
-            
-            special_char_pattern = re.compile(r'[!@#$%^&*(),.?":{}|<>]')
-            has_special = sum(1 for v in unique_values[:20] if special_char_pattern.search(v))
-            patterns["contains_special_chars"] = has_special / min(len(unique_values), 20) > 0.2
-            
-            # Find common prefixes and suffixes (if categorical)
-            if len(unique_values) <= 50 and len(unique_values) > 1:
-                # Common prefixes
-                prefixes = {}
-                for value in unique_values:
-                    if len(value) >= 2:
-                        prefix = value[:2]
-                        prefixes[prefix] = prefixes.get(prefix, 0) + 1
-                
-                common_prefixes = [prefix for prefix, count in prefixes.items() 
-                                 if count >= max(2, len(unique_values) * 0.3)]
-                patterns["common_prefixes"] = common_prefixes[:3]
-                
-                # Common suffixes
-                suffixes = {}
-                for value in unique_values:
-                    if len(value) >= 2:
-                        suffix = value[-2:]
-                        suffixes[suffix] = suffixes.get(suffix, 0) + 1
-                
-                common_suffixes = [suffix for suffix, count in suffixes.items() 
-                                 if count >= max(2, len(unique_values) * 0.3)]
-                patterns["common_suffixes"] = common_suffixes[:3]
-            
-            return patterns
-            
-        except Exception as e:
-            logger.error(f"Error analyzing text patterns: {str(e)}")
-            return {
-                "has_consistent_format": False,
-                "has_varied_length": False,
-                "likely_codes": False,
-                "likely_names": False,
-                "contains_numbers": False,
-                "contains_special_chars": False,
-                "common_prefixes": [],
-                "common_suffixes": []
-            }
-    
-   
-    def _generate_chart_recommendations(self, field_insights: Dict) -> List[Dict]:
-        """Generate chart recommendations based on field analysis"""
-        recommendations = []
+        """Analyze text patterns for AI insights"""
+        patterns = {"has_consistent_format": False, "likely_codes": False, "has_varied_length": False, "likely_names": False}
         
-        numeric_fields = []
-        categorical_fields = []
-        date_fields = []
+        # Check for consistent formatting (e.g., all uppercase, all lowercase)
+        if all(v.isupper() for v in unique_values) or all(v.islower() for v in unique_values):
+            patterns["has_consistent_format"] = True
         
-        # Categorize fields
-        for field_name, field_info in field_insights.items():
-            category = field_info.get("data_category", "other")
+        # Check for code-like patterns (alphanumeric, short, consistent length)
+        lengths = [len(v) for v in unique_values]
+        if lengths and max(lengths) < 15 and (max(lengths) - min(lengths)) < 5:
+            if all(v.isalnum() for v in unique_values):
+                patterns["likely_codes"] = True
+        
+        # Check for varied length
+        if lengths and (max(lengths) - min(lengths)) > 20:
+            patterns["has_varied_length"] = True
+        
+        # Check for name-like patterns (capitalized words)
+        if all(all(word.istitle() or word.isspace() for word in v.split()) for v in unique_values):
+            patterns["likely_names"] = True
             
-            if "numeric" in category:
-                numeric_fields.append((field_name, field_info))
-            elif "categorical" in category:
-                categorical_fields.append((field_name, field_info))
-            elif category == "date":
-                date_fields.append((field_name, field_info))
-        
-        # Generate recommendations
-        
-        # 1. Pie charts for categorical fields with reasonable unique counts
-        for field_name, field_info in categorical_fields:
-            if field_info.get("unique_count", 0) <= 10 and field_info.get("null_percentage", 100) < 50:
-                recommendations.append({
-                    "chart_type": "pie",
-                    "title": f"Distribution of {field_name}",
-                    "field": field_name,
-                    "description": f"Pie chart showing the distribution of {field_info.get('unique_count', 0)} unique values in {field_name}",
-                    "suitability_score": 0.9
-                })
-        
-        # 2. Bar charts for categorical fields with more unique values
-        for field_name, field_info in categorical_fields:
-            if 10 < field_info.get("unique_count", 0) <= 20 and field_info.get("null_percentage", 100) < 50:
-                recommendations.append({
-                    "chart_type": "bar",
-                    "title": f"Count by {field_name}",
-                    "field": field_name,
-                    "description": f"Bar chart showing counts for {field_info.get('unique_count', 0)} categories in {field_name}",
-                    "suitability_score": 0.8
-                })
-        
-        # 3. Histograms for continuous numeric fields
-        for field_name, field_info in numeric_fields:
-            if field_info.get("data_category") == "continuous_numeric" and field_info.get("null_percentage", 100) < 50:
-                recommendations.append({
-                    "chart_type": "histogram",
-                    "title": f"Distribution of {field_name}",
-                    "field": field_name,
-                    "description": f"Histogram showing the distribution of values in {field_name}",
-                    "range": f"{field_info.get('min_value', 'N/A')} to {field_info.get('max_value', 'N/A')}",
-                    "suitability_score": 0.85
-                })
-        
-        # 4. Scatter plots for pairs of numeric fields
-        if len(numeric_fields) >= 2:
-            for i, (field1_name, field1_info) in enumerate(numeric_fields):
-                for field2_name, field2_info in numeric_fields[i+1:]:
-                    if (field1_info.get("null_percentage", 100) < 30 and 
-                        field2_info.get("null_percentage", 100) < 30):
-                        recommendations.append({
-                            "chart_type": "scatter",
-                            "title": f"{field1_name} vs {field2_name}",
-                            "x_field": field1_name,
-                            "y_field": field2_name,
-                            "description": f"Scatter plot comparing {field1_name} and {field2_name}",
-                            "suitability_score": 0.7
-                        })
-        
-        # 5. Time series for date fields
-        for field_name, field_info in date_fields:
-            if field_info.get("null_percentage", 100) < 50:
-                recommendations.append({
-                    "chart_type": "timeline",
-                    "title": f"Timeline of {field_name}",
-                    "field": field_name,
-                    "description": f"Timeline visualization of {field_name}",
-                    "date_range": f"{field_info.get('min_date', 'N/A')} to {field_info.get('max_date', 'N/A')}",
-                    "suitability_score": 0.75
-                })
-        
-        # Sort by suitability score
-        recommendations.sort(key=lambda x: x.get("suitability_score", 0), reverse=True)
-        
-        return recommendations[:10]  # Return top 10 recommendations
-    
-    def generate_smart_dashboard_layout(self, layer_name: str) -> Dict:
-        """
-        Stage 2: Enhanced Chart Recommendation Engine with Layout Planning
-        Generates intelligent chart recommendations with 12x9 grid layout planning
-        """
-        logger.info(f"Generating smart dashboard layout for layer: {layer_name}")
-        
-        try:
-            # First get the field analysis
-            field_analysis_result = self.analyze_layer_fields(layer_name)
-            if not field_analysis_result.get("success", True):
-                return field_analysis_result
-            
-            # Apply smart field filtering (Step 1)
-            filter_result = self._filter_relevant_fields(field_analysis_result["field_insights"])
-            filtered_field_insights = filter_result["filtered_insights"]
-            classification_summary = filter_result["classification_summary"]
-            
-            logger.info(f"Field filtering: {classification_summary['relevant_fields']}/{classification_summary['total_fields']} fields retained")
-            
-            # Generate intelligent chart recommendations using filtered fields
-            smart_recommendations = self._generate_intelligent_chart_recommendations(filtered_field_insights)
-            
-            # Create layout plan for 12x9 grid
-            layout_plan = self._create_dashboard_layout_plan(smart_recommendations)
-            
-            # Generate chart configurations
-            chart_configurations = self._generate_chart_configurations(smart_recommendations, filtered_field_insights)
-            
-            # Create the enhanced dashboard structure
-            dashboard_structure = {
-                "layer_name": layer_name,
-                "analysis_timestamp": self._get_timestamp(),
-               
-                "dashboard_metadata": {
-                    "grid_system": "12x9",
-                    "total_charts": len(smart_recommendations),
-                    "layout_strategy": "priority_based",
-                    "version": "2.1",
-                    "field_filtering": classification_summary
-                },
-                "field_insights": filtered_field_insights,  # Use filtered fields
-                "chart_recommendations": smart_recommendations,
-                "layout_plan": layout_plan,
-                "chart_configurations": chart_configurations,
-                "dashboard_themes": self._get_dashboard_themes()
-            }
-            
-            # Save to enhanced dashboard file
-            dashboard_file = os.path.join(os.getcwd(), "smart_dashboard.json")
-            with open(dashboard_file, 'w', encoding='utf-8') as f:
-                json.dump(dashboard_structure, f, indent=2, ensure_ascii=False)
-            
-            logger.info(f"Smart dashboard layout saved to: {dashboard_file}")
-            
-            return {
-                "success": True,
-                "message": f"Smart dashboard layout generated successfully for layer '{layer_name}'",
-                "charts_recommended": len(smart_recommendations),
-                "layout_grid": "12x9",
-                "dashboard_file": dashboard_file,
-                "dashboard_structure": dashboard_structure
-            }
-            
-        except Exception as e:
-            logger.error(f"Error generating smart dashboard layout: {str(e)}")
-            return {"success": False, "error": str(e)}
-    
-    def _generate_intelligent_chart_recommendations(self, field_insights: Dict) -> List[Dict]:
-        """Generate intelligent chart recommendations based on field characteristics"""
-        recommendations = []
-        chart_id = 1
-        
-        # Categorize fields by type and characteristics
-        categorical_fields = []
-        numeric_fields = []
-        binary_fields = []
-        text_fields = []
-        
-        for field_name, field_info in field_insights.items():
-            data_category = field_info.get("data_category", "unknown")
-            unique_count = field_info.get("unique_count", 0)
-            
-            if data_category == "categorical_text" and unique_count <= 30:
-                categorical_fields.append(field_info)
-            elif data_category == "categorical_numeric" and unique_count <= 10:
-                if unique_count == 2:
-                    binary_fields.append(field_info)
-                else:
-                    categorical_fields.append(field_info)
-            elif data_category in ["continuous_numeric", "categorical_numeric"]:
-                numeric_fields.append(field_info)
-            elif data_category == "free_text":
-                text_fields.append(field_info)
-        
-        # 1. Single-field visualizations (high priority)
-        for field in categorical_fields:
-            if field["unique_count"] <= 20:  # Good for pie/donut charts
-                recommendations.append({
-                    "chart_id": chart_id,
-                    "chart_type": "pie",
-                    "priority": 1,
-                    "title": f"Distribution of {field['field_name']}",
-                    "primary_field": field['field_name'],
-                    "description": f"Pie chart showing the distribution of {field['unique_count']} categories in {field['field_name']}",
-                    "suitability_score": 0.9,
-                    "data_insight": f"Categorical breakdown with {field['unique_count']} unique values",
-                    "recommended_size": "medium"
-                })
-                chart_id += 1
-                
-                # Also recommend bar chart for same data
-                recommendations.append({
-                    "chart_id": chart_id,
-                    "chart_type": "bar",
-                    "priority": 2,
-                    "title": f"Count by {field['field_name']}",
-                    "primary_field": field['field_name'],
-                    "description": f"Bar chart showing counts for {field['unique_count']} categories in {field['field_name']}",
-                    "suitability_score": 0.85,
-                    "data_insight": f"Frequency analysis of {field['field_name']} categories",
-                    "recommended_size": "large"
-                })
-                chart_id += 1
-        
-        # 2. Numeric field distributions
-        for field in numeric_fields:
-            if field.get("data_category") == "continuous_numeric":
-                recommendations.append({
-                    "chart_id": chart_id,
-                    "chart_type": "histogram",
-                    "priority": 1,
-                    "title": f"Distribution of {field['field_name']}",
-                    "primary_field": field['field_name'],
-                    "description": f"Histogram showing the distribution of {field['field_name']} values",
-                    "suitability_score": 0.9,
-                    "data_insight": f"Value distribution from {field.get('min_value', 'N/A')} to {field.get('max_value', 'N/A')}",
-                    "recommended_size": "medium"
-                })
-                chart_id += 1
-        
-        # 3. Binary field analysis
-        for field in binary_fields:
-            recommendations.append({
-                "chart_id": chart_id,
-                "chart_type": "donut",
-                "priority": 1,
-                "title": f"{field['field_name']} Status",
-                "primary_field": field['field_name'],
-                "description": f"Donut chart showing binary distribution of {field['field_name']}",
-                "suitability_score": 0.85,
-                "data_insight": f"Binary indicator with {field.get('average_value', 0):.1%} positive rate",
-                "recommended_size": "small"
-            })
-            chart_id += 1
-        
-        # 4. Cross-field relationships (medium priority)
-        for i, field1 in enumerate(categorical_fields):
-            for field2 in categorical_fields[i+1:]:
-                if field1["unique_count"] <= 15 and field2["unique_count"] <= 15:
-                    recommendations.append({
-                        "chart_id": chart_id,
-                        "chart_type": "heatmap",
-                        "priority": 3,
-                        "title": f"{field1['field_name']} vs {field2['field_name']}",
-                        "primary_field": field1['field_name'],
-                        "secondary_field": field2['field_name'],
-                        "description": f"Heatmap showing relationship between {field1['field_name']} and {field2['field_name']}",
-                        "suitability_score": 0.75,
-                        "data_insight": "Cross-tabulation analysis",
-                        "recommended_size": "large"
-                    })
-                    chart_id += 1
-        
-        # 5. Numeric correlations
-        for i, field1 in enumerate(numeric_fields):
-            for field2 in numeric_fields[i+1:]:
-                recommendations.append({
-                    "chart_id": chart_id,
-                    "chart_type": "scatter",
-                    "priority": 4,
-                    "title": f"{field1['field_name']} vs {field2['field_name']}",
-                    "x_field": field1['field_name'],
-                    "y_field": field2['field_name'],
-                    "description": f"Scatter plot comparing {field1['field_name']} and {field2['field_name']}",
-                    "suitability_score": 0.7,
-                    "data_insight": "Correlation analysis between numeric variables",
-                    "recommended_size": "medium"
-                })
-                chart_id += 1
-        
-        # 6. Mixed-type relationships
-        for cat_field in categorical_fields[:3]:  # Limit to top 3 categorical
-            for num_field in numeric_fields[:2]:  # Limit to top 2 numeric
-                recommendations.append({
-                    "chart_id": chart_id,
-                    "chart_type": "box_plot",
-                    "priority": 3,
-                    "title": f"{num_field['field_name']} by {cat_field['field_name']}",
-                    "primary_field": num_field['field_name'],
-                    "group_by_field": cat_field['field_name'],
-                    "description": f"Box plot showing {num_field['field_name']} distribution across {cat_field['field_name']} categories",
-                    "suitability_score": 0.8,
-                    "data_insight": "Statistical distribution by category",
-                    "recommended_size": "large"
-                })
-                chart_id += 1
-        
-        # Sort by priority and suitability score
-        recommendations.sort(key=lambda x: (x["priority"], -x["suitability_score"]))
-        
-        # Return top 8 recommendations for optimal dashboard
-        return recommendations[:8]
-    
-    def _create_dashboard_layout_plan(self, recommendations: List[Dict]) -> Dict:
-        """Create a 12x9 grid layout plan for the dashboard"""
-        layout_plan = {
-            "grid_dimensions": {"width": 12, "height": 9},
-            "chart_positions": [],
-            "layout_strategy": "priority_and_size_optimized"
-        }
-        
-        # Define size templates
-        size_templates = {
-            "small": {"width": 3, "height": 3},
-            "medium": {"width": 4, "height": 3},
-            "large": {"width": 6, "height": 3},
-            "wide": {"width": 8, "height": 3},
-            "tall": {"width": 4, "height": 4}
-        }
-        
-        # Current position tracker
-        current_x, current_y = 0, 0
-        
-        for rec in recommendations:
-            size_template = size_templates.get(rec.get("recommended_size", "medium"))
-            
-            # Check if chart fits in current row
-            if current_x + size_template["width"] > 12:
-                current_x = 0
-                current_y += 3  # Move to next row
-            
-            # Check if we have vertical space
-            if current_y + size_template["height"] > 9:
-                break  # Dashboard is full
-            
-            chart_position = {
-                "chart_id": rec["chart_id"],
-                "chart_type": rec["chart_type"],
-                "title": rec["title"],
-                "recommended_size": rec.get("recommended_size", "medium"),
-                "grid_position": {
-                    "x": current_x,
-                    "y": current_y,
-                    "width": size_template["width"],
-                    "height": size_template["height"]
-                },
-                "priority": rec["priority"],
-                "z_index": rec["priority"]
-            }
-            
-            layout_plan["chart_positions"].append(chart_position)
-            current_x += size_template["width"]
-        
-        return layout_plan
-    
-    def _generate_chart_configurations(self, recommendations: List[Dict], field_insights: Dict) -> Dict:
-        """Generate detailed chart configurations for rendering"""
-        configurations = {}
-        
-        color_palettes = {
-            "categorical": ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#98D8C8"],
-            "sequential": ["#FFF5F0", "#FEE0D2", "#FCBBA1", "#FC9272", "#FB6A4A", "#EF3B2C", "#CB181D"],
-            "diverging": ["#d73027", "#f46d43", "#fdae61", "#fee08b", "#e6f598", "#abdda4", "#66c2a5"]
-        }
-        
-        for rec in recommendations:
-            chart_config = {
-                "chart_id": rec["chart_id"],
-                "chart_type": rec["chart_type"],
-                "title": rec["title"],
-                "data_source": {
-                    "primary_field": rec.get("primary_field"),
-                    "secondary_field": rec.get("secondary_field"),
-                    "x_field": rec.get("x_field"),
-                    "y_field": rec.get("y_field"),
-                    "group_by_field": rec.get("group_by_field")
-                },
-                "styling": {
-                    "color_palette": color_palettes["categorical"],
-                    "theme": "modern",
-                    "show_legend": True,
-                    "show_grid": rec["chart_type"] in ["scatter", "line", "bar"],
-                    "animation": True
-                },
-                "interactivity": {
-                    "hover_enabled": True,
-                    "click_enabled": True,
-                    "zoom_enabled": rec["chart_type"] in ["scatter", "histogram"],
-                    "filter_enabled": True
-                }
-            }
-            
-            # Chart-specific configurations
-            if rec["chart_type"] in ["pie", "donut"]:
-                chart_config["styling"]["show_percentages"] = True
-                chart_config["styling"]["inner_radius"] = 40 if rec["chart_type"] == "donut" else 0
-                
-            elif rec["chart_type"] == "histogram":
-                field_info = field_insights.get(rec.get("primary_field", ""), {})
-                chart_config["histogram_config"] = {
-                    "bins": min(20, max(10, int(field_info.get("unique_count", 20) / 10))),
-                    "x_axis_title": rec.get("primary_field", "Value"),
-                    "y_axis_title": "Frequency"
-                }
-                
-            elif rec["chart_type"] == "bar":
-                chart_config["bar_config"] = {
-                    "orientation": "vertical",
-                    "sort_by": "value",
-                    "show_values": True
-                }
-                
-            elif rec["chart_type"] == "scatter":
-                chart_config["scatter_config"] = {
-                    "point_size": 6,
-                    "opacity": 0.7,
-                    "trend_line": True
-                }
-                
-            elif rec["chart_type"] == "heatmap":
-                chart_config["heatmap_config"] = {
-                    "color_scale": "viridis",
-                    "show_values": True,
-                    "normalize": True
-                }
-            
-            configurations[f"chart_{rec['chart_id']}"] = chart_config
-        
-        return configurations
-    
-    def _get_dashboard_themes(self) -> Dict:
-        """Get available dashboard themes"""
-        return {
-            "default": {
-                "background_color": "#ffffff",
-                "text_color": "#333333",
-                "grid_color": "#e0e0e0",
-                "accent_color": "#007acc"
-            },
-            "dark": {
-                "background_color": "#1e1e1e",
-                "text_color": "#ffffff",
-                "grid_color": "#404040",
-                "accent_color": "#00d4ff"
-            },
-            "professional": {
-                "background_color": "#f8f9fa",
-                "text_color": "#212529",
-                "grid_color": "#dee2e6",
-                "accent_color": "#0d6efd"
-            }
-        }
-    
+        return patterns
+
     def _get_timestamp(self) -> str:
         """Get current timestamp in ISO format"""
         from datetime import datetime
         return datetime.now().isoformat()
-    
-    def optimize_dashboard_layout(self, layer_name: str, layout_template: str = "auto", 
-                            target_size: str = "desktop") -> Dict:
+    def generate_smart_dashboard_layout(self, layer_name: str) -> Dict:
         """
-        Stage 3: Advanced Layout Planner with dynamic optimization and templates
-        Optimizes existing dashboard layouts with smart positioning and templates
+        Analyzes a layer and generates a smart dashboard layout with recommended chart types.
+        Returns a JSON object with the dashboard layout and saves it to smart_dashboard.json.
         """
-        logger.info(f"Optimizing dashboard layout for layer: {layer_name}")
+        logger.info(f"Generating smart dashboard layout for layer: {layer_name}")
         
         try:
-            # Load existing smart dashboard
-            dashboard_file = os.path.join(os.getcwd(), "smart_dashboard.json")
-            if not os.path.exists(dashboard_file):
-                return {"success": False, "error": "No existing smart dashboard found. Run generate_smart_dashboard_layout first."}
+            # Step 1: Analyze the layer fields
+            analysis_result = self.analyze_layer_fields(layer_name)
+            if not analysis_result.get("success"):
+                return analysis_result
             
-            with open(dashboard_file, 'r', encoding='utf-8') as f:
-                existing_dashboard = json.load(f)
+            field_insights = analysis_result.get("field_insights", {})
             
-            # Apply layout optimization
-            optimized_layout = self._optimize_layout_with_template(
-                existing_dashboard["layout_plan"], 
-                existing_dashboard["chart_recommendations"],
-                layout_template,
-                target_size
-            )
+            # Step 2: Recommend chart types based on field analysis
+            chart_recommendations = self.recommend_chart_types(field_insights)
             
-            # Generate responsive variations
-            responsive_layouts = self._generate_responsive_layouts(optimized_layout)
+            # Step 3: Plan the dashboard layout
+            dashboard_layout = self.plan_dashboard_layout(chart_recommendations)
             
-            # Validate and resolve conflicts
-            validated_layout = self._validate_and_resolve_layout_conflicts(optimized_layout)
+            # Step 4: Save the layout to a JSON file
+            dashboard_file = "smart_dashboard.json"
+            with open(dashboard_file, "w") as f:
+                json.dump(dashboard_layout, f, indent=4)
             
-            # Create optimized dashboard structure
-            optimized_dashboard = {
-                **existing_dashboard,
-                "layout_optimization": {
-                    "template_applied": layout_template,
-                    "target_size": target_size,
-                    "optimization_timestamp": self._get_timestamp(),
-                    "version": "3.0"
-                },
-                "optimized_layout_plan": validated_layout,
-                "responsive_layouts": responsive_layouts,
-                "layout_analytics": self._analyze_layout_performance(validated_layout)
-            }
-            
-            # Save optimized dashboard
-            optimized_file = os.path.join(os.getcwd(), "optimized_dashboard.json")
-            with open(optimized_file, 'w', encoding='utf-8') as f:
-                json.dump(optimized_dashboard, f, indent=2, ensure_ascii=False)
-            
-            return {
-                "success": True,
-                "message": f"Dashboard layout optimized with template: {layout_template}",
-                "template_applied": layout_template,
-                "charts_repositioned": len(validated_layout["chart_positions"]),
-                "optimization_file": optimized_file,
-                "layout_score": optimized_dashboard["layout_analytics"]["overall_score"]
-            }
-            
-        except Exception as e:
-            logger.error(f"Error optimizing dashboard layout: {str(e)}")
-            return {"success": False, "error": str(e)}
-
-    def _optimize_layout_with_template(self, current_layout: Dict, recommendations: List[Dict], 
-                                 template: str, target_size: str) -> Dict:
-        """Apply layout template optimization"""
-        
-        layout_templates = {
-            "focus": self._apply_focus_template,
-            "comparison": self._apply_comparison_template, 
-            "overview": self._apply_overview_template,
-            "analytical": self._apply_analytical_template,
-            "auto": self._apply_auto_template
-        }
-        
-        template_func = layout_templates.get(template, self._apply_auto_template)
-        return template_func(current_layout, recommendations, target_size)
-
-    def _apply_focus_template(self, layout: Dict, recommendations: List[Dict], target_size: str) -> Dict:
-        """Focus template: Emphasizes the most important chart"""
-        optimized = deepcopy(layout)
-        
-        # Find highest priority chart
-        top_chart = min(recommendations, key=lambda x: x["priority"])
-        
-        # Make it larger and central
-        for pos in optimized["chart_positions"]:
-            if pos["chart_id"] == top_chart["chart_id"]:
-                pos["grid_position"].update({
-                    "x": 2, "y": 0, "width": 8, "height": 5
-                })
-                pos["emphasis"] = "primary"
-            else:
-                # Arrange others in smaller sizes below
-                idx = optimized["chart_positions"].index(pos) - 1
-                pos["grid_position"].update({
-                    "x": (idx % 4) * 3, "y": 5,
-                    "width": 3, "height": 2
-                })
-                pos["emphasis"] = "secondary"
-        
-        optimized["template_type"] = "focus"
-        return optimized
-
-    def _apply_comparison_template(self, layout: Dict, recommendations: List[Dict], target_size: str) -> Dict:
-        """Comparison template: Side-by-side comparisons of key metrics"""
-        optimized = deepcopy(layout)
-        
-        # Select top 4 charts for comparison
-        top_charts = sorted(recommendations, key=lambda x: x["priority"])[:4]
-        
-        # Arrange in 2x2 grid
-        for idx, rec in enumerate(top_charts):
-            pos = optimized["chart_positions"][idx]
-            pos["grid_position"].update({
-                "x": (idx % 2) * 6, "y": 0,
-                "width": 6, "height": 4
-            })
-            pos["emphasis"] = "primary"
-        
-        # Add a summary chart below if space permits
-        if len(top_charts) == 4:
-            summary_chart = top_charts[0]  # Just an example, could be a dedicated summary chart
-            pos = optimized["chart_positions"][4]
-            pos["grid_position"].update({
-                "x": 0, "y": 4,
-                "width": 12, "height": 3
-            })
-            pos["emphasis"] = "secondary"
-        
-        optimized["template_type"] = "comparison"
-        return optimized
-
-    def _apply_overview_template(self, layout: Dict, recommendations: List[Dict], target_size: str) -> Dict:
-        """Overview template: High-level overview with key metrics and trends"""
-        optimized = deepcopy(layout)
-        
-        # Select key metrics (top 3 charts)
-        key_metrics = sorted(recommendations, key=lambda x: x["priority"])[:3]
-        
-        # Arrange in a single row
-        for idx, rec in enumerate(key_metrics):
-            pos = optimized["chart_positions"][idx]
-            pos["grid_position"].update({
-                "x": idx * 4, "y": 0,
-                "width": 4, "height": 3
-            })
-            pos["emphasis"] = "primary"
-        
-        # Add trend chart below (if available)
-        if len(recommendations) > 3:
-            trend_chart = recommendations[3]  # Assuming the 4th chart is a trend chart
-            pos = optimized["chart_positions"][3]
-            pos["grid_position"].update({
-                "x": 0, "y": 3,
-                "width": 12, "height": 3
-            })
-            pos["emphasis"] = "secondary"
-        
-        optimized["template_type"] = "overview"
-        return optimized
-
-    def _apply_analytical_template(self, layout: Dict, recommendations: List[Dict], target_size: str) -> Dict:
-        """Analytical template: Detailed analysis with multiple charts"""
-        optimized = deepcopy(layout)
-        
-        # Select top 6 charts for analysis
-        analysis_charts = sorted(recommendations, key=lambda x: x["priority"])[:6]
-        
-        # Arrange in 3x2 grid
-        for idx, rec in enumerate(analysis_charts):
-            pos = optimized["chart_positions"][idx]
-            pos["grid_position"].update({
-                "x": (idx % 3) * 4, "y": (idx // 3) * 3,
-                "width": 4, "height": 3
-            })
-            pos["emphasis"] = "primary"
-        
-        optimized["template_type"] = "analytical"
-        return optimized
-
-    def _apply_auto_template(self, layout: Dict, recommendations: List[Dict], target_size: str) -> Dict:
-        """Auto template: Let CSS grid auto-placement handle positioning based on size classes"""
-        optimized = deepcopy(layout)
-        
-        # For auto template, we primarily rely on CSS grid auto-placement
-        # Just ensure charts have appropriate sizes based on priority
-        for rec in recommendations:
-            pos = optimized["chart_positions"][rec["chart_id"] - 1] # Assuming chart_id starts from 1
-            
-            # Assign sizes based on priority, but let CSS handle positioning
-            if rec["priority"] == 1:
-                # Highest priority gets large size
-                pos["recommended_size"] = "large"
-                pos["grid_position"].update({"width": 6, "height": 4})
-            elif rec["priority"] == 2:
-                # Second priority gets medium size
-                pos["recommended_size"] = "medium"  
-                pos["grid_position"].update({"width": 4, "height": 3})
-            elif rec["priority"] == 3:
-                # Third priority gets medium size
-                pos["recommended_size"] = "medium"
-                pos["grid_position"].update({"width": 4, "height": 3})
-            else:
-                # Lower priority gets small size
-                pos["recommended_size"] = "small"
-                pos["grid_position"].update({"width": 3, "height": 2})
-            
-            # Remove explicit x,y positioning for auto template to enable CSS auto-placement
-            if "x" in pos["grid_position"]:
-                del pos["grid_position"]["x"]
-            if "y" in pos["grid_position"]:
-                del pos["grid_position"]["y"]
-        
-        optimized["template_type"] = "auto"
-        return optimized
-
-    def _generate_responsive_layouts(self, layout: Dict) -> Dict:
-        """Generate responsive layouts for different screen sizes"""
-        responsive_layouts = {}
-        
-        # Break down the main layout into sections
-        sections = {
-            "header": layout["chart_positions"][:1],
-            "main": layout["chart_positions"][1:],
-            "footer": layout["chart_positions"][-1:]
-        }
-        
-        # Define responsive behavior
-        for size in ["mobile", "tablet", "desktop"]:
-            responsive_layout = {
-                "grid_dimensions": {"width": 12, "height": 9},
-                "chart_positions": [],
-                "layout_strategy": "responsive"
-            }
-            
-            # Header: Full width on top
-            if sections["header"]:
-                header_pos = sections["header"][0]["grid_position"]
-                responsive_layout["chart_positions"].append({
-                    "chart_id": sections["header"][0]["chart_id"],
-                    "chart_type": sections["header"][0]["chart_type"],
-                    "title": sections["header"][0]["title"],
-                    "grid_position": {
-                        "x": 0,
-                        "y": 0,
-                        "width": 12,
-                        "height": header_pos["height"]
-                    },
-                    "priority": sections["header"][0]["priority"],
-                    "z_index": sections["header"][0]["priority"]
-                })
-            
-            # Main: Responsive columns
-            if sections["main"]:
-                column_count = 2 if size in ["tablet", "desktop"] else 1
-                for idx, pos in enumerate(sections["main"]):
-                    x_pos = (idx % column_count) * 6
-                    y_pos = (idx // column_count) * 3 + (1 if sections["header"] else 0)
-                    
-                    responsive_layout["chart_positions"].append({
-                        "chart_id": pos["chart_id"],
-                        "chart_type": pos["chart_type"],
-                        "title": pos["title"],
-                        "grid_position": {
-                            "x": x_pos,
-                            "y": y_pos,
-                            "width": 6,
-                            "height": 3
-                        },
-                        "priority": pos["priority"],
-                        "z_index": pos["priority"]
-                    })
-            
-            # Footer: Full width at the bottom
-            if sections["footer"]:
-                footer_pos = sections["footer"][0]["grid_position"]
-                responsive_layout["chart_positions"].append({
-                    "chart_id": sections["footer"][0]["chart_id"],
-                    "chart_type": sections["footer"][0]["chart_type"],
-                    "title": sections["footer"][0]["title"],
-                    "grid_position": {
-                        "x": 0,
-                        "y": 9 - footer_pos["height"],
-                        "width": 12,
-                        "height": footer_pos["height"]
-                    },
-                    "priority": sections["footer"][0]["priority"],
-                    "z_index": sections["footer"][0]["priority"]
-                })
-            
-            responsive_layouts[size] = responsive_layout
-        
-        return responsive_layouts
-
-    def _validate_and_resolve_layout_conflicts(self, layout: Dict) -> Dict:
-        """Validate and resolve any conflicts in the layout"""
-        validated = deepcopy(layout)
-        
-        # Check for overlapping positions
-        positions = [pos["grid_position"] for pos in validated["chart_positions"]]
-        unique_positions = [dict(t) for t in {tuple(p.items()) for p in positions}]
-        
-        if len(unique_positions) < len(positions):
-            logger.warning("Overlapping chart positions detected, resolving...")
-            # Simple resolution: Offset overlapping charts
-            for pos in positions:
-                if positions.count(pos) > 1:
-                    idx = positions.index(pos)
-                    pos["y"] += 1  # Move down
-                    # Ensure it stays within bounds
-                    if pos["y"] + pos["height"] > validated["grid_dimensions"]["height"]:
-                        pos["y"] = validated["grid_dimensions"]["height"] - pos["height"]
-        
-        validated["chart_positions"] = [{
-            **pos,
-            "grid_position": {
-                "x": pos["grid_position"]["x"],
-                "y": pos["grid_position"]["y"],
-                "width": pos["grid_position"]["width"],
-                "height": pos["grid_position"]["height"]
-            }
-        } for pos in validated["chart_positions"]]
-        
-        return validated
-
-    def _analyze_layout_performance(self, layout: Dict) -> Dict:
-        """Analyze the layout for performance insights"""
-        total_charts = len(layout["chart_positions"])
-        filled_positions = sum(1 for pos in layout["chart_positions"] if pos["grid_position"]["y"] >= 0)
-        
-        return {
-            "success": True,
-            "total_charts": total_charts,
-            "filled_positions": filled_positions,
-            "empty_positions": total_charts - filled_positions,
-            "overall_score": round((filled_positions / total_charts) * 100, 2) if total_charts > 0 else 0
-        }
-
-    def recommend_chart_types(self, layer_name: str, target_field: str = None) -> Dict:
-        """
-        Enhanced AI-Powered Chart Type Recommendation (Step 3)
-        Analyzes both single-field characteristics and multi-field relationships 
-        to recommend diverse chart types, addressing the "too many histograms" problem.
-        Uses token-efficient prompts and leverages existing retry mechanisms.
-        """
-        logger.info(f"Enhanced AI-powered chart type recommendation for layer: {layer_name}")
-        
-        try:
-            # Get enhanced field analysis with AI insights
-            field_analysis_result = self.analyze_layer_fields(layer_name)
-            if not field_analysis_result.get("success", True):
-                return field_analysis_result
-            
-            field_insights = field_analysis_result["field_insights"]
-            
-            # Filter relevant fields for visualization
-            filter_result = self._filter_relevant_fields(field_insights)
-            relevant_fields = filter_result["filtered_insights"]
-            
-            if not relevant_fields:
-                return {
-                    "success": False, 
-                    "error": "No relevant fields found for chart recommendations"
-                }
-            
-            # NEW: Analyze field relationships for multi-field charts
-            field_relationships = self._analyze_field_relationships(relevant_fields)
-            
-            # NEW: Create token-efficient field summaries
-            field_summaries = self._create_field_summaries(relevant_fields)
-            
-            # Build enhanced AI prompt with relationships and token optimization
-            ai_prompt = self._build_enhanced_chart_recommendation_prompt(
-                field_summaries, field_relationships, target_field
-            )
-            
-            # Store enhanced context for AI response handling
-            recommendation_context = {
-                "function_type": "enhanced_chart_recommendation",
-                "layer_name": layer_name,
-                "target_field": target_field,
-                "field_count": len(relevant_fields),
-                "relationship_count": len(field_relationships),
-                "field_summaries": field_summaries,
-                "field_relationships": field_relationships,
-                "timestamp": self._get_timestamp()
-            }
-            
-            # Return structured data for AI processing with retry mechanisms
             result = {
                 "success": True,
-                "message": "Enhanced chart recommendation analysis ready for AI processing",
                 "layer_name": layer_name,
-                "relevant_fields_count": len(relevant_fields),
-                "relationship_count": len(field_relationships),
-                "ai_prompt": ai_prompt,
-                "context": recommendation_context,
-                "field_summaries": field_summaries,
-                "field_relationships": field_relationships,
-                "requires_ai_processing": True,  # Flag for main.py to handle with AI
-                "analysis_timestamp": self._get_timestamp(),
-                "enhancement_features": [
-                    "multi_field_relationships",
-                    "token_optimization", 
-                    "chart_diversity_focus"
-                ]
+                "dashboard_layout": dashboard_layout,
+                "output_file": dashboard_file,
+                "message": f"Smart dashboard layout generated and saved to {dashboard_file}"
             }
             
-            # Save enhanced analysis for AI processing
-            temp_file = os.path.join(os.getcwd(), f"enhanced_chart_analysis_{layer_name}.json")
-            with open(temp_file, 'w', encoding='utf-8') as f:
-                json.dump(result, f, indent=2, ensure_ascii=False)
-            
-            logger.info(f"Enhanced chart recommendation analysis saved: {temp_file}")
-            logger.info(f"Analysis includes {len(field_relationships)} field relationships for diverse charts")
+            logger.info(f"Smart dashboard layout generated: {result}")
             return result
             
         except Exception as e:
-            logger.error(f"Error in enhanced recommend_chart_types: {str(e)}")
+            logger.error(f"generate_smart_dashboard_layout error: {str(e)}")
             return {"success": False, "error": str(e)}
 
-    def plan_dashboard_layout(self, layer_name: str, chart_recommendations: List[Dict] = None) -> Dict:
+    def recommend_chart_types(self, field_insights: Dict) -> Dict:
         """
-        AI-Powered Dashboard Layout Planning (Step 5)
-        Uses AI to create optimal dashboard layouts that maximize space utilization.
-        Works with existing retry mechanisms for reliable AI interactions.
+        Recommends chart types for each field based on its AI-generated insights.
+        Returns a dictionary of field names and their recommended chart types.
         """
-        logger.info(f"AI-powered dashboard layout planning for layer: {layer_name}")
-        
-        try:
-            # Get chart recommendations if not provided
-            if not chart_recommendations:
-                chart_rec_result = self.recommend_chart_types(layer_name)
-                if not chart_rec_result.get("success", True):
-                    return chart_rec_result
-                chart_recommendations = chart_rec_result.get("chart_recommendations", [])
+        recommendations = {}
+        for field_name, insights in field_insights.items():
+            ai_insights = insights.get("ai_insights", {})
+            chart_suitability = ai_insights.get("chart_suitability", {})
             
-            # If still no recommendations, try to load from existing files
-            if not chart_recommendations:
-                dashboard_files = [
-                    os.path.join(os.getcwd(), "smart_dashboard.json"),
-                    os.path.join(os.getcwd(), "dashboard.json")
-                ]
-                
-                for file_path in dashboard_files:
-                    if os.path.exists(file_path):
-                        with open(file_path, 'r', encoding='utf-8') as f:
-                            dashboard_data = json.load(f)
-                        chart_recommendations = dashboard_data.get("chart_recommendations", [])
-                        if chart_recommendations:
-                            break
+            # Sort charts by suitability score
+            sorted_charts = sorted(chart_suitability.items(), key=lambda item: item[1], reverse=True)
             
-            if not chart_recommendations:
-                return {
-                    "success": False, 
-                    "error": "No chart recommendations available for layout planning"
+            # Recommend the top 1-2 charts
+            recommended_charts = [chart for chart, score in sorted_charts[:2] if score > 0.6]
+            
+            if recommended_charts:
+                recommendations[field_name] = {
+                    "recommended_charts": recommended_charts,
+                    "visualization_potential": ai_insights.get("visualization_potential", "low"),
+                    "visualization_priority": ai_insights.get("visualization_priority", 5)
                 }
-            
-            # Build AI prompt for layout optimization
-            layout_prompt = self._build_layout_planning_prompt(chart_recommendations, layer_name)
-            
-            # Prepare layout context for AI processing
-            layout_context = {
-                "function_type": "layout_planning",
-                "layer_name": layer_name,
-                "chart_count": len(chart_recommendations),
-                "grid_system": "12x9",
-                "chart_recommendations": chart_recommendations,
-                "timestamp": self._get_timestamp()
-            }
-            
-            # Return structured data for AI processing with retry mechanisms
-            result = {
-                "success": True,
-                "message": "Dashboard layout analysis ready for AI processing",
-                "layer_name": layer_name,
-                "chart_count": len(chart_recommendations),
-                "ai_prompt": layout_prompt,
-                "context": layout_context,
-                "chart_recommendations": chart_recommendations,
-                "requires_ai_processing": True,  # Flag for main.py to handle with AI
-                "analysis_timestamp": self._get_timestamp()
-            }
-            
-            # Save layout planning data
-            temp_file = os.path.join(os.getcwd(), f"layout_analysis_{layer_name}.json")
-            with open(temp_file, 'w', encoding='utf-8') as f:
-                json.dump(result, f, indent=2, ensure_ascii=False)
-            
-            logger.info(f"Layout planning analysis saved for AI processing: {temp_file}")
-            return result
-            
-        except Exception as e:
-            logger.error(f"Error in plan_dashboard_layout: {str(e)}")
-            return {"success": False, "error": str(e)}
-    
-    def _build_chart_recommendation_prompt(self, field_insights: Dict, target_field: str = None) -> str:
-        """Legacy chart recommendation prompt - deprecated in favor of enhanced version"""
-        logger.warning("Using legacy chart recommendation prompt. Consider using enhanced version.")
-        return self._build_enhanced_chart_recommendation_prompt(
-            self._create_field_summaries(field_insights), 
-            [], 
-            target_field
+        
+        return recommendations
+
+    def plan_dashboard_layout(self, chart_recommendations: Dict) -> Dict:
+        """
+        Plans the layout of a 12x9 grid dashboard based on chart recommendations.
+        Returns a JSON object representing the grid layout with chart placements.
+        """
+        # Sort fields by visualization priority (descending)
+        sorted_fields = sorted(
+            chart_recommendations.items(), 
+            key=lambda item: item[1].get("visualization_priority", 5), 
+            reverse=True
         )
-    
-    def _build_layout_planning_prompt(self, chart_recommendations: List[Dict], layer_name: str) -> str:
-        """Build comprehensive AI prompt for dashboard layout planning"""
-        try:
-            prompt = f"""# Dashboard Layout Planning Analysis
-
-## Objective
-Create an optimal 12x9 grid layout for {len(chart_recommendations)} charts that maximizes space utilization and visual effectiveness.
-
-## Dashboard Specifications
-- **Grid System**: 12 columns x 9 rows
-- **Layer**: {layer_name}
-- **Chart Count**: {len(chart_recommendations)}
-
-## Chart Requirements:
-"""
-            
-            for i, chart in enumerate(chart_recommendations, 1):
-                prompt += f"""
-### Chart {i}: {chart.get('title', f'Chart {i}')}
-- **Type**: {chart.get('chart_type', 'unknown')}
-- **Priority**: {chart.get('priority', 5)}/10
-- **Recommended Size**: {chart.get('size_recommendation', chart.get('recommended_size', 'medium'))}
-- **Effectiveness**: {chart.get('effectiveness_score', chart.get('suitability_score', 0.5))}
-- **Field**: {chart.get('field_name', chart.get('primary_field', 'unknown'))}
-"""
-            
-            prompt += """
-## Layout Optimization Guidelines
-1. **Priority Placement**: High-priority charts get prominent positions (top-left area)
-2. **Size Efficiency**: Balance chart sizes to fill the 12x9 grid optimally
-3. **Visual Hierarchy**: Create clear reading flow (left-to-right, top-to-bottom)
-4. **Space Utilization**: Minimize empty grid cells
-5. **Chart Relationships**: Place related charts near each other
-
-## Size Templates Available
-- **small**: 3x3 (9 grid cells)
-- **medium**: 4x3 (12 grid cells)  
-- **large**: 6x3 (18 grid cells)
-- **wide**: 8x3 (24 grid cells)
-- **tall**: 4x4 (16 grid cells)
-
-## Required Output Format
-Provide layout recommendations as JSON:
-```json
-{
-  "layout_strategy": "description of approach",
-  "grid_utilization": "percentage of cells used",
-  "chart_positions": [
-    {
-      "chart_id": 1,
-      "title": "Chart Title",
-      "position": {
-        "x": 0,
-        "y": 0,
-        "width": 4,
-        "height": 3
-      },
-      "size_template": "medium",
-      "justification": "why placed here"
-    }
-  ],
-  "optimization_notes": "key decisions made"
-}
-```
-
-**Important**: Ensure no chart positions overlap and all positions fit within the 12x9 grid.
-"""
-            
-            return prompt
-            
-        except Exception as e:
-            logger.error(f"Error building layout planning prompt: {str(e)}")
-            return "Error building prompt"
-
-    def _classify_field_importance(self, field_name: str, field_info: Dict) -> Dict:
-        """
-        Classify fields by their analytical importance and filter out irrelevant ones.
-        Returns classification with importance score (0-100).
-        """
-        field_name_lower = field_name.lower()
-        field_type = field_info.get('field_type', '').lower()
-        unique_count = field_info.get('unique_count', 0)
-        total_records = field_info.get('total_records', 1)
-        null_percentage = field_info.get('null_percentage', 0)
         
-        # Calculate uniqueness ratio
-        uniqueness_ratio = unique_count / total_records if total_records > 0 else 0
+        # Define grid dimensions
+        grid_width = 12
+        grid_height = 9
+        layout = []
         
-        # Initialize classification
-        classification = {
-            'field_name': field_name,
-            'category': 'unknown',
-            'importance_score': 0,
-            'is_relevant': False,
-            'filter_reason': None,
-            'analytical_value': 'none'
-        }
+        # Place charts on the grid
+        current_x = 0
+        current_y = 0
         
-        # Technical/System fields (EXCLUDE)
-        technical_patterns = [
-            'objectid', 'oid', 'fid', 'globalid', 'created_user', 'created_date',
-            'last_edited_user', 'last_edited_date', 'shape_length', 'shape_area',
-            'shape_leng', 'shape.stlength', 'shape.starea'
-        ]
-        
-        if any(pattern in field_name_lower for pattern in technical_patterns):
-            classification.update({
-                'category': 'technical',
-                'importance_score': 0,
-                'is_relevant': False,
-                'filter_reason': 'Technical/system field',
-                'analytical_value': 'none'
+        for field_name, recs in sorted_fields:
+            chart_type = recs["recommended_charts"][0] if recs["recommended_charts"] else "indicator"
+            
+            # Define default widget sizes
+            widget_size = {"w": 4, "h": 3} # Default size
+            if chart_type in ["bar", "column", "line_chart", "timeline"]:
+                widget_size = {"w": 6, "h": 4}
+            elif chart_type in ["pie", "donut"]:
+                widget_size = {"w": 3, "h": 3}
+            elif chart_type == "indicator":
+                widget_size = {"w": 2, "h": 2}
+            
+            # Check if widget fits in the current row
+            if current_x + widget_size["w"] > grid_width:
+                current_x = 0
+                current_y += widget_size["h"] # Move to next row
+            
+            # Check if widget fits on the grid at all
+            if current_y + widget_size["h"] > grid_height:
+                continue # Skip if it doesn't fit
+            
+            # Add widget to layout
+            layout.append({
+                "id": f"widget_{field_name}",
+                "x": current_x,
+                "y": current_y,
+                "w": widget_size["w"],
+                "h": widget_size["h"],
+                "field": field_name,
+                "chart_type": chart_type
             })
-            return classification
-        
-        # ID fields with high uniqueness (EXCLUDE if purely sequential)
-        id_patterns = ['id', '_id', 'code', '_code', 'key', '_key']
-        if any(pattern in field_name_lower for pattern in id_patterns):
-            if uniqueness_ratio > 0.9:  # Mostly unique values
-                classification.update({
-                    'category': 'identifier',
-                    'importance_score': 10,
-                    'is_relevant': False,
-                    'filter_reason': 'Identifier field with high uniqueness',
-                    'analytical_value': 'low'
-                })
-                return classification
-        
-        # Fields with very low variance (EXCLUDE)
-        if unique_count <= 1:
-            classification.update({
-                'category': 'constant',
-                'importance_score': 0,
-                'is_relevant': False,
-                'filter_reason': 'Constant or near-constant values',
-                'analytical_value': 'none'
-            })
-            return classification
-        
-        # Fields with too many nulls (EXCLUDE)
-        if null_percentage > 70:
-            classification.update({
-                'category': 'sparse',
-                'importance_score': 5,
-                'is_relevant': False,
-                'filter_reason': f'Too many null values ({null_percentage:.1f}%)',
-                'analytical_value': 'low'
-            })
-            return classification
-        
-        # Now classify RELEVANT fields based on DATA CHARACTERISTICS (language-agnostic)
-        
-        # Calculate data-driven scores based on statistical characteristics
-        base_score = 50
-        analytical_value = 'medium'
-        category = 'general'
-        
-        # 1. Uniqueness-based scoring (language-agnostic)
-        if 0.05 <= uniqueness_ratio <= 0.3:  # Good categorical distribution (5-30% unique)
-            base_score += 25
-            category = 'categorical'
-            analytical_value = 'high'
-        elif 0.3 < uniqueness_ratio <= 0.8:  # Moderate distribution
-            base_score += 15
-            category = 'mixed'
-            analytical_value = 'medium'
-        elif uniqueness_ratio > 0.95:  # Too unique (likely ID or text)
-            base_score -= 20
-            analytical_value = 'low'
-        
-        # 2. Data type scoring (language-agnostic)
-        if field_type in ['integer', 'double', 'float', 'single']:
-            base_score += 20  # Numeric fields are generally more analytical
-            if category == 'general':
-                category = 'numeric'
-        elif field_type in ['string', 'text']:
-            if unique_count < total_records * 0.2:  # Limited unique values = categorical
-                base_score += 15
-                category = 'categorical_text'
-            else:
-                base_score -= 10  # Free text is less analytical
-                category = 'free_text'
-        elif field_type == 'date':
-            base_score += 10
-            category = 'temporal'
-            analytical_value = 'medium'
-        
-        # 3. Data completeness scoring (language-agnostic)
-        if null_percentage < 5:
-            base_score += 10  # Complete data is better
-        elif null_percentage > 50:
-            base_score -= 15  # Incomplete data is worse
-        
-        # 4. Value range scoring for numeric fields (language-agnostic)
-        if field_type in ['integer', 'double', 'float', 'single']:
-            min_val = field_info.get('min_value', 0)
-            max_val = field_info.get('max_value', 0)
             
-            # Check for meaningful numeric ranges
-            if max_val > min_val:
-                value_range = max_val - min_val
-                if value_range > 0:
-                    base_score += 5  # Has meaningful range
-                    
-                # Bonus for positive counts/measurements
-                if min_val >= 0 and max_val > 10:
-                    base_score += 5  # Likely count or measurement
-        
-        # 5. Sample value analysis (language-agnostic pattern detection)
-        sample_values = field_info.get('sample_values', [])
-        if sample_values:
-            # Check for numeric patterns
-            numeric_samples = [v for v in sample_values if isinstance(v, (int, float))]
-            if len(numeric_samples) > 0:
-                base_score += 5
-                
-            # Check for reasonable categorical size
-            if 2 <= len(sample_values) <= 20:
-                base_score += 10  # Good categorical size
-        
-        # Final classification
-        final_score = max(0, min(100, base_score))
-        is_relevant = final_score >= 40  # Threshold for relevance
-        
-        if final_score >= 70:
-            analytical_value = 'high'
-        elif final_score >= 50:
-            analytical_value = 'medium'
-        else:
-            analytical_value = 'low'
-        
-        classification.update({
-            'category': category,
-            'importance_score': final_score,
-            'is_relevant': is_relevant,
-            'analytical_value': analytical_value
-        })
-        
-        return classification
+            # Update current position
+            current_x += widget_size["w"]
+            
+        return {"dashboard_layout": layout}
 
-    def _analyze_field_relationships(self, relevant_fields: Dict) -> List[Dict]:
+    def optimize_dashboard_layout(self, dashboard_layout: Dict) -> Dict:
         """
-        Analyze relationships between fields to identify opportunities for multi-field charts.
-        Returns a list of field relationship patterns suitable for diverse chart types.
+        Optimizes a dashboard layout to minimize gaps and overlaps.
+        Returns the optimized layout.
         """
-        relationships = []
-        field_names = list(relevant_fields.keys())
-        
-        try:
-            for i, field1 in enumerate(field_names):
-                field1_data = relevant_fields[field1]
-                field1_category = field1_data.get('data_category', 'unknown')
-                field1_uniqueness = field1_data.get('unique_count', 0) / field1_data.get('total_records', 1)
-                
-                for field2 in field_names[i+1:]:
-                    field2_data = relevant_fields[field2]
-                    field2_category = field2_data.get('data_category', 'unknown')
-                    field2_uniqueness = field2_data.get('unique_count', 0) / field2_data.get('total_records', 1)
-                    
-                    # Detect relationship patterns for different chart types
-                    relationship = self._detect_field_relationship_pattern(
-                        field1, field1_data, field1_category, field1_uniqueness,
-                        field2, field2_data, field2_category, field2_uniqueness
-                    )
-                    
-                    if relationship:
-                        relationships.append(relationship)
-            
-            logger.info(f"Detected {len(relationships)} field relationships for multi-field charts")
-            return relationships
-            
-        except Exception as e:
-            logger.error(f"Error analyzing field relationships: {str(e)}")
-            return []
-    
-    def _detect_field_relationship_pattern(self, field1, field1_data, field1_cat, field1_uniq, 
-                                         field2, field2_data, field2_cat, field2_uniq) -> Dict:
-        """
-        Detect specific relationship patterns between two fields that suggest optimal chart types.
-        """
-        try:
-            # Pattern 1: Numeric vs Categorical (ideal for grouped bar/column charts)
-            if ((field1_cat in ['continuous_numeric', 'categorical_numeric'] and 
-                 field2_cat in ['categorical_numeric'] and field2_uniq < 0.3) or
-                (field2_cat in ['continuous_numeric', 'categorical_numeric'] and 
-                 field1_cat in ['categorical_numeric'] and field1_uniq < 0.3)):
-                
-                numeric_field = field1 if field1_cat in ['continuous_numeric', 'categorical_numeric'] else field2
-                category_field = field2 if numeric_field == field1 else field1
-                
-                return {
-                    "relationship_type": "numeric_vs_categorical",
-                    "primary_field": numeric_field,
-                    "secondary_field": category_field,
-                    "recommended_charts": ["grouped_bar", "grouped_column", "box_plot"],
-                    "chart_suitability": {
-                        "grouped_bar": 0.85,
-                        "grouped_column": 0.80,
-                        "box_plot": 0.75
-                    },
-                    "relationship_strength": 0.8,
-                    "description": f"Compare {numeric_field} distribution across {category_field} categories"
-                }
-            
-            # Pattern 2: Two continuous numeric fields (ideal for scatter plots)
-            if (field1_cat == 'continuous_numeric' and field2_cat == 'continuous_numeric' and
-                field1_uniq > 0.3 and field2_uniq > 0.3):
-                
-                return {
-                    "relationship_type": "numeric_correlation",
-                    "primary_field": field1,
-                    "secondary_field": field2,
-                    "recommended_charts": ["scatter", "line_chart", "bubble"],
-                    "chart_suitability": {
-                        "scatter": 0.90,
-                        "line_chart": 0.70,
-                        "bubble": 0.65
-                    },
-                    "relationship_strength": 0.85,
-                    "description": f"Explore correlation between {field1} and {field2}"
-                }
-            
-            # Pattern 3: Two categorical fields (ideal for heatmap/cross-tabulation)
-            if (field1_cat in ['categorical_numeric', 'categorical'] and 
-                field2_cat in ['categorical_numeric', 'categorical'] and
-                field1_uniq < 0.4 and field2_uniq < 0.4):
-                
-                return {
-                    "relationship_type": "categorical_cross_analysis",
-                    "primary_field": field1,
-                    "secondary_field": field2,
-                    "recommended_charts": ["heatmap", "stacked_bar", "cross_table"],
-                    "chart_suitability": {
-                        "heatmap": 0.80,
-                        "stacked_bar": 0.75,
-                        "cross_table": 0.70
-                    },
-                    "relationship_strength": 0.75,
-                    "description": f"Cross-analysis of {field1} vs {field2} categories"
-                }
-            
-            # Pattern 4: Multiple numeric fields suitable for multi-series comparison
-            if (field1_cat in ['continuous_numeric', 'categorical_numeric'] and 
-                field2_cat in ['continuous_numeric', 'categorical_numeric']):
-                
-                return {
-                    "relationship_type": "multi_series_comparison",
-                    "primary_field": field1,
-                    "secondary_field": field2,
-                    "recommended_charts": ["dual_axis", "combo_chart", "parallel_coordinates"],
-                    "chart_suitability": {
-                        "dual_axis": 0.70,
-                        "combo_chart": 0.65,
-                        "parallel_coordinates": 0.60
-                    },
-                    "relationship_strength": 0.65,
-                    "description": f"Multi-series comparison of {field1} and {field2}"
-                }
-            
-            return None
-            
-        except Exception as e:
-            logger.error(f"Error detecting relationship pattern between {field1} and {field2}: {str(e)}")
-            return None
-    
-    def _create_field_summaries(self, relevant_fields: Dict) -> Dict:
-        """
-        Create token-efficient field summaries for AI processing.
-        Condenses field insights while preserving key characteristics.
-        """
-        summaries = {}
-        
-        try:
-            for field_name, field_data in relevant_fields.items():
-                # Extract key insights efficiently
-                ai_insights = field_data.get('ai_insights', {})
-                
-                summary = {
-                    "name": field_name,
-                    "type": field_data.get('data_category', 'unknown'),
-                    "uniqueness": round(field_data.get('unique_count', 0) / field_data.get('total_records', 1), 2),
-                    "completeness": round(100 - field_data.get('null_percentage', 0), 1),
-                    "viz_potential": ai_insights.get('visualization_potential', 'unknown'),
-                    "analytical_value": ai_insights.get('analytical_value', 'unknown'),
-                    "priority": ai_insights.get('visualization_priority', 5),
-                    "story": ai_insights.get('data_story', '')[:100] + "..." if len(ai_insights.get('data_story', '')) > 100 else ai_insights.get('data_story', ''),
-                    "top_charts": list(ai_insights.get('chart_suitability', {}).keys())[:3]  # Top 3 chart types
-                }
-                
-                # Add specific characteristics based on data type
-                if field_data.get('data_category') in ['continuous_numeric', 'categorical_numeric']:
-                    summary.update({
-                        "range": f"{field_data.get('min_value', 0):.1f}-{field_data.get('max_value', 0):.1f}",
-                        "distribution": ai_insights.get('distribution_characteristics', 'unknown')[:50]
-                    })
-                elif field_data.get('data_category') in ['categorical', 'categorical_text']:
-                    summary.update({
-                        "categories": field_data.get('unique_count', 0),
-                        "sample_values": field_data.get('sample_values', [])[:3]
-                    })
-                
-                summaries[field_name] = summary
-            
-            logger.info(f"Created token-efficient summaries for {len(summaries)} fields")
-            return summaries
-            
-        except Exception as e:
-            logger.error(f"Error creating field summaries: {str(e)}")
-            return {}
-    
-    def _build_enhanced_chart_recommendation_prompt(self, field_summaries: Dict, 
-                                                  field_relationships: List[Dict], 
-                                                  target_field: str = None) -> str:
-        """
-        Build token-efficient AI prompt focusing on chart diversity and field relationships.
-        """
-        try:
-            prompt = f"""# Enhanced Chart Recommendation Analysis
-
-## Mission: Diversify Dashboard Charts
-**Primary Goal**: Recommend 5-8 diverse chart types that avoid the "too many histograms" problem.
-**Data Fields**: {len(field_summaries)} relevant fields
-**Field Relationships**: {len(field_relationships)} multi-field opportunities identified
-
-## Token-Optimized Field Summaries:
-"""
-            
-            # Add condensed field information
-            for field_name, summary in field_summaries.items():
-                prompt += f"• **{field_name}** ({summary['type']}): {summary['viz_potential']} potential, "
-                prompt += f"Priority={summary['priority']}, Top charts: {', '.join(summary['top_charts'][:2])}\n"
-            
-            prompt += f"\n## Multi-Field Chart Opportunities ({len(field_relationships)} detected):\n"
-            
-            # Add relationship-based chart suggestions
-            for i, rel in enumerate(field_relationships[:4], 1):  # Limit to top 4 relationships
-                prompt += f"{i}. **{rel['relationship_type']}**: {rel['primary_field']} × {rel['secondary_field']} "
-                prompt += f"→ {', '.join(rel['recommended_charts'][:2])}\n"
-            
-            prompt += """
-## Chart Diversity Strategy:
-1. **Single-Field Charts** (40%): Best fields get histogram/bar/pie
-2. **Multi-Field Charts** (60%): Use relationships for scatter/grouped/heatmap
-3. **Avoid Redundancy**: Maximum 2 histograms, 1 pie chart
-4. **Prioritize Impact**: High-potential fields get prominent chart types
-
-## Required JSON Output:
-```json
-[
-  {
-    "chart_id": 1,
-    "chart_type": "scatter|grouped_bar|heatmap|box_plot|pie|histogram|line",
-    "primary_field": "field_name",
-    "secondary_field": "optional_for_multi_field_charts", 
-    "title": "Concise descriptive title",
-    "reasoning": "Why this chart type (max 50 chars)",
-    "diversity_impact": "high|medium|low",
-    "priority": 1-10,
-    "size": "small|medium|large"
-  }
-]
-```
-
-**CRITICAL**: Recommend exactly 5-8 charts with maximum diversity. Avoid chart type repetition.
-"""
-            
-            if target_field:
-                prompt += f"\n**FOCUS**: Ensure {target_field} gets a prominent, suitable chart.\n"
-            
-            return prompt
-            
-        except Exception as e:
-            logger.error(f"Error building enhanced chart recommendation prompt: {str(e)}")
-            return "Error building enhanced prompt"
-
-    def _filter_relevant_fields(self, field_insights: Dict) -> Dict:
-        """
-        Filter field insights to include only analytically relevant fields.
-        Returns filtered insights with classification metadata.
-        """
-        filtered_insights = {}
-        classification_summary = {
-            'total_fields': len(field_insights),
-            'relevant_fields': 0,
-            'filtered_out': 0,
-            'categories': {},
-            'filter_reasons': {}
-        }
-        
-        for field_name, field_info in field_insights.items():
-            classification = self._classify_field_importance(field_name, field_info)
-            
-            # Track statistics
-            category = classification['category']
-            if category not in classification_summary['categories']:
-                classification_summary['categories'][category] = 0
-            classification_summary['categories'][category] += 1
-            
-            if classification['is_relevant']:
-                # Add the field with its classification
-                filtered_insights[field_name] = {
-                    **field_info,
-                    'classification': classification
-                }
-                classification_summary['relevant_fields'] += 1
-            else:
-                # Track why it was filtered out
-                reason = classification.get('filter_reason', 'Low analytical value')
-                if reason not in classification_summary['filter_reasons']:
-                    classification_summary['filter_reasons'][reason] = 0
-                classification_summary['filter_reasons'][reason] += 1
-                classification_summary['filtered_out'] += 1
-        
-        logger.info(f"Field filtering results: {classification_summary['relevant_fields']}/{classification_summary['total_fields']} fields retained")
-        
-        return {
-            'filtered_insights': filtered_insights,
-            'classification_summary': classification_summary
-        }
+        # This is a placeholder for a more complex optimization algorithm.
+        # For now, it returns the original layout.
+        return {"success": True, "optimized_layout": dashboard_layout}

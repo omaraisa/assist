@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     AI_MODELS: Dict[str, Dict[str, Any]] = {
         "GEMINI_FLASH": {
             "name": "Gemini 1.5 Flash",
+            "model": "gemini-1.5-flash-latest",
             "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent",
             "max_tokens": 8192,
             "temperature": 0.7,
@@ -21,6 +22,7 @@ class Settings(BaseSettings):
         },
         "GEMINI_PRO": {
             "name": "Gemini 1.5 Pro", 
+            "model": "gemini-1.5-pro-latest",
             "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
             "max_tokens": 32768,
             "temperature": 0.7,
@@ -28,6 +30,7 @@ class Settings(BaseSettings):
         },
         "GEMINI_FLASH_EXP": {
             "name": "Gemini 2.0 Flash Experimental",
+            "model": "gemini-2.0-flash-exp",
             "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent",
             "max_tokens": 8192,
             "temperature": 0.7,
@@ -103,7 +106,7 @@ class Settings(BaseSettings):
     # - For OpenAI models: Set OPENAI_API_KEY 
     # - For Claude: Set ANTHROPIC_API_KEY
     # - For Ollama: No API key needed (local)
-    GEMINI_API_KEY: str = ""
+    GEMINI_API_KEY: str = "AIzaSyDU3OlsVqaP9MHgU2GkaNRO6Yz93pNfpzk"
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
     
