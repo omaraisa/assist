@@ -1,5 +1,6 @@
 import logging
 import json
+import ast
 from typing import Dict, List, Any
 
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -30,10 +31,26 @@ class LangChainAgent:
 
             # Create a wrapper function to handle tools that take no arguments
             def _tool_wrapper(tool_func, *args, **kwargs):
+                logger.info(f"Calling tool: {tool_func.__name__} with args: {args} and kwargs: {kwargs}")
                 if tool_func.__name__ in ["get_map_layers_info", "get_map_tables_info", "get_current_project_path", "get_default_db_path"]:
                     return tool_func()
-                else:
-                    return tool_func(*args, **kwargs)
+                
+                # Handle args passed as a single dictionary or a JSON string
+                if args:
+                    tool_input = args[0]
+                    if isinstance(tool_input, str):
+                        try:
+                            tool_input = ast.literal_eval(tool_input)
+                        except (ValueError, SyntaxError):
+                            # Not a literal dict, proceed with original args
+                            pass
+                    
+                    if isinstance(tool_input, dict):
+                        # Pass the dictionary as keyword arguments
+                        return tool_func(**tool_input)
+
+                # Fallback to the original call
+                return tool_func(*args, **kwargs)
 
             tools.append(
                 Tool(
@@ -72,7 +89,7 @@ class LangChainAgent:
         Question: the input question you must answer
         Thought: you should always think about what to do
         Action: the action to take, should be one of [{tool_names}]
-        Action Input: the input to the action
+        Action Input: the input to the action, as a dictionary where keys are the parameter names.
         Observation: the result of the action
         ... (this Thought/Action/Action Input/Observation can repeat N times)
         Thought: I now know the final answer
