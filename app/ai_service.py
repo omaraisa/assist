@@ -307,6 +307,7 @@ This function is ALWAYS available to you. You can call it at any time to get dec
             - Execute each part, and give real-time feedback
             - System automatically appends "_ai" to output layer names (e.g., "buildings" → "buildings_ai")
             - If the same layer is processed again, append "_ai" again ("buildings_ai_ai") use that as input for the next step
+            - Spaces in output layer names are replaced by underscores (_). For example, "my layer" becomes "my_layer_ai".
 
             ---
 

@@ -6,7 +6,7 @@ base_dir = Path(__file__).resolve().parent  # adjust as needed
 # Construct the log file path relative to the script
 log_dir = base_dir / 'logs'
 log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the logs directory exists
-log_path = log_dir / 'spatial_functions.log'
+log_path = log_dir / 'system.log'
 
 with log_path.open('r', encoding='utf-8') as f:
     lines = f.readlines()

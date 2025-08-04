@@ -26,7 +26,7 @@ except ImportError:
 
 # Configure logging to write to the functions_log.txt file
 from pathlib import Path
-LOG_FILE_PATH = Path(__file__).parent.parent / "logs" / "spatial_functions.log"
+LOG_FILE_PATH = Path(__file__).parent.parent / "logs" / "system.log"
 LOG_FILE_PATH.parent.mkdir(exist_ok=True)
 
 logging.basicConfig(
@@ -463,7 +463,7 @@ class SpatialFunctions:
                 buffer_distance = f"{distance} Miles"
             
             # Create output path
-            output_buffer = f"{layer_name}_ai"
+            output_buffer = f"{layer_name.replace(' ', '_')}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_buffer)
             
@@ -525,7 +525,7 @@ class SpatialFunctions:
             }
             arcpy_join_op = join_op_map.get(join_operation.lower(), "INTERSECT")
               # Create output path
-            output_name = f"{target_layer}_ai"
+            output_name = f"{target_layer.replace(' ', '_')}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_name)
             # Add the joined layer to the map
@@ -579,7 +579,7 @@ class SpatialFunctions:
             if not clip_lyr:
                 return {"success": False, "error": f"Clip layer {clip_layer} not found"}
               # Create output path
-            output_name = f"{input_layer}_ai"
+            output_name = f"{input_layer.replace(' ', '_')}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_name)
             # Add the joined layer to the map
@@ -868,7 +868,7 @@ class SpatialFunctions:
                     break
             if not lyr:
                 return {"success": False, "error": f"Layer {layer_name} not found"}            # Prepare output
-            output_name = f"{layer_name}_ai"
+            output_name = f"{layer_name.replace(' ', '_')}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_name)
             # Add the layer to the map
@@ -1017,6 +1017,8 @@ class SpatialFunctions:
         """
         logger.info("Getting map layers info")
         try:
+            if not ARCPY_AVAILABLE or not hasattr(arcpy, 'mp'):
+                return {"success": False, "error": "ArcGIS Pro environment not detected or arcpy.mp is not available. Please ensure ArcGIS Pro is running and the script is executed within its Python environment."}
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
             layers_info = []
