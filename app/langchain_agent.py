@@ -72,8 +72,8 @@ def _get_declarations_stateless(function_ids_str: str) -> str:
 class LangChainAgent:
     """Agent that uses LangChain to interact with AI models."""
 
-    def __init__(self, model_key: str):
-        self.spatial_functions = SpatialFunctions()
+    def __init__(self, model_key: str, websocket_manager: Any):
+        self.spatial_functions = SpatialFunctions(websocket_manager)
         self.tools = self._get_tools()
         self.set_model(model_key)
 

@@ -167,7 +167,7 @@ class ArcGISProConnector:
             logger.info("Imported SpatialFunctions from app.spatial_functions")
 
             # Create spatial functions instance
-            spatial_functions = SpatialFunctions()
+            spatial_functions = SpatialFunctions(None)
             logger.info("Created SpatialFunctions instance")
 
             # Check if function exists

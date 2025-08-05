@@ -40,8 +40,8 @@ templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 # Initialize services
 websocket_manager = WebSocketManager()
-ai_service = AIService()
-spatial_functions = SpatialFunctions()
+ai_service = AIService(initial_model_key=settings.DEFAULT_AI_MODEL, websocket_manager=websocket_manager)
+spatial_functions = SpatialFunctions(websocket_manager=websocket_manager)
 
 @app.get("/", response_class=HTMLResponse)
 async def get_chatbot(request: Request):

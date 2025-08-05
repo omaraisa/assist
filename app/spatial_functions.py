@@ -6,6 +6,7 @@ import os
 import logging
 import math
 import json
+import asyncio
 from typing import Dict, Tuple, List
 from .ai.function_declarations import FunctionDeclaration
 from copy import deepcopy
@@ -40,7 +41,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class SpatialFunctions:
-    def __init__(self):
+    def __init__(self, websocket_manager=None):
+        self.websocket_manager = websocket_manager
         self.supported_formats = ['.shp', '.geojson', '.kml', '.gpx', '.gml']
         self.AVAILABLE_FUNCTIONS = {
             1: "select_by_attribute",
@@ -440,57 +442,21 @@ class SpatialFunctions:
         """Create buffer around features"""
         logger.info(f"Creating buffer for layer: {layer_name}, distance: {distance} {units}")
         try:
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            map_obj = aprx.activeMap
-            lyr = None
-            for l in map_obj.listLayers():
-                if l.name == layer_name:
-                    lyr = l
-                    break
-            
-            if not lyr:
-                return {"success": False, "error": f"Layer {layer_name} not found"}
-            
-            # Convert distance to appropriate units for arcpy
-            buffer_distance = f"{distance} {units.title()}"
-            if units.lower() == "meters":
-                buffer_distance = f"{distance} Meters"
-            elif units.lower() == "kilometers":
-                buffer_distance = f"{distance} Kilometers"
-            elif units.lower() == "feet":
-                buffer_distance = f"{distance} Feet"
-            elif units.lower() == "miles":
-                buffer_distance = f"{distance} Miles"
-            
-            # Create output path
-            output_buffer = f"{layer_name.replace(' ', '_')}_ai"
-            default_gdb = aprx.defaultGeodatabase
-            output_path = os.path.join(default_gdb, output_buffer)
-            
-            # Create buffer
-            arcpy.PairwiseBuffer_analysis(lyr, output_path, buffer_distance)
-            
-            # Add the buffer layer to the map
-            buffer_layer = map_obj.addDataFromPath(output_path)
-            
-            # Get feature count
-            features_processed = int(arcpy.GetCount_management(lyr)[0])
-            
-            result = {
-                "function_executed": "create_buffer",
-                "layer_name": layer_name,
-                "distance": distance,
-                "units": units,
-                "success": True,
-                "output": {
-                    "buffer_layer": output_buffer,
-                    "features_processed": features_processed,
-                    "output_path": output_path,
-                    "added_to_map": True
+            arcgis_client = self.websocket_manager.get_arcgis_client()
+            if not arcgis_client:
+                return {"success": False, "error": "ArcGIS Pro client not connected."}
+
+            payload = {
+                "type": "execute_function",
+                "function_name": "create_buffer",
+                "parameters": {
+                    "layer_name": layer_name,
+                    "distance": distance,
+                    "units": units
                 }
             }
-            logger.info(f"Buffer creation completed: {result}")
-            return result
+            asyncio.run(self.websocket_manager.send_to_client(arcgis_client, payload))
+            return {"success": True, "message": "Buffer command sent to ArcGIS Pro."}
         except Exception as e:
             logger.error(f"create_buffer error: {str(e)}")
             return {"success": False, "error": str(e)}

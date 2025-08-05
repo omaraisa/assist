@@ -17,17 +17,12 @@ from .ai.utils import (
 logger = logging.getLogger(__name__)
 
 class AIService:
-    """Service for handling AI model interactions with function calling support"""
-    
-    def __init__(self):
-        self.current_model = settings.DEFAULT_AI_MODEL
-        self.session = None
-        self.ollama_service = None
-        self.rag_service = None
-        self.response_handler = None
+    """Handles AI model interactions and response generation."""
+
+    def __init__(self, initial_model_key: str, websocket_manager: Any):
+        self.websocket_manager = websocket_manager
         self.langchain_agent = None
-        # Track dynamically discovered functions per client
-        self.client_dynamic_functions = {}
+        self.set_model(initial_model_key)
     
     async def initialize(self):
         """Initialize the AI service"""
@@ -37,7 +32,7 @@ class AIService:
         self.response_handler = AIResponseHandler(self.session, None)  # ollama_service will be set later
         
         # Initialize LangChain agent
-        self.langchain_agent = LangChainAgent(self.current_model)
+        self.langchain_agent = LangChainAgent(self.current_model, self.websocket_manager)
         
         # Initialize Ollama service if available
         logger.info(f"OLLAMA_AVAILABLE: {OLLAMA_AVAILABLE}")
