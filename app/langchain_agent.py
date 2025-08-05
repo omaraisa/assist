@@ -21,9 +21,8 @@ def _get_declarations_stateless(function_ids_str: str) -> str:
     It imports and accesses the necessary data directly to avoid state issues.
     """
     try:
-        # Create an instance to access the instance variables.
-        spatial_funcs_instance = SpatialFunctions()
-        available_functions = spatial_funcs_instance.AVAILABLE_FUNCTIONS
+        # Access the class variables directly without creating an instance
+        available_functions = SpatialFunctions.AVAILABLE_FUNCTIONS
         functions_declaration = FunctionDeclaration.functions_declarations
         
         # Parse the input - handle cases where the input might be double-quoted by LangChain
