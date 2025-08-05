@@ -7,6 +7,7 @@ import logging
 import math
 import json
 import asyncio
+import statistics
 from typing import Dict, Tuple, List
 from .ai.function_declarations import FunctionDeclaration
 from copy import deepcopy

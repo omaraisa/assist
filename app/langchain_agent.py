@@ -25,16 +25,33 @@ def _get_declarations_stateless(function_ids_str: str) -> str:
         available_functions = SpatialFunctions.AVAILABLE_FUNCTIONS
         functions_declaration = FunctionDeclaration.functions_declarations
         
-        # Parse the input - handle cases where the input might be double-quoted by LangChain
+        # Parse the input - handle multiple formats: single int, single string, array of ints, array of strings
+        function_ids = []
+        
         if isinstance(function_ids_str, str):
             cleaned_input = function_ids_str.strip().strip('"').strip("'")
-            function_ids = ast.literal_eval(cleaned_input)
-        else:
-            function_ids = function_ids_str
             
-        # Ensure it's a list
-        if not isinstance(function_ids, list):
-            function_ids = [function_ids]
+            # Try to parse as JSON array first (e.g., "[4]", '["4"]', "[4,5]")
+            try:
+                parsed = ast.literal_eval(cleaned_input)
+                if isinstance(parsed, list):
+                    # Convert all elements to integers
+                    function_ids = [int(x) for x in parsed]
+                else:
+                    # Single value
+                    function_ids = [int(parsed)]
+            except (ValueError, SyntaxError):
+                # If JSON parsing fails, try as single value
+                try:
+                    function_ids = [int(cleaned_input)]
+                except ValueError:
+                    return f"Error: Could not parse function IDs from input: {function_ids_str}"
+        else:
+            # Direct input (shouldn't happen, but handle it)
+            if isinstance(function_ids_str, list):
+                function_ids = [int(x) for x in function_ids_str]
+            else:
+                function_ids = [int(function_ids_str)]
         
         result = {}
         for func_id in function_ids:
@@ -94,7 +111,7 @@ class LangChainAgent:
 
     def _execute_spatial_function(self, tool_input_str: str) -> Dict[str, Any]:
         """
-        Parses the input string from the agent and dynamically executes a spatial function.
+        Parses the input string from the agent and sends the function request to ArcGIS Pro via websocket.
         The input string should be a dictionary containing 'function_name' and its arguments.
         """
         function_name = "[unknown]"
@@ -114,14 +131,27 @@ class LangChainAgent:
             if not function_name:
                 return {"error": "'function_name' must be provided in the input dictionary."}
 
-            tool_func = getattr(self.spatial_functions, function_name)
+            # Check if function exists in available functions
+            if function_name not in SpatialFunctions.AVAILABLE_FUNCTIONS.values():
+                return {"error": f"Function '{function_name}' is not available."}
+
+            # Send function request to ArcGIS Pro via websocket (same as web interface)
+            arcgis_client = self.spatial_functions.websocket_manager.get_arcgis_client()
+            if not arcgis_client:
+                return {"error": "ArcGIS Pro client not connected."}
+
+            payload = {
+                "type": "execute_function",
+                "function_name": function_name,
+                "parameters": tool_input
+            }
             
-            return tool_func(**tool_input)
+            import asyncio
+            asyncio.run(self.spatial_functions.websocket_manager.send_to_client(arcgis_client, payload))
+            return {"success": True, "message": f"Function '{function_name}' sent to ArcGIS Pro for execution."}
 
         except (SyntaxError, ValueError) as e:
             return {"error": f"Failed to parse input string: {e}. Input was: {tool_input_str}"}
-        except AttributeError:
-            return {"error": f"Function '{function_name}' is not a valid function in SpatialFunctions."}
         except Exception as e:
             return {"error": f"An unexpected error occurred while executing '{function_name}': {e}"}
 
