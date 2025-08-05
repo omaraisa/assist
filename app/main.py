@@ -884,6 +884,11 @@ async def handle_function_response(client_id: str, message: Dict):
         
         logger.info(f"Received function response: session_id={session_id}, source_client={source_client}, from_client={client_id}")
         
+        # Store function response for LangChain agent if session_id exists (regardless of other conditions)
+        if session_id:
+            websocket_manager.store_function_result(session_id, message)
+            logger.info(f"Stored function response for session {session_id}")
+        
         # Check if this is a function calling response
         if session_id:
             context = websocket_manager.get_function_context(session_id)

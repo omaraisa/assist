@@ -112,6 +112,7 @@ class LangChainAgent:
     def _execute_spatial_function(self, tool_input_str: str) -> Dict[str, Any]:
         """
         Parses the input string from the agent and sends the function request to ArcGIS Pro via websocket.
+        Waits for and returns the actual function response from ArcGIS Pro.
         The input string should be a dictionary containing 'function_name' and its arguments.
         """
         function_name = "[unknown]"
@@ -135,20 +136,46 @@ class LangChainAgent:
             if function_name not in SpatialFunctions.AVAILABLE_FUNCTIONS.values():
                 return {"error": f"Function '{function_name}' is not available."}
 
-            # Send function request to ArcGIS Pro via websocket (same as web interface)
+            # Send function request to ArcGIS Pro via websocket and wait for response
             arcgis_client = self.spatial_functions.websocket_manager.get_arcgis_client()
             if not arcgis_client:
                 return {"error": "ArcGIS Pro client not connected."}
 
+            # Generate unique session ID for this function call
+            import uuid
+            session_id = str(uuid.uuid4())
+
             payload = {
                 "type": "execute_function",
                 "function_name": function_name,
-                "parameters": tool_input
+                "parameters": tool_input,
+                "session_id": session_id  # Add session ID to track this specific call
             }
             
             import asyncio
+            
+            # Send the request
             asyncio.run(self.spatial_functions.websocket_manager.send_to_client(arcgis_client, payload))
-            return {"success": True, "message": f"Function '{function_name}' sent to ArcGIS Pro for execution."}
+            
+            # Wait for the response with timeout
+            max_wait_time = 30  # Maximum 30 seconds wait
+            check_interval = 0.2  # Check every 200ms
+            elapsed_time = 0
+            
+            while elapsed_time < max_wait_time:
+                if self.spatial_functions.websocket_manager.has_function_result(session_id):
+                    result = self.spatial_functions.websocket_manager.get_function_result(session_id)
+                    if result:
+                        # Return the actual function result from ArcGIS Pro
+                        return result.get("data", result)
+                
+                # Sleep and increment elapsed time
+                import time
+                time.sleep(check_interval)
+                elapsed_time += check_interval
+            
+            # Timeout reached
+            return {"error": f"Timeout waiting for response from ArcGIS Pro for function '{function_name}'. Please check if ArcGIS Pro is responsive."}
 
         except (SyntaxError, ValueError) as e:
             return {"error": f"Failed to parse input string: {e}. Input was: {tool_input_str}"}
