@@ -444,21 +444,59 @@ class SpatialFunctions:
         """Create buffer around features"""
         logger.info(f"Creating buffer for layer: {layer_name}, distance: {distance} {units}")
         try:
-            arcgis_client = self.websocket_manager.get_arcgis_client()
-            if not arcgis_client:
-                return {"success": False, "error": "ArcGIS Pro client not connected."}
-
-            payload = {
-                "type": "execute_function",
-                "function_name": "create_buffer",
-                "parameters": {
-                    "layer_name": layer_name,
-                    "distance": distance,
-                    "units": units
-                }
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            
+            # Find the target layer
+            target_layer = None
+            for layer in map_obj.listLayers():
+                if layer.name == layer_name:
+                    target_layer = layer
+                    break
+            
+            if not target_layer:
+                return {"success": False, "error": f"Layer '{layer_name}' not found in the map"}
+            
+            # Create output feature class name
+            output_name = f"{layer_name.replace(' ', '_')}_Buffer_{int(distance)}{units}"
+            output_fc = os.path.join(aprx.defaultGeodatabase, output_name)
+            output_fc = arcpy.CreateUniqueName(output_fc)
+            
+            # Convert units to arcpy format
+            unit_mapping = {
+                "meters": "METERS",
+                "kilometers": "KILOMETERS", 
+                "feet": "FEET",
+                "miles": "MILES"
             }
-            asyncio.run(self.websocket_manager.send_to_client(arcgis_client, payload))
-            return {"success": True, "message": "Buffer command sent to ArcGIS Pro."}
+            arcpy_units = unit_mapping.get(units.lower(), "METERS")
+            
+            # Create buffer
+            arcpy.analysis.Buffer(
+                in_features=target_layer,
+                out_feature_class=output_fc,
+                buffer_distance_or_field=f"{distance} {arcpy_units}",
+                line_side="FULL",
+                line_end_type="ROUND",
+                dissolve_option="NONE"
+            )
+            
+            # Add the buffer layer to the map
+            buffer_layer = map_obj.addDataFromPath(output_fc)
+            
+            result = {
+                "function_executed": "create_buffer",
+                "layer_name": layer_name,
+                "success": True,
+                "output_layer": output_name,
+                "output_path": output_fc,
+                "buffer_distance": distance,
+                "buffer_units": units
+            }
+            
+            logger.info(f"Buffer created successfully: {result}")
+            return result
+            
         except Exception as e:
             logger.error(f"create_buffer error: {str(e)}")
             return {"success": False, "error": str(e)}
