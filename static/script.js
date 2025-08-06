@@ -6,6 +6,7 @@ class SmartAssistantClient {
         this.isConnected = false;
         this.conversationHistory = [];
         this.apiKeys = this.loadApiKeys();
+        this.isThinking = false;
         
         this.initializeElements();
         this.setupEventListeners();
@@ -186,7 +187,7 @@ class SmartAssistantClient {
                 
             case 'assistant_message':
                 this.addMessage('Assistant', message.content, 'bot');
-                this.hideLoading();
+                this.setThinkingState(false);
                 break;
                 
             case 'function_result':
@@ -204,7 +205,12 @@ class SmartAssistantClient {
                 
             case 'error':
                 this.addMessage('System', `Error: ${message.message}`, 'error');
-                this.hideLoading();
+                this.setThinkingState(false);
+                break;
+                
+            case 'cancelled':
+                this.addMessage('System', 'Request cancelled', 'system');
+                this.setThinkingState(false);
                 break;
                 
             case 'model_changed':
@@ -251,6 +257,12 @@ class SmartAssistantClient {
         const message = this.elements.userInput.value.trim();
         if (!message || !this.isConnected) return;
         
+        // If already thinking, cancel instead
+        if (this.isThinking) {
+            this.cancelRequest();
+            return;
+        }
+        
         // Add user message to UI
         this.addMessage('You', message, 'user');
         
@@ -258,8 +270,8 @@ class SmartAssistantClient {
         this.elements.userInput.value = '';
         this.autoResizeTextarea(this.elements.userInput);
         
-        // Show loading
-        this.showLoading();
+        // Set thinking state
+        this.setThinkingState(true);
         
         // Send to server
         this.sendWebSocketMessage({
@@ -395,6 +407,39 @@ class SmartAssistantClient {
     
     hideLoading() {
         this.elements.loadingIndicator.style.display = 'none';
+    }
+    
+    setThinkingState(thinking) {
+        this.isThinking = thinking;
+        if (thinking) {
+            this.showLoading();
+            this.elements.sendBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            `;
+            this.elements.sendBtn.setAttribute('aria-label', 'Stop Thinking');
+            this.elements.sendBtn.classList.add('stop-mode');
+            this.elements.userInput.disabled = true;
+        } else {
+            this.hideLoading();
+            this.elements.sendBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                </svg>
+            `;
+            this.elements.sendBtn.setAttribute('aria-label', 'Send Message');
+            this.elements.sendBtn.classList.remove('stop-mode');
+            this.elements.userInput.disabled = !this.isConnected;
+        }
+        // Button is always enabled when thinking (so user can stop) or when connected and not thinking
+        this.elements.sendBtn.disabled = !this.isConnected && !thinking;
+    }
+    
+    cancelRequest() {
+        this.sendWebSocketMessage({
+            type: 'cancel_request'
+        });
     }
     
     // Public methods for debugging

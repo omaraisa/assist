@@ -381,8 +381,27 @@ body.dark .chat-messages::-webkit-scrollbar-thumb {
   transform: none;
 }
 
+.send-btn.stop-mode {
+  background-color: var(--error-color);
+  animation: pulse 1.5s infinite;
+}
+
+.send-btn.stop-mode:hover {
+  background-color: #c82333;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
 .send-btn svg {
   margin-left: 2px;
+}
+
+.send-btn.stop-mode svg {
+  margin-left: 0;
 }
 
 /* Loading indicator */

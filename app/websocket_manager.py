@@ -37,6 +37,9 @@ class WebSocketManager:
         
         # Chain context management for function calling chains
         self.chain_contexts: Dict[str, Dict] = {}
+        
+        # Store cancel flags for clients
+        self.cancel_flags: Dict[str, bool] = {}
     
     async def connect(self, websocket: WebSocket, client_id: str):
         """Accept a new WebSocket connection"""
@@ -55,6 +58,8 @@ class WebSocketManager:
             del self.conversation_histories[client_id]
         if client_id in self.pending_responses:
             del self.pending_responses[client_id]
+        if client_id in self.cancel_flags:
+            del self.cancel_flags[client_id]
         logger.info(f"Client {client_id} disconnected")
     
     async def disconnect_all(self):
@@ -258,3 +263,16 @@ class WebSocketManager:
                 for client_id in self.active_connections.keys()
             ]
         }
+    
+    # Cancel flag management
+    def set_cancel_flag(self, client_id: str):
+        """Set cancel flag for a client"""
+        self.cancel_flags[client_id] = True
+    
+    def clear_cancel_flag(self, client_id: str):
+        """Clear cancel flag for a client"""
+        self.cancel_flags[client_id] = False
+    
+    def is_cancelled(self, client_id: str) -> bool:
+        """Check if client has requested cancellation"""
+        return self.cancel_flags.get(client_id, False)

@@ -163,6 +163,10 @@ async def handle_websocket_message(client_id: str, message: Dict):
                     "type": "error",
                     "message": "Model key is required for model change"
                 })
+                
+        elif message_type == "cancel_request":
+            # Handle cancel/stop request
+            await handle_cancel_request(client_id)
             
         else:
             logger.warning(f"Unknown message type: {message_type}")
@@ -177,6 +181,11 @@ async def handle_websocket_message(client_id: str, message: Dict):
 async def handle_user_message(client_id: str, user_message: str):
     """Handle user chat messages and generate AI responses"""
     try:
+        # Check if client has requested cancellation
+        if websocket_manager.is_cancelled(client_id):
+            websocket_manager.clear_cancel_flag(client_id)
+            return
+            
         # Get current conversation history for this client
         history = websocket_manager.get_conversation_history(client_id)
         
@@ -192,6 +201,15 @@ async def handle_user_message(client_id: str, user_message: str):
             client_id=client_id
         )
         
+        # Check for cancellation before processing response
+        if websocket_manager.is_cancelled(client_id):
+            websocket_manager.clear_cancel_flag(client_id)
+            await websocket_manager.send_to_client(client_id, {
+                "type": "cancelled",
+                "message": "Request was cancelled by user"
+            })
+            return
+        
         # Process AI response for function calling or final response
         await process_ai_response_with_functions(client_id, ai_response)
         
@@ -205,6 +223,15 @@ async def handle_user_message(client_id: str, user_message: str):
 async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
     """Process AI response with function calling support"""
     try:
+        # Check for cancellation before processing
+        if websocket_manager.is_cancelled(client_id):
+            websocket_manager.clear_cancel_flag(client_id)
+            await websocket_manager.send_to_client(client_id, {
+                "type": "cancelled",
+                "message": "Request was cancelled by user"
+            })
+            return
+            
         response_type = ai_response.get("type")
         
         if response_type == "function_calls":
@@ -1010,6 +1037,23 @@ async def handle_model_change(client_id: str, model_key: str):
             "type": "error", 
             "message": f"Failed to change AI model: {str(e)}"
         })
+
+async def handle_cancel_request(client_id: str):
+    """Handle cancel/stop request from client"""
+    try:
+        # Set cancel flag for this client
+        websocket_manager.set_cancel_flag(client_id)
+        
+        # Send immediate acknowledgment
+        await websocket_manager.send_to_client(client_id, {
+            "type": "cancelled",
+            "message": "Stopping current operation..."
+        })
+        
+        logger.info(f"Cancel request received for client {client_id}")
+        
+    except Exception as e:
+        logger.error(f"Error handling cancel request: {str(e)}")
 
 async def inject_discovered_functions_for_client(client_id: str, discovered_functions: Dict):
     """Dynamically inject discovered functions into the AI's available functions for this client"""
