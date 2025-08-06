@@ -1,3 +1,31 @@
+from langchain_core.callbacks.base import BaseCallbackHandler
+
+# Custom callback to log all agent intermediate steps (thoughts, actions, etc.)
+class LoggingCallbackHandler(BaseCallbackHandler):
+    def __init__(self, logger):
+        self.logger = logger
+
+    def on_chain_start(self, serialized, inputs, **kwargs):
+        self.logger.info(f"[Agent Start] Inputs: {inputs}")
+
+    def on_chain_end(self, outputs, **kwargs):
+        self.logger.info(f"[Agent End] Outputs: {outputs}")
+
+    def on_tool_start(self, serialized, input_str, **kwargs):
+        self.logger.info(f"[Tool Start] Input: {input_str}")
+
+    def on_tool_end(self, output, **kwargs):
+        self.logger.info(f"[Tool End] Output: {output}")
+
+    def on_text(self, text, **kwargs):
+        # This is called for every intermediate step (thought, action, observation, etc.)
+        self.logger.info(f"[Agent Step] {text}")
+
+    def on_agent_action(self, action, **kwargs):
+        self.logger.info(f"[Agent Action] {action}")
+
+    def on_agent_finish(self, finish, **kwargs):
+        self.logger.info(f"[Agent Finish] {finish}")
 import logging
 import json
 import ast
@@ -91,6 +119,8 @@ class LangChainAgent:
     def __init__(self, model_key: str, websocket_manager: Any):
         self.spatial_functions = SpatialFunctions(websocket_manager)
         self.tools = self._get_tools()
+        # Add callback handler for logging all agent steps
+        self.callback_handler = LoggingCallbackHandler(logger)
         self.set_model(model_key)
 
     def _get_tools(self) -> List[Tool]:
@@ -195,7 +225,14 @@ class LangChainAgent:
         )
         self.prompt = self._create_prompt_template()
         self.agent = create_react_agent(self.llm, self.tools, self.prompt)
-        self.agent_executor = AgentExecutor(agent=self.agent, tools=self.tools, verbose=True, handle_parsing_errors=True)
+        # Pass the callback handler to the agent executor
+        self.agent_executor = AgentExecutor(
+            agent=self.agent,
+            tools=self.tools,
+            verbose=True,
+            handle_parsing_errors=True,
+            callbacks=[self.callback_handler]
+        )
         logger.info(f"LangChain agent model set to: {self.model_key}")
 
     def _create_prompt_template(self) -> PromptTemplate:
