@@ -199,9 +199,12 @@ class LangChainAgent:
         logger.info(f"LangChain agent model set to: {self.model_key}")
 
     def _create_prompt_template(self) -> PromptTemplate:
-        """Creates the prompt template for the agent."""
+        """Creates the prompt template for the agent, now including chat history."""
         template = """
         You are a helpful AI assistant for ArcGIS Pro.
+
+        Conversation so far:
+        {chat_history}
 
         You have access to the following tools:
         {tools}
@@ -232,7 +235,7 @@ class LangChainAgent:
         Question: {input}
         Thought:{agent_scratchpad}
         """
-        return PromptTemplate(template=template, input_variables=["tools", "tool_names", "input", "agent_scratchpad", "arcgis_state", "available_functions"])
+        return PromptTemplate(template=template, input_variables=["tools", "tool_names", "input", "agent_scratchpad", "arcgis_state", "available_functions", "chat_history"])
 
     async def generate_response(
         self,
@@ -241,22 +244,24 @@ class LangChainAgent:
         arcgis_state: Dict,
         client_id: str = None
     ) -> Dict[str, Any]:
-        """Generates a response using the LangChain agent."""
+        """Generates a response using the LangChain agent, now including chat history as plain text."""
         logger.info(f"LangChain agent generating response for: {user_message[:100]}...")
 
         try:
-            history_messages = []
+            # Only include user and assistant (final answer) messages in history
+            chat_history_lines = []
             for msg in conversation_history:
                 if msg.get("role") == "user":
-                    history_messages.append(HumanMessage(content=msg.get("content")))
+                    chat_history_lines.append(f"User: {msg.get('content','')}")
                 elif msg.get("role") == "assistant":
-                    history_messages.append(AIMessage(content=msg.get("content")))
+                    chat_history_lines.append(f"Assistant: {msg.get('content','')}")
+            chat_history_str = "\n".join(chat_history_lines)
 
             response = await self.agent_executor.ainvoke({
                 "input": user_message,
-                "chat_history": history_messages,
                 "arcgis_state": json.dumps(arcgis_state, indent=2),
-                "available_functions": json.dumps(self.spatial_functions.AVAILABLE_FUNCTIONS, indent=2)
+                "available_functions": json.dumps(self.spatial_functions.AVAILABLE_FUNCTIONS, indent=2),
+                "chat_history": chat_history_str
             })
 
             return response
