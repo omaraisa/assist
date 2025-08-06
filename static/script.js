@@ -7,6 +7,7 @@ class SmartAssistantClient {
         this.conversationHistory = [];
         this.apiKeys = this.loadApiKeys();
         this.isThinking = false;
+        this.isCancelled = false; // Flag to ignore responses after cancellation
         
         this.initializeElements();
         this.setupEventListeners();
@@ -180,6 +181,12 @@ class SmartAssistantClient {
     handleMessage(message) {
         console.log('Received message:', message);
         
+        // If we've cancelled and receive an assistant response, ignore it
+        if (this.isCancelled && (message.type === 'assistant_message' || message.type === 'function_result')) {
+            console.log('Ignoring response after cancellation:', message.type);
+            return;
+        }
+        
         switch (message.type) {
             case 'config':
                 this.handleConfigMessage(message.data);
@@ -209,8 +216,9 @@ class SmartAssistantClient {
                 break;
                 
             case 'cancelled':
-                // Don't show message or change state - already handled in cancelRequest()
-                // Just log it for debugging
+                // Server confirmed cancellation - show message and clear cancel flag
+                this.addMessage('System', 'Request cancelled', 'system');
+                this.isCancelled = false; // Reset the flag
                 console.log('Server confirmed cancellation:', message.message);
                 break;
                 
@@ -263,6 +271,9 @@ class SmartAssistantClient {
 
         const message = this.elements.userInput.value.trim();
         if (!message || !this.isConnected) return;
+        
+        // Clear any previous cancellation flag when starting new request
+        this.isCancelled = false;
         
         // Add user message to UI
         this.addMessage('You', message, 'user');
@@ -451,6 +462,9 @@ class SmartAssistantClient {
     }
     
     cancelRequest() {
+        // Set cancellation flag to ignore upcoming responses
+        this.isCancelled = true;
+        
         // Send cancel request to server
         this.sendWebSocketMessage({
             type: 'cancel_request'
@@ -458,7 +472,6 @@ class SmartAssistantClient {
         
         // Immediately restore UI state - don't wait for server response
         this.setThinkingState(false);
-        
     }
     
     // Public methods for debugging
