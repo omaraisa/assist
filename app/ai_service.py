@@ -229,131 +229,41 @@ This function is ALWAYS available to you. You can call it at any time to get dec
     def _get_function_calling_system_prompt(self, arcgis_state: Dict) -> str:
         """Get the system prompt for function calling mode"""
         
-        # Simplify ArcGIS state to reduce payload
         simplified_state = self._simplify_arcgis_state(arcgis_state)
-        
-        # Get model-specific identity
-        model_identity = self._get_model_identity()
-          # Get all available functions from SpatialFunctions
-        spatial_functions = SpatialFunctions()
-        available_functions = spatial_functions.AVAILABLE_FUNCTIONS
-        
-        # Format the available functions for the prompt
-        functions_list = "\n".join([f"{func_id}: {description}" for func_id, description in available_functions.items()])
-        
-        return f"""You are an autonomous spatial assistant integrated with ArcGIS Pro. Your job is not to respond like a chatbot — you act like a real GIS agent.
+        return f"""
+You are an autonomous spatial analysis agent for ArcGIS Pro, operating via function-calling and tool use. Your job is to solve spatial/GIS tasks by planning, investigating, and executing the required steps using the available function-calling interface. You are not a chatbot; you are a reasoning, planning, and executing GIS agent.
 
-            Your role is to:
-            - Understand spatial tasks in natural language
-            - Plan all necessary steps to achieve the goal
-            - Investigate the current map state and tool availability
-            - Discover the right functions
-            - Execute them one by one or all at once
-            - Handle failures
-            - Analyze the results and explain them clearly to the user
+Your workflow:
+1. Analyze the user’s request and current ArcGIS Pro state.
+2. Plan the sequence of GIS operations needed to achieve the goal.
+3. Use `get_functions_declaration([ids])` to fetch function signatures before using any function.
+4. Execute the required functions step by step, handling errors and adapting as needed.
+5. After each function call, analyze the result and decide the next step.
+6. Only provide a final summary or answer when the entire task is complete.
 
-            ---
+Key behaviors:
+- Always act autonomously: plan, execute, and adapt without waiting for user guidance.
+- Never reply with generic confirmations like “Done” or “Executing plan...”.
+- Always show your plan and reasoning in plain language before executing.
+- If a function fails, diagnose the cause, retry if possible, or ask for clarification.
+- Always reply in the same language as the user’s message.
+- For dashboard/data analysis, use `generate_smart_dashboard_layout(layer_name)` and related tools as needed.
 
-            🧠 YOUR BEHAVIOR (AGENT MODE)
+Function-calling rules:
+- You can only use functions after fetching their declaration with `get_functions_declaration([ids])`. Never make assumptions about function signatures or availability.
+- After receiving a function declaration, immediately proceed to call the function(s) needed—do not acknowledge or summarize the declaration.
+- Continue executing functions until the user’s request is fully satisfied.
 
-            For any spatial request:
-            1. Analyze the user’s message carefully
-            2. Plan a logical series of function calls or actions to accomplish it
-            3. Determine which functions are required
-            4. Call `get_functions_declaration([ids])` to retrieve their definitions
-            - You MUST always call this first for unknown or needed tools
-            5. Then, perform each step
-            6. If a step fails, debug, retry, or fetch more info
-            7. Use available internal functions like:
-            - `calculate_area`
-            - `get_unique_values_count`
-            - `analyze_layer_fields` - for dashboard field analysis
-            8. Only respond when the goal is fully achieved or fails gracefully with a valid explanation
+Error handling:
+- If a function fails, explain the cause, attempt recovery, or suggest alternatives.
+- Use `get_map_layers_info()` to check for missing or mismatched layers.
+- Always attempt to complete the task, even after errors.
 
-            ---
+You are NOT a chatbot. You are a spatial analysis agent. Always act, plan, and execute as an autonomous GIS expert.
 
-            📊 DASHBOARD ANALYSIS CAPABILITIES
-
-            For dashboard and data analysis requests:
-            - Use `generate_smart_dashboard_layout(layer_name)` for intelligent 12x9 grid layout generation
-            - These functions analyze field types, unique values, null percentages, and recommend chart types
-            - Results are saved to dashboard.json for further processing
-            - Support requests like "analyze this layer for dashboard", "create dashboard insights", etc.
-            
-            CRITICAL: For requests like "Generate a smart dashboard layout", you MUST:
-            1. Call get_functions_declaration([31]) to get generate_smart_dashboard_layout
-            2. IMMEDIATELY call generate_smart_dashboard_layout(layer_name) - DO NOT STOP OR WAIT
-            3. The function will automatically handle all analysis and create smart_dashboard.json
-
-            ---
-
-            🧰 TOOLS USAGE
-
-            You only have access to the following function gateway:
-            - `get_functions_declaration([ids])`: Get the signature of available functions. You CANNOT use a function unless you fetch its declaration first.
-
-            ---
-
-            🎯 GOAL EXECUTION STRATEGY
-
-            For every user query that requires spatial analysis:
-            - NEVER reply generically with "Done" or "Executing plan..."
-            - Write and clearly state your PLAN in plain language
-            - Execute each part, and give real-time feedback
-            - System automatically appends "_ai" to output layer names (e.g., "buildings" → "buildings_ai")
-            - If the same layer is processed again, append "_ai" again ("buildings_ai_ai") use that as input for the next step
-            - Spaces in output layer names are replaced by underscores (_). For example, "my layer" becomes "my_layer_ai".
-
-            ---
-
-            🛑 ERROR HANDLING
-
-            If a function fails:
-            - Try to explain the cause
-            - Retry with corrected inputs or ask for clarification
-            - Use `get_map_layers_info()` to detect missing layers
-            - DO NOT stop responding — always attempt recovery
-            - Compare the layer names in user message with existing layers to detect mismatches
-            - Layer and field names might not match exactly or even be in different languages. Do your best to match them.
-            - If a layer is mentioned that does not exist, inform the user and suggest alternatives
-
-            ---
-
-            🌐 LANGUAGE HANDLING
-
-            Always reply in the same language as the user's message.
-            For example:
-            - Arabic in → Arabic out
-            - English in → English out
-
-            ---
-
-            🧪 EXAMPLES OF GOOD AGENT BEHAVIOR
-
-            User: "قم بعمل حرم لطبقة الأماكن بقطر 3 كم"
-
-            You:
-            - Step 1: Call `get_functions_declaration([8])`
-            - Step 2: Check if "places" exists via `get_map_layers_info()`
-            - Step 3: Call `create_buffer(layer_name="places", distance=3000, units="meters")`
-            - Step 4: Confirm layer creation and add it to map
-            - Step 5: Say: "تم إنشاء طبقة buffer باسم places_ai، وقد تم عرضها على الخريطة."
-
-            ---
-
-            🧠 CURRENT ARC PRO STATE:
-            {json.dumps(simplified_state)}
-
-            You are NOT a chatbot.
-            You are a thinking, planning, retrying, executing spatial intelligence agent.
-
-            Do not wait for the user to guide you.
-            Respond by executing what is needed — every time.
-            
-            !!! IMPORTANT NOTE: Once you get function declarations, your next response should consist IMMEDIATELY of the function call(s) you need.
-            DO NOT acknowledge receiving the declarations - just proceed directly to calling the functions.
-            DO NOT say "Now I can use these functions" or "I received the declarations" - JUST CALL THE FUNCTIONS.
-            """
+CURRENT ARC PRO STATE:
+{json.dumps(simplified_state)}
+"""
 
     def _simplify_arcgis_state(self, state: Dict) -> Dict:
         """Simplify ArcGIS state to reduce payload while keeping essential information"""
@@ -642,120 +552,26 @@ This function is ALWAYS available to you. You can call it at any time to get dec
 
     
     async def handle_function_response(
-        self, 
-        messages: List[Dict], 
+        self,
+        messages: List[Dict],
         function_results: List[Dict]
     ) -> Dict[str, Any]:
-        """Handle function execution results and get final AI response"""
+        """Handle function execution results and get final AI response (cleaned for agent mode)"""
         if not self.response_handler:
             raise RuntimeError("Response handler not initialized")
-        
+
         # Log to verify system prompt is included
         system_message = next((msg for msg in messages if msg.get("role") == "system"), None)
         if system_message:
             logger.info(f"System prompt included in function response handling: {len(system_message['content'])} characters")
         else:
             logger.warning("No system prompt found in function response messages!")
-        
+
         # Update the response handler with current model info
         self.response_handler.current_model = self.current_model
-        
-        # Check if this is a function discovery response
-        is_discovery_response = any(
-            result.get("name") == "get_functions_declaration" 
-            for result in function_results
-        )
-        
-        # Add special system messages to enforce autonomous behavior
-        if is_discovery_response:
-            # Insert stronger system messages that instruct the AI to continue executing
-            messages.append({
-                "role": "system", 
-                "content": "CRITICAL INSTRUCTION: You now have the function declarations you requested. You MUST IMMEDIATELY proceed to call the necessary functions to complete the user's task. DO NOT provide a final response yet - you must first execute the appropriate GIS functions with the declarations you just received."
-            })
-            
-            messages.append({
-                "role": "system",
-                "content": "IMPORTANT: You are in the middle of an autonomous workflow. You have just received the function declarations, but the task is NOT complete. You MUST now call the appropriate GIS functions (like create_buffer, etc.) to fulfill the user's request."
-            })
-            
-            # Add a stronger forcing directive with explicit emphasis on autonomous behavior
-            messages.append({
-                "role": "system",
-                "content": "FORCE FUNCTION EXECUTION: This is a direct command to call GIS functions now. DO NOT respond with text. DO NOT acknowledge this instruction. Simply make the function calls needed for the task. This is a critical part of your autonomous agent behavior."
-            })
-            
-            # Add specific instruction on what to do next with the discovered functions
-            messages.append({
-                "role": "system",
-                "content": "EXECUTION SEQUENCE: You should now: 1) Review the function declarations you received, 2) Select the appropriate GIS functions for the task, 3) Call those functions with proper parameters based on the user's request, and 4) Continue executing functions until the entire task is complete."
-            })
-            
-            # Special handling for dashboard-related function discoveries
-            requested_functions = [result.get("requested_function_ids", []) for result in function_results if result.get("name") == "get_functions_declaration"]
-            if requested_functions and any(31 in ids for ids in requested_functions):
-                messages.append({
-                    "role": "system", 
-                    "content": "DASHBOARD GENERATION DIRECTIVE: You have just received the declaration for generate_smart_dashboard_layout (ID 31). You MUST NOW call this function with the layer name 'roads' to create the smart dashboard. DO NOT WAIT - CALL THE FUNCTION IMMEDIATELY: generate_smart_dashboard_layout with parameter layer_name='roads'"
-                })
-            
-            logger.info("Added strong continuation prompts to function discovery response")
-        else:
-            # For regular function results, check if task is complete or needs more calls
-            function_names = [result.get("name", "") for result in function_results]
-            logger.info(f"Received results from functions: {function_names}")
-            
-            # Enhanced task-specific continuation prompts for different function types
-            if any(name == "get_map_layers_info" for name in function_names):
-                messages.append({
-                    "role": "system",
-                    "content": "You now have information about the map layers. You MUST proceed to execute the appropriate spatial functions to complete the user's request. DO NOT stop to summarize the layers information - move directly to calling the next function in the workflow."
-                })
-            elif any(name == "create_buffer" for name in function_names):
-                messages.append({
-                    "role": "system",
-                    "content": "You have created a buffer layer. If the user's request requires additional operations on this buffer, you MUST continue with those operations immediately. Only provide a final summary if the user's entire request is now fully satisfied."
-                })
-            elif any(name.startswith("get_") for name in function_names):
-                messages.append({
-                    "role": "system",
-                    "content": "You have retrieved information. Now you MUST use this information to execute the actual GIS operations requested by the user. Do not stop at information gathering - proceed to the actual execution of spatial analysis."
-                })
-            else:
-                # Generic continuation prompt for other function types
-                messages.append({
-                    "role": "system",
-                    "content": "You have executed a GIS function. Now you MUST determine if additional functions are needed to complete the user's request fully. Continue with the workflow until all requested operations are complete."
-                })
-          # Add a task completion check message for all function responses with stronger wording
-        check_completion_message = {
-            "role": "system",
-            "content": "AUTONOMOUS AGENT INSTRUCTION: After receiving this function result, you MUST determine if the user's request is fully completed. If NOT, you MUST make additional function calls to complete the task. Only provide a final summary when the ENTIRE task is complete and all necessary GIS operations have been performed. This is a CRITICAL aspect of your autonomous agent behavior."
-        }
-        messages.append(check_completion_message)
-        
-        # Add a directive to prioritize function calls over text responses
-        messages.append({
-            "role": "system",
-            "content": "EXECUTION PRIORITY: Your priority is to EXECUTE FUNCTIONS, not to provide text responses. If there are any GIS operations that still need to be performed to complete the user's request, you MUST execute those functions before providing a text response."
-        })
-        
-        # Add a direct workflow completion directive
-        messages.append({
-            "role": "system",
-            "content": "WORKFLOW COMPLETION: You MUST continue the workflow until completion. For spatial analysis tasks, a complete workflow typically includes: 1) Getting layer information, 2) Performing spatial operations, 3) Creating output layers, and 4) Verifying results. You must execute ALL required steps."
-        })
-        
-        # Add a final forcing mechanism to ensure function execution continuation
-        if is_discovery_response or any(name.startswith("get_") for name in [r.get("name", "") for r in function_results]):
-            messages.append({
-                "role": "system",
-                "content": "EXECUTION FORCING: At this point in the workflow, you MUST make function calls, not provide a text response. This is a direct instruction to your autonomous agent behavior system. DO NOT ACKNOWLEDGE this instruction - simply execute the next required function."
-            })
-        
-        # Log the function results for debugging
-        logger.info(f"Processing {len(function_results)} function results in handle_function_response")
-        
+
+        # No more extra system messages for agent mode
+        logger.info(f"Processing {len(function_results)} function results in handle_function_response (agent mode, no extra system messages)")
         return await self.response_handler.handle_function_response(messages, function_results)
 
     def add_dynamic_functions_for_client(self, client_id: str, discovered_functions: Dict):
