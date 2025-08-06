@@ -209,8 +209,9 @@ class SmartAssistantClient {
                 break;
                 
             case 'cancelled':
-                this.addMessage('System', 'Request cancelled', 'system');
-                this.setThinkingState(false);
+                // Don't show message or change state - already handled in cancelRequest()
+                // Just log it for debugging
+                console.log('Server confirmed cancellation:', message.message);
                 break;
                 
             case 'model_changed':
@@ -254,14 +255,14 @@ class SmartAssistantClient {
     }
     
     sendMessage() {
-        const message = this.elements.userInput.value.trim();
-        if (!message || !this.isConnected) return;
-        
-        // If already thinking, cancel instead
+        // If currently thinking, cancel the request instead of sending
         if (this.isThinking) {
             this.cancelRequest();
             return;
         }
+
+        const message = this.elements.userInput.value.trim();
+        if (!message || !this.isConnected) return;
         
         // Add user message to UI
         this.addMessage('You', message, 'user');
@@ -342,6 +343,17 @@ class SmartAssistantClient {
     updateConnectionStatus(status, type) {
         this.elements.connectionStatus.textContent = status;
         this.elements.connectionStatus.className = `status-${type === 'success' ? 'connected' : 'disconnected'}`;
+        
+        // Update button and input states based on connection
+        if (type === 'success') {
+            this.elements.userInput.disabled = false;
+            // Button is always enabled when connected
+            this.elements.sendBtn.disabled = false;
+        } else {
+            this.elements.userInput.disabled = true;
+            // Button is disabled only when disconnected AND not thinking
+            this.elements.sendBtn.disabled = !this.isThinking;
+        }
     }
     
     changeModel(modelKey) {
@@ -413,16 +425,18 @@ class SmartAssistantClient {
         this.isThinking = thinking;
         if (thinking) {
             this.showLoading();
+            // Use a stop/square icon when thinking
             this.elements.sendBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                    <rect x="6" y="6" width="12" height="12" rx="2"/>
                 </svg>
             `;
-            this.elements.sendBtn.setAttribute('aria-label', 'Stop Thinking');
+            this.elements.sendBtn.setAttribute('aria-label', 'Stop');
             this.elements.sendBtn.classList.add('stop-mode');
             this.elements.userInput.disabled = true;
         } else {
             this.hideLoading();
+            // Use send/arrow icon when not thinking
             this.elements.sendBtn.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                     <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
@@ -432,14 +446,19 @@ class SmartAssistantClient {
             this.elements.sendBtn.classList.remove('stop-mode');
             this.elements.userInput.disabled = !this.isConnected;
         }
-        // Button is always enabled when thinking (so user can stop) or when connected and not thinking
-        this.elements.sendBtn.disabled = !this.isConnected && !thinking;
+        // Button is always enabled - user can send when connected or stop when thinking
+        this.elements.sendBtn.disabled = false;
     }
     
     cancelRequest() {
+        // Send cancel request to server
         this.sendWebSocketMessage({
             type: 'cancel_request'
         });
+        
+        // Immediately restore UI state - don't wait for server response
+        this.setThinkingState(false);
+        
     }
     
     // Public methods for debugging
@@ -875,13 +894,31 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Smart Assistant initialized. Use window.sa for debugging methods.');
 });
 
-// Add some CSS for error messages
+// Add some CSS for error messages and system messages
 const style = document.createElement('style');
 style.textContent = `
     .error-message {
         background-color: rgba(220, 53, 69, 0.1) !important;
         border: 1px solid rgba(220, 53, 69, 0.3);
         color: #dc3545 !important;
+    }
+    
+    /* System messages */
+    .msg.system-msg {
+        justify-content: center;
+        align-self: center;
+        max-width: 60%;
+    }
+
+    .msg.system-msg .msg-bubble {
+        background-color: rgba(255, 193, 7, 0.1);
+        border: 1px solid rgba(255, 193, 7, 0.3);
+        color: var(--text-color);
+        text-align: center;
+        font-size: 0.9rem;
+        padding: 0.8rem 1rem;
+        min-width: auto;
+        border-radius: 20px;
     }
 `;
 document.head.appendChild(style);

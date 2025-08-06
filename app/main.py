@@ -181,11 +181,9 @@ async def handle_websocket_message(client_id: str, message: Dict):
 async def handle_user_message(client_id: str, user_message: str):
     """Handle user chat messages and generate AI responses"""
     try:
-        # Check if client has requested cancellation
-        if websocket_manager.is_cancelled(client_id):
-            websocket_manager.clear_cancel_flag(client_id)
-            return
-            
+        # Clear any existing cancel flag for new requests
+        websocket_manager.clear_cancel_flag(client_id)
+        
         # Get current conversation history for this client
         history = websocket_manager.get_conversation_history(client_id)
         
@@ -283,6 +281,14 @@ async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
 async def execute_function_calls(client_id: str, function_calls: List[Dict], original_response: Dict):
     """Execute function calls via ArcGIS Pro - handles chains by batching all results"""
     try:
+        # Check for cancellation before starting function execution
+        if websocket_manager.is_cancelled(client_id):
+            await websocket_manager.send_to_client(client_id, {
+                "type": "cancelled",
+                "message": "Request cancelled before function execution"
+            })
+            return
+            
         # Check if this is a chain of multiple function calls
         is_function_chain = len(function_calls) > 1
         
@@ -300,6 +306,14 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
             websocket_manager.store_chain_context(client_id, chain_context)
           # Send function call request to ArcGIS Pro
         for func_call in function_calls:
+            # Check for cancellation before each function call
+            if websocket_manager.is_cancelled(client_id):
+                await websocket_manager.send_to_client(client_id, {
+                    "type": "cancelled",
+                    "message": "Request cancelled during function execution"
+                })
+                return
+                
             # Handle get_functions_declaration locally instead of sending to ArcGIS Pro
             if func_call["name"] == "get_functions_declaration":
                 function_ids_param = func_call.get("parameters", {}).get("function_ids", "unknown")
@@ -911,6 +925,11 @@ async def handle_function_response(client_id: str, message: Dict):
         
         logger.info(f"Received function response: session_id={session_id}, source_client={source_client}, from_client={client_id}")
         
+        # Check for cancellation before processing function response
+        if source_client and websocket_manager.is_cancelled(source_client):
+            logger.info(f"Function response ignored - request was cancelled for client {source_client}")
+            return
+        
         # Store function response for LangChain agent if session_id exists (regardless of other conditions)
         if session_id:
             websocket_manager.store_function_result(session_id, message)
@@ -1047,10 +1066,10 @@ async def handle_cancel_request(client_id: str):
         # Send immediate acknowledgment
         await websocket_manager.send_to_client(client_id, {
             "type": "cancelled",
-            "message": "Stopping current operation..."
+            "message": "Request cancelled successfully"
         })
         
-        logger.info(f"Cancel request received for client {client_id}")
+        logger.info(f"Cancel request processed for client {client_id}")
         
     except Exception as e:
         logger.error(f"Error handling cancel request: {str(e)}")
