@@ -1945,24 +1945,37 @@ class SpatialFunctions:
             # Step 3: Plan the dashboard layout
             dashboard_layout = self.plan_dashboard_layout(chart_recommendations)
             
-            # Step 4: Save the layout to a JSON file
+            # Step 4: Build complete dashboard data with field insights
+            complete_dashboard = {
+                "layer_name": layer_name,
+                "analysis_timestamp": analysis_result.get("analysis_timestamp"),
+                "total_features": analysis_result.get("total_features"),
+                "fields_analyzed": analysis_result.get("fields_analyzed"),
+                "field_insights": field_insights,
+                "chart_recommendations": chart_recommendations,
+                "dashboard_layout": dashboard_layout.get("dashboard_layout", [])
+            }
+            
+            # Save complete dashboard data to JSON file
             dashboard_file = "smart_dashboard.json"
             with open(dashboard_file, "w") as f:
-                json.dump(dashboard_layout, f, indent=4)
+                json.dump(complete_dashboard, f, indent=4)
             
             result = {
                 "success": True,
                 "layer_name": layer_name,
                 "dashboard_layout": dashboard_layout,
+                "field_insights": field_insights,
+                "chart_recommendations": chart_recommendations,
                 "output_file": dashboard_file,
-                "message": f"Smart dashboard layout generated and saved to {dashboard_file}"
+                "message": f"Smart dashboard layout with field analysis generated and saved to {dashboard_file}"
             }
 
             # Notify frontend via websocket if available
             if self.websocket_manager is not None:
                 try:
-                    self.websocket_manager.send_dashboard_update(dashboard_layout)
-                    logger.info("Dashboard update event sent to frontend via websocket_manager.")
+                    self.websocket_manager.send_dashboard_update(complete_dashboard)
+                    logger.info("Complete dashboard data sent to frontend via websocket_manager.")
                 except Exception as ws_e:
                     logger.error(f"Failed to send dashboard update via websocket_manager: {ws_e}")
 
