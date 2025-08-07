@@ -1162,6 +1162,29 @@ def transform_dashboard_for_frontend(dashboard_data):
         elif "chart_recommendations" in dashboard_data:
             chart_configs = dashboard_data.get("chart_recommendations", [])
             layout_template = "auto"
+        elif "dashboard_layout" in dashboard_data:
+            # Handle standard dashboard layout format
+            dashboard_layout = dashboard_data.get("dashboard_layout", [])
+            layout_template = "grid"
+            
+            # Convert dashboard layout to chart configs
+            chart_configs = []
+            for widget in dashboard_layout:
+                chart_config = {
+                    "chart_id": widget.get("id", f"chart_{len(chart_configs)}"),
+                    "chart_type": widget.get("chart_type", "bar"),
+                    "title": widget.get("field", f"Chart {len(chart_configs) + 1}"),
+                    "primary_field": widget.get("field", ""),
+                    "recommended_size": "medium",
+                    "priority": 1,
+                    "position": {
+                        "x": widget.get("x", 0),
+                        "y": widget.get("y", 0),
+                        "width": widget.get("w", 4),
+                        "height": widget.get("h", 3)
+                    }
+                }
+                chart_configs.append(chart_config)
         else:
             # Basic dashboard format
             return {"error": "Unsupported dashboard format"}
@@ -1216,6 +1239,14 @@ def prepare_chart_data_from_insights(chart_config, dashboard_data):
         chart_type = chart_config.get("chart_type", chart_config.get("type", "bar"))
         primary_field = chart_config.get("primary_field", chart_config.get("x_field", ""))
         group_by_field = chart_config.get("group_by_field", chart_config.get("y_field", ""))
+        
+        # If no field insights available, return error message
+        if not field_insights:
+            return {
+                "labels": ["ERROR: NO FIELD INSIGHTS DATA"],
+                "values": [0],
+                "error": "Dashboard layout exists but field analysis data is missing. Please run analyze_layer_fields first."
+            }
         
         if chart_type in ["pie", "donut"] and primary_field in field_insights:
             # For pie/donut charts, generate distribution based on field characteristics
@@ -1359,10 +1390,19 @@ def prepare_chart_data_from_insights(chart_config, dashboard_data):
                           min_val + range_size * 0.75, max_val]
             }
         
-        # Default fallback data
+        # Default fallback data for missing field insights
+        if primary_field not in field_insights:
+            return {
+                "labels": [f"ERROR: FIELD '{primary_field}' NOT ANALYZED"],
+                "values": [0],
+                "error": f"Field '{primary_field}' was not found in field insights. Dashboard layout references a field that wasn't analyzed."
+            }
+        
+        # If we get here, something went wrong
         return {
-            "labels": ["No Data Available"],
-            "values": [0]
+            "labels": ["ERROR: CHART DATA GENERATION FAILED"],
+            "values": [0],
+            "error": f"Failed to generate chart data for field '{primary_field}' with chart type '{chart_type}'"
         }
         
     except Exception as e:

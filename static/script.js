@@ -565,9 +565,9 @@ class SmartAssistantClient {
         if (dashboardData && this.dashboard) {
             this.dashboard.render(dashboardData);
             this.showViewDashboardButton();
-            
-            // Show dashboard panel automatically when new data is available
+            // Always show dashboard panel and button when new data is available
             this.showDashboard();
+            this.elements.viewDashboardBtn.style.display = 'inline-block';
         }
     }
     

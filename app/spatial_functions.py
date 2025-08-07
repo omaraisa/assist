@@ -535,8 +535,6 @@ class SpatialFunctions:
             output_name = f"{target_layer.replace(' ', '_')}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_name)
-            # Add the joined layer to the map
-            joined_layer = map_obj.addDataFromPath(output_path)
             # Perform spatial join
             arcpy.SpatialJoin_analysis(target_lyr, join_lyr, output_path, 
                                      match_option=arcpy_join_op)
@@ -545,6 +543,8 @@ class SpatialFunctions:
             joined_count = int(arcpy.GetCount_management(output_path)[0])
             original_count = int(arcpy.GetCount_management(target_lyr)[0])
             unmatched_count = original_count - joined_count
+            # Add the joined layer to the map
+            joined_layer = map_obj.addDataFromPath(output_path)
             
             result = {
                 "function_executed": "spatial_join",
@@ -1957,7 +1957,15 @@ class SpatialFunctions:
                 "output_file": dashboard_file,
                 "message": f"Smart dashboard layout generated and saved to {dashboard_file}"
             }
-            
+
+            # Notify frontend via websocket if available
+            if self.websocket_manager is not None:
+                try:
+                    self.websocket_manager.send_dashboard_update(dashboard_layout)
+                    logger.info("Dashboard update event sent to frontend via websocket_manager.")
+                except Exception as ws_e:
+                    logger.error(f"Failed to send dashboard update via websocket_manager: {ws_e}")
+
             logger.info(f"Smart dashboard layout generated: {result}")
             return result
             

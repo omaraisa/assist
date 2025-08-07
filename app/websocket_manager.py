@@ -276,3 +276,22 @@ class WebSocketManager:
     def is_cancelled(self, client_id: str) -> bool:
         """Check if client has requested cancellation"""
         return self.cancel_flags.get(client_id, False)
+    
+    def send_dashboard_update(self, dashboard_layout: dict):
+        """Send dashboard update to all chatbot clients."""
+        import asyncio
+        # Extract the dashboard_layout array and format for frontend
+        charts = dashboard_layout.get("dashboard_layout", []) if isinstance(dashboard_layout, dict) else dashboard_layout
+        message = {
+            "type": "dashboard_update",
+            "data": {"charts": charts}  # Frontend expects data.charts
+        }
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+        if loop.is_running():
+            asyncio.ensure_future(self.broadcast_to_type("chatbot", message))
+        else:
+            loop.run_until_complete(self.broadcast_to_type("chatbot", message))
