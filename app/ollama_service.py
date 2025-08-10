@@ -215,44 +215,14 @@ class OllamaService:
             
             function_descriptions.append(func_desc)
         
-        # Add function calling instructions to system message
-        function_prompt = """
-CRITICAL: You have access to the following functions. When you need to call a function, you MUST respond with ONLY a JSON object in this EXACT format:
-
-```json
-{
-  "function_calls": [
-    {
-      "name": "function_name",
-      "arguments": {
-        "parameter1": "value1",
-        "parameter2": "value2"
-      }
-    }
-  ]
-}
-```
-
-DO NOT write any explanatory text. DO NOT say "I will call" or "Function call necessary". 
-ONLY output the JSON function call.
-
-Example for generate_smart_dashboard_layout:
-```json
-{
-  "function_calls": [
-    {
-      "name": "generate_smart_dashboard_layout",
-      "arguments": {
-        "layer_name": "District"
-      }
-    }
-  ]
-}
-```
-
-Available functions:
-
-""" + "\n\n".join(function_descriptions)
+        # Add simple function calling instructions to system message
+        function_prompt = (
+            "You have access to the following functions. "
+            "When you need to call a function, respond with a JSON object in this format: "
+            '{ "function_calls": [ { "name": "function_name", "arguments": { ... } } ] } '\n\n"
+            "Do not write any extra text or explanations. Just output the JSON function call.\n\n"
+            "Available functions:\n\n" + "\n\n".join(function_descriptions)
+        )
         
         # Modify the system message to include function calling instructions
         modified_messages = []
@@ -282,18 +252,17 @@ Available functions:
         function_calls = []
         
         try:
-            # Look for JSON blocks in the response
             import re
-            json_pattern = r'```json\s*(\{.*?\})\s*```'
+            json_pattern = r'(\{.*?"function_calls".*?\})'
             matches = re.findall(json_pattern, response_text, re.DOTALL)
-            
+
             for match in matches:
-                try:
-                    parsed = json.loads(match)
-                    if "function_calls" in parsed:
-                        function_calls.extend(parsed["function_calls"])
-                except json.JSONDecodeError:
-                    continue
+            try:
+                parsed = json.loads(match)
+                if "function_calls" in parsed:
+                function_calls.extend(parsed["function_calls"])
+            except json.JSONDecodeError:
+                continue
             
             # Also try to parse the entire response as JSON
             if not function_calls:

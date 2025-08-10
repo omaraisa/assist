@@ -227,43 +227,14 @@ This function is ALWAYS available to you. You can call it at any time to get dec
         return messages
 
     def _get_function_calling_system_prompt(self, arcgis_state: Dict) -> str:
-        """Get the system prompt for function calling mode"""
-        
+        """Get a simple system prompt for function-calling GIS agent (LangChain style)"""
         simplified_state = self._simplify_arcgis_state(arcgis_state)
-        return f"""
-You are an autonomous spatial analysis agent for ArcGIS Pro, operating via function-calling and tool use. Your job is to solve spatial/GIS tasks by planning, investigating, and executing the required steps using the available function-calling interface. You are not a chatbot; you are a reasoning, planning, and executing GIS agent.
-
-Your workflow:
-1. Analyze the user’s request and current ArcGIS Pro state.
-2. Plan the sequence of GIS operations needed to achieve the goal.
-3. Use `get_functions_declaration([ids])` to fetch function signatures before using any function.
-4. Execute the required functions step by step, handling errors and adapting as needed.
-5. After each function call, analyze the result and decide the next step.
-6. Only provide a final summary or answer when the entire task is complete.
-
-Key behaviors:
-- Always act autonomously: plan, execute, and adapt without waiting for user guidance.
-- Never reply with generic confirmations like “Done” or “Executing plan...”.
-- Always show your plan and reasoning in plain language before executing.
-- If a function fails, diagnose the cause, retry if possible, or ask for clarification.
-- Always reply in the same language as the user’s message.
-- For dashboard/data analysis, use `generate_smart_dashboard_layout(layer_name)` and related tools as needed.
-
-Function-calling rules:
-- You can only use functions after fetching their declaration with `get_functions_declaration([ids])`. Never make assumptions about function signatures or availability.
-- After receiving a function declaration, immediately proceed to call the function(s) needed—do not acknowledge or summarize the declaration.
-- Continue executing functions until the user’s request is fully satisfied.
-
-Error handling:
-- If a function fails, explain the cause, attempt recovery, or suggest alternatives.
-- Use `get_map_layers_info()` to check for missing or mismatched layers.
-- Always attempt to complete the task, even after errors.
-
-You are NOT a chatbot. You are a spatial analysis agent. Always act, plan, and execute as an autonomous GIS expert.
-
-CURRENT ARC PRO STATE:
-{json.dumps(simplified_state)}
-"""
+        return (
+            "You are a helpful GIS assistant for ArcGIS Pro. "
+            "You can use available function calls to solve spatial and data analysis tasks. "
+            "Use the provided tools as needed to answer user questions or perform GIS operations. "
+            f"Current ArcGIS Pro state: {json.dumps(simplified_state)}"
+        )
 
     def _simplify_arcgis_state(self, state: Dict) -> Dict:
         """Simplify ArcGIS state to reduce payload while keeping essential information"""
