@@ -1965,8 +1965,8 @@ class SpatialFunctions:
                 "success": True,
                 "layer_name": layer_name,
                 "dashboard_layout": dashboard_layout,
-                "field_insights": field_insights,
-                "chart_recommendations": chart_recommendations,
+                # "field_insights": field_insights,
+                # "chart_recommendations": chart_recommendations,
                 "output_file": dashboard_file,
                 "message": f"Smart dashboard layout with field analysis generated and saved to {dashboard_file}"
             }
@@ -2069,11 +2069,55 @@ class SpatialFunctions:
             
         return {"dashboard_layout": layout}
 
-    def optimize_dashboard_layout(self, dashboard_layout: Dict) -> Dict:
+    def optimize_dashboard_layout(self, new_dashboard_layout: Dict) -> Dict:
         """
         Optimizes a dashboard layout to minimize gaps and overlaps.
-        Returns the optimized layout.
+        Accepts a layout array (list of widgets), reorders by chart index, and repacks widgets to fill a 12x9 grid efficiently.
+        Returns the optimized layout in the same format.
         """
-        # This is a placeholder for a more complex optimization algorithm.
-        # For now, it returns the original layout.
-        return {"success": True, "optimized_layout": dashboard_layout}
+        layout = new_dashboard_layout if isinstance(new_dashboard_layout, list) else new_dashboard_layout.get("dashboard_layout", [])
+        # Sort widgets by their order in the input (chart index), or by size (optional)
+        widgets = list(layout)
+        # Optionally, sort by area (largest first) for better packing
+        widgets.sort(key=lambda w: (-(w.get("w", 1) * w.get("h", 1)), w.get("id", "")))
+
+        grid_width = 12
+        grid_height = 9
+        occupied = [[False]*grid_width for _ in range(grid_height)]
+        packed = []
+
+        def fits(x, y, w, h):
+            if x + w > grid_width or y + h > grid_height:
+                return False
+            for dy in range(h):
+                for dx in range(w):
+                    if occupied[y+dy][x+dx]:
+                        return False
+            return True
+
+        def mark(x, y, w, h):
+            for dy in range(h):
+                for dx in range(w):
+                    occupied[y+dy][x+dx] = True
+
+        for widget in widgets:
+            w = widget.get("w", 1)
+            h = widget.get("h", 1)
+            placed = False
+            for y in range(grid_height):
+                for x in range(grid_width):
+                    if fits(x, y, w, h):
+                        new_widget = dict(widget)
+                        new_widget["x"] = x
+                        new_widget["y"] = y
+                        packed.append(new_widget)
+                        mark(x, y, w, h)
+                        placed = True
+                        break
+                if placed:
+                    break
+            if not placed:
+                # If can't fit, skip (or could append at end with negative coords)
+                continue
+
+        return {"success": True, "optimized_layout": packed}

@@ -550,40 +550,6 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
             "message": f"Error processing function declaration request: {str(e)}"
         })
 
-async def process_ai_response(client_id: str, ai_response: str):
-    """Process AI response for investigation commands or final responses"""
-    try:
-        # Parse for INVESTIGATE commands
-        investigate_commands = ai_service.extract_investigate_commands(ai_response)
-        complete_response = ai_service.extract_complete_response(ai_response)
-        
-        if investigate_commands:
-            # Start investigation session
-            session_id = websocket_manager.start_investigation_session(client_id)
-            
-            # Execute investigation commands
-            for command in investigate_commands:
-                await execute_investigation_command(client_id, session_id, command)
-                
-            # If there's also a complete response, save it for later
-            if complete_response:
-                websocket_manager.set_pending_response(client_id, complete_response)
-                
-        elif complete_response:
-            # Direct response without investigation
-            await send_final_response(client_id, complete_response)
-            
-        else:
-            # Fallback - treat entire response as final
-            await send_final_response(client_id, ai_response)
-            
-    except Exception as e:
-        logger.error(f"Error processing AI response: {str(e)}")
-        await websocket_manager.send_to_client(client_id, {
-            "type": "error",
-            "message": f"Error processing AI response: {str(e)}"
-        })
-
 async def execute_investigation_command(client_id: str, session_id: str, command: str):
     """Execute a single investigation command"""
     try:

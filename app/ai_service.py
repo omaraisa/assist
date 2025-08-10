@@ -310,20 +310,7 @@ CURRENT ARC PRO STATE:
         else:
             return "AI Assistant"
 
-    # Legacy methods for backward compatibility (marked as deprecated)
-    
-    def extract_investigate_commands(self, ai_response: str) -> List[str]:
-        """Extract INVESTIGATE commands from AI response (DEPRECATED - use function calling instead)"""
-        investigate_pattern = r'INVESTIGATE```(.*?)```'
-        matches = re.findall(investigate_pattern, ai_response, re.DOTALL)
-        return [match.strip() for match in matches if match.strip()]
-    
-    def extract_complete_response(self, ai_response: str) -> Optional[str]:
-        """Extract COMPLETE response from AI response (DEPRECATED - use function calling instead)"""
-        complete_pattern = r'COMPLETE```(.*?)```'
-        match = re.search(complete_pattern, ai_response, re.DOTALL)
-        return match.group(1).strip() if match else None
-    
+
     def parse_function_call(self, function_call_str: str) -> Optional[Dict]:
         """Parse a function call string into function name and parameters (DEPRECATED - use function calling instead)"""
         try:

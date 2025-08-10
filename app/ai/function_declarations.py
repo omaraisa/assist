@@ -482,24 +482,15 @@ class FunctionDeclaration:
         },
         "optimize_dashboard_layout": {
             "name": "optimize_dashboard_layout",
-            "description": "Stage 3: Advanced Layout Planner with dynamic optimization and templates. Optimizes existing dashboard layouts with smart positioning, layout templates (focus, comparison, overview, analytical), and responsive design. Requires existing smart_dashboard.json from Stage 2.",
+            "description": "Optimize a dashboard layout to minimize gaps and overlaps. Accepts a layout array (list of widgets), reorders by chart index, and repacks widgets to fill a 12x9 grid efficiently. Returns the optimized layout in the same format.",
             "parameters": {
-                "layer_name": {
-                    "type": "string",
-                    "description": "The name of the layer to optimize dashboard layout for"
-                },
-                "layout_template": {
-                    "type": "string",
-                    "description": "Layout template to apply: 'focus', 'comparison', 'overview', 'analytical', or 'auto'",
-                    "default": "auto"
-                },
-                "target_size": {
-                    "type": "string",
-                    "description": "Target screen size: 'mobile', 'tablet', or 'desktop'",
-                    "default": "desktop"
+                "layout": {
+                    "type": "array",
+                    "description": "Array of dashboard widget objects to optimize (each with id, x, y, w, h, field, chart_type, etc.)",
+                    "items": {"type": "object"}
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layout"]
         },
         "recommend_chart_types": {
             "name": "recommend_chart_types",
