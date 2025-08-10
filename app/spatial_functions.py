@@ -2133,7 +2133,58 @@ class SpatialFunctions:
         if errors:
             return {"success": False, "errors": errors, "optimized_layout": widget_list}
         else:
-            return {"success": True, "optimized_layout": widget_list}
+            # Save the optimized layout to smart_dashboard.json while preserving all existing data
+            import json
+            from pathlib import Path
+            dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+            try:
+                # Load existing dashboard data if present
+                dashboard_data = {}
+                existing_widgets = {}
+                
+                if dashboard_path.exists():
+                    with open(dashboard_path, "r", encoding="utf-8") as f:
+                        dashboard_data = json.load(f)
+                    
+                    # Create a map of existing widgets by ID to preserve their data fields
+                    existing_layout = dashboard_data.get("dashboard_layout", [])
+                    for widget in existing_layout:
+                        widget_id = widget.get("id")
+                        if widget_id:
+                            existing_widgets[widget_id] = widget
+                
+                # Merge the optimized layout with existing widget data
+                enhanced_widget_list = []
+                for widget in widget_list:
+                    widget_id = widget.get("id")
+                    if widget_id and widget_id in existing_widgets:
+                        # Preserve existing data fields and update only positioning
+                        enhanced_widget = existing_widgets[widget_id].copy()
+                        enhanced_widget.update({
+                            "x": widget.get("x", enhanced_widget.get("x", 0)),
+                            "y": widget.get("y", enhanced_widget.get("y", 0)),
+                            "w": widget.get("w", enhanced_widget.get("w", 1)),
+                            "h": widget.get("h", enhanced_widget.get("h", 1))
+                        })
+                        enhanced_widget_list.append(enhanced_widget)
+                    else:
+                        # New widget, add as-is but ensure it has required fields
+                        enhanced_widget_list.append(widget)
+                
+                # Update the layout with enhanced widgets
+                dashboard_data["dashboard_layout"] = enhanced_widget_list
+                
+                with open(dashboard_path, "w", encoding="utf-8") as f:
+                    json.dump(dashboard_data, f, indent=4)
+                    
+                logger.info(f"Successfully saved optimized layout with {len(enhanced_widget_list)} widgets while preserving data fields")
+                
+            except Exception as e:
+                logger.error(f"Failed to save optimized dashboard layout: {e}")
+                return {"success": False, "error": f"Failed to save optimized layout: {e}", "optimized_layout": widget_list}
+            return {"success": True, "optimized_layout": enhanced_widget_list}
+        
+        
     def get_current_dashboard_layout(self) -> Dict:
         """
         Get the current dashboard layout from the smart_dashboard.json file.
