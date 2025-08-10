@@ -471,7 +471,7 @@ class FunctionDeclaration:
 
         "generate_smart_dashboard_layout": {
             "name": "generate_smart_dashboard_layout",
-            "description": "Stage 2: Enhanced Chart Recommendation Engine with intelligent chart selection and 12x9 grid layout planning. Generates sophisticated dashboard layouts with optimized chart recommendations, detailed configurations, and positioning. This is the main function for Stage 2 of dashboard generation.",
+            "description": "Stage 2: Enhanced Chart Recommendation Engine with intelligent chart selection and 12x6 grid layout planning. Generates sophisticated dashboard layouts with optimized chart recommendations, detailed configurations, and positioning. This is the main function for Stage 2 of dashboard generation.",
             "parameters": {
                 "layer_name": {
                     "type": "string",
@@ -482,7 +482,7 @@ class FunctionDeclaration:
         },
         "optimize_dashboard_layout": {
             "name": "optimize_dashboard_layout",
-            "description": "Optimize a dashboard layout to minimize gaps and overlaps. Accepts a layout array (list of widgets), reorders by chart index, and repacks widgets to fill a 12x9 grid efficiently. Returns the optimized layout in the same format.",
+            "description": "Optimize a dashboard layout to minimize gaps and overlaps. Accepts a layout array (list of widgets), reorders by chart index, and repacks widgets to fill a 12x6 grid efficiently. Returns the optimized layout in the same format.",
             "parameters": {
                 "layout": {
                     "type": "array",
@@ -509,7 +509,7 @@ class FunctionDeclaration:
         },
         "plan_dashboard_layout": {
             "name": "plan_dashboard_layout",
-            "description": "AI-Powered Dashboard Layout Planning System. Uses AI to create optimal dashboard layouts that maximize space utilization and visual effectiveness. Works with chart recommendations to create intelligent 12x9 grid layouts with proper positioning and sizing.",
+            "description": "AI-Powered Dashboard Layout Planning System. Uses AI to create optimal dashboard layouts that maximize space utilization and visual effectiveness. Works with chart recommendations to create intelligent 12x6 grid layouts with proper positioning and sizing.",
             "parameters": {
                 "layer_name": {
                     "type": "string",
@@ -524,5 +524,13 @@ class FunctionDeclaration:
                 }
             },
             "required": ["layer_name"]
+        },
+        "get_current_dashboard_layout": {
+            "name": "get_current_dashboard_layout",
+            "description": "Get the current dashboard layout from the smart_dashboard.json file.",
+            "parameters": {},
+            "returns": {
+                "dashboard": "The current dashboard layout as a dictionary."
+            }
         }
     }

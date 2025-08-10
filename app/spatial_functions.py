@@ -77,8 +77,9 @@ class SpatialFunctions:
         31: "optimize_dashboard_layout",
         32: "recommend_chart_types",
         33: "plan_dashboard_layout"
+        34: "get_current_dashboard_layout",
     }
-
+    
     def __init__(self, websocket_manager=None):
         self.websocket_manager = websocket_manager
         self.supported_formats = ['.shp', '.geojson', '.kml', '.gpx', '.gml']
@@ -1964,8 +1965,8 @@ class SpatialFunctions:
             result = {
                 "success": True,
                 "layer_name": layer_name,
-                "dashboard_layout": dashboard_layout,
-                # "field_insights": field_insights,
+                # "dashboard_layout": dashboard_layout,
+                "field_insights": field_insights,
                 # "chart_recommendations": chart_recommendations,
                 "output_file": dashboard_file,
                 "message": f"Smart dashboard layout with field analysis generated and saved to {dashboard_file}"
@@ -2013,7 +2014,7 @@ class SpatialFunctions:
 
     def plan_dashboard_layout(self, chart_recommendations: Dict) -> Dict:
         """
-        Plans the layout of a 12x9 grid dashboard based on chart recommendations.
+        Plans the layout of a 12x6 grid dashboard based on chart recommendations.
         Returns a JSON object representing the grid layout with chart placements.
         """
         # Sort fields by visualization priority (descending)
@@ -2025,7 +2026,7 @@ class SpatialFunctions:
         
         # Define grid dimensions
         grid_width = 12
-        grid_height = 9
+        grid_height = 6
         layout = []
         
         # Place charts on the grid
@@ -2072,7 +2073,7 @@ class SpatialFunctions:
     def optimize_dashboard_layout(self, layout) -> Dict:
         """
         Optimizes a dashboard layout to minimize gaps and overlaps.
-        Accepts a layout array (list of widgets), reorders by chart index, and repacks widgets to fill a 12x9 grid efficiently.
+        Accepts a layout array (list of widgets), reorders by chart index, and repacks widgets to fill a 12x6 grid efficiently.
         Returns the optimized layout in the same format.
         """
         # Handle different input formats
@@ -2102,8 +2103,8 @@ class SpatialFunctions:
         widgets.sort(key=lambda w: (-(w.get("w", 1) * w.get("h", 1)), w.get("id", "")))
 
         grid_width = 12
-        grid_height = 9
-        occupied = [[False]*grid_width for _ in range(grid_height)]
+    grid_height = 6
+    occupied = [[False]*grid_width for _ in range(grid_height)]
         packed = []
 
         def fits(x, y, w, h):
@@ -2141,3 +2142,20 @@ class SpatialFunctions:
                 continue
 
         return {"success": True, "optimized_layout": packed}
+
+
+    def get_current_dashboard_layout(self) -> Dict:
+        """
+        Get the current dashboard layout from the smart_dashboard.json file.
+        Returns the dashboard layout as a dictionary.
+        """
+        import json
+        from pathlib import Path
+        try:
+            dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+            with open(dashboard_path, "r", encoding="utf-8") as f:
+                dashboard_data = json.load(f)
+            return {"success": True, "dashboard": dashboard_data}
+        except Exception as e:
+            logger.error(f"Failed to load dashboard layout: {e}")
+            return {"success": False, "error": str(e)}
