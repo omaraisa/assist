@@ -76,8 +76,8 @@ class SpatialFunctions:
         30: "generate_smart_dashboard_layout",
         31: "optimize_dashboard_layout",
         32: "recommend_chart_types",
-        33: "plan_dashboard_layout"
-        34: "get_current_dashboard_layout",
+        33: "plan_dashboard_layout",
+        34: "get_current_dashboard_layout"
     }
     
     def __init__(self, websocket_manager=None):
@@ -2037,11 +2037,11 @@ class SpatialFunctions:
             chart_type = recs["recommended_charts"][0] if recs["recommended_charts"] else "indicator"
             
             # Define default widget sizes
-            widget_size = {"w": 4, "h": 3} # Default size
+            widget_size = {"w": 3, "h": 2} # Default size (reduced)
             if chart_type in ["bar", "column", "line_chart", "timeline"]:
-                widget_size = {"w": 6, "h": 4}
+                widget_size = {"w": 4, "h": 2}
             elif chart_type in ["pie", "donut"]:
-                widget_size = {"w": 3, "h": 3}
+                widget_size = {"w": 2, "h": 2}
             elif chart_type == "indicator":
                 widget_size = {"w": 2, "h": 2}
             
@@ -2072,78 +2072,68 @@ class SpatialFunctions:
 
     def optimize_dashboard_layout(self, layout) -> Dict:
         """
-        Optimizes a dashboard layout to minimize gaps and overlaps.
-        Accepts a layout array (list of widgets), reorders by chart index, and repacks widgets to fill a 12x6 grid efficiently.
-        Returns the optimized layout in the same format.
+        Validates and applies AI-suggested dashboard layout.
+        Takes the AI's exact positioning and validates it fits in a 12x6 grid without overlaps.
+        Returns validation results and the layout if valid.
         """
         # Handle different input formats
         if isinstance(layout, dict):
-            # If input is a dict, try to extract the layout array
             widget_list = layout.get("layout", layout.get("dashboard_layout", []))
         elif isinstance(layout, list):
-            # If input is already a list, use it directly
             widget_list = layout
         else:
-            # Handle unexpected input types
-            logger.error(f"Unexpected layout input type: {type(layout)}")
+            logger.error(f"Invalid layout input type: {type(layout)}")
             return {"success": False, "error": f"Invalid layout input type: {type(layout)}"}
         
-        # Validate that we have a valid widget list
         if not isinstance(widget_list, list):
             logger.error(f"Expected list of widgets, got: {type(widget_list)}")
             return {"success": False, "error": "Layout must be a list of widget objects"}
         
         if not widget_list:
-            logger.warning("Empty widget list provided for optimization")
             return {"success": True, "optimized_layout": []}
         
-        # Sort widgets by their order in the input (chart index), or by size (optional)
-        widgets = list(widget_list)
-        # Optionally, sort by area (largest first) for better packing
-        widgets.sort(key=lambda w: (-(w.get("w", 1) * w.get("h", 1)), w.get("id", "")))
-
         grid_width = 12
-    grid_height = 6
-    occupied = [[False]*grid_width for _ in range(grid_height)]
-        packed = []
-
-        def fits(x, y, w, h):
+        grid_height = 6
+        errors = []
+        
+        # Check each widget for bounds and overlaps
+        occupied = [[False]*grid_width for _ in range(grid_height)]
+        
+        for i, widget in enumerate(widget_list):
+            x, y = widget.get("x", 0), widget.get("y", 0)
+            w, h = widget.get("w", 1), widget.get("h", 1)
+            widget_id = widget.get("id", f"widget_{i}")
+            
+            # Check bounds
             if x + w > grid_width or y + h > grid_height:
-                return False
+                errors.append(f"Widget {widget_id} exceeds grid bounds: ({x},{y}) size {w}x{h}")
+                continue
+            
+            if x < 0 or y < 0:
+                errors.append(f"Widget {widget_id} has negative coordinates: ({x},{y})")
+                continue
+            
+            # Check overlaps
+            overlap = False
             for dy in range(h):
                 for dx in range(w):
                     if occupied[y+dy][x+dx]:
-                        return False
-            return True
-
-        def mark(x, y, w, h):
-            for dy in range(h):
-                for dx in range(w):
-                    occupied[y+dy][x+dx] = True
-
-        for widget in widgets:
-            w = widget.get("w", 1)
-            h = widget.get("h", 1)
-            placed = False
-            for y in range(grid_height):
-                for x in range(grid_width):
-                    if fits(x, y, w, h):
-                        new_widget = dict(widget)
-                        new_widget["x"] = x
-                        new_widget["y"] = y
-                        packed.append(new_widget)
-                        mark(x, y, w, h)
-                        placed = True
+                        errors.append(f"Widget {widget_id} overlaps at position ({x+dx},{y+dy})")
+                        overlap = True
                         break
-                if placed:
+                if overlap:
                     break
-            if not placed:
-                # If can't fit, skip (or could append at end with negative coords)
-                continue
-
-        return {"success": True, "optimized_layout": packed}
-
-
+            
+            if not overlap:
+                # Mark as occupied
+                for dy in range(h):
+                    for dx in range(w):
+                        occupied[y+dy][x+dx] = True
+        
+        if errors:
+            return {"success": False, "errors": errors, "optimized_layout": widget_list}
+        else:
+            return {"success": True, "optimized_layout": widget_list}
     def get_current_dashboard_layout(self) -> Dict:
         """
         Get the current dashboard layout from the smart_dashboard.json file.
@@ -2151,11 +2141,27 @@ class SpatialFunctions:
         """
         import json
         from pathlib import Path
+        dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
         try:
-            dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
             with open(dashboard_path, "r", encoding="utf-8") as f:
                 dashboard_data = json.load(f)
-            return {"success": True, "dashboard": dashboard_data}
+            # Try to find the layout list
+            layout = []
+            if isinstance(dashboard_data, dict):
+                layout = dashboard_data.get("dashboard_layout") or dashboard_data.get("layout") or []
+            elif isinstance(dashboard_data, list):
+                layout = dashboard_data
+            # Only return minimal widget info
+            minimal_widgets = []
+            for widget in layout:
+                minimal_widgets.append({
+                    "id": widget.get("id"),
+                    "x": widget.get("x"),
+                    "y": widget.get("y"),
+                    "w": widget.get("w"),
+                    "h": widget.get("h")
+                })
+            return {"success": True, "widgets": minimal_widgets}
         except Exception as e:
             logger.error(f"Failed to load dashboard layout: {e}")
             return {"success": False, "error": str(e)}

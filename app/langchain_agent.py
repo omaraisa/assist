@@ -134,7 +134,7 @@ class LangChainAgent:
             Tool(
                 name="execute_spatial_function",
                 func=self._execute_spatial_function,
-                description="Executes a spatial function. Input must be a string representing a dictionary with 'function_name' and its arguments.",
+                description="Executes a spatial function. Input must be a stringified dictionary with 'function_name' and parameters. Parameters can be provided either as top-level keys or inside an 'arguments' object.",
             ),
         ]
 
@@ -175,10 +175,15 @@ class LangChainAgent:
             import uuid
             session_id = str(uuid.uuid4())
 
+            # Unwrap nested 'arguments' if present to avoid passing unexpected keyword 'arguments'
+            parameters = tool_input
+            if isinstance(parameters, dict) and "arguments" in parameters and len(parameters) == 1 and isinstance(parameters["arguments"], dict):
+                parameters = parameters["arguments"]
+
             payload = {
                 "type": "execute_function",
                 "function_name": function_name,
-                "parameters": tool_input,
+                "parameters": parameters,
                 "session_id": session_id  # Add session ID to track this specific call
             }
             

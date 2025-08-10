@@ -482,15 +482,30 @@ class FunctionDeclaration:
         },
         "optimize_dashboard_layout": {
             "name": "optimize_dashboard_layout",
-            "description": "Optimize a dashboard layout to minimize gaps and overlaps. Accepts a layout array (list of widgets), reorders by chart index, and repacks widgets to fill a 12x6 grid efficiently. Returns the optimized layout in the same format.",
+            "description": "Validate an AI-suggested dashboard layout for a 12x6 grid. The AI must provide an array of widget objects, each with: id (string), x (int), y (int), w (int), h (int). field (string) and chart_type (string) are optional and help the AI understand the context, but are not required for layout validation. The function checks that all widgets fit within the grid and do not overlap, returning the validated layout with errors if any. Only id, x, y, w, h are required for each widget.",
             "parameters": {
                 "layout": {
                     "type": "array",
-                    "description": "Array of dashboard widget objects to optimize (each with id, x, y, w, h, field, chart_type, etc.)",
-                    "items": {"type": "object"}
+                    "description": "Array of dashboard widget objects to validate. Each object must include: id (string), x (int), y (int), w (int), h (int). Optionally, field (string) and chart_type (string) can be included for AI awareness. Example: {\"id\": \"widget_fieldname\", \"x\": 0, \"y\": 0, \"w\": 4, \"h\": 3, \"field\": \"fieldname\", \"chart_type\": \"bar\"}",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "string", "description": "Unique widget identifier"},
+                            "x": {"type": "integer", "description": "Left grid position (0-11)"},
+                            "y": {"type": "integer", "description": "Top grid position (0-5)"},
+                            "w": {"type": "integer", "description": "Widget width (columns)"},
+                            "h": {"type": "integer", "description": "Widget height (rows)"}
+                        },
+                        "required": ["id", "x", "y", "w", "h"]
+                    }
                 }
             },
-            "required": ["layout"]
+            "required": ["layout"],
+            "returns": {
+                "optimized_layout": "The validated layout array (same as input if valid)",
+                "success": "True if layout is valid, False if errors found",
+                "errors": "List of error messages if validation fails"
+            }
         },
         "recommend_chart_types": {
             "name": "recommend_chart_types",

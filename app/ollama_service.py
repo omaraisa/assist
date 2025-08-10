@@ -219,7 +219,7 @@ class OllamaService:
         function_prompt = (
             "You have access to the following functions. "
             "When you need to call a function, respond with a JSON object in this format: "
-            '{ "function_calls": [ { "name": "function_name", "arguments": { ... } } ] } '\n\n"
+            '{ "function_calls": [ { "name": "function_name", "arguments": { ... } } ] }\n\n'
             "Do not write any extra text or explanations. Just output the JSON function call.\n\n"
             "Available functions:\n\n" + "\n\n".join(function_descriptions)
         )
@@ -257,12 +257,12 @@ class OllamaService:
             matches = re.findall(json_pattern, response_text, re.DOTALL)
 
             for match in matches:
-            try:
-                parsed = json.loads(match)
-                if "function_calls" in parsed:
-                function_calls.extend(parsed["function_calls"])
-            except json.JSONDecodeError:
-                continue
+                try:
+                    parsed = json.loads(match)
+                    if "function_calls" in parsed:
+                        function_calls.extend(parsed["function_calls"])
+                except json.JSONDecodeError:
+                    continue
             
             # Also try to parse the entire response as JSON
             if not function_calls:
