@@ -2069,15 +2069,35 @@ class SpatialFunctions:
             
         return {"dashboard_layout": layout}
 
-    def optimize_dashboard_layout(self, new_dashboard_layout: Dict) -> Dict:
+    def optimize_dashboard_layout(self, layout) -> Dict:
         """
         Optimizes a dashboard layout to minimize gaps and overlaps.
         Accepts a layout array (list of widgets), reorders by chart index, and repacks widgets to fill a 12x9 grid efficiently.
         Returns the optimized layout in the same format.
         """
-        layout = new_dashboard_layout if isinstance(new_dashboard_layout, list) else new_dashboard_layout.get("dashboard_layout", [])
+        # Handle different input formats
+        if isinstance(layout, dict):
+            # If input is a dict, try to extract the layout array
+            widget_list = layout.get("layout", layout.get("dashboard_layout", []))
+        elif isinstance(layout, list):
+            # If input is already a list, use it directly
+            widget_list = layout
+        else:
+            # Handle unexpected input types
+            logger.error(f"Unexpected layout input type: {type(layout)}")
+            return {"success": False, "error": f"Invalid layout input type: {type(layout)}"}
+        
+        # Validate that we have a valid widget list
+        if not isinstance(widget_list, list):
+            logger.error(f"Expected list of widgets, got: {type(widget_list)}")
+            return {"success": False, "error": "Layout must be a list of widget objects"}
+        
+        if not widget_list:
+            logger.warning("Empty widget list provided for optimization")
+            return {"success": True, "optimized_layout": []}
+        
         # Sort widgets by their order in the input (chart index), or by size (optional)
-        widgets = list(layout)
+        widgets = list(widget_list)
         # Optionally, sort by area (largest first) for better packing
         widgets.sort(key=lambda w: (-(w.get("w", 1) * w.get("h", 1)), w.get("id", "")))
 
