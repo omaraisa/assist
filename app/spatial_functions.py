@@ -79,7 +79,10 @@ class SpatialFunctions:
         31: "optimize_dashboard_layout",
         32: "recommend_chart_types",
         33: "plan_dashboard_layout",
-        34: "get_current_dashboard_layout"
+        34: "get_current_dashboard_layout",
+        35: "get_field_stories_and_samples",
+        36: "get_current_dashboard_charts",
+        37: "update_dashboard_charts"
     }
     
     def __init__(self, websocket_manager=None):
@@ -2222,21 +2225,13 @@ class SpatialFunctions:
             new_layout.extend(sorted(rows[y], key=lambda w: w["x"]))
         return new_layout
 
-    def optimize_dashboard_layout(self, layout) -> Dict:
+
+    def optimize_dashboard_layout(self, widget_list) -> Dict:
         """
-        Validates and applies AI-suggested dashboard layout.
-        Takes the AI's exact positioning and validates it fits in a 12x6 grid without overlaps.
+        Validates and arranges the dashboard layout (positions, sizes) for a list of widgets.
+        Only checks/optimizes layout (coordinates, size, overlap, grid fit).
         Returns validation results and the layout if valid.
         """
-        # Handle different input formats
-        if isinstance(layout, dict):
-            widget_list = layout.get("layout", layout.get("dashboard_layout", []))
-        elif isinstance(layout, list):
-            widget_list = layout
-        else:
-            logger.error(f"Invalid layout input type: {type(layout)}")
-            return {"success": False, "error": f"Invalid layout input type: {type(layout)}"}
-
         if not isinstance(widget_list, list):
             logger.error(f"Expected list of widgets, got: {type(widget_list)}")
             return {"success": False, "error": "Layout must be a list of widget objects"}
@@ -2290,69 +2285,20 @@ class SpatialFunctions:
             from pathlib import Path
             dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
             try:
-                # Load existing dashboard data if present
                 dashboard_data = {}
-                existing_widgets = {}
-
                 if dashboard_path.exists():
                     with open(dashboard_path, "r", encoding="utf-8") as f:
                         dashboard_data = json.load(f)
-
-                    # Create a map of existing widgets by ID to preserve their data fields
-                    existing_layout = dashboard_data.get("dashboard_layout", [])
-                    for widget in existing_layout:
-                        widget_id = widget.get("id")
-                        if widget_id:
-                            existing_widgets[widget_id] = widget
-
-                # Merge the optimized layout with existing widget data
-                enhanced_widget_list = []
-                for widget in widget_list:
-                    widget_id = widget.get("id")
-                    # Allow AI to fully replace widget fields (field, chart_type, etc.) if present in input
-                    if widget_id and widget_id in existing_widgets:
-                        enhanced_widget = existing_widgets[widget_id].copy()
-                        # Update all relevant fields from AI input (not just position/size)
-                        for key in ["x", "y", "w", "h", "field", "fields", "chart_type"]:
-                            if key in widget:
-                                enhanced_widget[key] = widget[key]
-                        
-                        # Ensure fields is always an array, convert legacy "field" to "fields"
-                        if "field" in enhanced_widget and "fields" not in enhanced_widget:
-                            enhanced_widget["fields"] = [enhanced_widget["field"]]
-                            del enhanced_widget["field"]
-                        elif "fields" not in enhanced_widget:
-                            enhanced_widget["fields"] = []
-                            
-                        # Optionally allow AI to add new custom keys
-                        for key in widget:
-                            if key not in enhanced_widget:
-                                enhanced_widget[key] = widget[key]
-                        enhanced_widget_list.append(enhanced_widget)
-                    else:
-                        # New widget, add as-is but ensure fields array format
-                        enhanced_widget = widget.copy()
-                        if "field" in enhanced_widget and "fields" not in enhanced_widget:
-                            enhanced_widget["fields"] = [enhanced_widget["field"]]
-                            del enhanced_widget["field"]
-                        elif "fields" not in enhanced_widget:
-                            enhanced_widget["fields"] = []
-                        enhanced_widget_list.append(enhanced_widget)
-
-                # Update the layout with enhanced widgets
-                dashboard_data["dashboard_layout"] = enhanced_widget_list
-
+                dashboard_data["dashboard_layout"] = widget_list
                 with open(dashboard_path, "w", encoding="utf-8") as f:
                     json.dump(dashboard_data, f, indent=4)
-
-                logger.info(f"Successfully saved optimized layout with {len(enhanced_widget_list)} widgets, allowing AI to update fields and chart types.")
-
+                logger.info(f"Successfully saved optimized layout with {len(widget_list)} widgets (layout only, fields/chart_type must be pre-selected).")
             except Exception as e:
                 logger.error(f"Failed to save optimized dashboard layout: {e}")
                 return {"success": False, "error": f"Failed to save optimized layout: {e}", "optimized_layout": widget_list}
-            return {"success": True, "optimized_layout": enhanced_widget_list}
-        
-        
+            return {"success": True, "optimized_layout": widget_list}
+
+
     def get_current_dashboard_layout(self) -> Dict:
         """
         Get the current dashboard layout from the smart_dashboard.json file.
@@ -2385,34 +2331,6 @@ class SpatialFunctions:
         except Exception as e:
             logger.error(f"Failed to load dashboard layout: {e}")
             return {"success": False, "error": str(e)}
-        
-    def get_current_dashboard_charts(self) -> dict:
-        """
-        Get the current [fields, chart_type] pairs from the dashboard layout in smart_dashboard.json.
-        Returns a list of dicts: {"fields": [...], "chart_type": ...}
-        """
-        from pathlib import Path
-        import json
-        dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
-        try:
-            with open(dashboard_path, "r", encoding="utf-8") as f:
-                dashboard_data = json.load(f)
-            layout = []
-            if isinstance(dashboard_data, dict):
-                layout = dashboard_data.get("dashboard_layout") or dashboard_data.get("layout") or []
-            elif isinstance(dashboard_data, list):
-                layout = dashboard_data
-            chart_list = []
-            for widget in layout:
-                # Support both legacy "field" and new "fields" array format
-                fields = widget.get("fields", [widget.get("field")] if widget.get("field") else [])
-                chart_type = widget.get("chart_type")
-                if fields and chart_type:
-                    chart_list.append({"fields": fields, "chart_type": chart_type})
-            return {"success": True, "charts": chart_list}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
-        
         
     def get_field_stories_and_samples(self) -> dict:
         """
@@ -2448,3 +2366,79 @@ class SpatialFunctions:
             return {"success": True, "fields": result}
         except Exception as e:
             return {"success": False, "error": str(e)}
+    
+    
+    def get_current_dashboard_charts(self) -> dict:
+        """
+        Get the current [fields, chart_type] pairs from the dashboard layout in smart_dashboard.json.
+        Returns a list of dicts: {"fields": [...], "chart_type": ...}
+        """
+        from pathlib import Path
+        import json
+        dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+        try:
+            with open(dashboard_path, "r", encoding="utf-8") as f:
+                dashboard_data = json.load(f)
+            layout = []
+            if isinstance(dashboard_data, dict):
+                layout = dashboard_data.get("dashboard_layout") or dashboard_data.get("layout") or []
+            elif isinstance(dashboard_data, list):
+                layout = dashboard_data
+            chart_list = []
+            for widget in layout:
+                # Support both legacy "field" and new "fields" array format
+                fields = widget.get("fields", [widget.get("field")] if widget.get("field") else [])
+                chart_type = widget.get("chart_type")
+                if fields and chart_type:
+                    chart_list.append({"fields": fields, "chart_type": chart_type})
+            return {"success": True, "charts": chart_list}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+        
+        
+        
+    def update_dashboard_charts(self, charts: List[dict]) -> dict:
+        """
+        Takes a list of {fields, chart_type} dicts (as from get_current_dashboard_charts),
+        updates the first N widgets in the dashboard layout, and saves. No index/match logic.
+        """
+        from pathlib import Path
+        import json
+        dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+        try:
+            if not isinstance(charts, list) or not charts:
+                return {"success": False, "error": "Input must be a non-empty list of chart dicts"}
+            if not dashboard_path.exists():
+                return {"success": False, "error": "Dashboard file not found"}
+            with open(dashboard_path, "r", encoding="utf-8") as f:
+                dashboard_data = json.load(f)
+            original_is_dict = isinstance(dashboard_data, dict)
+            if original_is_dict:
+                layout = dashboard_data.get("dashboard_layout") or dashboard_data.get("layout") or []
+            else:
+                layout = dashboard_data if isinstance(dashboard_data, list) else []
+            if not isinstance(layout, list) or not layout:
+                return {"success": False, "error": "No dashboard layout found to update"}
+            updated = 0
+            for i, chart in enumerate(charts):
+                if i >= len(layout):
+                    break
+                fields = chart.get("fields")
+                chart_type = chart.get("chart_type")
+                if not fields or not chart_type:
+                    continue
+                layout[i]["fields"] = fields
+                layout[i].pop("field", None)
+                layout[i]["chart_type"] = chart_type
+                updated += 1
+            if updated:
+                if original_is_dict:
+                    dashboard_data["dashboard_layout"] = layout
+                else:
+                    dashboard_data = layout
+                with open(dashboard_path, "w", encoding="utf-8") as f:
+                    json.dump(dashboard_data, f, indent=4)
+            return {"success": True, "updated_count": updated, "charts": charts}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    

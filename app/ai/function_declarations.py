@@ -482,11 +482,11 @@ class FunctionDeclaration:
         },
         "optimize_dashboard_layout": {
             "name": "optimize_dashboard_layout",
-            "description": "Validate an AI-suggested dashboard layout for a 12x6 grid. The AI must provide an array of widget objects, each with: id (string), x (int), y (int), w (int), h (int). field (string) and chart_type (string) are optional and help the AI understand the context, but are not required for layout validation. The function checks that all widgets fit within the grid and do not overlap, returning the validated layout with errors if any. Only id, x, y, w, h are required for each widget.",
+            "description": "Validate and arrange a dashboard layout for a 12x6 grid. Checks widget positions, sizes, overlap, and grid fit. Saves the layout to smart_dashboard.json if valid. Returns validation results and the layout.",
             "parameters": {
                 "layout": {
                     "type": "array",
-                    "description": "Array of dashboard widget objects to validate. Each object must include: id (string), x (int), y (int), w (int), h (int). Optionally, field (string) and chart_type (string) can be included for AI awareness. Example: {\"id\": \"widget_fieldname\", \"x\": 0, \"y\": 0, \"w\": 4, \"h\": 3, \"field\": \"fieldname\", \"chart_type\": \"bar\"}",
+                    "description": "Array of dashboard widget objects to validate. Each object must include: id (string), x (int), y (int), w (int), h (int). Optionally, field(s) and chart_type can be included for AI awareness.",
                     "items": {
                         "type": "object",
                         "properties": {
@@ -505,6 +505,56 @@ class FunctionDeclaration:
                 "optimized_layout": "The validated layout array (same as input if valid)",
                 "success": "True if layout is valid, False if errors found",
                 "errors": "List of error messages if validation fails"
+            }
+        },
+        "get_current_dashboard_layout": {
+            "name": "get_current_dashboard_layout",
+            "description": "Get the current dashboard layout from the smart_dashboard.json file. Returns a list of widgets with id, x, y, w, h, and fields.",
+            "parameters": {},
+            "returns": {
+                "widgets": "List of minimal widget info (id, x, y, w, h, fields)",
+                "success": "True if loaded, False if error"
+            }
+        },
+        "get_field_stories_and_samples": {
+            "name": "get_field_stories_and_samples",
+            "description": "Returns a summary for each field: field_name, data_story, and sample_values from smart_dashboard.json. Handles empty or invalid JSON files gracefully.",
+            "parameters": {},
+            "returns": {
+                "fields": "List of dicts with field_name, data_story, and sample_values",
+                "success": "True if loaded, False if error"
+            }
+        },
+        "get_current_dashboard_charts": {
+            "name": "get_current_dashboard_charts",
+            "description": "Get the current [fields, chart_type] pairs from the dashboard layout in smart_dashboard.json. Returns a list of dicts: {'fields': [...], 'chart_type': ...}",
+            "parameters": {},
+            "returns": {
+                "charts": "List of dicts with fields and chart_type",
+                "success": "True if loaded, False if error"
+            }
+        },
+        "update_dashboard_charts": {
+            "name": "update_dashboard_charts",
+            "description": "Takes a list of {fields, chart_type} dicts and updates the first N widgets in the dashboard layout, then saves to smart_dashboard.json.",
+            "parameters": {
+                "charts": {
+                    "type": "array",
+                    "description": "List of dicts with fields (array of strings) and chart_type (string)",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "fields": {"type": "array", "items": {"type": "string"}},
+                            "chart_type": {"type": "string"}
+                        },
+                        "required": ["fields", "chart_type"]
+                    }
+                }
+            },
+            "required": ["charts"],
+            "returns": {
+                "updated_count": "Number of widgets updated",
+                "success": "True if updated, False if error"
             }
         },
         "recommend_chart_types": {
@@ -540,12 +590,4 @@ class FunctionDeclaration:
             },
             "required": ["layer_name"]
         },
-        "get_current_dashboard_layout": {
-            "name": "get_current_dashboard_layout",
-            "description": "Get the current dashboard layout from the smart_dashboard.json file.",
-            "parameters": {},
-            "returns": {
-                "dashboard": "The current dashboard layout as a dictionary."
-            }
-        }
     }
