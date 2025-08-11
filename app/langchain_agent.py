@@ -309,8 +309,18 @@ class LangChainAgent:
             return response
         except Exception as e:
             logger.error(f"Error generating LangChain agent response: {e}", exc_info=True)
-            return {
-                "type": "error",
-                "content": f"Error in LangChain Agent: {e}",
-                "model": self.model_key
-            }
+            
+            # Check if this is a quota exceeded error
+            error_message = str(e).lower()
+            if "quota" in error_message and "exceeded" in error_message:
+                return {
+                    "output": "🚫 **API Quota Exceeded**\n\nYou have reached your daily quota limit for the Gemini API. Please wait until tomorrow when your quota resets or switch to a different AI model.",
+                }
+            elif "429" in error_message or "rate limit" in error_message:
+                return {
+                    "output": "⏱️ **Rate Limit Reached**\n\nYou're sending requests too quickly. Please wait 30-60 seconds and try again.",
+                }
+            else:
+                return {
+                    "output": f"Error: {e}",
+                }
