@@ -233,6 +233,7 @@ This function is ALWAYS available to you. You can call it at any time to get dec
             "You are a helpful GIS assistant for ArcGIS Pro. "
             "You can use available function calls to solve spatial and data analysis tasks. "
             "Use the provided tools as needed to answer user questions or perform GIS operations. "
+            "IMPORTANT: Do NOT use markdown formatting, code blocks, or triple backticks (```) in your responses. Provide plain text answers only. "
             f"Current ArcGIS Pro state: {json.dumps(simplified_state)}"
         )
 

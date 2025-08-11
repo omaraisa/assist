@@ -261,6 +261,8 @@ class LangChainAgent:
         The declaration will be returned as a string, describing the function, its parameters, and their types.
         Once you have the declaration, you can execute the function using the `execute_spatial_function` tool.
 
+        IMPORTANT: Do NOT use markdown formatting, code blocks, or triple backticks (```) in your responses. Provide plain text answers only.
+
         Use the following format:
 
         Question: the input question you must answer

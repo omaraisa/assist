@@ -17,7 +17,7 @@ A powerful AI-powered assistant for ArcGIS Pro that provides intelligent GIS dat
 
 ## 📁 Project Structure
 
-```
+
 smart_assistant/
 ├── app/                    # Core application
 │   ├── main.py            # FastAPI server
@@ -30,7 +30,7 @@ smart_assistant/
 ├── start_server.bat       # Server launcher
 ├── QUICK_START.md         # Getting started guide
 └── environment_info.txt   # Detailed setup info
-```
+
 
 ## 🔧 Available AI Models
 
