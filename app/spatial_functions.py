@@ -2023,38 +2023,25 @@ class SpatialFunctions:
             key=lambda item: item[1].get("visualization_priority", 5), 
             reverse=True
         )
-        
-        # Define grid dimensions
         grid_width = 12
         grid_height = 6
         layout = []
-        
-        # Place charts on the grid
         current_x = 0
         current_y = 0
-        
         for field_name, recs in sorted_fields:
             chart_type = recs["recommended_charts"][0] if recs["recommended_charts"] else "indicator"
-            
-            # Define default widget sizes
-            widget_size = {"w": 3, "h": 2} # Default size (reduced)
+            widget_size = {"w": 3, "h": 2}
             if chart_type in ["bar", "column", "line_chart", "timeline"]:
                 widget_size = {"w": 4, "h": 2}
             elif chart_type in ["pie", "donut"]:
                 widget_size = {"w": 2, "h": 2}
             elif chart_type == "indicator":
                 widget_size = {"w": 2, "h": 2}
-            
-            # Check if widget fits in the current row
             if current_x + widget_size["w"] > grid_width:
                 current_x = 0
-                current_y += widget_size["h"] # Move to next row
-            
-            # Check if widget fits on the grid at all
+                current_y += widget_size["h"]
             if current_y + widget_size["h"] > grid_height:
-                continue # Skip if it doesn't fit
-            
-            # Add widget to layout
+                continue
             layout.append({
                 "id": f"widget_{field_name}",
                 "x": current_x,
@@ -2064,11 +2051,32 @@ class SpatialFunctions:
                 "field": field_name,
                 "chart_type": chart_type
             })
-            
-            # Update current position
             current_x += widget_size["w"]
-            
+        layout = self._expand_last_widget_in_row(layout, grid_width)
         return {"dashboard_layout": layout}
+
+    def _expand_last_widget_in_row(self, layout, grid_width):
+        """
+        For each row, if the total width is less than grid_width, expand the last widget in the row to fill the row.
+        """
+        if not layout:
+            return layout
+        # Group widgets by row (y)
+        from collections import defaultdict
+        rows = defaultdict(list)
+        for widget in layout:
+            rows[widget["y"]].append(widget)
+        for y, widgets in rows.items():
+            # Sort widgets in row by x
+            widgets.sort(key=lambda w: w["x"])
+            total_w = sum(w["w"] for w in widgets)
+            if total_w < grid_width and widgets:
+                widgets[-1]["w"] += grid_width - total_w
+        # Flatten back to list, preserving order
+        new_layout = []
+        for y in sorted(rows.keys()):
+            new_layout.extend(sorted(rows[y], key=lambda w: w["x"]))
+        return new_layout
 
     def optimize_dashboard_layout(self, layout) -> Dict:
         """
