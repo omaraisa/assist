@@ -1,3 +1,4 @@
+
 """
 Spatial Functions Module - GIS analysis operations
 """
@@ -8,6 +9,7 @@ import math
 import json
 import asyncio
 import statistics
+import re
 from typing import Dict, Tuple, List
 from .ai.function_declarations import FunctionDeclaration
 from copy import deepcopy
@@ -1396,69 +1398,100 @@ class SpatialFunctions:
     def analyze_layer_fields(self, layer_name: str) -> Dict:
         """
         Analyze all fields in a layer to understand their characteristics for dashboard generation.
+        Skips system fields and numeric fields where most values are unique (likely IDs).
         Returns detailed field metadata including data types, unique values, null percentages, etc.
         """
         logger.info(f"Starting field analysis for layer: {layer_name}")
-        
+
         try:
-            # Get current project and map
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
-            
-            # Find the layer
-            target_layer = None
-            for layer in map_obj.listLayers():
-                if layer.name == layer_name:
-                    target_layer = layer
-                    break
-            
+
+            # Find the target layer
+            target_layer = next((lyr for lyr in map_obj.listLayers() if lyr.name == layer_name), None)
             if not target_layer:
                 return {"success": False, "error": f"Layer '{layer_name}' not found"}
-            
             if not target_layer.isFeatureLayer:
                 return {"success": False, "error": f"Layer '{layer_name}' is not a feature layer"}
-            
-            # Get field definitions
-            fields = arcpy.ListFields(target_layer)
-            field_analysis = {}
-            
+
             # Get total feature count
             total_count = int(arcpy.GetCount_management(target_layer)[0])
-            
-            # Analyze each field
+            if total_count == 0:
+                return {"success": False, "error": f"Layer '{layer_name}' has no features"}
+
+            fields = arcpy.ListFields(target_layer)
+            field_analysis = {}
+
+            # Cursor for checking uniqueness without loading all values into memory at once
+            with arcpy.da.SearchCursor(target_layer, [f.name for f in fields]) as cursor:
+                rows = list(cursor)  # safe since we have total_count from above
+
+            # Build a name->index map once
+            field_index = {fld.name: idx for idx, fld in enumerate(fields)}
+
             for field in fields:
-                # Skip system fields like OBJECTID, Shape, etc.
-                if field.name.upper() in ['OBJECTID', 'SHAPE', 'SHAPE_LENGTH', 'SHAPE_AREA', 'GLOBALID']:
+                # Skip system OBJECTID/geometry fields and common system fields
+                if field.type in ['Geometry'] or field.name.upper() in ['OBJECTID', 'SHAPE_LENGTH', 'SHAPE_AREA', 'GLOBALID']:
                     continue
-                
+
+                # Values for this field
+                col_idx = field_index[field.name]
+                all_values = [r[col_idx] for r in rows]  # Include nulls for proper ratio calculation
+                values = [v for v in all_values if v is not None]  # Non-null values for analysis
+
+                # Smart skip for numeric unique-ID-like fields
+                if field.type in ['SmallInteger', 'Integer', 'Single', 'Double'] and values:
+                    # Name-assisted early skip (soft signal)
+                    name_l = field.name.lower()
+                    name_hint = any(substr in name_l for substr in ["id", "code", "guid"])
+                    n = len(values)
+                    uniq = len(set(values)) / n if n else 0
+                    # Integer-like ratio
+                    def _int_like(x: float, eps: float = 1e-9) -> bool:
+                        try:
+                            return abs(x - round(x)) <= eps
+                        except Exception:
+                            return False
+                    int_like_ratio = sum(1 for v in values if _int_like(v)) / n
+                    if name_hint and uniq >= 0.85 and int_like_ratio >= 0.85:
+                        logger.debug(f"Skipping {field.name} as ID-like numeric field (name hint)")
+                        continue
+                    # Heuristic skip for numeric ID-like fields
+                    if self._is_id_like_numeric(values):
+                        logger.debug(f"Skipping {field.name} as ID-like numeric field")
+                        continue
+
+                # Smart skip for text fields that look like IDs (e.g., GUIDs, codes, numeric-as-text)
+                if field.type in ['String', 'Text'] and values:
+                    text_values = [str(v).strip() for v in values]
+                    if self._is_id_like_text(text_values):
+                        logger.debug(f"Skipping {field.name} as ID-like text field")
+                        continue
+
                 field_info = {
                     "field_name": field.name,
                     "field_type": field.type,
-                    "field_length": field.length if hasattr(field, 'length') else None,
-                    "field_precision": field.precision if hasattr(field, 'precision') else None,
-                    "field_scale": field.scale if hasattr(field, 'scale') else None,
+                    "field_length": getattr(field, 'length', None),
+                    "field_precision": getattr(field, 'precision', None),
+                    "field_scale": getattr(field, 'scale', None),
                     "total_records": total_count
                 }
-                
+
                 # Calculate field statistics based on type
                 if field.type in ['SmallInteger', 'Integer', 'Single', 'Double']:
-                    # Numeric field analysis
                     field_info.update(self._analyze_numeric_field(target_layer, field.name, total_count))
                 elif field.type in ['String', 'Text']:
-                    # Text field analysis
                     field_info.update(self._analyze_text_field(target_layer, field.name, total_count))
                 elif field.type == 'Date':
-                    # Date field analysis
                     field_info.update(self._analyze_date_field(target_layer, field.name, total_count))
                 else:
-                    # Generic analysis for other types
                     field_info.update(self._analyze_generic_field(target_layer, field.name, total_count))
-                
-                # Step 2 Enhancement: Add AI-ready insights for better chart selection
+
+                # AI-ready insights
                 field_info.update(self._generate_ai_insights(field_info, field.name))
-                
+
                 field_analysis[field.name] = field_info
-            
+
             result = {
                 "success": True,
                 "layer_name": layer_name,
@@ -1467,13 +1500,14 @@ class SpatialFunctions:
                 "field_insights": field_analysis,
                 "analysis_timestamp": self._get_timestamp()
             }
-            
+
             logger.info(f"Field analysis completed for {layer_name}: {len(field_analysis)} fields analyzed")
             return result
-            
+
         except Exception as e:
             logger.error(f"analyze_layer_fields error: {str(e)}")
             return {"success": False, "error": str(e)}
+
     
     def _analyze_numeric_field(self, layer, field_name: str, total_count: int) -> Dict:
         """Analyze numeric field characteristics"""
@@ -1692,6 +1726,116 @@ class SpatialFunctions:
         except Exception as e:
             logger.error(f"Error analyzing generic field {field_name}: {str(e)}")
             return {"data_category": "other", "error": str(e)}
+
+    def _is_id_like_numeric(self, values: List[float]) -> bool:
+        """
+        Heuristically determine if a numeric vector looks like an identifier:
+        - High uniqueness (>= 0.9 of non-null values are unique)
+        - Mostly integer-like values
+        - Dense coverage across min..max (unique_count / value_range >= 0.5 for meaningful ranges)
+        - Common step pattern ~1 when sorted (median diff == 1 or close)
+        """
+        try:
+            if not values:
+                return False
+            n = len(values)
+            unique_vals = sorted(set(values))
+            unique_count = len(unique_vals)
+            # Uniqueness ratio
+            uniq_ratio = unique_count / n if n > 0 else 0
+            if uniq_ratio < 0.9 or n < 10:
+                return False
+            # Integer-likeness: allow small float noise (e.g., cast to int within epsilon)
+            def is_int_like(x: float, eps: float = 1e-9) -> bool:
+                try:
+                    return abs(x - round(x)) <= eps
+                except Exception:
+                    return False
+            int_like_ratio = sum(1 for v in values if is_int_like(v)) / n
+            if int_like_ratio < 0.9:
+                # If many are true floats, likely measurement data, not ID
+                return False
+            vmin, vmax = unique_vals[0], unique_vals[-1]
+            value_range = vmax - vmin
+            if value_range <= 0:
+                return False
+            density = unique_count / (value_range + 1)  # +1 to handle inclusive integer range
+            # Compute median step
+            diffs = [unique_vals[i+1] - unique_vals[i] for i in range(len(unique_vals)-1)]
+            diffs_sorted = sorted(diffs)
+            mid = len(diffs_sorted)//2
+            median_step = (diffs_sorted[mid] if len(diffs_sorted)%2==1 else (diffs_sorted[mid-1]+diffs_sorted[mid])/2)
+            # ID-like if dense and step ~1
+            if density >= 0.5 and 0.9 <= median_step <= 1.1:
+                return True
+            # Also treat strictly consecutive sequences as ID-like
+            if all(abs(d - 1) <= 1e-9 for d in diffs):
+                return True
+            return False
+        except Exception:
+            return False
+
+    def _is_id_like_text(self, values: List[str]) -> bool:
+        """
+        Heuristically determine if a text vector looks like an identifier/code:
+        - High uniqueness
+        - Mostly constrained character set (alnum, -, _)
+        - Consistent length or matches GUID/UUID patterns
+        - Numeric-as-text (e.g., "000123", "101", "987654")
+        """
+        try:
+            if not values:
+                return False
+            n = len(values)
+            unique_vals = list({v for v in values if v != ''})
+            unique_count = len(unique_vals)
+            if n < 10:
+                return False
+            uniq_ratio = unique_count / n if n > 0 else 0
+            if uniq_ratio < 0.85:
+                return False
+
+            # Quick GUID/UUID detection
+            uuid_regex = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
+            hex32_regex = re.compile(r"^[0-9a-fA-F]{32}$")
+            def is_uuid_like(s: str) -> bool:
+                s = s.strip()
+                return bool(uuid_regex.match(s) or hex32_regex.match(s))
+            uuid_ratio = sum(1 for v in values if is_uuid_like(v)) / n
+            if uuid_ratio >= 0.8:
+                return True
+
+            # Numeric-as-text detection
+            digits_regex = re.compile(r"^\d+$")
+            digits_ratio = sum(1 for v in values if digits_regex.match(v)) / n
+            if digits_ratio >= 0.8 and uniq_ratio >= 0.9:
+                # Try numeric ID-like heuristic on parsed ints
+                ints = [int(v) for v in values if digits_regex.match(v)]
+                if self._is_id_like_numeric(ints):
+                    return True
+                # Even if not dense, very high uniqueness numeric codes are often IDs
+                if uniq_ratio >= 0.98:
+                    return True
+
+            # Alphanumeric codes: mostly alnum/_/- and consistent length
+            code_regex = re.compile(r"^[A-Za-z0-9_-]+$")
+            code_ratio = sum(1 for v in values if code_regex.match(v)) / n
+            if code_ratio >= 0.9:
+                lengths = [len(v) for v in values if v]
+                if lengths:
+                    avg_len = sum(lengths) / len(lengths)
+                    var = sum((l - avg_len)**2 for l in lengths) / len(lengths)
+                    # Low variance in lengths suggests formatted codes
+                    if var <= 1.0 and uniq_ratio >= 0.9:
+                        return True
+                    # If many look like hex-ish strings with high uniqueness
+                    hexish_ratio = sum(1 for v in values if re.fullmatch(r"[0-9A-Fa-f]+", v) is not None) / n
+                    if hexish_ratio >= 0.9 and uniq_ratio >= 0.9:
+                        return True
+
+            return False
+        except Exception:
+            return False
     
     def _generate_ai_insights(self, field_info: Dict, field_name: str) -> Dict:
         """
@@ -2048,7 +2192,7 @@ class SpatialFunctions:
                 "y": current_y,
                 "w": widget_size["w"],
                 "h": widget_size["h"],
-                "field": field_name,
+                "fields": [field_name],  # Changed to array for multi-field support
                 "chart_type": chart_type
             })
             current_x += widget_size["w"]
@@ -2092,35 +2236,35 @@ class SpatialFunctions:
         else:
             logger.error(f"Invalid layout input type: {type(layout)}")
             return {"success": False, "error": f"Invalid layout input type: {type(layout)}"}
-        
+
         if not isinstance(widget_list, list):
             logger.error(f"Expected list of widgets, got: {type(widget_list)}")
             return {"success": False, "error": "Layout must be a list of widget objects"}
-        
+
         if not widget_list:
             return {"success": True, "optimized_layout": []}
-        
+
         grid_width = 12
         grid_height = 6
         errors = []
-        
+
         # Check each widget for bounds and overlaps
         occupied = [[False]*grid_width for _ in range(grid_height)]
-        
+
         for i, widget in enumerate(widget_list):
             x, y = widget.get("x", 0), widget.get("y", 0)
             w, h = widget.get("w", 1), widget.get("h", 1)
             widget_id = widget.get("id", f"widget_{i}")
-            
+
             # Check bounds
             if x + w > grid_width or y + h > grid_height:
                 errors.append(f"Widget {widget_id} exceeds grid bounds: ({x},{y}) size {w}x{h}")
                 continue
-            
+
             if x < 0 or y < 0:
                 errors.append(f"Widget {widget_id} has negative coordinates: ({x},{y})")
                 continue
-            
+
             # Check overlaps
             overlap = False
             for dy in range(h):
@@ -2131,13 +2275,13 @@ class SpatialFunctions:
                         break
                 if overlap:
                     break
-            
+
             if not overlap:
                 # Mark as occupied
                 for dy in range(h):
                     for dx in range(w):
                         occupied[y+dy][x+dx] = True
-        
+
         if errors:
             return {"success": False, "errors": errors, "optimized_layout": widget_list}
         else:
@@ -2149,44 +2293,60 @@ class SpatialFunctions:
                 # Load existing dashboard data if present
                 dashboard_data = {}
                 existing_widgets = {}
-                
+
                 if dashboard_path.exists():
                     with open(dashboard_path, "r", encoding="utf-8") as f:
                         dashboard_data = json.load(f)
-                    
+
                     # Create a map of existing widgets by ID to preserve their data fields
                     existing_layout = dashboard_data.get("dashboard_layout", [])
                     for widget in existing_layout:
                         widget_id = widget.get("id")
                         if widget_id:
                             existing_widgets[widget_id] = widget
-                
+
                 # Merge the optimized layout with existing widget data
                 enhanced_widget_list = []
                 for widget in widget_list:
                     widget_id = widget.get("id")
+                    # Allow AI to fully replace widget fields (field, chart_type, etc.) if present in input
                     if widget_id and widget_id in existing_widgets:
-                        # Preserve existing data fields and update only positioning
                         enhanced_widget = existing_widgets[widget_id].copy()
-                        enhanced_widget.update({
-                            "x": widget.get("x", enhanced_widget.get("x", 0)),
-                            "y": widget.get("y", enhanced_widget.get("y", 0)),
-                            "w": widget.get("w", enhanced_widget.get("w", 1)),
-                            "h": widget.get("h", enhanced_widget.get("h", 1))
-                        })
+                        # Update all relevant fields from AI input (not just position/size)
+                        for key in ["x", "y", "w", "h", "field", "fields", "chart_type"]:
+                            if key in widget:
+                                enhanced_widget[key] = widget[key]
+                        
+                        # Ensure fields is always an array, convert legacy "field" to "fields"
+                        if "field" in enhanced_widget and "fields" not in enhanced_widget:
+                            enhanced_widget["fields"] = [enhanced_widget["field"]]
+                            del enhanced_widget["field"]
+                        elif "fields" not in enhanced_widget:
+                            enhanced_widget["fields"] = []
+                            
+                        # Optionally allow AI to add new custom keys
+                        for key in widget:
+                            if key not in enhanced_widget:
+                                enhanced_widget[key] = widget[key]
                         enhanced_widget_list.append(enhanced_widget)
                     else:
-                        # New widget, add as-is but ensure it has required fields
-                        enhanced_widget_list.append(widget)
-                
+                        # New widget, add as-is but ensure fields array format
+                        enhanced_widget = widget.copy()
+                        if "field" in enhanced_widget and "fields" not in enhanced_widget:
+                            enhanced_widget["fields"] = [enhanced_widget["field"]]
+                            del enhanced_widget["field"]
+                        elif "fields" not in enhanced_widget:
+                            enhanced_widget["fields"] = []
+                        enhanced_widget_list.append(enhanced_widget)
+
                 # Update the layout with enhanced widgets
                 dashboard_data["dashboard_layout"] = enhanced_widget_list
-                
+
                 with open(dashboard_path, "w", encoding="utf-8") as f:
                     json.dump(dashboard_data, f, indent=4)
-                    
-                logger.info(f"Successfully saved optimized layout with {len(enhanced_widget_list)} widgets while preserving data fields")
-                
+
+                logger.info(f"Successfully saved optimized layout with {len(enhanced_widget_list)} widgets, allowing AI to update fields and chart types.")
+
             except Exception as e:
                 logger.error(f"Failed to save optimized dashboard layout: {e}")
                 return {"success": False, "error": f"Failed to save optimized layout: {e}", "optimized_layout": widget_list}
@@ -2218,9 +2378,73 @@ class SpatialFunctions:
                     "x": widget.get("x"),
                     "y": widget.get("y"),
                     "w": widget.get("w"),
-                    "h": widget.get("h")
+                    "h": widget.get("h"),
+                    "fields": widget.get("fields", [widget.get("field")] if widget.get("field") else [])  # Convert legacy field to fields array
                 })
             return {"success": True, "widgets": minimal_widgets}
         except Exception as e:
             logger.error(f"Failed to load dashboard layout: {e}")
+            return {"success": False, "error": str(e)}
+        
+    def get_current_dashboard_charts(self) -> dict:
+        """
+        Get the current [fields, chart_type] pairs from the dashboard layout in smart_dashboard.json.
+        Returns a list of dicts: {"fields": [...], "chart_type": ...}
+        """
+        from pathlib import Path
+        import json
+        dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+        try:
+            with open(dashboard_path, "r", encoding="utf-8") as f:
+                dashboard_data = json.load(f)
+            layout = []
+            if isinstance(dashboard_data, dict):
+                layout = dashboard_data.get("dashboard_layout") or dashboard_data.get("layout") or []
+            elif isinstance(dashboard_data, list):
+                layout = dashboard_data
+            chart_list = []
+            for widget in layout:
+                # Support both legacy "field" and new "fields" array format
+                fields = widget.get("fields", [widget.get("field")] if widget.get("field") else [])
+                chart_type = widget.get("chart_type")
+                if fields and chart_type:
+                    chart_list.append({"fields": fields, "chart_type": chart_type})
+            return {"success": True, "charts": chart_list}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+        
+        
+    def get_field_stories_and_samples(self) -> dict:
+        """
+        Returns a summary for each field: field_name, data_story, and sample_values from smart_dashboard.json.
+        Handles empty or invalid JSON files gracefully.
+        """
+        import json
+        from pathlib import Path
+        dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+        try:
+            if not dashboard_path.exists() or dashboard_path.stat().st_size == 0:
+                return {"success": False, "error": "Dashboard file is missing or empty."}
+            with open(dashboard_path, "r", encoding="utf-8") as f:
+                try:
+                    dashboard_data = json.load(f)
+                except json.JSONDecodeError:
+                    return {"success": False, "error": "Dashboard file is not valid JSON."}
+            field_insights = dashboard_data.get("field_insights", {})
+            if not isinstance(field_insights, dict) or not field_insights:
+                return {"success": False, "error": "No field insights found in dashboard."}
+            result = []
+            for field, info in field_insights.items():
+                if not isinstance(info, dict):
+                    continue
+                story = None
+                if "ai_insights" in info and isinstance(info["ai_insights"], dict):
+                    story = info["ai_insights"].get("data_story")
+                result.append({
+                    "field_name": info.get("field_name", field),
+                    "data_story": story,
+                    "sample_values": info.get("sample_values", [])
+                })
+            return {"success": True, "fields": result}
+        except Exception as e:
             return {"success": False, "error": str(e)}
