@@ -2072,6 +2072,841 @@ class SpatialFunctions:
         """Get current timestamp in ISO format"""
         from datetime import datetime
         return datetime.now().isoformat()
+    
+    def generate_multi_field_statistics(self, layer_name: str, fields: List[str], chart_type: str) -> Dict:
+        """
+        Generate statistics for multi-field charts based on chart type.
+        This is the main function you need for Chart.js data preparation.
+        
+        Args:
+            layer_name: Name of the ArcGIS layer
+            fields: List of field names to analyze together
+            chart_type: Type of chart (scatter, bar, pie, histogram, etc.)
+            
+        Returns:
+            Dictionary with processed data ready for Chart.js
+        """
+        logger.info(f"Generating multi-field statistics for {chart_type} chart with fields: {fields}")
+        
+        try:
+            # Get the layer
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            target_layer = next((lyr for lyr in map_obj.listLayers() if lyr.name == layer_name), None)
+            
+            if not target_layer or not target_layer.isFeatureLayer:
+                return {"success": False, "error": f"Layer '{layer_name}' not found or not a feature layer"}
+            
+            # Route to appropriate statistics generator based on chart type
+            if chart_type == "scatter":
+                return self._generate_scatter_statistics(target_layer, fields)
+            elif chart_type in ["bar", "column"]:
+                return self._generate_bar_statistics(target_layer, fields)
+            elif chart_type == "pie":
+                return self._generate_pie_statistics(target_layer, fields)
+            elif chart_type == "histogram":
+                return self._generate_histogram_statistics(target_layer, fields)
+            elif chart_type == "line":
+                return self._generate_line_statistics(target_layer, fields)
+            else:
+                return {"success": False, "error": f"Unsupported chart type: {chart_type}"}
+                
+        except Exception as e:
+            logger.error(f"Error generating multi-field statistics: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_scatter_statistics(self, layer, fields: List[str]) -> Dict:
+        """
+        Generate data for scatter plot (requires exactly 2 numeric fields).
+        Returns x,y coordinate pairs and correlation analysis.
+        """
+        try:
+            if len(fields) != 2:
+                return {"success": False, "error": "Scatter plot requires exactly 2 fields"}
+            
+            field_x, field_y = fields[0], fields[1]
+            
+            # Get data
+            data_points = []
+            with arcpy.da.SearchCursor(layer, [field_x, field_y]) as cursor:
+                for row in cursor:
+                    x_val, y_val = row[0], row[1]
+                    # Skip null values
+                    if x_val is not None and y_val is not None:
+                        data_points.append({"x": float(x_val), "y": float(y_val)})
+            
+            if len(data_points) < 2:
+                return {"success": False, "error": "Insufficient valid data points for scatter plot"}
+            
+            # Calculate correlation
+            x_values = [p["x"] for p in data_points]
+            y_values = [p["y"] for p in data_points]
+            correlation = self._calculate_correlation(x_values, y_values)
+            
+            # Chart.js format
+            result = {
+                "success": True,
+                "chart_type": "scatter",
+                "data": {
+                    "datasets": [{
+                        "label": f"{field_x} vs {field_y}",
+                        "data": data_points,
+                        "backgroundColor": "rgba(54, 162, 235, 0.6)",
+                        "borderColor": "rgba(54, 162, 235, 1)",
+                        "pointRadius": 3
+                    }]
+                },
+                "options": {
+                    "scales": {
+                        "x": {"title": {"display": True, "text": field_x}},
+                        "y": {"title": {"display": True, "text": field_y}}
+                    },
+                    "plugins": {
+                        "title": {
+                            "display": True,
+                            "text": f"{field_x} vs {field_y} (r={correlation:.3f})"
+                        }
+                    }
+                },
+                "statistics": {
+                    "correlation": correlation,
+                    "total_points": len(data_points),
+                    "x_field": field_x,
+                    "y_field": field_y
+                }
+            }
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error generating scatter statistics: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_bar_statistics(self, layer, fields: List[str]) -> Dict:
+        """
+        Generate data for bar chart. Supports:
+        - 1 field: categorical counts
+        - 2 fields: categorical field grouped by another field (categorical or numeric aggregated)
+        """
+        try:
+            if len(fields) == 1:
+                return self._generate_single_field_bar(layer, fields[0])
+            elif len(fields) == 2:
+                return self._generate_grouped_bar(layer, fields[0], fields[1])
+            else:
+                return {"success": False, "error": "Bar chart supports 1-2 fields only"}
+                
+        except Exception as e:
+            logger.error(f"Error generating bar statistics: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_single_field_bar(self, layer, field_name: str) -> Dict:
+        """Generate bar chart for single categorical field (value counts)"""
+        try:
+            # Get value counts
+            value_counts = {}
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for row in cursor:
+                    value = row[0]
+                    if value is not None:
+                        value_str = str(value)
+                        value_counts[value_str] = value_counts.get(value_str, 0) + 1
+            
+            if not value_counts:
+                return {"success": False, "error": "No valid data for bar chart"}
+            
+            # Sort by count (descending)
+            sorted_items = sorted(value_counts.items(), key=lambda x: x[1], reverse=True)
+            
+            # Limit to top 20 categories for readability
+            if len(sorted_items) > 20:
+                sorted_items = sorted_items[:20]
+            
+            labels = [item[0] for item in sorted_items]
+            data = [item[1] for item in sorted_items]
+            
+            result = {
+                "success": True,
+                "chart_type": "bar",
+                "data": {
+                    "labels": labels,
+                    "datasets": [{
+                        "label": f"Count of {field_name}",
+                        "data": data,
+                        "backgroundColor": "rgba(75, 192, 192, 0.6)",
+                        "borderColor": "rgba(75, 192, 192, 1)",
+                        "borderWidth": 1
+                    }]
+                },
+                "options": {
+                    "scales": {
+                        "y": {"title": {"display": True, "text": "Count"}}
+                    },
+                    "plugins": {
+                        "title": {"display": True, "text": f"Distribution of {field_name}"}
+                    }
+                },
+                "statistics": {
+                    "total_categories": len(sorted_items),
+                    "total_records": sum(data),
+                    "field": field_name
+                }
+            }
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error generating single field bar chart: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_grouped_bar(self, layer, field1: str, field2: str) -> Dict:
+        """Generate grouped bar chart for 2 fields (category + value or category + category)"""
+        try:
+            # Determine field types from existing field insights
+            field1_info = self._get_field_basic_type(layer, field1)
+            field2_info = self._get_field_basic_type(layer, field2)
+            
+            if field1_info["is_categorical"] and field2_info["is_numeric"]:
+                # Category grouped by numeric values (aggregated)
+                return self._generate_category_numeric_bar(layer, field1, field2)
+            elif field1_info["is_categorical"] and field2_info["is_categorical"]:
+                # Category grouped by category (cross-tabulation)
+                return self._generate_category_category_bar(layer, field1, field2)
+            else:
+                return {"success": False, "error": "Grouped bar chart requires at least one categorical field"}
+                
+        except Exception as e:
+            logger.error(f"Error generating grouped bar chart: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_category_numeric_bar(self, layer, cat_field: str, num_field: str) -> Dict:
+        """Generate bar chart: categories with aggregated numeric values"""
+        try:
+            # Aggregate numeric values by category
+            category_values = {}
+            with arcpy.da.SearchCursor(layer, [cat_field, num_field]) as cursor:
+                for row in cursor:
+                    category, value = row[0], row[1]
+                    if category is not None and value is not None:
+                        cat_str = str(category)
+                        if cat_str not in category_values:
+                            category_values[cat_str] = []
+                        category_values[cat_str].append(float(value))
+            
+            if not category_values:
+                return {"success": False, "error": "No valid data for grouped bar chart"}
+            
+            # Calculate aggregated values (mean by default)
+            aggregated_data = {}
+            for category, values in category_values.items():
+                aggregated_data[category] = {
+                    "mean": sum(values) / len(values),
+                    "count": len(values),
+                    "sum": sum(values)
+                }
+            
+            # Sort by mean value (descending)
+            sorted_items = sorted(aggregated_data.items(), key=lambda x: x[1]["mean"], reverse=True)
+            
+            # Limit categories
+            if len(sorted_items) > 15:
+                sorted_items = sorted_items[:15]
+            
+            labels = [item[0] for item in sorted_items]
+            mean_data = [round(item[1]["mean"], 2) for item in sorted_items]
+            
+            result = {
+                "success": True,
+                "chart_type": "bar",
+                "data": {
+                    "labels": labels,
+                    "datasets": [{
+                        "label": f"Average {num_field}",
+                        "data": mean_data,
+                        "backgroundColor": "rgba(153, 102, 255, 0.6)",
+                        "borderColor": "rgba(153, 102, 255, 1)",
+                        "borderWidth": 1
+                    }]
+                },
+                "options": {
+                    "scales": {
+                        "y": {"title": {"display": True, "text": f"Average {num_field}"}}
+                    },
+                    "plugins": {
+                        "title": {"display": True, "text": f"Average {num_field} by {cat_field}"}
+                    }
+                },
+                "statistics": {
+                    "categories": len(sorted_items),
+                    "categorical_field": cat_field,
+                    "numeric_field": num_field,
+                    "aggregation": "mean"
+                }
+            }
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error generating category-numeric bar chart: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_category_category_bar(self, layer, field1: str, field2: str) -> Dict:
+        """Generate stacked bar chart for two categorical fields (cross-tabulation)"""
+        try:
+            # Cross-tabulation
+            cross_tab = {}
+            with arcpy.da.SearchCursor(layer, [field1, field2]) as cursor:
+                for row in cursor:
+                    val1, val2 = row[0], row[1]
+                    if val1 is not None and val2 is not None:
+                        val1_str, val2_str = str(val1), str(val2)
+                        if val1_str not in cross_tab:
+                            cross_tab[val1_str] = {}
+                        cross_tab[val1_str][val2_str] = cross_tab[val1_str].get(val2_str, 0) + 1
+            
+            if not cross_tab:
+                return {"success": False, "error": "No valid data for cross-tabulation"}
+            
+            # Get all unique values for field2 (for consistent datasets)
+            all_field2_values = set()
+            for field1_values in cross_tab.values():
+                all_field2_values.update(field1_values.keys())
+            all_field2_values = sorted(list(all_field2_values))
+            
+            # Limit field1 categories
+            sorted_field1 = sorted(cross_tab.keys(), key=lambda k: sum(cross_tab[k].values()), reverse=True)
+            if len(sorted_field1) > 10:
+                sorted_field1 = sorted_field1[:10]
+            
+            # Prepare datasets for stacked bar
+            datasets = []
+            colors = ["rgba(255, 99, 132, 0.6)", "rgba(54, 162, 235, 0.6)", "rgba(255, 205, 86, 0.6)", 
+                     "rgba(75, 192, 192, 0.6)", "rgba(153, 102, 255, 0.6)", "rgba(255, 159, 64, 0.6)"]
+            
+            for i, field2_val in enumerate(all_field2_values[:6]):  # Limit to 6 series
+                data = []
+                for field1_val in sorted_field1:
+                    count = cross_tab[field1_val].get(field2_val, 0)
+                    data.append(count)
+                
+                datasets.append({
+                    "label": field2_val,
+                    "data": data,
+                    "backgroundColor": colors[i % len(colors)],
+                    "borderColor": colors[i % len(colors)].replace("0.6", "1"),
+                    "borderWidth": 1
+                })
+            
+            result = {
+                "success": True,
+                "chart_type": "bar",
+                "data": {
+                    "labels": sorted_field1,
+                    "datasets": datasets
+                },
+                "options": {
+                    "scales": {
+                        "x": {"stacked": True},
+                        "y": {"stacked": True, "title": {"display": True, "text": "Count"}}
+                    },
+                    "plugins": {
+                        "title": {"display": True, "text": f"{field1} by {field2}"}
+                    }
+                },
+                "statistics": {
+                    "field1": field1,
+                    "field2": field2,
+                    "field1_categories": len(sorted_field1),
+                    "field2_categories": len(all_field2_values)
+                }
+            }
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error generating category-category bar chart: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_pie_statistics(self, layer, fields: List[str]) -> Dict:
+        """Generate pie chart data (supports only 1 categorical field)"""
+        try:
+            if len(fields) != 1:
+                return {"success": False, "error": "Pie chart supports only 1 field"}
+            
+            field_name = fields[0]
+            return self._generate_single_field_pie(layer, field_name)
+            
+        except Exception as e:
+            logger.error(f"Error generating pie statistics: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_single_field_pie(self, layer, field_name: str) -> Dict:
+        """Generate pie chart for single categorical field"""
+        try:
+            # Get value counts (same as single bar, but formatted for pie)
+            value_counts = {}
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for row in cursor:
+                    value = row[0]
+                    if value is not None:
+                        value_str = str(value)
+                        value_counts[value_str] = value_counts.get(value_str, 0) + 1
+            
+            if not value_counts:
+                return {"success": False, "error": "No valid data for pie chart"}
+            
+            # Sort by count and limit to avoid cluttered pie
+            sorted_items = sorted(value_counts.items(), key=lambda x: x[1], reverse=True)
+            if len(sorted_items) > 8:
+                # Keep top 7 and group the rest as "Others"
+                top_items = sorted_items[:7]
+                others_count = sum(item[1] for item in sorted_items[7:])
+                if others_count > 0:
+                    top_items.append(("Others", others_count))
+                sorted_items = top_items
+            
+            labels = [item[0] for item in sorted_items]
+            data = [item[1] for item in sorted_items]
+            
+            # Generate colors
+            colors = [
+                "rgba(255, 99, 132, 0.8)", "rgba(54, 162, 235, 0.8)", "rgba(255, 205, 86, 0.8)",
+                "rgba(75, 192, 192, 0.8)", "rgba(153, 102, 255, 0.8)", "rgba(255, 159, 64, 0.8)",
+                "rgba(199, 199, 199, 0.8)", "rgba(83, 102, 255, 0.8)"
+            ]
+            
+            result = {
+                "success": True,
+                "chart_type": "pie",
+                "data": {
+                    "labels": labels,
+                    "datasets": [{
+                        "data": data,
+                        "backgroundColor": colors[:len(data)],
+                        "borderColor": [color.replace("0.8", "1") for color in colors[:len(data)]],
+                        "borderWidth": 1
+                    }]
+                },
+                "options": {
+                    "plugins": {
+                        "title": {"display": True, "text": f"Distribution of {field_name}"},
+                        "legend": {"position": "right"}
+                    }
+                },
+                "statistics": {
+                    "total_categories": len(sorted_items),
+                    "total_records": sum(data),
+                    "field": field_name
+                }
+            }
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error generating pie chart: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_histogram_statistics(self, layer, fields: List[str]) -> Dict:
+        """Generate histogram data (supports only 1 numeric field)"""
+        try:
+            if len(fields) != 1:
+                return {"success": False, "error": "Histogram supports only 1 field"}
+            
+            field_name = fields[0]
+            
+            # Get all numeric values
+            values = []
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for row in cursor:
+                    value = row[0]
+                    if value is not None:
+                        values.append(float(value))
+            
+            if len(values) < 2:
+                return {"success": False, "error": "Insufficient data for histogram"}
+            
+            # Calculate histogram bins
+            num_bins = min(30, max(5, int(len(values) ** 0.5)))  # Square root rule with limits
+            min_val, max_val = min(values), max(values)
+            
+            if min_val == max_val:
+                return {"success": False, "error": "All values are identical, cannot create histogram"}
+            
+            bin_width = (max_val - min_val) / num_bins
+            bins = [min_val + i * bin_width for i in range(num_bins + 1)]
+            
+            # Count values in each bin
+            bin_counts = [0] * num_bins
+            for value in values:
+                bin_index = min(num_bins - 1, int((value - min_val) / bin_width))
+                bin_counts[bin_index] += 1
+            
+            # Create labels for bins (midpoints)
+            bin_labels = [f"{bins[i]:.2f}-{bins[i+1]:.2f}" for i in range(num_bins)]
+            
+            result = {
+                "success": True,
+                "chart_type": "bar",  # Chart.js uses bar chart for histograms
+                "data": {
+                    "labels": bin_labels,
+                    "datasets": [{
+                        "label": f"Frequency of {field_name}",
+                        "data": bin_counts,
+                        "backgroundColor": "rgba(75, 192, 192, 0.6)",
+                        "borderColor": "rgba(75, 192, 192, 1)",
+                        "borderWidth": 1
+                    }]
+                },
+                "options": {
+                    "scales": {
+                        "x": {"title": {"display": True, "text": field_name}},
+                        "y": {"title": {"display": True, "text": "Frequency"}}
+                    },
+                    "plugins": {
+                        "title": {"display": True, "text": f"Distribution of {field_name}"}
+                    }
+                },
+                "statistics": {
+                    "field": field_name,
+                    "num_bins": num_bins,
+                    "min_value": min_val,
+                    "max_value": max_val,
+                    "total_values": len(values)
+                }
+            }
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error generating histogram: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_line_statistics(self, layer, fields: List[str]) -> Dict:
+        """Generate line chart data (typically for time series or ordered data)"""
+        try:
+            if len(fields) < 1 or len(fields) > 3:
+                return {"success": False, "error": "Line chart supports 1-3 fields"}
+            
+            # For simplicity, treat as multiple series line chart
+            # First field is x-axis (or index), rest are y-series
+            
+            if len(fields) == 1:
+                # Single field line chart (value vs index)
+                return self._generate_single_field_line(layer, fields[0])
+            else:
+                # Multi-field line chart (first field as x, others as y series)
+                return self._generate_multi_field_line(layer, fields)
+                
+        except Exception as e:
+            logger.error(f"Error generating line statistics: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_single_field_line(self, layer, field_name: str) -> Dict:
+        """Generate line chart for single field (value vs index/order)"""
+        try:
+            values = []
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for i, row in enumerate(cursor):
+                    value = row[0]
+                    if value is not None:
+                        values.append({"x": i, "y": float(value)})
+            
+            if len(values) < 2:
+                return {"success": False, "error": "Insufficient data for line chart"}
+            
+            result = {
+                "success": True,
+                "chart_type": "line",
+                "data": {
+                    "datasets": [{
+                        "label": field_name,
+                        "data": values,
+                        "borderColor": "rgba(75, 192, 192, 1)",
+                        "backgroundColor": "rgba(75, 192, 192, 0.2)",
+                        "fill": False,
+                        "tension": 0.1
+                    }]
+                },
+                "options": {
+                    "scales": {
+                        "x": {"title": {"display": True, "text": "Index"}},
+                        "y": {"title": {"display": True, "text": field_name}}
+                    },
+                    "plugins": {
+                        "title": {"display": True, "text": f"{field_name} Trend"}
+                    }
+                },
+                "statistics": {
+                    "field": field_name,
+                    "total_points": len(values)
+                }
+            }
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error generating single field line chart: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _generate_multi_field_line(self, layer, fields: List[str]) -> Dict:
+        """Generate multi-series line chart"""
+        try:
+            # Get data for all fields
+            all_data = []
+            with arcpy.da.SearchCursor(layer, fields) as cursor:
+                for i, row in enumerate(cursor):
+                    if all(val is not None for val in row):
+                        data_point = {"index": i}
+                        for j, field in enumerate(fields):
+                            data_point[field] = float(row[j])
+                        all_data.append(data_point)
+            
+            if len(all_data) < 2:
+                return {"success": False, "error": "Insufficient data for multi-field line chart"}
+            
+            # Create datasets for each field
+            colors = ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"]
+            datasets = []
+            
+            for i, field in enumerate(fields):
+                data_points = [{"x": point["index"], "y": point[field]} for point in all_data]
+                datasets.append({
+                    "label": field,
+                    "data": data_points,
+                    "borderColor": colors[i % len(colors)],
+                    "backgroundColor": colors[i % len(colors)].replace("1)", "0.2)"),
+                    "fill": False,
+                    "tension": 0.1
+                })
+            
+            result = {
+                "success": True,
+                "chart_type": "line",
+                "data": {"datasets": datasets},
+                "options": {
+                    "scales": {
+                        "x": {"title": {"display": True, "text": "Index"}},
+                        "y": {"title": {"display": True, "text": "Value"}}
+                    },
+                    "plugins": {
+                        "title": {"display": True, "text": f"Trend Comparison: {', '.join(fields)}"}
+                    }
+                },
+                "statistics": {
+                    "fields": fields,
+                    "total_points": len(all_data)
+                }
+            }
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error generating multi-field line chart: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _get_field_basic_type(self, layer, field_name: str) -> Dict:
+        """Helper function to determine if a field is categorical or numeric"""
+        try:
+            # Get field info from ArcGIS
+            fields = arcpy.ListFields(layer)
+            target_field = next((f for f in fields if f.name == field_name), None)
+            
+            if not target_field:
+                return {"is_categorical": False, "is_numeric": False, "error": "Field not found"}
+            
+            # Determine type based on ArcGIS field type
+            numeric_types = ['SmallInteger', 'Integer', 'Single', 'Double']
+            text_types = ['String', 'Text']
+            
+            is_numeric = target_field.type in numeric_types
+            is_categorical = target_field.type in text_types
+            
+            # For numeric fields, check if they're actually categorical (low unique count)
+            if is_numeric:
+                # Quick sample to check uniqueness
+                unique_values = set()
+                sample_count = 0
+                with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                    for row in cursor:
+                        if row[0] is not None:
+                            unique_values.add(row[0])
+                            sample_count += 1
+                        if sample_count >= 100:  # Sample first 100 records
+                            break
+                
+                # If few unique values relative to sample, treat as categorical
+                if sample_count > 0 and len(unique_values) <= min(20, sample_count * 0.1):
+                    is_categorical = True
+                    is_numeric = False  # Treat as categorical for grouping purposes
+            
+            return {
+                "is_categorical": is_categorical,
+                "is_numeric": is_numeric,
+                "field_type": target_field.type
+            }
+            
+        except Exception as e:
+            logger.error(f"Error determining field type for {field_name}: {str(e)}")
+            return {"is_categorical": False, "is_numeric": False, "error": str(e)}
+    
+    def _calculate_correlation(self, x_values: List[float], y_values: List[float]) -> float:
+        """Calculate Pearson correlation coefficient between two numeric arrays"""
+        try:
+            if len(x_values) != len(y_values) or len(x_values) < 2:
+                return 0.0
+            
+            n = len(x_values)
+            sum_x = sum(x_values)
+            sum_y = sum(y_values)
+            sum_xy = sum(x * y for x, y in zip(x_values, y_values))
+            sum_x2 = sum(x * x for x in x_values)
+            sum_y2 = sum(y * y for y in y_values)
+            
+            numerator = n * sum_xy - sum_x * sum_y
+            denominator = math.sqrt((n * sum_x2 - sum_x * sum_x) * (n * sum_y2 - sum_y * sum_y))
+            
+            if denominator == 0:
+                return 0.0
+            
+            return numerator / denominator
+            
+        except Exception:
+            return 0.0
+    
+    def generate_widget_chart_data(self, layer_name: str, widget_id: str = None, fields: List[str] = None, chart_type: str = None) -> Dict:
+        """
+        Main function to generate Chart.js-ready data for a specific widget or field combination.
+        Can work with existing dashboard layout or custom field/chart combinations.
+        
+        Args:
+            layer_name: Name of the ArcGIS layer
+            widget_id: ID of widget from dashboard layout (optional)
+            fields: List of field names (optional, used if widget_id not provided)
+            chart_type: Chart type (optional, used if widget_id not provided)
+            
+        Returns:
+            Dictionary with Chart.js-ready data structure
+        """
+        logger.info(f"Generating chart data for layer: {layer_name}, widget: {widget_id}, fields: {fields}, type: {chart_type}")
+        
+        try:
+            # If widget_id provided, get fields and chart_type from dashboard layout
+            if widget_id:
+                widget_info = self._get_widget_info(widget_id)
+                if not widget_info.get("success"):
+                    return widget_info
+                fields = widget_info.get("fields", [])
+                chart_type = widget_info.get("chart_type")
+            
+            # Validate inputs
+            if not fields or not chart_type:
+                return {"success": False, "error": "Both fields and chart_type are required"}
+            
+            # Generate statistics using the multi-field system
+            stats_result = self.generate_multi_field_statistics(layer_name, fields, chart_type)
+            
+            if not stats_result.get("success"):
+                return stats_result
+            
+            # Add widget metadata
+            stats_result["widget_info"] = {
+                "widget_id": widget_id,
+                "fields": fields,
+                "chart_type": chart_type,
+                "layer_name": layer_name
+            }
+            
+            logger.info(f"Successfully generated chart data for {chart_type} chart with {len(fields)} fields")
+            return stats_result
+            
+        except Exception as e:
+            logger.error(f"Error generating widget chart data: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def _get_widget_info(self, widget_id: str) -> Dict:
+        """Get widget configuration from dashboard layout"""
+        try:
+            dashboard_layout = self.get_current_dashboard_layout()
+            if not dashboard_layout.get("success"):
+                return dashboard_layout
+            
+            widgets = dashboard_layout.get("widgets", [])
+            target_widget = next((w for w in widgets if w.get("id") == widget_id), None)
+            
+            if not target_widget:
+                return {"success": False, "error": f"Widget '{widget_id}' not found in dashboard layout"}
+            
+            return {
+                "success": True,
+                "fields": target_widget.get("fields", []),
+                "chart_type": target_widget.get("chart_type"),
+                "widget_config": target_widget
+            }
+            
+        except Exception as e:
+            logger.error(f"Error getting widget info for {widget_id}: {str(e)}")
+            return {"success": False, "error": str(e)}
+    
+    def generate_all_dashboard_data(self, layer_name: str) -> Dict:
+        """
+        Generate Chart.js data for all widgets in the current dashboard layout.
+        Returns a complete data package for the frontend.
+        """
+        logger.info(f"Generating data for all dashboard widgets for layer: {layer_name}")
+        
+        try:
+            # Get current dashboard layout
+            layout_result = self.get_current_dashboard_layout()
+            if not layout_result.get("success"):
+                return layout_result
+            
+            widgets = layout_result.get("widgets", [])
+            if not widgets:
+                return {"success": False, "error": "No widgets found in dashboard layout"}
+            
+            # Generate data for each widget
+            widget_data = {}
+            errors = []
+            
+            for widget in widgets:
+                widget_id = widget.get("id")
+                fields = widget.get("fields", [])
+                chart_type = widget.get("chart_type")
+                
+                if not widget_id or not fields or not chart_type:
+                    errors.append(f"Invalid widget configuration: {widget_id}")
+                    continue
+                
+                try:
+                    chart_data = self.generate_multi_field_statistics(layer_name, fields, chart_type)
+                    if chart_data.get("success"):
+                        widget_data[widget_id] = chart_data
+                    else:
+                        errors.append(f"Failed to generate data for widget {widget_id}: {chart_data.get('error')}")
+                        
+                except Exception as widget_error:
+                    errors.append(f"Error processing widget {widget_id}: {str(widget_error)}")
+            
+            result = {
+                "success": True,
+                "layer_name": layer_name,
+                "total_widgets": len(widgets),
+                "successful_widgets": len(widget_data),
+                "widget_data": widget_data,
+                "dashboard_layout": widgets,
+                "generation_timestamp": self._get_timestamp()
+            }
+            
+            if errors:
+                result["errors"] = errors
+                result["error_count"] = len(errors)
+            
+            logger.info(f"Generated data for {len(widget_data)}/{len(widgets)} widgets")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error generating all dashboard data: {str(e)}")
+            return {"success": False, "error": str(e)}
     def generate_smart_dashboard_layout(self, layer_name: str) -> Dict:
         """
         Analyzes a layer and generates a smart dashboard layout with recommended chart types.
@@ -2292,7 +3127,7 @@ class SpatialFunctions:
                 dashboard_data["dashboard_layout"] = widget_list
                 with open(dashboard_path, "w", encoding="utf-8") as f:
                     json.dump(dashboard_data, f, indent=4)
-                logger.info(f"Successfully saved optimized layout with {len(widget_list)} widgets (layout only, fields/chart_type must be pre-selected).")
+                logger.info(f"Successfully saved optimized layout with {len(widget_list)} widgets while preserving field insights.")
             except Exception as e:
                 logger.error(f"Failed to save optimized dashboard layout: {e}")
                 return {"success": False, "error": f"Failed to save optimized layout: {e}", "optimized_layout": widget_list}

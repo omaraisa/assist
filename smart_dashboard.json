@@ -1950,9 +1950,10 @@
             "y": 0,
             "w": 3,
             "h": 2,
-            "chart_type": "histogram",
+            "chart_type": "scatter",
             "fields": [
-                "customer_satisfaction_score"
+                "customer_satisfaction_score",
+                "average_customer_wait_time_min"
             ]
         },
         {
@@ -1964,7 +1965,7 @@
             "chart_type": "bar",
             "fields": [
                 "operator",
-                "gallons_sold_july_91"
+                "non_fuel_revenue"
             ]
         },
         {
@@ -1975,8 +1976,8 @@
             "h": 2,
             "chart_type": "scatter",
             "fields": [
-                "convenience_store_sales",
-                "non_fuel_revenue"
+                "Population_Density",
+                "Crime_Rate_Per_1000"
             ]
         },
         {
@@ -1985,9 +1986,10 @@
             "y": 2,
             "w": 3,
             "h": 2,
-            "chart_type": "histogram",
+            "chart_type": "scatter",
             "fields": [
-                "average_customer_wait_time_min"
+                "Average_Property_Price_USD",
+                "Average_Income_USD"
             ]
         },
         {

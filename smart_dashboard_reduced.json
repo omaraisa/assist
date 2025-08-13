@@ -1,0 +1,241 @@
+{
+    "layer_name": "jeddah_fuel_stations_ai",
+    "analysis_timestamp": "2025-08-11T21:26:28.887067",
+    "total_features": 500,
+    "fields_analyzed": 38,
+    "field_insights": {
+        "Join_Count": {
+            "field_name": "Join_Count",
+            "field_type": "Integer",
+            "field_length": 4,
+            "field_precision": 0,
+            "field_scale": 0,
+            "total_records": 500,
+            "data_category": "categorical_numeric",
+            "unique_count": 1,
+            "null_count": 0,
+            "null_percentage": 0.0,
+            "min_value": 1,
+            "max_value": 1,
+            "average_value": 1.0,
+            "median_value": 1.0,
+            "standard_deviation": 0.0,
+            "value_range": 0,
+            "coefficient_of_variation": 0.0,
+            "distribution_shape": "symmetric",
+            "outlier_count": 0,
+            "outlier_percentage": 0.0,
+            "sample_values": [
+                1
+            ],
+            "ai_insights": {
+                "data_story": "'Join_Count' represents discrete numeric categories (1 values), ideal for count-based visualizations.",
+                "visualization_potential": "high",
+                "chart_suitability": {
+                    "bar": 0.85,
+                    "column": 0.8,
+                    "pie": 0.75
+                },
+                "data_patterns": {
+                    "value_type": "positive_values",
+                    "potential_type": "count_data"
+                },
+                "analytical_value": "medium",
+                "distribution_characteristics": "",
+                "visualization_priority": 7
+            }
+        },
+        "DistrictID": {
+            "field_name": "DistrictID",
+            "field_type": "Integer",
+            "field_length": 4,
+            "field_precision": 0,
+            "field_scale": 0,
+            "total_records": 500,
+            "data_category": "continuous_numeric",
+            "unique_count": 65,
+            "null_count": 0,
+            "null_percentage": 0.0,
+            "min_value": 1,
+            "max_value": 181,
+            "average_value": 136.188,
+            "median_value": 141.0,
+            "standard_deviation": 30.87,
+            "value_range": 180,
+            "coefficient_of_variation": 22.67,
+            "distribution_shape": "symmetric",
+            "outlier_count": 3,
+            "outlier_percentage": 0.6,
+            "sample_values": [
+                1,
+                181,
+                136.188
+            ],
+            "ai_insights": {
+                "data_story": "'DistrictID' displays moderate variation (range: 1.00 to 181.00), suitable for distribution analysis.",
+                "visualization_potential": "high",
+                "chart_suitability": {
+                    "histogram": 0.9,
+                    "box_plot": 0.85,
+                    "density_plot": 0.8,
+                    "violin_plot": 0.75
+                },
+                "data_patterns": {
+                    "value_type": "positive_values",
+                    "potential_type": "measurement_data"
+                },
+                "analytical_value": "high",
+                "distribution_characteristics": "Moderate variability - normal distribution likely",
+                "visualization_priority": 8
+            }
+        }
+    },
+    "chart_recommendations": {
+        "Join_Count": {
+            "recommended_charts": [
+                "bar",
+                "column"
+            ],
+            "visualization_potential": "high",
+            "visualization_priority": 7
+        },
+        "DistrictID": {
+            "recommended_charts": [
+                "histogram",
+                "box_plot"
+            ],
+            "visualization_potential": "high",
+            "visualization_priority": 8
+        }
+    },
+    "dashboard_layout": [
+        {
+            "id": "widget_has_ev_charging",
+            "x": 0,
+            "y": 0,
+            "w": 2,
+            "h": 2,
+            "chart_type": "scatter",
+            "fields": [
+                "gallons_sold_july_91",
+                "gallons_sold_july_95"
+            ]
+        },
+        {
+            "id": "widget_DistrictID",
+            "x": 2,
+            "y": 0,
+            "w": 3,
+            "h": 2,
+            "chart_type": "histogram",
+            "fields": [
+                "customer_satisfaction_score"
+            ]
+        },
+        {
+            "id": "widget_operator",
+            "x": 5,
+            "y": 0,
+            "w": 4,
+            "h": 2,
+            "chart_type": "bar",
+            "fields": [
+                "operator",
+                "gallons_sold_july_91"
+            ]
+        },
+        {
+            "id": "widget_Long",
+            "x": 9,
+            "y": 0,
+            "w": 3,
+            "h": 2,
+            "chart_type": "scatter",
+            "fields": [
+                "convenience_store_sales",
+                "non_fuel_revenue"
+            ]
+        },
+        {
+            "id": "widget_Lat",
+            "x": 0,
+            "y": 2,
+            "w": 3,
+            "h": 2,
+            "chart_type": "histogram",
+            "fields": [
+                "average_customer_wait_time_min"
+            ]
+        },
+        {
+            "id": "widget_customer_satisfaction_score",
+            "x": 3,
+            "y": 2,
+            "w": 3,
+            "h": 2,
+            "chart_type": "pie",
+            "fields": [
+                "has_ev_charging"
+            ]
+        },
+        {
+            "id": "widget_gallons_sold_july_91",
+            "x": 6,
+            "y": 2,
+            "w": 3,
+            "h": 2,
+            "chart_type": "scatter",
+            "fields": [
+                "Population_Density",
+                "Average_Property_Price_USD"
+            ]
+        },
+        {
+            "id": "widget_gallons_sold_july_95",
+            "x": 9,
+            "y": 2,
+            "w": 3,
+            "h": 2,
+            "chart_type": "histogram",
+            "fields": [
+                "Crime_Rate_Per_1000"
+            ]
+        },
+        {
+            "id": "widget_non_fuel_revenue",
+            "x": 0,
+            "y": 4,
+            "w": 3,
+            "h": 2,
+            "field": "non_fuel_revenue",
+            "chart_type": "histogram"
+        },
+        {
+            "id": "widget_loyalty_program_members",
+            "x": 3,
+            "y": 4,
+            "w": 3,
+            "h": 2,
+            "field": "loyalty_program_members",
+            "chart_type": "histogram"
+        },
+        {
+            "id": "widget_car_wash_service",
+            "x": 6,
+            "y": 4,
+            "w": 3,
+            "h": 2,
+            "field": "car_wash_service",
+            "chart_type": "histogram"
+        },
+        {
+            "id": "widget_convenience_store_sales",
+            "x": 9,
+            "y": 4,
+            "w": 3,
+            "h": 2,
+            "field": "convenience_store_sales",
+            "chart_type": "histogram"
+        }
+    ]
+}
