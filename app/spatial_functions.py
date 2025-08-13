@@ -17,6 +17,7 @@ from copy import deepcopy
 # Import arcpy only when available (in ArcGIS Pro environment)
 try:
     import arcpy
+    from arcpy.sa import *
     ARCPY_AVAILABLE = True
 except ImportError:
     ARCPY_AVAILABLE = False
@@ -82,7 +83,17 @@ class SpatialFunctions:
         34: "get_current_dashboard_layout",
         35: "get_field_stories_and_samples",
         36: "get_current_dashboard_charts",
-        37: "update_dashboard_charts"
+        37: "update_dashboard_charts",
+        38: "raster_calculator",
+        39: "reclassify",
+        40: "zonal_statistics_as_table",
+        41: "raster_to_polygon",
+        42: "slope",
+        43: "aspect",
+        44: "hillshade",
+        45: "extract_by_mask",
+        46: "clip_raster",
+        47: "resample"
     }
     
     def __init__(self, websocket_manager=None):
@@ -3373,3 +3384,220 @@ class SpatialFunctions:
             logger.error(f"Error in update_dashboard_charts: {str(e)}")
             return {"success": False, "error": str(e)}
     
+    def raster_calculator(self, expression: str, output_raster: str):
+        """
+        Performs a raster calculation using map algebra expressions.
+        Example: (Raster("nir_band") - Raster("red_band")) / (Raster("nir_band") + Raster("red_band"))
+        """
+        logger.info(f"Performing raster calculation with expression: {expression}")
+        try:
+            # Using arcpy.gp.RasterCalculator_sa to execute the expression.
+            arcpy.gp.RasterCalculator_sa(expression, output_raster)
+
+            result = {
+                "function_executed": "raster_calculator",
+                "expression": expression,
+                "output_raster": output_raster,
+                "success": True
+            }
+            logger.info(f"Raster calculation completed: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"raster_calculator error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def reclassify(self, input_raster: str, reclass_map: dict, output_raster: str):
+        """
+        Reclassifies raster values into new categories.
+        reclass_map example: {1: 10, 2: 20, 3: 30}
+        """
+        logger.info(f"Reclassifying raster: {input_raster}")
+        try:
+            # Create a remap table from the dictionary
+            remap = arcpy.sa.RemapValue([[k, v] for k, v in reclass_map.items()])
+
+            # Reclassify the raster
+            reclassified_raster = arcpy.sa.Reclassify(input_raster, "Value", remap, "NODATA")
+            reclassified_raster.save(output_raster)
+
+            result = {
+                "function_executed": "reclassify",
+                "input_raster": input_raster,
+                "output_raster": output_raster,
+                "success": True
+            }
+            logger.info(f"Reclassification completed: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"reclassify error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def zonal_statistics_as_table(self, input_raster: str, zone_layer: str, zone_field: str, output_table: str, statistics_type: str = "MEAN"):
+        """
+        Calculates statistics on raster values within the zones of another dataset.
+        """
+        logger.info(f"Calculating zonal statistics for raster: {input_raster}")
+        try:
+            arcpy.sa.ZonalStatisticsAsTable(zone_layer, zone_field, input_raster, output_table, "DATA", statistics_type)
+
+            result = {
+                "function_executed": "zonal_statistics_as_table",
+                "input_raster": input_raster,
+                "zone_layer": zone_layer,
+                "output_table": output_table,
+                "success": True
+            }
+            logger.info(f"Zonal statistics completed: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"zonal_statistics_as_table error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def raster_to_polygon(self, input_raster: str, output_polygon: str, simplify: bool = True):
+        """
+        Converts raster cells into polygons.
+        """
+        logger.info(f"Converting raster to polygon: {input_raster}")
+        try:
+            simplify_option = "SIMPLIFY" if simplify else "NO_SIMPLIFY"
+            arcpy.RasterToPolygon_conversion(input_raster, output_polygon, simplify_option, "Value")
+
+            result = {
+                "function_executed": "raster_to_polygon",
+                "input_raster": input_raster,
+                "output_polygon": output_polygon,
+                "success": True
+            }
+            logger.info(f"Raster to polygon conversion completed: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"raster_to_polygon error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def slope(self, input_dem: str, output_raster: str, measurement: str = "DEGREE"):
+        """
+        Calculates slope in degrees or percent rise from a DEM raster.
+        """
+        logger.info(f"Calculating slope for DEM: {input_dem}")
+        try:
+            slope_raster = arcpy.sa.Slope(input_dem, measurement)
+            slope_raster.save(output_raster)
+
+            result = {
+                "function_executed": "slope",
+                "input_dem": input_dem,
+                "output_raster": output_raster,
+                "success": True
+            }
+            logger.info(f"Slope calculation completed: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"slope error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def aspect(self, input_dem: str, output_raster: str):
+        """
+        Calculates the compass direction of slope faces.
+        """
+        logger.info(f"Calculating aspect for DEM: {input_dem}")
+        try:
+            aspect_raster = arcpy.sa.Aspect(input_dem)
+            aspect_raster.save(output_raster)
+
+            result = {
+                "function_executed": "aspect",
+                "input_dem": input_dem,
+                "output_raster": output_raster,
+                "success": True
+            }
+            logger.info(f"Aspect calculation completed: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"aspect error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def hillshade(self, input_dem: str, output_raster: str, azimuth: float = 315, altitude: float = 45):
+        """
+        Generates a shaded relief raster from a surface raster.
+        """
+        logger.info(f"Generating hillshade for DEM: {input_dem}")
+        try:
+            hillshade_raster = arcpy.sa.Hillshade(input_dem, azimuth, altitude)
+            hillshade_raster.save(output_raster)
+
+            result = {
+                "function_executed": "hillshade",
+                "input_dem": input_dem,
+                "output_raster": output_raster,
+                "success": True
+            }
+            logger.info(f"Hillshade generation completed: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"hillshade error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def extract_by_mask(self, input_raster: str, mask_layer: str, output_raster: str):
+        """
+        Extracts raster cells within the mask layer boundary.
+        """
+        logger.info(f"Extracting raster by mask: {input_raster}")
+        try:
+            extracted_raster = arcpy.sa.ExtractByMask(input_raster, mask_layer)
+            extracted_raster.save(output_raster)
+
+            result = {
+                "function_executed": "extract_by_mask",
+                "input_raster": input_raster,
+                "mask_layer": mask_layer,
+                "output_raster": output_raster,
+                "success": True
+            }
+            logger.info(f"Extraction by mask completed: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"extract_by_mask error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def clip_raster(self, input_raster: str, extent: tuple, output_raster: str):
+        """
+        Clips a raster to a specified rectangular extent.
+        extent format: (xmin, ymin, xmax, ymax)
+        """
+        logger.info(f"Clipping raster: {input_raster}")
+        try:
+            extent_str = " ".join(map(str, extent))
+            arcpy.Clip_management(input_raster, extent_str, output_raster)
+
+            result = {
+                "function_executed": "clip_raster",
+                "input_raster": input_raster,
+                "output_raster": output_raster,
+                "success": True
+            }
+            logger.info(f"Raster clipping completed: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"clip_raster error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def resample(self, input_raster: str, output_raster: str, cell_size: float, resampling_type: str = "NEAREST"):
+        """
+        Changes raster cell size using specified resampling method.
+        resampling_type: NEAREST, BILINEAR, CUBIC
+        """
+        logger.info(f"Resampling raster: {input_raster}")
+        try:
+            arcpy.Resample_management(input_raster, output_raster, cell_size, resampling_type)
+
+            result = {
+                "function_executed": "resample",
+                "input_raster": input_raster,
+                "output_raster": output_raster,
+                "success": True
+            }
+            logger.info(f"Resampling completed: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"resample error: {str(e)}")
+            return {"success": False, "error": str(e)}

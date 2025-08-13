@@ -74,5 +74,107 @@ class FunctionDeclaration:
             },
             "required": ["layer_name"]
         },
-        # ... rest of the function declarations ...
+
+        "raster_calculator": {
+            "name": "raster_calculator",
+            "description": "Performs a raster calculation using map algebra expressions. Example: NDVI = (NIR - Red) / (NIR + Red)",
+            "parameters": {
+                "expression": {"type": "string", "description": "Map algebra expression string"},
+                "output_raster": {"type": "string", "description": "Path to save the output raster"}
+            },
+            "required": ["expression", "output_raster"]
+        },
+        "reclassify": {
+            "name": "reclassify",
+            "description": "Reclassifies raster values into new categories. reclass_map example: {1: 10, 2: 20, 3: 30}",
+            "parameters": {
+                "input_raster": {"type": "string", "description": "Input raster layer name"},
+                "reclass_map": {"type": "object", "description": "Dictionary mapping old values to new values"},
+                "output_raster": {"type": "string", "description": "Path to save the output raster"}
+            },
+            "required": ["input_raster", "reclass_map", "output_raster"]
+        },
+        "zonal_statistics_as_table": {
+            "name": "zonal_statistics_as_table",
+            "description": "Calculates statistics on raster values within the zones of another dataset.",
+            "parameters": {
+                "input_raster": {"type": "string", "description": "Input raster layer name"},
+                "zone_layer": {"type": "string", "description": "Layer defining the zones"},
+                "zone_field": {"type": "string", "description": "Field in zone layer to group statistics by"},
+                "output_table": {"type": "string", "description": "Path to save the output table"},
+                "statistics_type": {"type": "string", "description": "Statistic to calculate", "enum": ["MEAN", "MAJORITY", "MAXIMUM", "MEDIAN", "MINIMUM", "MINORITY", "RANGE", "STD", "SUM", "VARIETY"], "default": "MEAN"}
+            },
+            "required": ["input_raster", "zone_layer", "zone_field", "output_table"]
+        },
+        "raster_to_polygon": {
+            "name": "raster_to_polygon",
+            "description": "Converts raster cells into polygons.",
+            "parameters": {
+                "input_raster": {"type": "string", "description": "Input raster layer name"},
+                "output_polygon": {"type": "string", "description": "Path to save the output polygon feature class"},
+                "simplify": {"type": "boolean", "description": "Simplify polygon edges", "default": True}
+            },
+            "required": ["input_raster", "output_polygon"]
+        },
+        "slope": {
+            "name": "slope",
+            "description": "Calculates slope in degrees or percent rise from a DEM raster.",
+            "parameters": {
+                "input_dem": {"type": "string", "description": "Input DEM raster layer name"},
+                "output_raster": {"type": "string", "description": "Path to save the output slope raster"},
+                "measurement": {"type": "string", "description": "Units for slope calculation", "enum": ["DEGREE", "PERCENT_RISE"], "default": "DEGREE"}
+            },
+            "required": ["input_dem", "output_raster"]
+        },
+        "aspect": {
+            "name": "aspect",
+            "description": "Calculates the compass direction of slope faces.",
+            "parameters": {
+                "input_dem": {"type": "string", "description": "Input DEM raster layer name"},
+                "output_raster": {"type": "string", "description": "Path to save the output aspect raster"}
+            },
+            "required": ["input_dem", "output_raster"]
+        },
+        "hillshade": {
+            "name": "hillshade",
+            "description": "Generates a shaded relief raster from a surface raster.",
+            "parameters": {
+                "input_dem": {"type": "string", "description": "Input DEM raster layer name"},
+                "output_raster": {"type": "string", "description": "Path to save the output hillshade raster"},
+                "azimuth": {"type": "number", "description": "Azimuth angle of the light source", "default": 315},
+                "altitude": {"type": "number", "description": "Altitude angle of the light source", "default": 45}
+            },
+            "required": ["input_dem", "output_raster"]
+        },
+        "extract_by_mask": {
+            "name": "extract_by_mask",
+            "description": "Extracts raster cells within the mask layer boundary.",
+            "parameters": {
+                "input_raster": {"type": "string", "description": "Input raster layer name"},
+                "mask_layer": {"type": "string", "description": "Layer to use as a mask"},
+                "output_raster": {"type": "string", "description": "Path to save the output raster"}
+            },
+            "required": ["input_raster", "mask_layer", "output_raster"]
+        },
+        "clip_raster": {
+            "name": "clip_raster",
+            "description": "Clips a raster to a specified rectangular extent. extent format: (xmin, ymin, xmax, ymax)",
+            "parameters": {
+                "input_raster": {"type": "string", "description": "Input raster layer name"},
+                "extent": {"type": "array", "items": {"type": "number"}, "description": "Clipping extent as a tuple (xmin, ymin, xmax, ymax)"},
+                "output_raster": {"type": "string", "description": "Path to save the output raster"}
+            },
+            "required": ["input_raster", "extent", "output_raster"]
+        },
+        "resample": {
+            "name": "resample",
+            "description": "Changes raster cell size using specified resampling method.",
+            "parameters": {
+                "input_raster": {"type": "string", "description": "Input raster layer name"},
+                "output_raster": {"type": "string", "description": "Path to save the output raster"},
+                "cell_size": {"type": "number", "description": "New cell size for the output raster"},
+                "resampling_type": {"type": "string", "description": "Resampling method", "enum": ["NEAREST", "BILINEAR", "CUBIC"], "default": "NEAREST"}
+            },
+            "required": ["input_raster", "output_raster", "cell_size"]
+        }
     }
