@@ -210,6 +210,55 @@ class ArcGISProConnector:
                 "message": error_msg,
                 "software_context": self.get_software_context()
             }
+
+    async def execute_raw_python(self, message: Dict) -> Dict:
+        """Execute raw Python code from expert mode and capture output."""
+        import io
+        import sys
+
+        code_to_execute = message.get("code")
+
+        if not code_to_execute:
+            return {"status": "error", "data": {"message": "No code provided to execute."}}
+
+        old_stdout = sys.stdout
+        old_stderr = sys.stderr
+        sys.stdout = stdout_capture = io.StringIO()
+        sys.stderr = stderr_capture = io.StringIO()
+
+        status = "success"
+        tb_str = ""
+
+        try:
+            # Execute the code in the global scope of this module
+            exec(code_to_execute, globals())
+        except Exception:
+            status = "error"
+            tb_str = traceback.format_exc()
+        finally:
+            # Restore stdout and stderr
+            sys.stdout = old_stdout
+            sys.stderr = old_stderr
+
+        stdout_val = stdout_capture.getvalue()
+        stderr_val = stderr_capture.getvalue()
+
+        logger.info(f"Raw Python execution completed. Status: {status}")
+        if stdout_val:
+            logger.info(f"STDOUT: {stdout_val}")
+        if stderr_val:
+            logger.error(f"STDERR: {stderr_val}")
+        if tb_str:
+            logger.error(f"TRACEBACK: {tb_str}")
+
+        return {
+            "status": status,
+            "data": {
+                "stdout": stdout_val,
+                "stderr": stderr_val,
+                "traceback": tb_str
+            }
+        }
     
     async def connect_and_listen(self):
         """Connect to the FastAPI server and listen for messages"""
@@ -297,6 +346,21 @@ class ArcGISProConnector:
                 }
                 
                 logger.info(f"Sending function response: session_id={response.get('session_id')}, source_client={response.get('source_client')}")
+                await self.send_message(response)
+
+            elif message_type == "execute_python_code":
+                # Execute raw Python code from expert mode
+                logger.info(f"Received execute_python_code request.")
+                result = await self.execute_raw_python(message)
+
+                # Send result back
+                response = {
+                    "type": "python_execution_result",
+                    "source_client": message.get("source_client"),
+                    **result
+                }
+
+                logger.info(f"Sending python_execution_result to client {response.get('source_client')}")
                 await self.send_message(response)
                 
             elif message_type == "heartbeat":

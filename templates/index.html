@@ -24,6 +24,10 @@
                         <option value="CLAUDE">Claude 3.5 Sonnet</option>
                     </select>
                 </div>
+                <div class="mode-toggle">
+                    <button id="safe-mode-btn" class="mode-btn active">Safe Mode</button>
+                    <button id="expert-mode-btn" class="mode-btn">Expert Mode</button>
+                </div>
                 <div class="api-key-section" style="display: none;">
                     <label for="api-key-input">API Key:</label>
                     <input type="password" id="api-key-input" placeholder="Enter API key...">
@@ -33,6 +37,11 @@
                 <p id="connection-status" class="status-disconnected">Connecting...</p>
             </div>
         </header>
+
+    <div id="expert-mode-banner" class="expert-mode-banner" style="display: none;">
+        <strong>Expert Mode is active</strong> — AI can run unrestricted code. Proceed with caution.
+        <button id="exit-expert-mode-btn">Exit Expert Mode</button>
+    </div>
 
         <section id="chat-messages" class="chat-messages">
             <div class="welcome-message">
@@ -83,6 +92,24 @@
     <div id="loading-indicator" class="loading-indicator" style="display: none;">
         <div class="spinner"></div>
         <p>Thinking...</p>
+    </div>
+
+    <!-- Expert Mode Confirmation Modal -->
+    <div id="expert-mode-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2>Enable Expert Mode</h2>
+            <p class="modal-warning">
+                <strong>Warning:</strong> In Expert Mode, the AI can execute any Python code directly in your ArcGIS Pro environment. This provides maximum flexibility but carries risks.
+            </p>
+            <p>Please ensure you have backed up your project and data before proceeding.</p>
+            <p>To continue, please type the following phrase exactly as shown:</p>
+            <p><code>I have backed up my data</code></p>
+            <input type="text" id="expert-mode-confirmation-input" placeholder="Type the phrase here...">
+            <div class="modal-actions">
+                <button id="cancel-expert-mode-btn" class="btn-secondary">Cancel</button>
+                <button id="confirm-expert-mode-btn" class="btn-primary" disabled>Confirm & Enable Expert Mode</button>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->

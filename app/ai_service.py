@@ -86,10 +86,18 @@ class AIService:
     ) -> Dict[str, Any]:
         """Generate AI response with function calling support"""
         try:
-            logger.info(f"Generating response for model: {self.current_model}")
-            logger.info(f"User message: {user_message[:100]}...")
+            execution_mode = self.websocket_manager.get_execution_mode(client_id)
+            logger.info(f"Generating response for client {client_id} in '{execution_mode}' mode.")
+
+            if execution_mode == 'expert':
+                # Expert mode: Generate raw Python code
+                return await self.generate_expert_code_response(user_message, conversation_history, arcgis_state, client_id)
+            else:
+                # Safe mode: Use function calling
+                logger.info(f"Generating response for model: {self.current_model}")
+                logger.info(f"User message: {user_message[:100]}...")
             
-            if self.current_model.startswith("GEMINI"):
+                if self.current_model.startswith("GEMINI"):
                 logger.info("Using LangChain agent for Gemini model")
                 if not self.langchain_agent:
                     raise RuntimeError("LangChain agent is not initialized.")
@@ -102,42 +110,42 @@ class AIService:
                 )
                 return {"type": "text", "content": response["output"], "model": self.current_model}
 
-            # Fallback to existing logic for other models
-            model_config = get_model_config(self.current_model)
-            logger.info(f"Model config retrieved for: {model_config.get('name', 'unknown')}")
-            
-            if self.response_handler and client_id:
-                self.response_handler.set_client_context(client_id, self)
-            
-            messages = self._prepare_messages(
-                user_message, 
-                conversation_history, 
-                arcgis_state,
-                client_id
-            )
-            logger.info(f"Messages prepared, count: {len(messages)}")
-            
-            response = None
-            if self.current_model.startswith("GPT"):
-                logger.info("Using OpenAI model")
-                response = await self.response_handler._generate_openai_response_with_functions(messages, model_config, user_message)
-            elif self.current_model.startswith("CLAUDE"):
-                logger.info("Using Claude model")
-                response = await self.response_handler._generate_claude_response_with_functions(messages, model_config, user_message)
-            elif self.current_model.startswith("OLLAMA"):
-                if not OLLAMA_AVAILABLE:
-                    return {
-                        "type": "error",
-                        "content": "Ollama service is not available.",
-                        "model": self.current_model
-                    }
-                logger.info("Using Ollama model")
-                response = await self.response_handler._generate_ollama_response_with_functions(messages, model_config, user_message)
-            else:
-                raise ValueError(f"Unsupported model: {self.current_model}")
-            
-            logger.info(f"AI generated response type: {response.get('type')}")
-            return response
+                # Fallback to existing logic for other models
+                model_config = get_model_config(self.current_model)
+                logger.info(f"Model config retrieved for: {model_config.get('name', 'unknown')}")
+
+                if self.response_handler and client_id:
+                    self.response_handler.set_client_context(client_id, self)
+
+                messages = self._prepare_messages(
+                    user_message,
+                    conversation_history,
+                    arcgis_state,
+                    client_id
+                )
+                logger.info(f"Messages prepared, count: {len(messages)}")
+
+                response = None
+                if self.current_model.startswith("GPT"):
+                    logger.info("Using OpenAI model")
+                    response = await self.response_handler._generate_openai_response_with_functions(messages, model_config, user_message)
+                elif self.current_model.startswith("CLAUDE"):
+                    logger.info("Using Claude model")
+                    response = await self.response_handler._generate_claude_response_with_functions(messages, model_config, user_message)
+                elif self.current_model.startswith("OLLAMA"):
+                    if not OLLAMA_AVAILABLE:
+                        return {
+                            "type": "error",
+                            "content": "Ollama service is not available.",
+                            "model": self.current_model
+                        }
+                    logger.info("Using Ollama model")
+                    response = await self.response_handler._generate_ollama_response_with_functions(messages, model_config, user_message)
+                else:
+                    raise ValueError(f"Unsupported model: {self.current_model}")
+
+                logger.info(f"AI generated response type: {response.get('type')}")
+                return response
 
         except Exception as e:
             logger.error(f"Error generating AI response: {str(e)}", exc_info=True)
@@ -268,7 +276,95 @@ This function is ALWAYS available to you. You can call it at any time to get dec
         
         return simplified
 
-    
+    def _get_expert_mode_system_prompt(self, arcgis_state: Dict) -> str:
+        """Get the system prompt for expert mode, instructing the AI to return raw Python code."""
+        simplified_state = self._simplify_arcgis_state(arcgis_state)
+        return (
+            "You are an expert-level GIS Python programming assistant for ArcGIS Pro. "
+            "Your task is to respond to the user's request by generating a single, complete, and executable Python script. "
+            "DO NOT use function calls or tools. You MUST write the full Python code to accomplish the task. "
+            "The code will be executed directly in the ArcGIS Pro Python environment. "
+            "Assume standard libraries like 'arcpy' are available. "
+            "Enclose the final Python code in a single markdown block: ```python\n[your code here]\n```. "
+            "Do not include any other text, explanations, or apologies outside of this code block. "
+            f"Current ArcGIS Pro state: {json.dumps(simplified_state)}"
+        )
+
+    async def generate_expert_code_response(
+        self,
+        user_message: str,
+        conversation_history: List[Dict],
+        arcgis_state: Dict,
+        client_id: str
+    ) -> Dict[str, Any]:
+        """Generates a raw Python code response from the AI in expert mode."""
+        logger.info("Generating expert mode code response.")
+
+        system_prompt = self._get_expert_mode_system_prompt(arcgis_state)
+        messages = [{"role": "system", "content": system_prompt}]
+        for msg in conversation_history[-10:]:
+            if msg["role"] != "system":
+                messages.append(msg)
+
+        # This is a simplified call that doesn't use the full _prepare_messages logic
+        # because we don't want the function calling prompts.
+        messages.append({"role": "user", "content": user_message})
+
+        model_config = get_model_config(self.current_model)
+
+        # We need to call the underlying AI handlers but without providing tools
+        # to force a text-based response.
+        text_response = ""
+        # This logic is simplified. A real implementation might need to adapt the handlers.
+        # For now, let's assume a simplified path for text generation.
+        # This is a placeholder for what would be a more complex call.
+        # A proper implementation would likely involve creating new methods in the response
+        # handler like `_generate_openai_text_response`.
+
+        # For now, we'll just get a text response. This part of the code is simplified for brevity.
+        # Let's mock a text response generation for now.
+        # In a real scenario, you'd call the respective API for a text-only response.
+        from .ai.ai_response_handler import AIResponseHandler
+        handler = AIResponseHandler(self.session, None)
+
+        # This is a conceptual simplification. The actual API calls would be more direct.
+        # We'll just get the text content from the response.
+        response_data = {}
+        if self.current_model.startswith("GPT"):
+            payload = { "model": model_config.get("model"), "messages": messages, "temperature": model_config["temperature"], "max_tokens": model_config["max_tokens"] }
+            headers = { "Authorization": f"Bearer {model_config['api_key']}", "Content-Type": "application/json" }
+            async with self.session.post(model_config["endpoint"], json=payload, headers=headers) as response:
+                if response.status == 200:
+                    response_data = await response.json()
+                    text_response = response_data["choices"][0]["message"]["content"]
+                else:
+                    raise Exception(f"OpenAI API error {response.status}: {await response.text()}")
+
+        elif self.current_model.startswith("CLAUDE"):
+             payload = { "model": model_config.get("model"), "messages": messages, "temperature": model_config["temperature"], "max_tokens": model_config["max_tokens"], "system": system_prompt }
+             headers = { "x-api-key": model_config['api_key'], "Content-Type": "application/json", "anthropic-version": "2023-06-01" }
+             async with self.session.post(model_config["endpoint"], json=payload, headers=headers) as response:
+                if response.status == 200:
+                    response_data = await response.json()
+                    text_response = response_data["content"][0]["text"]
+                else:
+                    raise Exception(f"Claude API error {response.status}: {await response.text()}")
+
+        # Extract code from the response
+        code_match = re.search(r"```python\n(.*?)\n```", text_response, re.DOTALL)
+        extracted_code = code_match.group(1).strip() if code_match else ""
+
+        if not extracted_code:
+            logger.warning("Expert mode response did not contain a Python code block.")
+            # If no code block, we might take the whole response as code, or handle as an error
+            extracted_code = text_response.strip()
+
+        return {
+            "type": "expert_code",
+            "code": extracted_code,
+            "original_content": text_response
+        }
+
     def _get_model_identity(self) -> str:
         """Get model-specific identity string"""
         if self.current_model.startswith("GEMINI"):

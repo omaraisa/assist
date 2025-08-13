@@ -40,13 +40,17 @@ class WebSocketManager:
         
         # Store cancel flags for clients
         self.cancel_flags: Dict[str, bool] = {}
+
+        # Store execution mode per client ('safe' or 'expert')
+        self.execution_modes: Dict[str, str] = {}
     
     async def connect(self, websocket: WebSocket, client_id: str):
         """Accept a new WebSocket connection"""
         await websocket.accept()
         self.active_connections[client_id] = websocket
         self.conversation_histories[client_id] = []
-        logger.info(f"Client {client_id} connected")
+        self.execution_modes[client_id] = 'safe'  # Default to safe mode
+        logger.info(f"Client {client_id} connected, mode set to 'safe'")
     
     async def disconnect(self, client_id: str):
         """Disconnect a client"""
@@ -276,6 +280,19 @@ class WebSocketManager:
     def is_cancelled(self, client_id: str) -> bool:
         """Check if client has requested cancellation"""
         return self.cancel_flags.get(client_id, False)
+
+    # Execution mode management
+    def set_execution_mode(self, client_id: str, mode: str):
+        """Set the execution mode for a client."""
+        if mode not in ['safe', 'expert']:
+            logger.warning(f"Invalid execution mode '{mode}' requested for client {client_id}")
+            return
+        self.execution_modes[client_id] = mode
+        logger.info(f"Execution mode for client {client_id} set to '{mode}'")
+
+    def get_execution_mode(self, client_id: str) -> str:
+        """Get the execution mode for a client, defaulting to 'safe'."""
+        return self.execution_modes.get(client_id, 'safe')
     
     def send_dashboard_update(self, dashboard_layout: dict):
         """Send dashboard update to all chatbot clients."""

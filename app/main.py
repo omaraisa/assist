@@ -146,6 +146,10 @@ async def handle_websocket_message(client_id: str, message: Dict):
         elif message_type == "function_response":
             # Handle function execution response from ArcGIS Pro
             await handle_function_response(client_id, message)
+
+        elif message_type == "python_execution_result":
+            # Handle the result of raw python execution from expert mode
+            await handle_python_execution_result(message)
             
         elif message_type == "heartbeat":
             # Handle heartbeat
@@ -167,6 +171,12 @@ async def handle_websocket_message(client_id: str, message: Dict):
         elif message_type == "cancel_request":
             # Handle cancel/stop request
             await handle_cancel_request(client_id)
+
+        elif message_type == "set_mode":
+            # Handle execution mode change
+            mode = message.get("mode")
+            if mode:
+                await handle_set_mode(client_id, mode)
             
         else:
             logger.warning(f"Unknown message type: {message_type}")
@@ -266,6 +276,10 @@ async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
             # Direct text response
             content = ai_response.get("content", "")
             await send_final_response(client_id, content)
+
+        elif response_type == "expert_code":
+            # Handle direct execution of Python code in expert mode
+            await handle_expert_code(client_id, ai_response)
             
         else:
             # Fallback for unexpected response types
@@ -362,6 +376,45 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
         await websocket_manager.send_to_client(client_id, {
             "type": "error",
             "message": f"Error executing functions: {str(e)}"        })
+
+async def handle_expert_code(client_id: str, ai_response: Dict):
+    """Handles the expert mode response by sending code directly to ArcGIS Pro."""
+    code_to_execute = ai_response.get("code")
+    original_content = ai_response.get("original_content", "")
+
+    # Add the AI's raw response to history for user context
+    websocket_manager.add_to_history(client_id, "assistant", original_content)
+
+    if not code_to_execute:
+        logger.warning(f"Expert mode response for client {client_id} contained no code.")
+        await send_final_response(client_id, "I couldn't generate any code for that request. Please try again.")
+        return
+
+    # Log the code being executed for auditing
+    logger.info(f"--- EXECUTING EXPERT MODE CODE for client {client_id} ---")
+    logger.info(code_to_execute)
+    logger.info("----------------------------------------------------")
+
+    arcgis_client_id = websocket_manager.get_arcgis_client()
+    if arcgis_client_id:
+        # Send code to ArcGIS Pro for execution
+        await websocket_manager.send_to_client(arcgis_client_id, {
+            "type": "execute_python_code",
+            "code": code_to_execute,
+            "source_client": client_id  # So ArcGIS Pro knows who to send the result back to
+        })
+        # Notify the user that the code has been sent
+        await websocket_manager.send_to_client(client_id, {
+            "type": "assistant_message",
+            "content": "I have sent the following code to ArcGIS Pro for execution:\n```python\n" + code_to_execute + "\n```"
+        })
+    else:
+        logger.error("No ArcGIS Pro client connected for expert mode execution.")
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error",
+            "message": "ArcGIS Pro is not connected. Cannot execute code in Expert Mode."
+        })
+
 
 async def handle_local_function_declaration(client_id: str, func_call: Dict, original_response: Dict, is_function_chain: bool):
     """Handle get_functions_declaration function call locally without sending to ArcGIS Pro"""
@@ -930,6 +983,34 @@ async def handle_function_response(client_id: str, message: Dict):
     except Exception as e:
         logger.error(f"Error handling function response: {str(e)}")
 
+async def handle_python_execution_result(message: Dict):
+    """Relay the result of Python execution back to the appropriate chatbot client."""
+    source_client = message.get("source_client")
+    if not source_client:
+        logger.warning("Received python_execution_result with no source_client.")
+        return
+
+    data = message.get("data", {})
+    status = message.get("status", "error")
+
+    # Format the response for the user and for the AI's context
+    formatted_response = ""
+    if status == "success":
+        stdout = data.get("stdout", "").strip()
+        if stdout:
+            formatted_response = f"Code executed successfully. Output:\n```\n{stdout}\n```"
+        else:
+            formatted_response = "Code executed successfully with no output."
+    else:
+        stderr = data.get("stderr", "").strip()
+        tb = data.get("traceback", "").strip()
+        error_details = f"{stderr}\n{tb}".strip()
+        formatted_response = f"An error occurred during execution:\n```\n{error_details}\n```"
+
+    # Send the formatted result to the original client
+    await send_final_response(source_client, formatted_response)
+
+
 async def continue_investigation_session(client_id: str, session_id: str, response: Dict):
     """Continue investigation session with AI after receiving function response"""
     try:
@@ -1043,6 +1124,21 @@ async def handle_cancel_request(client_id: str):
         
     except Exception as e:
         logger.error(f"Error handling cancel request: {str(e)}")
+
+async def handle_set_mode(client_id: str, mode: str):
+    """Handle client request to change execution mode."""
+    try:
+        websocket_manager.set_execution_mode(client_id, mode)
+        await websocket_manager.send_to_client(client_id, {
+            "type": "mode_changed",
+            "data": {"mode": mode}
+        })
+    except Exception as e:
+        logger.error(f"Error setting mode for client {client_id}: {str(e)}")
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error",
+            "message": f"Failed to set mode: {str(e)}"
+        })
 
 async def inject_discovered_functions_for_client(client_id: str, discovered_functions: Dict):
     """Dynamically inject discovered functions into the AI's available functions for this client"""

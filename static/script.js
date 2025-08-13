@@ -3,6 +3,7 @@ class SmartAssistantClient {
         this.ws = null;
         this.clientId = null;
         this.currentModel = 'GEMINI_FLASH';
+        this.currentMode = 'safe'; // 'safe' or 'expert'
         this.isConnected = false;
         this.conversationHistory = [];
         this.apiKeys = this.loadApiKeys();
@@ -31,7 +32,17 @@ class SmartAssistantClient {
             dashboardGrid: document.getElementById('dashboard-grid'),
             toggleDashboard: document.getElementById('toggle-dashboard'),
             refreshDashboard: document.getElementById('refresh-dashboard'),
-            viewDashboardBtn: document.getElementById('view-dashboard-btn')
+            viewDashboardBtn: document.getElementById('view-dashboard-btn'),
+
+            // Mode elements
+            safeModeBtn: document.getElementById('safe-mode-btn'),
+            expertModeBtn: document.getElementById('expert-mode-btn'),
+            expertModeBanner: document.getElementById('expert-mode-banner'),
+            exitExpertModeBtn: document.getElementById('exit-expert-mode-btn'),
+            expertModeModal: document.getElementById('expert-mode-modal'),
+            expertModeConfirmationInput: document.getElementById('expert-mode-confirmation-input'),
+            cancelExpertModeBtn: document.getElementById('cancel-expert-mode-btn'),
+            confirmExpertModeBtn: document.getElementById('confirm-expert-mode-btn')
         };
         
         // Initialize dashboard
@@ -108,6 +119,35 @@ class SmartAssistantClient {
         
         // Initial API key section visibility
         this.toggleApiKeySection();
+
+        // Mode switching event listeners
+        this.elements.safeModeBtn.addEventListener('click', () => {
+            this.requestModeChange('safe');
+        });
+
+        this.elements.expertModeBtn.addEventListener('click', () => {
+            if (this.currentMode !== 'expert') {
+                this.showExpertModeModal();
+            }
+        });
+
+        this.elements.exitExpertModeBtn.addEventListener('click', () => {
+            this.requestModeChange('safe');
+        });
+
+        // Expert mode modal listeners
+        this.elements.cancelExpertModeBtn.addEventListener('click', () => {
+            this.hideExpertModeModal();
+        });
+
+        this.elements.expertModeConfirmationInput.addEventListener('input', () => {
+            this.validateExpertModeConfirmation();
+        });
+
+        this.elements.confirmExpertModeBtn.addEventListener('click', () => {
+            this.requestModeChange('expert');
+            this.hideExpertModeModal();
+        });
     }
     
     autoResizeTextarea(textarea) {
@@ -190,6 +230,10 @@ class SmartAssistantClient {
         switch (message.type) {
             case 'config':
                 this.handleConfigMessage(message.data);
+                break;
+
+            case 'mode_changed':
+                this.handleModeChanged(message.data);
                 break;
                 
             case 'assistant_message':
@@ -605,6 +649,50 @@ class SmartAssistantClient {
     
     hideViewDashboardButton() {
         this.elements.viewDashboardBtn.style.display = 'none';
+    }
+
+    // Mode Management Methods
+    requestModeChange(mode) {
+        if (this.currentMode === mode) return;
+
+        this.sendWebSocketMessage({
+            type: 'set_mode',
+            mode: mode
+        });
+    }
+
+    handleModeChanged(data) {
+        const newMode = data.mode;
+        this.currentMode = newMode;
+
+        if (newMode === 'expert') {
+            this.elements.safeModeBtn.classList.remove('active');
+            this.elements.expertModeBtn.classList.add('active');
+            this.elements.expertModeBanner.style.display = 'flex';
+            this.addMessage('System', 'Expert Mode has been enabled.', 'system');
+        } else {
+            this.elements.expertModeBtn.classList.remove('active');
+            this.elements.safeModeBtn.classList.add('active');
+            this.elements.expertModeBanner.style.display = 'none';
+            this.addMessage('System', 'Safe Mode has been enabled.', 'system');
+        }
+    }
+
+    showExpertModeModal() {
+        this.elements.expertModeModal.style.display = 'flex';
+        this.elements.expertModeConfirmationInput.value = '';
+        this.elements.expertModeConfirmationInput.focus();
+        this.validateExpertModeConfirmation(); // Ensure button is disabled initially
+    }
+
+    hideExpertModeModal() {
+        this.elements.expertModeModal.style.display = 'none';
+    }
+
+    validateExpertModeConfirmation() {
+        const requiredText = 'I have backed up my data';
+        const isMatch = this.elements.expertModeConfirmationInput.value === requiredText;
+        this.elements.confirmExpertModeBtn.disabled = !isMatch;
     }
 }
 
