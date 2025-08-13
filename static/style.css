@@ -684,3 +684,141 @@ body.dark .chat-messages::-webkit-scrollbar-thumb {
   text-align: center;
   margin: 1rem 0;
 }
+
+/* Mode Toggle */
+.mode-toggle {
+  display: flex;
+  background-color: var(--body-bg);
+  border-radius: 8px;
+  padding: 4px;
+  border: 1px solid var(--border-color);
+}
+
+.mode-btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--text-color);
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-btn.active {
+  background-color: var(--chat-bg);
+  color: var(--user-msg-bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Expert Mode Banner */
+.expert-mode-banner {
+  background-color: var(--error-color);
+  color: white;
+  padding: 0.8rem 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.expert-mode-banner strong {
+  font-weight: 600;
+}
+
+.expert-mode-banner button {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid white;
+  background-color: transparent;
+  color: white;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.expert-mode-banner button:hover {
+  background-color: white;
+  color: var(--error-color);
+}
+
+/* Expert Mode Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+
+.modal-content {
+  background-color: var(--chat-bg);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--error-color);
+}
+
+.modal-warning {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left: 4px solid var(--error-color);
+  padding: 1rem;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.modal-content p {
+  margin-bottom: 0.8rem;
+  line-height: 1.6;
+}
+
+.modal-content code {
+  background-color: var(--body-bg);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+#expert-mode-confirmation-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.modal-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+}
+
+.modal-actions button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal-actions .btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
