@@ -19,25 +19,28 @@
 
   <modules>
     <insertModule id="Progent_Module" className="Module1" autoLoad="false" caption="Module1">
-      <!-- uncomment to have the control hosted on a separate tab-->
       <tabs>
-        <!--<tab id="Progent_Tab1" caption="New Tab">
+        <tab id="Progent_Tab1" caption="Progent">
           <group refID="Progent_Group1"/>
-        </tab>-->
+        </tab>
       </tabs>
-              
       <groups>
-        <!-- comment this out if you have no controls on the Addin tab to avoid
-              an empty group-->
-        <group id="Progent_Group1" caption="Group 1" appearsOnAddInTab="true">
-          <!-- host controls within groups -->
+        <group id="Progent_Group1" caption="Controls" appearsOnAddInTab="false">
+          <button refID="Progent_Dockpane_ShowButton" />
         </group>
       </groups>
-      
       <controls>
-        <!-- add your controls here -->
-      </controls> 
-      
+        <button id="Progent_Dockpane_ShowButton" caption="Show Panel" className="DockpaneShowButton" keytip="P1" largeImage="Images\AddInDesktop32.png" image="Images\AddInDesktop16.png">
+          <tooltip heading="Show Panel">
+            Shows the Progent dockable panel.<disabledText />
+          </tooltip>
+        </button>
+      </controls>
+      <dockPanes>
+        <dockPane id="Progent_Dockpane" caption="Progent" className="DockpaneViewModel" keytip="DP1">
+          <content className="DockpaneView" />
+        </dockPane>
+      </dockPanes>
     </insertModule>
   </modules>
 </ArcGIS>
