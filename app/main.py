@@ -1202,11 +1202,27 @@ def _parse_dashboard_layout(dashboard_data):
     
     chart_configs = []
     for i, widget in enumerate(dashboard_layout):
+        # Handle both new fields array format and old field format
+        fields = widget.get("fields", [])
+        legacy_field = widget.get("field", "")
+        
+        # Determine primary field for title/identification
+        if fields:
+            primary_field = fields[0]
+            title = f"{primary_field} Chart"
+        elif legacy_field:
+            primary_field = legacy_field
+            title = f"{primary_field} Chart"
+        else:
+            primary_field = ""
+            title = f"Chart {i + 1}"
+        
         chart_config = {
             "chart_id": widget.get("id", f"chart_{i}"),
             "chart_type": widget.get("chart_type", "bar"),
-            "title": widget.get("field", f"Chart {i + 1}"),
-            "primary_field": widget.get("field", ""),
+            "title": title,
+            "fields": fields,  # Include the new fields array
+            "primary_field": primary_field,  # For backward compatibility
             "recommended_size": DEFAULT_CHART_SIZE,
             "priority": 1,
             "position": {
@@ -1287,10 +1303,12 @@ def prepare_chart_data_from_insights(chart_config, dashboard_data):
             # New format: use first field as primary, second as group_by
             primary_field = fields[0] if len(fields) > 0 else ""
             group_by_field = fields[1] if len(fields) > 1 else ""
+            logger.info(f"Using new fields format: {fields} -> primary: '{primary_field}', group_by: '{group_by_field}'")
         else:
             # Old format: fallback to legacy field names
             primary_field = chart_config.get("primary_field", chart_config.get("x_field", ""))
             group_by_field = chart_config.get("group_by_field", chart_config.get("y_field", ""))
+            logger.info(f"Using legacy format -> primary: '{primary_field}', group_by: '{group_by_field}'")
         
         # Validate field insights availability
         if not field_insights:
@@ -1434,8 +1452,11 @@ def _generate_histogram_data(field_insights, primary_field, group_by_field, char
 
 def _generate_scatter_data(field_insights, primary_field, group_by_field, chart_config):
     """Generate data for scatter plots"""
-    if not group_by_field or group_by_field not in field_insights:
-        return _create_error_data(f"Scatter plot requires both x and y fields. Missing: {group_by_field}")
+    if not group_by_field:
+        return _create_error_data(f"Scatter plot requires 2 fields. Only got primary field: {primary_field}")
+    
+    if group_by_field not in field_insights:
+        return _create_error_data(f"Scatter plot secondary field '{group_by_field}' missing from field analysis. Available fields: {list(field_insights.keys())[:10]}")
     
     x_field_data = field_insights[primary_field]
     y_field_data = field_insights[group_by_field]

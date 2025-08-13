@@ -1938,10 +1938,10 @@
             "y": 0,
             "w": 2,
             "h": 2,
-            "chart_type": "scatter",
+            "chart_type": "bar",
             "fields": [
-                "gallons_sold_july_91",
-                "gallons_sold_july_95"
+                "station_name",
+                "fuel_type_91_price"
             ]
         },
         {
@@ -1952,8 +1952,8 @@
             "h": 2,
             "chart_type": "scatter",
             "fields": [
-                "customer_satisfaction_score",
-                "average_customer_wait_time_min"
+                "operator",
+                "monthly_customer_visits"
             ]
         },
         {
@@ -1962,10 +1962,10 @@
             "y": 0,
             "w": 4,
             "h": 2,
-            "chart_type": "bar",
+            "chart_type": "scatter",
             "fields": [
-                "operator",
-                "non_fuel_revenue"
+                "services",
+                "customer_satisfaction_score"
             ]
         },
         {
@@ -1974,10 +1974,10 @@
             "y": 0,
             "w": 3,
             "h": 2,
-            "chart_type": "scatter",
+            "chart_type": "bar",
             "fields": [
-                "Population_Density",
-                "Crime_Rate_Per_1000"
+                "DistrictName_Arabic",
+                "Population"
             ]
         },
         {
@@ -1986,10 +1986,10 @@
             "y": 2,
             "w": 3,
             "h": 2,
-            "chart_type": "scatter",
+            "chart_type": "map",
             "fields": [
-                "Average_Property_Price_USD",
-                "Average_Income_USD"
+                "Long",
+                "Lat"
             ]
         },
         {
@@ -2071,5 +2071,5 @@
             ]
         }
     ],
-    "last_updated": "2025-08-13T07:49:03.766408"
+    "last_updated": "2025-08-13T19:37:10.094590"
 }

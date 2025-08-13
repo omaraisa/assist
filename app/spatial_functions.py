@@ -3234,17 +3234,21 @@ class SpatialFunctions:
         
     def update_dashboard_charts(self, layer_name: str, charts: List[dict], generate_data: bool = True) -> dict:
         """
-        Enhanced function that updates dashboard charts with fields/chart_types AND generates Chart.js data.
-        Combines layout updates with multi-field statistics generation for complete chart updates.
-        
-        Args:
-            layer_name: Name of the ArcGIS layer to generate data from
-            charts: List of {fields, chart_type} dicts (as from get_current_dashboard_charts)
-            generate_data: Whether to generate Chart.js data for the updated charts (default: True)
-            
-        Returns:
-            Dictionary with success status, updated layout, and optionally generated chart data
-        """
+            Enhanced function that updates dashboard charts with fields/chart_types AND generates Chart.js data.
+            Combines layout updates with multi-field statistics generation for complete chart updates.
+
+            Note:
+                All chart types currently support at most two fields. If more than two fields are provided for any chart,
+                only the first two fields will be used for data generation and layout updates.
+
+            Args:
+                layer_name: Name of the ArcGIS layer to generate data from
+                charts: List of {fields, chart_type} dicts (as from get_current_dashboard_charts)
+                generate_data: Whether to generate Chart.js data for the updated charts (default: True)
+
+            Returns:
+                Dictionary with success status, updated layout, and optionally generated chart data
+            """
         from pathlib import Path
         import json
         dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
