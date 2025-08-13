@@ -3232,48 +3232,140 @@ class SpatialFunctions:
         
         
         
-    def update_dashboard_charts(self, charts: List[dict]) -> dict:
+    def update_dashboard_charts(self, layer_name: str, charts: List[dict], generate_data: bool = True) -> dict:
         """
-        Takes a list of {fields, chart_type} dicts (as from get_current_dashboard_charts),
-        updates the first N widgets in the dashboard layout, and saves. No index/match logic.
+        Enhanced function that updates dashboard charts with fields/chart_types AND generates Chart.js data.
+        Combines layout updates with multi-field statistics generation for complete chart updates.
+        
+        Args:
+            layer_name: Name of the ArcGIS layer to generate data from
+            charts: List of {fields, chart_type} dicts (as from get_current_dashboard_charts)
+            generate_data: Whether to generate Chart.js data for the updated charts (default: True)
+            
+        Returns:
+            Dictionary with success status, updated layout, and optionally generated chart data
         """
         from pathlib import Path
         import json
         dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+        
         try:
             if not isinstance(charts, list) or not charts:
                 return {"success": False, "error": "Input must be a non-empty list of chart dicts"}
             if not dashboard_path.exists():
                 return {"success": False, "error": "Dashboard file not found"}
+                
+            # Load current dashboard data
             with open(dashboard_path, "r", encoding="utf-8") as f:
                 dashboard_data = json.load(f)
+                
             original_is_dict = isinstance(dashboard_data, dict)
             if original_is_dict:
                 layout = dashboard_data.get("dashboard_layout") or dashboard_data.get("layout") or []
             else:
                 layout = dashboard_data if isinstance(dashboard_data, list) else []
+                
             if not isinstance(layout, list) or not layout:
                 return {"success": False, "error": "No dashboard layout found to update"}
+            
+            # Update layout with new chart configurations
             updated = 0
+            chart_data_results = {}
+            generation_errors = []
+            
             for i, chart in enumerate(charts):
                 if i >= len(layout):
                     break
+                    
                 fields = chart.get("fields")
                 chart_type = chart.get("chart_type")
+                
                 if not fields or not chart_type:
                     continue
+                
+                # Update the layout
+                widget_id = layout[i].get("id", f"widget_{i}")
                 layout[i]["fields"] = fields
-                layout[i].pop("field", None)
+                layout[i].pop("field", None)  # Remove legacy field property
                 layout[i]["chart_type"] = chart_type
                 updated += 1
+                
+                # Generate Chart.js data if requested
+                if generate_data:
+                    try:
+                        logger.info(f"Generating chart data for widget {widget_id}: {fields} -> {chart_type}")
+                        chart_stats = self.generate_multi_field_statistics(layer_name, fields, chart_type)
+                        
+                        if chart_stats.get("success"):
+                            # Add widget metadata
+                            chart_stats["widget_info"] = {
+                                "widget_id": widget_id,
+                                "fields": fields,
+                                "chart_type": chart_type,
+                                "layer_name": layer_name,
+                                "position": {"x": layout[i].get("x"), "y": layout[i].get("y")},
+                                "size": {"w": layout[i].get("w"), "h": layout[i].get("h")}
+                            }
+                            chart_data_results[widget_id] = chart_stats
+                            logger.info(f"✅ Generated data for {widget_id}: {chart_type} with {len(fields)} fields")
+                        else:
+                            error_msg = f"Failed to generate data for widget {widget_id}: {chart_stats.get('error')}"
+                            generation_errors.append(error_msg)
+                            logger.error(error_msg)
+                            
+                    except Exception as chart_error:
+                        error_msg = f"Error generating data for widget {widget_id}: {str(chart_error)}"
+                        generation_errors.append(error_msg)
+                        logger.error(error_msg)
+            
+            # Save updated layout
             if updated:
                 if original_is_dict:
                     dashboard_data["dashboard_layout"] = layout
+                    # Update timestamp
+                    dashboard_data["last_updated"] = self._get_timestamp()
                 else:
                     dashboard_data = layout
+                    
                 with open(dashboard_path, "w", encoding="utf-8") as f:
                     json.dump(dashboard_data, f, indent=4)
-            return {"success": True, "updated_count": updated, "charts": charts}
+                logger.info(f"Successfully updated {updated} widgets in dashboard layout")
+            
+            # Build result
+            result = {
+                "success": True,
+                "updated_count": updated,
+                # "charts": charts,
+                "layer_name": layer_name
+            }
+            
+            if generate_data:
+                result["chart_data"] = chart_data_results
+                result["successful_data_generation"] = len(chart_data_results)
+                result["total_data_attempts"] = len([c for c in charts if c.get("fields") and c.get("chart_type")])
+                
+                if generation_errors:
+                    result["generation_errors"] = generation_errors
+                    result["error_count"] = len(generation_errors)
+                
+                # Notify frontend via websocket if available and data was generated
+                if chart_data_results and self.websocket_manager is not None:
+                    try:
+                        websocket_data = {
+                            "type": "dashboard_charts_updated",
+                            "layer_name": layer_name,
+                            "updated_widgets": list(chart_data_results.keys()),
+                            "chart_data": chart_data_results,
+                            "layout": layout
+                        }
+                        self.websocket_manager.send_dashboard_update(websocket_data)
+                        logger.info(f"Sent updated chart data to frontend via websocket for {len(chart_data_results)} widgets")
+                    except Exception as ws_error:
+                        logger.error(f"Failed to send websocket update: {ws_error}")
+            
+            return result
+            
         except Exception as e:
+            logger.error(f"Error in update_dashboard_charts: {str(e)}")
             return {"success": False, "error": str(e)}
     

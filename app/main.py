@@ -1226,12 +1226,22 @@ def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
     for i, chart in enumerate(chart_configs):
         chart_data = prepare_chart_data_from_insights(chart, dashboard_data)
         
+        # Handle both old format and new fields array format
+        fields = chart.get("fields", [])
+        if fields:
+            x_field = fields[0] if len(fields) > 0 else ""
+            y_field = fields[1] if len(fields) > 1 else ""
+        else:
+            x_field = chart.get("primary_field", chart.get("x_field", ""))
+            y_field = chart.get("group_by_field", chart.get("y_field", ""))
+        
         frontend_chart = {
             "title": chart.get("title", f"Chart {i+1}"),
             "type": chart.get("chart_type", chart.get("type", "bar")),
             "description": chart.get("description", chart.get("reasoning", "")),
-            "x_field": chart.get("primary_field", chart.get("x_field", "")),
-            "y_field": chart.get("group_by_field", chart.get("y_field", "")),
+            "x_field": x_field,
+            "y_field": y_field,
+            "fields": fields,  # Include the new fields array for frontend compatibility
             "data": chart_data,
             "layout": {
                 "size": chart.get("recommended_size", chart.get("size", DEFAULT_CHART_SIZE)),
@@ -1270,12 +1280,24 @@ def prepare_chart_data_from_insights(chart_config, dashboard_data):
     try:
         field_insights = dashboard_data.get("field_insights", {})
         chart_type = chart_config.get("chart_type", chart_config.get("type", "bar"))
-        primary_field = chart_config.get("primary_field", chart_config.get("x_field", ""))
-        group_by_field = chart_config.get("group_by_field", chart_config.get("y_field", ""))
+        
+        # Handle both old format (primary_field/x_field) and new format (fields array)
+        fields = chart_config.get("fields", [])
+        if fields:
+            # New format: use first field as primary, second as group_by
+            primary_field = fields[0] if len(fields) > 0 else ""
+            group_by_field = fields[1] if len(fields) > 1 else ""
+        else:
+            # Old format: fallback to legacy field names
+            primary_field = chart_config.get("primary_field", chart_config.get("x_field", ""))
+            group_by_field = chart_config.get("group_by_field", chart_config.get("y_field", ""))
         
         # Validate field insights availability
         if not field_insights:
             return _create_error_data("Field analysis data missing: Dashboard layout was created but field analysis was not performed. The dashboard generation function should analyze fields as part of its process.")
+        
+        if not primary_field:
+            return _create_error_data("No primary field specified for chart")
         
         if primary_field not in field_insights:
             return _create_error_data(f"Field '{primary_field}' analysis missing: This field exists in the dashboard layout but wasn't analyzed during dashboard generation.")
