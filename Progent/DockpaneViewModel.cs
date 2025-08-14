@@ -76,29 +76,38 @@ namespace Progent
                     _webSocketService = new WebSocketService(ServerUrl);
                     _webSocketService.OnConnected += async () =>
                     {
-                        ConnectButtonText = "Disconnect";
-                        _isConnected = true;
-                        Log(LogEntryType.Info, "Connected to server.");
-                        StatusText = "Connected";
-                        StatusColor = Brushes.Green;
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            ConnectButtonText = "Disconnect";
+                            _isConnected = true;
+                            Log(LogEntryType.Info, "Connected to server.");
+                            StatusText = "Connected";
+                            StatusColor = Brushes.Green;
+                        });
                         Process.Start(new ProcessStartInfo("http://localhost:8000") { UseShellExecute = true });
                         await _webSocketService.SendMessageAsync(JsonConvert.SerializeObject(new { type = "client_register", client_type = "arcgis_pro" }));
                     };
                     _webSocketService.OnDisconnected += () =>
                     {
-                        ConnectButtonText = "Connect";
-                        _isConnected = false;
-                        Log(LogEntryType.Info, "Disconnected from server.");
-                        StatusText = "Disconnected";
-                        StatusColor = Brushes.Red;
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            ConnectButtonText = "Connect";
+                            _isConnected = false;
+                            Log(LogEntryType.Info, "Disconnected from server.");
+                            StatusText = "Disconnected";
+                            StatusColor = Brushes.Red;
+                        });
                     };
                     _webSocketService.OnError += (error) =>
                     {
-                        Log(LogEntryType.Error, error);
-                        ConnectButtonText = "Connect";
-                        _isConnected = false;
-                        StatusText = "Error";
-                        StatusColor = Brushes.Red;
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            Log(LogEntryType.Error, error);
+                            ConnectButtonText = "Connect";
+                            _isConnected = false;
+                            StatusText = "Error";
+                            StatusColor = Brushes.Red;
+                        });
                     };
                     _webSocketService.OnMessageReceived += HandleMessageReceived;
                     await _webSocketService.ConnectAsync();

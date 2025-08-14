@@ -14,7 +14,7 @@ The system follows a client-server architecture with WebSocket communication.
 *   **ArcGIS Pro Add-in (`Progent/` directory):** The client that runs inside ArcGIS Pro. It establishes the WebSocket connection to the FastAPI server, executes GIS functions, and automatically opens the chatbot interface in a browser upon successful connection.
 *   **WebSocket Manager (`app/websocket_manager.py`):** The central hub for routing messages between the web client and the ArcGIS Pro Add-in.
 *   **AI Service (`app/ai_service.py`):** Manages interactions with multiple AI models, including Gemini, GPT, Claude, and local Ollama models.
-*   **LangChain Agent (`app/langchain_agent.py`):** Uses the ReAct pattern for reasoning and tool usage, orchestrating the AI's interaction with the GIS functions.
+*   **LangChain Agent (`app/langchain_agent.py`):** Uses the ReAct pattern for reasoning and tool usage, orchestrating the AI's interaction with the GIS functions. This is the primary execution path for all "safe mode" interactions.
 
 ### 2.1. Key Components
 
@@ -53,6 +53,7 @@ The communication path is as follows:
     pip install -r requirements.txt
     ```
 4.  **Set up your API keys:**
+    *   The application searches for API keys in the following order: environment variables, `.env` file, `config.py`.
     *   Create a `.env` file in the root directory of the project.
     *   Add your API keys to the `.env` file, for example:
         ```
@@ -90,3 +91,9 @@ The communication path is as follows:
 
 *   **Warning:** Expert mode allows the AI to execute raw Python code directly in your ArcGIS Pro environment. This is a powerful feature, but it should be used with caution.
 *   **Enable Expert Mode:** You can enable expert mode from the chat interface. You will be asked to confirm that you understand the risks.
+
+## 5. Logging
+
+The application uses colored logging in the command window for better readability. The logging configuration is defined in the `log_config.yaml` file.
+
+The `watchfiles` library, which is used for auto-reloading the server, can be a bit noisy. To reduce the log spam, the log level for `watchfiles` has been set to `WARNING` in the `log_config.yaml` file.

@@ -98,47 +98,15 @@ class AIService:
             logger.info(f"Generating response for model: {self.current_model} in Safe Mode")
             logger.info(f"User message: {user_message[:100]}...")
 
-            # Universal handler for all models in safe mode
-            model_config = get_model_config(self.current_model)
-            logger.info(f"Model config retrieved for: {model_config.get('name', 'unknown')}")
+            # Safe mode: Use LangChain agent for all models
+            logger.info(f"Generating response for model: {self.current_model} in Safe Mode")
 
-            if self.response_handler and client_id:
-                self.response_handler.set_client_context(client_id, self)
-
-            messages = self._prepare_messages(
+            response = await self.langchain_agent.generate_response(
                 user_message,
                 conversation_history,
                 arcgis_state,
                 client_id
             )
-            logger.info(f"Messages prepared, count: {len(messages)}")
-
-            response = None
-            if self.current_model.startswith("GEMINI"):
-                logger.info("Using Gemini model with function calling")
-                # This will now use the same flow as other models
-                # You might need a dedicated Gemini handler in response_handler if not already present
-                # For now, assuming a generic or specific handler exists.
-                # Let's add a placeholder for a Gemini-specific function if needed, or unify it.
-                # This part assumes response_handler has a method for Gemini or a fallback.
-                response = await self.response_handler._generate_gemini_response_with_functions(messages, model_config, user_message)
-
-            elif self.current_model.startswith("GPT"):
-                logger.info("Using OpenAI model")
-                response = await self.response_handler._generate_openai_response_with_functions(messages, model_config, user_message)
-
-            elif self.current_model.startswith("CLAUDE"):
-                logger.info("Using Claude model")
-                response = await self.response_handler._generate_claude_response_with_functions(messages, model_config, user_message)
-
-            elif self.current_model.startswith("OLLAMA"):
-                if not OLLAMA_AVAILABLE:
-                    return { "type": "error", "content": "Ollama service is not available.", "model": self.current_model }
-                logger.info("Using Ollama model")
-                response = await self.response_handler._generate_ollama_response_with_functions(messages, model_config, user_message)
-
-            else:
-                raise ValueError(f"Unsupported model: {self.current_model}")
 
             logger.info(f"AI generated response type: {response.get('type')}")
 
@@ -157,96 +125,6 @@ class AIService:
                 "model": self.current_model
             }    
             
-    def _prepare_messages(
-        self, 
-        user_message: str, 
-        conversation_history: List[Dict], 
-        arcgis_state: Dict,
-        client_id: str = None
-    ) -> List[Dict]:
-        """Prepare messages for AI model with function calling context"""
-        
-        # System prompt for function calling
-        system_prompt = self._get_function_calling_system_prompt(arcgis_state)
-        logger.info(f"Generated system prompt with {len(system_prompt)} characters for ArcGIS state: {len(str(arcgis_state))} characters")
-        
-        # Build message history
-        messages = [{"role": "system", "content": system_prompt}]
-        
-        # Add recent conversation history (excluding system messages, but preserving function calls)
-        for msg in conversation_history[-10:]:  # Last 10 messages
-            if msg["role"] != "system":
-                messages.append({
-                    "role": msg["role"],
-                    "content": msg["content"]
-                })
-          # Ensure get_functions_declaration is always available in the conversation
-        # Check if it's already been declared in the conversation history
-        has_functions_declaration = False
-        for msg in messages:
-            content = msg.get("content", "")
-            # Check if the message contains the get_functions_declaration definition
-            if ("get_functions_declaration" in content and 
-                "Function Declaration:" in content and 
-                "function_ids" in content):
-                has_functions_declaration = True
-                break
-        
-        # Also check the conversation history for function declarations
-        if not has_functions_declaration:
-            for msg in conversation_history[-20:]:  # Check last 20 messages
-                content = msg.get("content", "")
-                if ("get_functions_declaration" in content and 
-                    "Function Declaration:" in content and 
-                    "function_ids" in content):
-                    has_functions_declaration = True
-                    break
-        
-        # If not found in history, add it as a system-provided function declaration
-        if not has_functions_declaration:
-            functions_declaration_info = {
-                "role": "system",
-                "content": '''AVAILABLE FUNCTION: get_functions_declaration
-
-Function Declaration:
-{
-    "name": "get_functions_declaration",
-    "description": "Get function declarations for specific functions by their IDs from the available functions list. MAKE SURE TO SEND VALID IDs. AVAILABLE FUNCTIONS: 1: select_by_attribute, 2: select_by_location, 3: get_field_statistics, 4: get_layer_summary, 5: calculate_area, 6: calculate_length, 7: get_centroid, 8: create_buffer, 9: spatial_join, 10: clip_layer, 11: calculate_distance, 12: get_current_project_path, 13: get_default_db_path, 14: get_field_definitions, 15: get_layer_type, 16: get_list_of_layer_fields, 17: get_data_source_info, 18: create_nearest_neighbor_layer, 19: get_unique_values_count, 20: calculate_empty_values, 21: get_map_layers_info, 22: get_map_tables_info, 23: get_values_frequency, 24: get_value_frequency, 25: get_coordinate_system, 26: get_attribute_table, 27: get_field_domain_values, 28: calculate_new_field, 29: analyze_layer_fields, 30: generate_smart_dashboard_layout, 31: optimize_dashboard_layout, 34: get_current_dashboard_layout, 35: get_field_stories_and_samples, 36: get_current_dashboard_charts, 37: update_dashboard_charts, 38: raster_calculator, 39: reclassify, 40: zonal_statistics_as_table, 41: raster_to_polygon, 42: slope, 43: aspect, 44: hillshade, 45: extract_by_mask, 46: clip_raster, 47: resample",
-    "parameters": {
-        "function_ids": {
-            "type": "array",
-            "description": "Array of function IDs (integers) to get declarations for",
-            "items": {
-                "type": "integer"
-            }
-        }
-    },
-    "required": ["function_ids"]
-}
-
-This function is ALWAYS available to you. You can call it at any time to get declarations for other functions.'''
-            }
-            messages.append(functions_declaration_info)
-            logger.info("Added get_functions_declaration availability to conversation")
-        
-        # Add current user message (avoid duplicates)
-        if not messages or messages[-1]["content"] != user_message or messages[-1]["role"] != "user":
-            messages.append({"role": "user", "content": user_message})
-        
-        logger.info(f"Prepared {len(messages)} messages for AI model")
-        return messages
-
-    def _get_function_calling_system_prompt(self, arcgis_state: Dict) -> str:
-        """Get a simple system prompt for function-calling GIS agent (LangChain style)"""
-        simplified_state = self._simplify_arcgis_state(arcgis_state)
-        return (
-            "You are a helpful GIS assistant for ArcGIS Pro. "
-            "You can use available function calls to solve spatial and data analysis tasks. "
-            "Use the provided tools as needed to answer user questions or perform GIS operations. "
-            "IMPORTANT: Do NOT use markdown formatting, code blocks, or triple backticks (```) in your responses. Provide plain text answers only. "
-            f"Current ArcGIS Pro state: {json.dumps(simplified_state)}"
-        )
-
     def _simplify_arcgis_state(self, state: Dict) -> Dict:
         """Simplify ArcGIS state to reduce payload while keeping essential information"""
         if not state:
@@ -615,29 +493,6 @@ This function is ALWAYS available to you. You can call it at any time to get dec
             raise
 
     
-    async def handle_function_response(
-        self,
-        messages: List[Dict],
-        function_results: List[Dict]
-    ) -> Dict[str, Any]:
-        """Handle function execution results and get final AI response (cleaned for agent mode)"""
-        if not self.response_handler:
-            raise RuntimeError("Response handler not initialized")
-
-        # Log to verify system prompt is included
-        system_message = next((msg for msg in messages if msg.get("role") == "system"), None)
-        if system_message:
-            logger.info(f"System prompt included in function response handling: {len(system_message['content'])} characters")
-        else:
-            logger.warning("No system prompt found in function response messages!")
-
-        # Update the response handler with current model info
-        self.response_handler.current_model = self.current_model
-
-        # No more extra system messages for agent mode
-        logger.info(f"Processing {len(function_results)} function results in handle_function_response (agent mode, no extra system messages)")
-        return await self.response_handler.handle_function_response(messages, function_results)
-
     def add_dynamic_functions_for_client(self, client_id: str, discovered_functions: Dict):
         """Add dynamically discovered functions for a specific client"""
         if client_id not in self.client_dynamic_functions:

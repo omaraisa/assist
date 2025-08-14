@@ -43,7 +43,8 @@ class SmartAssistantClient {
             expertModeModal: document.getElementById('expert-mode-modal'),
             expertModeConfirmationInput: document.getElementById('expert-mode-confirmation-input'),
             cancelExpertModeBtn: document.getElementById('cancel-expert-mode-btn'),
-            confirmExpertModeBtn: document.getElementById('confirm-expert-mode-btn')
+            confirmExpertModeBtn: document.getElementById('confirm-expert-mode-btn'),
+            onlineLlmNotification: document.getElementById('online-llm-notification')
         };
         
         // Initialize dashboard
@@ -309,6 +310,7 @@ class SmartAssistantClient {
             this.currentModel = config.current_model;
             this.elements.modelSelect.value = config.current_model;
         }
+        this.updateOnlineLlmNotification();
         
         console.log('Configuration updated:', config);
     }
@@ -441,6 +443,7 @@ class SmartAssistantClient {
         });
         
         this.toggleApiKeySection();
+        this.updateOnlineLlmNotification();
     }
     
     toggleApiKeySection() {
@@ -572,6 +575,12 @@ class SmartAssistantClient {
         
         // Update API key section visibility
         this.toggleApiKeySection();
+    }
+
+    updateOnlineLlmNotification() {
+        const onlineModels = ["GEMINI_FLASH", "GEMINI_PRO", "GEMINI_FLASH_EXP", "GPT4_TURBO", "GPT4O", "CLAUDE"];
+        const isOnline = onlineModels.includes(this.currentModel);
+        this.elements.onlineLlmNotification.style.display = isOnline ? 'block' : 'none';
     }
     
     // Dashboard methods
@@ -1081,6 +1090,15 @@ style.textContent = `
         padding: 0.8rem 1rem;
         min-width: auto;
         border-radius: 20px;
+    }
+
+    .online-llm-notification {
+        background-color: #fff3cd;
+        color: #664d03;
+        text-align: center;
+        padding: 5px;
+        font-size: 0.8rem;
+        border-bottom: 1px solid #ffc107;
     }
 `;
 document.head.appendChild(style);
