@@ -35,8 +35,9 @@ class SmartAssistantClient {
             viewDashboardBtn: document.getElementById('view-dashboard-btn'),
 
             // Mode elements
-            safeModeBtn: document.getElementById('safe-mode-btn'),
-            expertModeBtn: document.getElementById('expert-mode-btn'),
+            modeSwitchCheckbox: document.getElementById('mode-switch-checkbox'),
+            safeModeLabel: document.querySelector('.mode-label.safe'),
+            expertModeLabel: document.querySelector('.mode-label.expert'),
             expertModeBanner: document.getElementById('expert-mode-banner'),
             exitExpertModeBtn: document.getElementById('exit-expert-mode-btn'),
             expertModeModal: document.getElementById('expert-mode-modal'),
@@ -121,12 +122,24 @@ class SmartAssistantClient {
         this.toggleApiKeySection();
 
         // Mode switching event listeners
-        this.elements.safeModeBtn.addEventListener('click', () => {
-            this.requestModeChange('safe');
+        this.elements.modeSwitchCheckbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                // Switched to Expert Mode
+                this.showExpertModeModal();
+            } else {
+                // Switched to Safe Mode
+                this.requestModeChange('safe');
+            }
         });
 
-        this.elements.expertModeBtn.addEventListener('click', () => {
-            if (this.currentMode !== 'expert') {
+        this.elements.safeModeLabel.addEventListener('click', () => {
+            if (this.currentMode === 'expert') {
+                this.requestModeChange('safe');
+            }
+        });
+
+        this.elements.expertModeLabel.addEventListener('click', () => {
+            if (this.currentMode === 'safe') {
                 this.showExpertModeModal();
             }
         });
@@ -137,6 +150,8 @@ class SmartAssistantClient {
 
         // Expert mode modal listeners
         this.elements.cancelExpertModeBtn.addEventListener('click', () => {
+            // If user cancels, revert the checkbox to the "safe" state
+            this.elements.modeSwitchCheckbox.checked = false;
             this.hideExpertModeModal();
         });
 
@@ -666,13 +681,15 @@ class SmartAssistantClient {
         this.currentMode = newMode;
 
         if (newMode === 'expert') {
-            this.elements.safeModeBtn.classList.remove('active');
-            this.elements.expertModeBtn.classList.add('active');
+            this.elements.modeSwitchCheckbox.checked = true;
+            this.elements.safeModeLabel.classList.remove('active');
+            this.elements.expertModeLabel.classList.add('active');
             this.elements.expertModeBanner.style.display = 'flex';
             this.addMessage('System', 'Expert Mode has been enabled.', 'system');
         } else {
-            this.elements.expertModeBtn.classList.remove('active');
-            this.elements.safeModeBtn.classList.add('active');
+            this.elements.modeSwitchCheckbox.checked = false;
+            this.elements.expertModeLabel.classList.remove('active');
+            this.elements.safeModeLabel.classList.add('active');
             this.elements.expertModeBanner.style.display = 'none';
             this.addMessage('System', 'Safe Mode has been enabled.', 'system');
         }

@@ -176,5 +176,171 @@ class FunctionDeclaration:
                 "resampling_type": {"type": "string", "description": "Resampling method", "enum": ["NEAREST", "BILINEAR", "CUBIC"], "default": "NEAREST"}
             },
             "required": ["input_raster", "output_raster", "cell_size"]
+        },
+        "invert_selection": {
+            "name": "invert_selection",
+            "description": "Inverts the current selection for a given layer. All selected features become unselected, and all unselected features become selected.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer to invert the selection for"}
+            },
+            "required": ["layer_name"]
+        },
+        "dissolve_layer": {
+            "name": "dissolve_layer",
+            "description": "Dissolves features in a layer based on a specified attribute field.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer to dissolve"},
+                "dissolve_field": {"type": "string", "description": "The field to dissolve features on"},
+                "output_name": {"type": "string", "description": "The name of the output dissolved layer"}
+            },
+            "required": ["layer_name", "dissolve_field", "output_name"]
+        },
+        "add_field": {
+            "name": "add_field",
+            "description": "Adds a new field to a layer's attribute table.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer to add the field to"},
+                "field_name": {"type": "string", "description": "The name of the new field"},
+                "field_type": {"type": "string", "description": "The data type of the new field", "enum": ["TEXT", "FLOAT", "DOUBLE", "SHORT", "LONG", "DATE"], "default": "TEXT"}
+            },
+            "required": ["layer_name", "field_name"]
+        },
+        "delete_field": {
+            "name": "delete_field",
+            "description": "Deletes a field from a layer's attribute table.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer to delete the field from"},
+                "field_name": {"type": "string", "description": "The name of the field to delete"}
+            },
+            "required": ["layer_name", "field_name"]
+        },
+        "get_layer_count": {
+            "name": "get_layer_count",
+            "description": "Gets the total number of features in a layer.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer to get the count from"}
+            },
+            "required": ["layer_name"]
+        },
+        "export_to_excel": {
+            "name": "export_to_excel",
+            "description": "Exports the attribute table of a layer to an Excel file.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer to export"},
+                "output_excel": {"type": "string", "description": "The path to the output Excel file"}
+            },
+            "required": ["layer_name", "output_excel"]
+        },
+        "create_feature_class": {
+            "name": "create_feature_class",
+            "description": "Creates a new, empty feature class in a specified geodatabase.",
+            "parameters": {
+                "out_path": {"type": "string", "description": "The path to the geodatabase where the feature class will be created"},
+                "out_name": {"type": "string", "description": "The name of the new feature class"},
+                "geometry_type": {"type": "string", "description": "The geometry type of the new feature class", "enum": ["POINT", "MULTIPOINT", "POLYLINE", "POLYGON"], "default": "POINT"}
+            },
+            "required": ["out_path", "out_name"]
+        },
+        "get_selection_count": {
+            "name": "get_selection_count",
+            "description": "Gets the number of selected features in a layer.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer to get the selection count from"}
+            },
+            "required": ["layer_name"]
+        },
+        "clear_selection": {
+            "name": "clear_selection",
+            "description": "Clears the current selection for a specified layer.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer to clear the selection for"}
+            },
+            "required": ["layer_name"]
+        },
+        "zoom_to_layer": {
+            "name": "zoom_to_layer",
+            "description": "Zooms the map view to the full extent of a specified layer.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer to zoom to"}
+            },
+            "required": ["layer_name"]
+        },
+        "get_map_extent": {
+            "name": "get_map_extent",
+            "description": "Gets the current extent of the active map.",
+            "parameters": {},
+            "required": []
+        },
+        "set_map_extent": {
+            "name": "set_map_extent",
+            "description": "Sets the extent of the active map to the specified coordinates.",
+            "parameters": {
+                "xmin": {"type": "number", "description": "The minimum x-coordinate of the extent"},
+                "ymin": {"type": "number", "description": "The minimum y-coordinate of the extent"},
+                "xmax": {"type": "number", "description": "The maximum x-coordinate of the extent"},
+                "ymax": {"type": "number", "description": "The maximum y-coordinate of the extent"}
+            },
+            "required": ["xmin", "ymin", "xmax", "ymax"]
+        },
+        "add_layer_to_map": {
+            "name": "add_layer_to_map",
+            "description": "Adds a layer to the current map from a specified path.",
+            "parameters": {
+                "layer_path": {"type": "string", "description": "The path to the layer file to add"}
+            },
+            "required": ["layer_path"]
+        },
+        "remove_layer_from_map": {
+            "name": "remove_layer_from_map",
+            "description": "Removes a layer from the current map.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer to remove"}
+            },
+            "required": ["layer_name"]
+        },
+        "get_layout_list": {
+            "name": "get_layout_list",
+            "description": "Gets a list of all layouts in the current ArcGIS Pro project.",
+            "parameters": {},
+            "required": []
+        },
+        "export_layout_to_pdf": {
+            "name": "export_layout_to_pdf",
+            "description": "Exports a specified layout to a PDF file.",
+            "parameters": {
+                "layout_name": {"type": "string", "description": "The name of the layout to export"},
+                "output_pdf": {"type": "string", "description": "The path to the output PDF file"}
+            },
+            "required": ["layout_name", "output_pdf"]
+        },
+        "list_workspaces": {
+            "name": "list_workspaces",
+            "description": "Lists all workspaces in the current ArcGIS Pro project.",
+            "parameters": {},
+            "required": []
+        },
+        "list_feature_classes": {
+            "name": "list_feature_classes",
+            "description": "Lists all feature classes in a specified workspace or geodatabase.",
+            "parameters": {
+                "workspace": {"type": "string", "description": "The path to the workspace or geodatabase"}
+            },
+            "required": ["workspace"]
+        },
+        "get_raster_properties": {
+            "name": "get_raster_properties",
+            "description": "Gets key properties of a raster layer, such as band count and pixel type.",
+            "parameters": {
+                "raster_name": {"type": "string", "description": "The name of the raster layer"}
+            },
+            "required": ["raster_name"]
+        },
+        "get_vector_properties": {
+            "name": "get_vector_properties",
+            "description": "Gets key properties of a vector layer, such as shape type and feature type.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the vector layer"}
+            },
+            "required": ["layer_name"]
         }
     }

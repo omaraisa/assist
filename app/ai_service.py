@@ -90,62 +90,57 @@ class AIService:
             logger.info(f"Generating response for client {client_id} in '{execution_mode}' mode.")
 
             if execution_mode == 'expert':
-                # Expert mode: Generate raw Python code
+                # Expert mode: Generate raw Python code for any model
                 return await self.generate_expert_code_response(user_message, conversation_history, arcgis_state, client_id)
-            else:
-                # Safe mode: Use function calling
-                logger.info(f"Generating response for model: {self.current_model}")
-                logger.info(f"User message: {user_message[:100]}...")
             
-                if self.current_model.startswith("GEMINI"):
-                logger.info("Using LangChain agent for Gemini model")
-                if not self.langchain_agent:
-                    raise RuntimeError("LangChain agent is not initialized.")
-                
-                response = await self.langchain_agent.generate_response(
-                    user_message,
-                    conversation_history,
-                    arcgis_state,
-                    client_id
-                )
-                return {"type": "text", "content": response["output"], "model": self.current_model}
+            # Safe mode: Use function calling for all models
+            logger.info(f"Generating response for model: {self.current_model} in Safe Mode")
+            logger.info(f"User message: {user_message[:100]}...")
 
-                # Fallback to existing logic for other models
-                model_config = get_model_config(self.current_model)
-                logger.info(f"Model config retrieved for: {model_config.get('name', 'unknown')}")
+            # Universal handler for all models in safe mode
+            model_config = get_model_config(self.current_model)
+            logger.info(f"Model config retrieved for: {model_config.get('name', 'unknown')}")
 
-                if self.response_handler and client_id:
-                    self.response_handler.set_client_context(client_id, self)
+            if self.response_handler and client_id:
+                self.response_handler.set_client_context(client_id, self)
 
-                messages = self._prepare_messages(
-                    user_message,
-                    conversation_history,
-                    arcgis_state,
-                    client_id
-                )
-                logger.info(f"Messages prepared, count: {len(messages)}")
+            messages = self._prepare_messages(
+                user_message,
+                conversation_history,
+                arcgis_state,
+                client_id
+            )
+            logger.info(f"Messages prepared, count: {len(messages)}")
 
-                response = None
-                if self.current_model.startswith("GPT"):
-                    logger.info("Using OpenAI model")
-                    response = await self.response_handler._generate_openai_response_with_functions(messages, model_config, user_message)
-                elif self.current_model.startswith("CLAUDE"):
-                    logger.info("Using Claude model")
-                    response = await self.response_handler._generate_claude_response_with_functions(messages, model_config, user_message)
-                elif self.current_model.startswith("OLLAMA"):
-                    if not OLLAMA_AVAILABLE:
-                        return {
-                            "type": "error",
-                            "content": "Ollama service is not available.",
-                            "model": self.current_model
-                        }
-                    logger.info("Using Ollama model")
-                    response = await self.response_handler._generate_ollama_response_with_functions(messages, model_config, user_message)
-                else:
-                    raise ValueError(f"Unsupported model: {self.current_model}")
+            response = None
+            if self.current_model.startswith("GEMINI"):
+                logger.info("Using Gemini model with function calling")
+                # This will now use the same flow as other models
+                # You might need a dedicated Gemini handler in response_handler if not already present
+                # For now, assuming a generic or specific handler exists.
+                # Let's add a placeholder for a Gemini-specific function if needed, or unify it.
+                # This part assumes response_handler has a method for Gemini or a fallback.
+                response = await self.response_handler._generate_gemini_response_with_functions(messages, model_config, user_message)
 
-                logger.info(f"AI generated response type: {response.get('type')}")
-                return response
+            elif self.current_model.startswith("GPT"):
+                logger.info("Using OpenAI model")
+                response = await self.response_handler._generate_openai_response_with_functions(messages, model_config, user_message)
+
+            elif self.current_model.startswith("CLAUDE"):
+                logger.info("Using Claude model")
+                response = await self.response_handler._generate_claude_response_with_functions(messages, model_config, user_message)
+
+            elif self.current_model.startswith("OLLAMA"):
+                if not OLLAMA_AVAILABLE:
+                    return { "type": "error", "content": "Ollama service is not available.", "model": self.current_model }
+                logger.info("Using Ollama model")
+                response = await self.response_handler._generate_ollama_response_with_functions(messages, model_config, user_message)
+
+            else:
+                raise ValueError(f"Unsupported model: {self.current_model}")
+
+            logger.info(f"AI generated response type: {response.get('type')}")
+            return response
 
         except Exception as e:
             logger.error(f"Error generating AI response: {str(e)}", exc_info=True)

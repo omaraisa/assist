@@ -93,7 +93,27 @@ class SpatialFunctions:
         44: "hillshade",
         45: "extract_by_mask",
         46: "clip_raster",
-        47: "resample"
+        47: "resample",
+        48: "invert_selection",
+        49: "dissolve_layer",
+        50: "add_field",
+        51: "delete_field",
+        52: "get_layer_count",
+        53: "export_to_excel",
+        54: "create_feature_class",
+        55: "get_selection_count",
+        56: "clear_selection",
+        57: "zoom_to_layer",
+        58: "get_map_extent",
+        59: "set_map_extent",
+        60: "add_layer_to_map",
+        61: "remove_layer_from_map",
+        62: "get_layout_list",
+        63: "export_layout_to_pdf",
+        64: "list_workspaces",
+        65: "list_feature_classes",
+        66: "get_raster_properties",
+        67: "get_vector_properties"
     }
     
     def __init__(self, websocket_manager=None):
@@ -3600,4 +3620,224 @@ class SpatialFunctions:
             return result
         except Exception as e:
             logger.error(f"resample error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def invert_selection(self, layer_name: str) -> Dict:
+        """
+        Inverts the current selection for a given layer.
+        """
+        logger.info(f"Inverting selection for layer: {layer_name}")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            lyr = next((l for l in map_obj.listLayers() if l.name == layer_name), None)
+
+            if not lyr:
+                return {"success": False, "error": f"Layer {layer_name} not found"}
+
+            # Invert the selection
+            arcpy.SelectLayerByAttribute_management(lyr, "SWITCH_SELECTION")
+
+            # Get the new selection count
+            new_selection_count = int(arcpy.GetCount_management(lyr)[0])
+
+            result = {
+                "function_executed": "invert_selection",
+                "layer_name": layer_name,
+                "success": True,
+                "new_selection_count": new_selection_count
+            }
+            logger.info(f"Selection inverted for {layer_name}. New count: {new_selection_count}")
+            return result
+
+        except Exception as e:
+            logger.error(f"invert_selection error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def dissolve_layer(self, layer_name: str, dissolve_field: str, output_name: str) -> Dict:
+        logger.info(f"Dissolving {layer_name} based on {dissolve_field}")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            output_path = os.path.join(aprx.defaultGeodatabase, output_name)
+            arcpy.Dissolve_management(layer_name, output_path, dissolve_field)
+            return {"success": True, "output_path": output_path}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def add_field(self, layer_name: str, field_name: str, field_type: str = "TEXT") -> Dict:
+        logger.info(f"Adding field {field_name} to {layer_name}")
+        try:
+            arcpy.AddField_management(layer_name, field_name, field_type)
+            return {"success": True, "message": f"Field {field_name} added."}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def delete_field(self, layer_name: str, field_name: str) -> Dict:
+        logger.info(f"Deleting field {field_name} from {layer_name}")
+        try:
+            arcpy.DeleteField_management(layer_name, field_name)
+            return {"success": True, "message": f"Field {field_name} deleted."}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_layer_count(self, layer_name: str) -> Dict:
+        logger.info(f"Getting count for {layer_name}")
+        try:
+            count = int(arcpy.GetCount_management(layer_name)[0])
+            return {"success": True, "count": count}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def export_to_excel(self, layer_name: str, output_excel: str) -> Dict:
+        logger.info(f"Exporting {layer_name} to {output_excel}")
+        try:
+            arcpy.TableToExcel_conversion(layer_name, output_excel)
+            return {"success": True, "output_path": output_excel}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def create_feature_class(self, out_path: str, out_name: str, geometry_type: str = "POINT") -> Dict:
+        logger.info(f"Creating feature class {out_name} in {out_path}")
+        try:
+            arcpy.CreateFeatureclass_management(out_path, out_name, geometry_type)
+            return {"success": True, "output_path": os.path.join(out_path, out_name)}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_selection_count(self, layer_name: str) -> Dict:
+        logger.info(f"Getting selection count for {layer_name}")
+        try:
+            desc = arcpy.Describe(layer_name)
+            count = len(desc.FIDSet.split(';')) if desc.FIDSet else 0
+            return {"success": True, "selection_count": count}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def clear_selection(self, layer_name: str) -> Dict:
+        logger.info(f"Clearing selection for {layer_name}")
+        try:
+            arcpy.SelectLayerByAttribute_management(layer_name, "CLEAR_SELECTION")
+            return {"success": True, "message": "Selection cleared."}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def zoom_to_layer(self, layer_name: str) -> Dict:
+        logger.info(f"Zooming to {layer_name}")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            lyr = next((l for l in map_obj.listLayers() if l.name == layer_name), None)
+            if lyr:
+                map_obj.defaultCamera.setExtent(lyr.getExtent())
+                return {"success": True, "message": f"Zoomed to {layer_name}."}
+            return {"success": False, "error": f"Layer {layer_name} not found."}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_map_extent(self) -> Dict:
+        logger.info("Getting map extent")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            extent = map_obj.defaultCamera.getExtent()
+            return {"success": True, "extent": {"xmin": extent.XMin, "ymin": extent.YMin, "xmax": extent.XMax, "ymax": extent.YMax}}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def set_map_extent(self, xmin: float, ymin: float, xmax: float, ymax: float) -> Dict:
+        logger.info("Setting map extent")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            new_extent = arcpy.Extent(xmin, ymin, xmax, ymax)
+            map_obj.defaultCamera.setExtent(new_extent)
+            return {"success": True, "message": "Map extent set."}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def add_layer_to_map(self, layer_path: str) -> Dict:
+        logger.info(f"Adding layer {layer_path} to map")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            map_obj.addDataFromPath(layer_path)
+            return {"success": True, "message": f"Layer {os.path.basename(layer_path)} added."}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def remove_layer_from_map(self, layer_name: str) -> Dict:
+        logger.info(f"Removing layer {layer_name} from map")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            lyr = next((l for l in map_obj.listLayers() if l.name == layer_name), None)
+            if lyr:
+                map_obj.removeLayer(lyr)
+                return {"success": True, "message": f"Layer {layer_name} removed."}
+            return {"success": False, "error": f"Layer {layer_name} not found."}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_layout_list(self) -> Dict:
+        logger.info("Getting layout list")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            layouts = [l.name for l in aprx.listLayouts()]
+            return {"success": True, "layouts": layouts}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def export_layout_to_pdf(self, layout_name: str, output_pdf: str) -> Dict:
+        logger.info(f"Exporting layout {layout_name} to {output_pdf}")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            layout = aprx.listLayouts(layout_name)[0]
+            layout.exportToPDF(output_pdf)
+            return {"success": True, "output_path": output_pdf}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def list_workspaces(self) -> Dict:
+        logger.info("Listing workspaces")
+        try:
+            workspaces = [w.path for w in arcpy.ListWorkspaces()]
+            return {"success": True, "workspaces": workspaces}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def list_feature_classes(self, workspace: str) -> Dict:
+        logger.info(f"Listing feature classes in {workspace}")
+        try:
+            arcpy.env.workspace = workspace
+            fcs = [fc for fc in arcpy.ListFeatureClasses()]
+            return {"success": True, "feature_classes": fcs}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_raster_properties(self, raster_name: str) -> Dict:
+        logger.info(f"Getting properties for raster {raster_name}")
+        try:
+            desc = arcpy.Describe(raster_name)
+            props = {
+                "band_count": desc.bandCount,
+                "format": desc.format,
+                "pixel_type": desc.pixelType,
+                "spatial_reference": desc.spatialReference.name
+            }
+            return {"success": True, "properties": props}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_vector_properties(self, layer_name: str) -> Dict:
+        logger.info(f"Getting properties for vector layer {layer_name}")
+        try:
+            desc = arcpy.Describe(layer_name)
+            props = {
+                "shape_type": desc.shapeType,
+                "feature_type": desc.featureType,
+                "has_m": desc.hasM,
+                "has_z": desc.hasZ
+            }
+            return {"success": True, "properties": props}
+        except Exception as e:
             return {"success": False, "error": str(e)}
