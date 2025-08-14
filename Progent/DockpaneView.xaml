@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:Progent"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="300"
-             d:DataContext="{Binding Path=local.DockpaneViewModel}">
+             d:DataContext="{d:DesignInstance local:DockpaneViewModel, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,6 +27,22 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource Esri_Text_Color}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Type}" Value="Error">
+                                            <Setter Property="Foreground" Value="{DynamicResource Esri_Color_Red}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type}" Value="FunctionCall">
+                                            <Setter Property="Foreground" Value="{DynamicResource Esri_Color_Blue}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type}" Value="FunctionResult">
+                                            <Setter Property="Foreground" Value="{DynamicResource Esri_Color_Green}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Resources>
                             <TextBlock Text="{Binding Timestamp, StringFormat={}{0:HH:mm:ss}}" FontWeight="Bold" Margin="0,0,10,0"/>
                             <TextBlock Text="{Binding Message}" FontWeight="Bold"/>
                         </StackPanel>
@@ -34,17 +50,6 @@
                                    Visibility="{Binding Details, Converter={StaticResource NullOrEmptyToVisibilityConverter}}"/>
                     </Grid>
                 </Border>
-                <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding Type}" Value="Error">
-                        <Setter Property="Foreground" Value="{DynamicResource Esri_Color_Red}"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="FunctionCall">
-                        <Setter Property="Foreground" Value="{DynamicResource Esri_Color_Blue}"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Type}" Value="FunctionResult">
-                        <Setter Property="Foreground" Value="{DynamicResource Esri_Color_Green}"/>
-                    </DataTrigger>
-                </DataTemplate.Triggers>
             </DataTemplate>
 
             <local:NullOrEmptyToVisibilityConverter x:Key="NullOrEmptyToVisibilityConverter"/>

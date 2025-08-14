@@ -268,6 +268,10 @@ class SmartAssistantClient {
             case 'dashboard_update':
                 this.handleDashboardUpdate(message.data);
                 break;
+
+            case 'dashboard_partial_update':
+                this.handleDashboardPartialUpdate(message.data);
+                break;
                 
             case 'error':
                 this.addMessage('System', `Error: ${message.message}`, 'error');
@@ -629,6 +633,14 @@ class SmartAssistantClient {
             this.elements.viewDashboardBtn.style.display = 'inline-block';
         }
     }
+
+    handleDashboardPartialUpdate(chartData) {
+        console.log('Partial dashboard update received:', chartData);
+        if (chartData && this.dashboard) {
+            this.dashboard.updateChart(chartData);
+            this.showDashboard();
+        }
+    }
     
     showDashboard() {
         const panel = this.elements.dashboardPanel;
@@ -735,6 +747,21 @@ class DashboardRenderer {
             this.createChartContainer(chart, index);
         });
     }
+
+    updateChart(chartConfig) {
+        const chartId = chartConfig.chart_id;
+        const canvasId = `canvas-${chartId}`;
+        const chart = this.charts.get(canvasId);
+
+        if (chart) {
+            const chartData = this.prepareChartData(chartConfig);
+            chart.data = chartData;
+            chart.update();
+            console.log(`Chart ${chartId} updated.`);
+        } else {
+            console.warn(`Chart with id ${chartId} not found for update.`);
+        }
+    }
     
     clearGrid() {
         this.gridElement.innerHTML = '';
@@ -753,7 +780,8 @@ class DashboardRenderer {
     createChartContainer(chartConfig, index) {
         const container = document.createElement('div');
         container.className = 'chart-container';
-        container.id = `chart-${index}`;
+        container.id = `chart-container-${chartConfig.chart_id}`;
+        container.dataset.chartId = chartConfig.chart_id;
         
         // Apply grid positioning
         const layout = chartConfig.layout || { size: 'medium' };
@@ -761,7 +789,7 @@ class DashboardRenderer {
         container.classList.add(`chart-${size}`);
         
         // Debug logging
-        console.log(`Creating chart ${index}:`, {
+        console.log(`Creating chart ${chartConfig.chart_id}:`, {
             title: chartConfig.title,
             size: size,
             template: layout.template,
@@ -770,7 +798,7 @@ class DashboardRenderer {
         });
         
         // Only use explicit positioning if we have specific positioning data
-        // Otherwise let CSS grid auto-placement handle positioning with size classes
+        // Otherwise let CSS grid auto--placement handle positioning with size classes
         const useExplicitPositioning = layout.column && layout.row && 
                                      layout.template && layout.template !== 'auto';
         
@@ -779,22 +807,29 @@ class DashboardRenderer {
             const height = layout.height || this.getSizeHeight(size);
             container.style.gridColumn = `${layout.column} / span ${width}`;
             container.style.gridRow = `${layout.row} / span ${height}`;
-            console.log(`Applied explicit positioning to chart ${index}:`, {
+            console.log(`Applied explicit positioning to chart ${chartConfig.chart_id}:`, {
                 gridColumn: container.style.gridColumn,
                 gridRow: container.style.gridRow
             });
         } else {
-            console.log(`Using CSS auto-placement for chart ${index} with size class: chart-${size}`);
+            console.log(`Using CSS auto-placement for chart ${chartConfig.chart_id} with size class: chart-${size}`);
         }
         // Otherwise let CSS handle it with the size class
         
         container.innerHTML = `
             <div class="chart-header">
                 <h3 class="chart-title">${chartConfig.title || 'Chart'}</h3>
-                <span class="chart-type">${chartConfig.type.toUpperCase()}</span>
+                <div class="chart-controls">
+                    <span class="chart-type">${chartConfig.type.toUpperCase()}</span>
+                    <button class="chart-refresh-btn" title="Refresh chart">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
             <div class="chart-canvas-wrapper">
-                <canvas class="chart-canvas" id="canvas-${index}"></canvas>
+                <canvas class="chart-canvas" id="canvas-${chartConfig.chart_id}"></canvas>
             </div>
             <div class="chart-info">
                 ${chartConfig.description || ''}
@@ -802,10 +837,19 @@ class DashboardRenderer {
         `;
         
         this.gridElement.appendChild(container);
+
+        // Add event listener for the refresh button
+        const refreshBtn = container.querySelector('.chart-refresh-btn');
+        refreshBtn.addEventListener('click', () => {
+            window.smartAssistant.sendWebSocketMessage({
+                type: 'update_chart',
+                chart_id: chartConfig.chart_id
+            });
+        });
         
         // Create the chart
         setTimeout(() => {
-            this.createChart(chartConfig, `canvas-${index}`);
+            this.createChart(chartConfig, `canvas-${chartConfig.chart_id}`);
         }, 100);
     }
     

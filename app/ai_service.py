@@ -140,6 +140,12 @@ class AIService:
                 raise ValueError(f"Unsupported model: {self.current_model}")
 
             logger.info(f"AI generated response type: {response.get('type')}")
+
+            # Sanitize the response content
+            if "content" in response and isinstance(response["content"], str):
+                from .security import sanitize_output
+                response["content"] = sanitize_output(response["content"])
+
             return response
 
         except Exception as e:
@@ -282,6 +288,12 @@ This function is ALWAYS available to you. You can call it at any time to get dec
             "Assume standard libraries like 'arcpy' are available. "
             "Enclose the final Python code in a single markdown block: ```python\n[your code here]\n```. "
             "Do not include any other text, explanations, or apologies outside of this code block. "
+            "\n\n--- SECURITY GUIDELINES ---\n"
+            "1.  **Do not** write code that reveals the file system structure, lists files, or reads file contents, unless explicitly asked by the user for a specific, non-sensitive file.\n"
+            "2.  **Do not** write code that reveals API keys, secrets, or any other sensitive configuration details.\n"
+            "3.  **Do not** write code that modifies or deletes files on the user's system without explicit confirmation.\n"
+            "4.  **Do not** write code that makes network requests to unknown or untrusted domains.\n"
+            "5.  **Always** prioritize user data privacy and security.\n"
             f"Current ArcGIS Pro state: {json.dumps(simplified_state)}"
         )
 
@@ -354,10 +366,11 @@ This function is ALWAYS available to you. You can call it at any time to get dec
             # If no code block, we might take the whole response as code, or handle as an error
             extracted_code = text_response.strip()
 
+        from .security import sanitize_output
         return {
             "type": "expert_code",
-            "code": extracted_code,
-            "original_content": text_response
+            "code": sanitize_output(extracted_code),
+            "original_content": sanitize_output(text_response)
         }
 
     def _get_model_identity(self) -> str:

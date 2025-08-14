@@ -177,6 +177,11 @@ async def handle_websocket_message(client_id: str, message: Dict):
             mode = message.get("mode")
             if mode:
                 await handle_set_mode(client_id, mode)
+
+        elif message_type == "update_chart":
+            chart_id = message.get("chart_id")
+            if chart_id:
+                await handle_chart_update(client_id, chart_id)
             
         else:
             logger.warning(f"Unknown message type: {message_type}")
@@ -1178,6 +1183,86 @@ async def shutdown_event():
     
     logger.info("Smart Assistant shut down successfully!")
 
+async def handle_chart_update(client_id: str, chart_id: str):
+    """Handles a request to update a single chart on the dashboard."""
+    try:
+        logger.info(f"Received request to update chart {chart_id} for client {client_id}")
+
+        dashboard_file = find_latest_dashboard_file()
+        if not dashboard_file:
+            raise Exception("No dashboard data found.")
+
+        with open(dashboard_file, 'r', encoding='utf-8') as f:
+            dashboard_data = json.load(f)
+
+        chart_configs, layout_template = _parse_dashboard_data(dashboard_data)
+        target_chart_config = None
+        for chart_config in chart_configs:
+            if chart_config.get("chart_id") == chart_id:
+                target_chart_config = chart_config
+                break
+
+        if not target_chart_config:
+            raise Exception(f"Chart with ID '{chart_id}' not found.")
+
+        updated_frontend_chart = _build_single_frontend_chart(target_chart_config, dashboard_data, layout_template)
+
+        await websocket_manager.send_to_client(client_id, {
+            "type": "dashboard_partial_update",
+            "data": updated_frontend_chart
+        })
+
+        logger.info(f"Sent partial update for chart {chart_id} to client {client_id}")
+
+    except Exception as e:
+        logger.error(f"Error updating chart {chart_id}: {str(e)}")
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error",
+            "message": f"Failed to update chart: {str(e)}"
+        })
+
+def find_latest_dashboard_file():
+    """Find the latest dashboard file."""
+    dashboard_files = [
+        BASE_DIR / "optimized_dashboard.json",
+        BASE_DIR / "smart_dashboard.json",
+        BASE_DIR / "dashboard.json"
+    ]
+    for dashboard_file in dashboard_files:
+        if dashboard_file.exists():
+            return dashboard_file
+    return None
+
+def _build_single_frontend_chart(chart_config, dashboard_data, layout_template="auto"):
+    """Build a single frontend chart object from a configuration."""
+    chart_data = prepare_chart_data_from_insights(chart_config, dashboard_data)
+
+    fields = chart_config.get("fields", [])
+    if fields:
+        x_field = fields[0] if len(fields) > 0 else ""
+        y_field = fields[1] if len(fields) > 1 else ""
+    else:
+        x_field = chart_config.get("primary_field", chart_config.get("x_field", ""))
+        y_field = chart_config.get("group_by_field", chart_config.get("y_field", ""))
+
+    frontend_chart = {
+        "chart_id": chart_config.get("chart_id"),
+        "title": chart_config.get("title", "Chart"),
+        "type": chart_config.get("chart_type", "bar"),
+        "description": chart_config.get("description", ""),
+        "x_field": x_field,
+        "y_field": y_field,
+        "fields": fields,
+        "data": chart_data,
+        "layout": {
+            "size": chart_config.get("recommended_size", "medium"),
+            "template": layout_template
+        }
+    }
+
+    _add_position_layout(frontend_chart, chart_config, layout_template)
+    return frontend_chart
+
 @app.get("/api/dashboard/latest")
 async def get_latest_dashboard():
     """Get the latest dashboard data"""
@@ -1348,6 +1433,7 @@ def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
             y_field = chart.get("group_by_field", chart.get("y_field", ""))
         
         frontend_chart = {
+            "chart_id": chart.get("chart_id", f"chart_{i}"),
             "title": chart.get("title", f"Chart {i+1}"),
             "type": chart.get("chart_type", chart.get("type", "bar")),
             "description": chart.get("description", chart.get("reasoning", "")),

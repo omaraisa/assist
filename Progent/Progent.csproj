@@ -7,6 +7,8 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <NoWarn>CA1416</NoWarn>
+    <AssemblyName>Progent</AssemblyName>
+    <RootNamespace>Progent</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Config.daml" />
@@ -26,6 +28,11 @@
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">
       <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Charts.Wpf">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Charts.Wpf.dll</HintPath>
       <CopyLocal>False</CopyLocal>
       <Private>False</Private>
     </Reference>
