@@ -15,6 +15,7 @@ class Settings(BaseSettings):
         "GEMINI_FLASH": {
             "name": "Gemini 1.5 Flash",
             "model": "gemini-1.5-flash-latest",
+            "provider": "google",
             "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent",
             "max_tokens": 8192,
             "temperature": 0.7,
@@ -23,6 +24,7 @@ class Settings(BaseSettings):
         "GEMINI_PRO": {
             "name": "Gemini 1.5 Pro", 
             "model": "gemini-1.5-pro-latest",
+            "provider": "google",
             "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
             "max_tokens": 32768,
             "temperature": 0.7,
@@ -31,22 +33,16 @@ class Settings(BaseSettings):
         "GEMINI_FLASH_EXP": {
             "name": "Gemini 2.0 Flash Experimental",
             "model": "gemini-2.0-flash-exp",
+            "provider": "google",
             "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent",
             "max_tokens": 8192,
             "temperature": 0.7,
             "api_key_env": "GEMINI_API_KEY"
-        },        # Temporarily disabled due to context length limitations with function calling
-        # "GPT4": {
-        #     "name": "GPT-4",
-        #     "model": "gpt-4",
-        #     "endpoint": "https://api.openai.com/v1/chat/completions",
-        #     "max_tokens": 8192,
-        #     "temperature": 0.7,
-        #     "api_key_env": "OPENAI_API_KEY"
-        # },
+        },
         "GPT4_TURBO": {
             "name": "GPT-4 Turbo",
             "model": "gpt-4-turbo",
+            "provider": "openai",
             "endpoint": "https://api.openai.com/v1/chat/completions",
             "max_tokens": 4096,
             "temperature": 0.7,
@@ -55,6 +51,7 @@ class Settings(BaseSettings):
         "GPT4O": {
             "name": "GPT-4o",
             "model": "gpt-4o",
+            "provider": "openai",
             "endpoint": "https://api.openai.com/v1/chat/completions",
             "max_tokens": 4096,
             "temperature": 0.7,
@@ -63,10 +60,12 @@ class Settings(BaseSettings):
         "CLAUDE": {
             "name": "Claude 3.5 Sonnet",
             "model": "claude-3-5-sonnet-20241022",
+            "provider": "anthropic",
             "endpoint": "https://api.anthropic.com/v1/messages",
             "max_tokens": 8192,
             "temperature": 0.7,
-            "api_key_env": "ANTHROPIC_API_KEY"        },
+            "api_key_env": "ANTHROPIC_API_KEY"
+        },
         # Ollama Models (Local LLMs)
         "OLLAMA_LLAMA31": {
             "name": "Llama 3.2 8B (Local)",

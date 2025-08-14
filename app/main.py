@@ -608,34 +608,6 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
             "message": f"Error processing function declaration request: {str(e)}"
         })
 
-async def execute_investigation_command(client_id: str, session_id: str, command: str):
-    """Execute a single investigation command"""
-    try:
-        # Parse the function call
-        function_call = ai_service.parse_function_call(command)
-        
-        if not function_call:
-            logger.error(f"Failed to parse function call: {command}")
-            return
-            
-        # Send function request to ArcGIS Pro
-        arcgis_client = websocket_manager.get_arcgis_client()
-        if not arcgis_client:
-            raise Exception("ArcGIS Pro is not connected")
-              # Prepare function execution message
-        function_message = {
-            "type": "execute_function",
-            "session_id": session_id,
-            "source_client": client_id,  # Add this crucial field!
-            "function_name": function_call["function_name"],
-            "parameters": function_call["parameters"]
-        }
-        
-        await websocket_manager.send_to_client(arcgis_client, function_message)
-        
-    except Exception as e:
-        logger.error(f"Error executing investigation command: {str(e)}")
-
 async def handle_function_request(client_id: str, message: Dict):
     """Handle direct function execution requests"""
     try:
@@ -971,11 +943,7 @@ async def handle_function_response(client_id: str, message: Dict):
                 await handle_function_calling_response(session_id, message, context)
                 return
         
-        if session_id and source_client:
-            # This is part of an investigation session (legacy)
-            logger.info(f"Continuing investigation session {session_id} for client {source_client}")
-            await continue_investigation_session(source_client, session_id, message)
-        elif source_client:
+        if source_client:
             # Direct function response (legacy)
             logger.info(f"Sending direct function result to client {source_client}")
             await websocket_manager.send_to_client(source_client, {
@@ -1015,58 +983,6 @@ async def handle_python_execution_result(message: Dict):
     # Send the formatted result to the original client
     await send_final_response(source_client, formatted_response)
 
-
-async def continue_investigation_session(client_id: str, session_id: str, response: Dict):
-    """Continue investigation session with AI after receiving function response"""
-    try:
-        # Add response to investigation history
-        websocket_manager.add_investigation_step(client_id, session_id, response)
-        
-        # Check if investigation is complete
-        session = websocket_manager.get_investigation_session(client_id, session_id)
-        if not session:
-            return
-            
-        # Get pending commands
-        remaining_commands = session.get("remaining_commands", [])
-        
-        if remaining_commands:
-            # Execute next command
-            next_command = remaining_commands.pop(0)
-            await execute_investigation_command(client_id, session_id, next_command)
-        else:
-            # Investigation complete, generate final response
-            await complete_investigation_session(client_id, session_id)
-            
-    except Exception as e:
-        logger.error(f"Error continuing investigation session: {str(e)}")
-
-async def complete_investigation_session(client_id: str, session_id: str):
-    """Complete investigation session and generate final response"""
-    try:
-        # Get investigation history
-        session = websocket_manager.get_investigation_session(client_id, session_id)
-        
-        if not session:
-            logger.error(f"Investigation session {session_id} not found for client {client_id}")
-            return
-        
-        # Generate final response using AI
-        final_response = await ai_service.generate_investigation_summary(session)
-        
-        # Send final response to user
-        await send_final_response(client_id, final_response)
-        
-        # Clean up investigation session
-        websocket_manager.end_investigation_session(client_id, session_id)
-        
-    except Exception as e:
-        logger.error(f"Error completing investigation session: {str(e)}")
-        await websocket_manager.send_to_client(client_id, {
-            "type": "error",
-            "message": f"Error completing investigation: {str(e)}"
-        })
-        logger.error(f"Error completing investigation session: {str(e)}")
 
 async def send_final_response(client_id: str, response: str):
     """Send final response to chatbot client"""

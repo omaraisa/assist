@@ -7,76 +7,75 @@
              xmlns:local="clr-namespace:Progent"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance local:DockpaneViewModel, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance local:DockpaneViewModel, IsDesignTimeCreatable=True}"
+             Background="{DynamicResource Esri_Background_Regular}">
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <local:NullOrEmptyToVisibilityConverter x:Key="NullOrEmptyToVisibilityConverter"/>
+
             <Style x:Key="LogEntryStyle" TargetType="ListViewItem">
                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                <Setter Property="Margin" Value="0,2"/>
+                <Setter Property="Padding" Value="5,0"/>
+                <Setter Property="Margin" Value="0"/>
+                <Setter Property="BorderThickness" Value="0"/>
             </Style>
 
             <DataTemplate x:Key="LogDataTemplate" DataType="{x:Type local:LogEntry}">
-                <Border BorderBrush="{DynamicResource Esri_Color_Gray155}" BorderThickness="0,0,0,1" Padding="5">
+                <Border BorderBrush="{DynamicResource Esri_Color_Gray180}" BorderThickness="0,0,0,1" Padding="5,8">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <StackPanel.Resources>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{DynamicResource Esri_Text_Color}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Type}" Value="Error">
-                                            <Setter Property="Foreground" Value="{DynamicResource Esri_Color_Red}"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Type}" Value="FunctionCall">
-                                            <Setter Property="Foreground" Value="{DynamicResource Esri_Color_Blue}"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Type}" Value="FunctionResult">
-                                            <Setter Property="Foreground" Value="{DynamicResource Esri_Color_Green}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Resources>
-                            <TextBlock Text="{Binding Timestamp, StringFormat={}{0:HH:mm:ss}}" FontWeight="Bold" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding Message}" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Timestamp, StringFormat={}{0:HH:mm:ss}}" FontWeight="Bold" Margin="0,0,10,0"
+                                       Foreground="{Binding Type, Converter={StaticResource LogEntryColorConverter}}"/>
+                            <TextBlock Text="{Binding Message}" FontWeight="Bold" TextWrapping="Wrap"
+                                       Foreground="{Binding Type, Converter={StaticResource LogEntryColorConverter}}"/>
                         </StackPanel>
                         <TextBlock Grid.Row="1" Text="{Binding Details}" TextWrapping="Wrap" Margin="0,5,0,0" FontStyle="Italic"
+                                   Foreground="{DynamicResource Esri_Text_Color_Faded}"
                                    Visibility="{Binding Details, Converter={StaticResource NullOrEmptyToVisibilityConverter}}"/>
                     </Grid>
                 </Border>
             </DataTemplate>
 
-            <local:NullOrEmptyToVisibilityConverter x:Key="NullOrEmptyToVisibilityConverter"/>
+            <local:LogEntryTypeToColorConverter x:Key="LogEntryColorConverter"/>
 
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Style="{DynamicResource Esri_CardStyle}" Padding="10" Margin="5">
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Padding="10" Background="{DynamicResource Esri_Background_Light}">
             <StackPanel>
-                <TextBlock Text="Server URL" Style="{DynamicResource Esri_TextBlockH5}" Margin="0,0,0,5"/>
-                <TextBox Text="{Binding ServerUrl}" VerticalAlignment="Center"/>
+                <TextBlock Text="Server Connection" Style="{DynamicResource Esri_TextBlockH3}" Margin="0,0,0,10"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding ServerUrl}" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBoxEllipsis}"/>
+                    <Button Grid.Column="1" Content="{Binding ConnectButtonText}" Command="{Binding ConnectCommand}" Margin="5,0,0,0" Style="{DynamicResource Esri_ButtonFill}"/>
+                </Grid>
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <Ellipse Width="10" Height="10" Fill="{Binding StatusColor}" Margin="0,0,5,0}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                </StackPanel>
             </StackPanel>
         </Border>
 
-        <Button Grid.Row="1" Content="{Binding ConnectButtonText}" Command="{Binding ConnectCommand}" Margin="5,0,5,5" Style="{DynamicResource Esri_ButtonFill}"/>
+        <TextBlock DockPanel.Dock="Top" Text="Activity Log" Style="{DynamicResource Esri_TextBlockH4}" Margin="10,10,10,5"/>
 
-        <ListView Grid.Row="2" ItemsSource="{Binding LogEntries}"
+        <ListView DockPanel.Dock="Bottom" ItemsSource="{Binding LogEntries}"
                   ItemTemplate="{StaticResource LogDataTemplate}"
                   ItemContainerStyle="{StaticResource LogEntryStyle}"
                   BorderThickness="0"
-                  HorizontalContentAlignment="Stretch"/>
-
-    </Grid>
+                  HorizontalContentAlignment="Stretch"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+    </DockPanel>
 </UserControl>

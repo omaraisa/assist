@@ -27,11 +27,41 @@ namespace Progent
         private string _connectButtonText = "Connect";
         private bool _isConnected = false;
         private WebSocketService _webSocketService;
+        private string _statusText = "Disconnected";
+        private Brush _statusColor = Brushes.Red;
 
         public ObservableCollection<LogEntry> LogEntries { get; set; } = new ObservableCollection<LogEntry>();
 
+        public string StatusText
+        {
+            get => _statusText;
+            set
+            {
+                if (_statusText != value)
+                {
+                    _statusText = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public Brush StatusColor
+        {
+            get => _statusColor;
+            set
+            {
+                if (_statusColor != value)
+                {
+                    _statusColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public DockpaneViewModel()
         {
+            StatusText = "Disconnected";
+            StatusColor = Brushes.Red;
             ConnectCommand = new RelayCommand(async () =>
             {
                 if (_isConnected)
@@ -41,12 +71,16 @@ namespace Progent
                 else
                 {
                     Log(LogEntryType.Info, "Connecting...");
+                    StatusText = "Connecting...";
+                    StatusColor = Brushes.Orange;
                     _webSocketService = new WebSocketService(ServerUrl);
                     _webSocketService.OnConnected += async () =>
                     {
                         ConnectButtonText = "Disconnect";
                         _isConnected = true;
                         Log(LogEntryType.Info, "Connected to server.");
+                        StatusText = "Connected";
+                        StatusColor = Brushes.Green;
                         Process.Start(new ProcessStartInfo("http://localhost:8000") { UseShellExecute = true });
                         await _webSocketService.SendMessageAsync(JsonConvert.SerializeObject(new { type = "client_register", client_type = "arcgis_pro" }));
                     };
@@ -55,12 +89,16 @@ namespace Progent
                         ConnectButtonText = "Connect";
                         _isConnected = false;
                         Log(LogEntryType.Info, "Disconnected from server.");
+                        StatusText = "Disconnected";
+                        StatusColor = Brushes.Red;
                     };
                     _webSocketService.OnError += (error) =>
                     {
                         Log(LogEntryType.Error, error);
                         ConnectButtonText = "Connect";
                         _isConnected = false;
+                        StatusText = "Error";
+                        StatusColor = Brushes.Red;
                     };
                     _webSocketService.OnMessageReceived += HandleMessageReceived;
                     await _webSocketService.ConnectAsync();

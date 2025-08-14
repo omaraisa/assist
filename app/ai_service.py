@@ -22,6 +22,7 @@ class AIService:
     def __init__(self, initial_model_key: str, websocket_manager: Any):
         self.websocket_manager = websocket_manager
         self.langchain_agent = None
+        self.client_dynamic_functions = {}
         self.set_model(initial_model_key)
     
     async def initialize(self):

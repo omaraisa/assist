@@ -83,9 +83,9 @@ namespace Progent
         private async Task ReceiveLoop()
         {
             var buffer = new byte[1024 * 4];
-            try
+            while (_client.State == WebSocketState.Open && !_cancellationTokenSource.IsCancellationRequested)
             {
-                while (_client.State == WebSocketState.Open && !_cancellationTokenSource.IsCancellationRequested)
+                try
                 {
                     var result = await _client.ReceiveAsync(new ArraySegment<byte>(buffer), _cancellationTokenSource.Token);
                     if (result.MessageType == WebSocketMessageType.Text)
@@ -98,22 +98,22 @@ namespace Progent
                         break;
                     }
                 }
-            }
-            catch (WebSocketException ex)
-            {
-                OnError?.Invoke($"WebSocket error: {ex.Message}. Attempting to reconnect...");
-                _ = ConnectWithRetriesAsync();
-            }
-            catch (Exception ex)
-            {
-                OnError?.Invoke($"Error in receive loop: {ex.Message}");
-            }
-            finally
-            {
-                if (!_cancellationTokenSource.IsCancellationRequested)
+                catch (WebSocketException ex)
                 {
-                    OnDisconnected?.Invoke();
+                    OnError?.Invoke($"WebSocket error: {ex.Message}. Attempting to reconnect...");
+                    await ConnectWithRetriesAsync();
+                    return; // Exit the old loop
                 }
+                catch (Exception ex)
+                {
+                    OnError?.Invoke($"Error in receive loop: {ex.Message}");
+                    break; // Exit the loop on other errors
+                }
+            }
+
+            if (!_cancellationTokenSource.IsCancellationRequested)
+            {
+                OnDisconnected?.Invoke();
             }
         }
     }
