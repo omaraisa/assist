@@ -135,10 +135,10 @@ class SpatialFunctions:
                 "success": True
             }
             logger.info(f"select_by_attribute result: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"select_by_attribute error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred during attribute selection."}
     
     def select_by_location(self, input_layer, select_layer, relationship="INTERSECT"):
         """Execute spatial selection"""
@@ -192,10 +192,10 @@ class SpatialFunctions:
                 "success": True
             }
             logger.info(f"select_by_location result: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"select_by_location error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred during spatial selection."}
 
     def get_field_statistics(self, layer_name, field_name, where_clause=None):
         """Calculate field statistics"""
@@ -250,10 +250,10 @@ class SpatialFunctions:
                 }
             }
             logger.info(f"get_field_statistics result: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_field_statistics error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while calculating field statistics."}
     
     def get_layer_summary(self, layer_name):
         """Get comprehensive layer summary"""
@@ -296,10 +296,10 @@ class SpatialFunctions:
                 }
             }
             logger.info(f"get_layer_summary result: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_layer_summary error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting the layer summary."}
     
     def calculate_area(self, layer_name: str, units: str = "square_meters") -> Dict:
         """Calculate area for polygon features"""
@@ -350,10 +350,10 @@ class SpatialFunctions:
                 }
             }
             logger.info(f"Area calculation completed: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"calculate_area error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred during area calculation."}
     
     def calculate_length(self, layer_name: str, units: str = "meters") -> Dict:
         """Calculate length for line features"""
@@ -404,10 +404,10 @@ class SpatialFunctions:
                 }
             }
             logger.info(f"Length calculation completed: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"calculate_length error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred during length calculation."}
     
     def get_centroid(self, layer_name: str) -> Dict:
         """Get centroid coordinates for all features in a layer"""
@@ -442,10 +442,10 @@ class SpatialFunctions:
                 "centroids": centroids
             }
             logger.info(f"Centroid calculation completed: {len(centroids)} features")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_centroid error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred during centroid calculation."}
     
     def create_buffer(self, layer_name: str, distance: float, units: str = "meters") -> Dict:
         """Create buffer around features"""
@@ -502,11 +502,11 @@ class SpatialFunctions:
             }
             
             logger.info(f"Buffer created successfully: {result}")
-            return result
+            return self._sanitize_output(result)
             
         except Exception as e:
             logger.error(f"create_buffer error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred during buffer creation."}
     
     def spatial_join(self, target_layer: str, join_layer: str, join_operation: str = "intersect") -> Dict:
         """Perform spatial join between two layers"""
@@ -566,10 +566,10 @@ class SpatialFunctions:
                 }
             }
             logger.info(f"Spatial join completed: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"spatial_join error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred during spatial join."}
     
     def clip_layer(self, input_layer: str, clip_layer: str) -> Dict:
         """Clip input layer by clip layer boundary"""
@@ -620,10 +620,10 @@ class SpatialFunctions:
                 }
             }
             logger.info(f"Clipping completed: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"clip_layer error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred during clipping."}
     
     def calculate_distance(self, point1: Tuple[float, float], point2: Tuple[float, float], units: str = "meters") -> float:
         """
@@ -681,10 +681,10 @@ class SpatialFunctions:
                 "project_path": path
             }
             logger.info(f"Current project path: {path}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_current_project_path error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting the project path."}
 
     def get_default_db_path(self) -> Dict:
         """Get the default geodatabase path for the current ArcGIS Pro project"""
@@ -698,10 +698,10 @@ class SpatialFunctions:
                 "default_geodatabase": default_gdb
             }
             logger.info(f"Default geodatabase: {default_gdb}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_default_db_path error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting the default geodatabase path."}
 
     def get_field_definitions(self, layer_name: str) -> Dict:
         """Get field definitions for a given layer"""
@@ -735,10 +735,10 @@ class SpatialFunctions:
                 "fields": fields
             }
             logger.info(f"Field definitions: {fields}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_field_definitions error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting field definitions."}
 
     def get_layer_type(self, layer_name: str) -> Dict:
         """
@@ -800,10 +800,10 @@ class SpatialFunctions:
                 "layer_type": layer_type
             }
             logger.info(f"Layer type: {layer_type}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_layer_type error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting the layer type."}
 
     def get_list_of_layer_fields(self, layer_name: str) -> Dict:
         """Get a list of field names for a given layer"""
@@ -829,10 +829,10 @@ class SpatialFunctions:
                 "fields": field_names
             }
             logger.info(f"Field names: {field_names}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_list_of_layer_fields error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting the list of fields."}
         
     def get_data_source_info(self, layer_name: str) -> Dict:
         """Get data source information for a given layer"""
@@ -859,10 +859,10 @@ class SpatialFunctions:
                 "data_source": data_source
             }
             logger.info(f"Data source: {data_source}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_data_source_info error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting the data source information."}
         
     def create_nearest_neighbor_layer(self, layer_name: str, id_field: str = "OBJECTID") -> Dict:
         """
@@ -951,10 +951,10 @@ class SpatialFunctions:
                 "feature_count": len(nn_results)
             }
             logger.info(f"Nearest neighbor layer created: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"create_nearest_neighbor_layer error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while creating the nearest neighbor layer."}
         
     def get_unique_values_count(self, layer_name: str, field_name: str) -> Dict:
         """
@@ -982,10 +982,10 @@ class SpatialFunctions:
                 "unique_count": len(values)
             }
             logger.info(f"Unique values count: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_unique_values_count error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting the unique values count."}
 
     def calculate_empty_values(self, layer_name: str, field_name: str) -> Dict:
         """
@@ -1018,10 +1018,10 @@ class SpatialFunctions:
                 "total_count": total
             }
             logger.info(f"Empty values calculation: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"calculate_empty_values error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while calculating empty values."}
         
     def get_map_layers_info(self) -> Dict:
         """
@@ -1059,10 +1059,10 @@ class SpatialFunctions:
                 "layers": layers_info
             }
             logger.info(f"Map layers info: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_map_layers_info error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting map layers information."}
 
     def get_map_tables_info(self) -> Dict:
         """
@@ -1094,10 +1094,10 @@ class SpatialFunctions:
                 "tables": tables_info
             }
             logger.info(f"Map tables info: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_map_tables_info error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting map tables information."}
             
     def get_values_frequency(self, layer_name: str, field_name: str) -> Dict:
         """
@@ -1142,10 +1142,10 @@ class SpatialFunctions:
             }
             
             logger.info(f"Values frequency: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_values_frequency error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting values frequency."}
 
     def get_value_frequency(self, layer_name: str, field_name: str, lookup_value: str) -> Dict:
         """
@@ -1186,10 +1186,10 @@ class SpatialFunctions:
             }
             
             logger.info(f"Value frequency: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_value_frequency error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting value frequency."}
 
     def get_coordinate_system(self, layer_name: str) -> Dict:
         """
@@ -1225,10 +1225,10 @@ class SpatialFunctions:
             }
             
             logger.info(f"Coordinate system info: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_coordinate_system error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting the coordinate system."}
 
     def get_attribute_table(self, layer_name: str, start_row: int = 0, row_count: int = 100) -> Dict:
         """
@@ -1277,10 +1277,10 @@ class SpatialFunctions:
             }
             
             logger.info(f"Attribute table retrieved: {len(table_data)} rows")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_attribute_table error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting the attribute table."}
 
     def get_field_domain_values(self, layer_name: str, field_name: str) -> Dict:
         """
@@ -1337,10 +1337,10 @@ class SpatialFunctions:
             }
             
             logger.info(f"Field domain values: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"get_field_domain_values error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting field domain values."}
 
     def calculate_new_field(self, layer_name: str, new_field_name: str, field_value: str, field_type: str = "TEXT") -> Dict:
         """
@@ -1393,10 +1393,10 @@ class SpatialFunctions:
             }
             
             logger.info(f"New field calculated: {result}")
-            return result
+            return self._sanitize_output(result)
         except Exception as e:
             logger.error(f"calculate_new_field error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while calculating the new field."}
     
     def analyze_layer_fields(self, layer_name: str) -> Dict:
         """
@@ -1505,11 +1505,11 @@ class SpatialFunctions:
             }
 
             logger.info(f"Field analysis completed for {layer_name}: {len(field_analysis)} fields analyzed")
-            return result
+            return self._sanitize_output(result)
 
         except Exception as e:
             logger.error(f"analyze_layer_fields error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred during field analysis."}
 
     
     def _analyze_numeric_field(self, layer, field_name: str, total_count: int) -> Dict:
@@ -2072,6 +2072,23 @@ class SpatialFunctions:
         """Get current timestamp in ISO format"""
         from datetime import datetime
         return datetime.now().isoformat()
+
+    def _sanitize_output(self, data: Any) -> Any:
+        """
+        Recursively sanitize output to remove sensitive information like file paths.
+        """
+        if isinstance(data, dict):
+            # Create a copy to avoid modifying the dictionary while iterating
+            new_dict = {}
+            for key, value in data.items():
+                if "path" in key.lower() or "source" in key.lower():
+                    continue  # Skip sensitive keys
+                new_dict[key] = self._sanitize_output(value)
+            return new_dict
+        elif isinstance(data, list):
+            return [self._sanitize_output(item) for item in data]
+        else:
+            return data
     def generate_smart_dashboard_layout(self, layer_name: str) -> Dict:
         """
         Analyzes a layer and generates a smart dashboard layout with recommended chart types.
@@ -2128,11 +2145,11 @@ class SpatialFunctions:
                     logger.error(f"Failed to send dashboard update via websocket_manager: {ws_e}")
 
             logger.info(f"Smart dashboard layout generated: {result}")
-            return result
+            return self._sanitize_output(result)
             
         except Exception as e:
             logger.error(f"generate_smart_dashboard_layout error: {str(e)}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while generating the smart dashboard layout."}
 
     def recommend_chart_types(self, field_insights: Dict) -> Dict:
         """
@@ -2296,7 +2313,7 @@ class SpatialFunctions:
             except Exception as e:
                 logger.error(f"Failed to save optimized dashboard layout: {e}")
                 return {"success": False, "error": f"Failed to save optimized layout: {e}", "optimized_layout": widget_list}
-            return {"success": True, "optimized_layout": widget_list}
+            return self._sanitize_output({"success": True, "optimized_layout": widget_list})
 
 
     def get_current_dashboard_layout(self) -> Dict:
@@ -2330,7 +2347,7 @@ class SpatialFunctions:
             return {"success": True, "widgets": minimal_widgets}
         except Exception as e:
             logger.error(f"Failed to load dashboard layout: {e}")
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting the current dashboard layout."}
         
     def get_field_stories_and_samples(self) -> dict:
         """
@@ -2363,9 +2380,9 @@ class SpatialFunctions:
                     "data_story": story,
                     "sample_values": info.get("sample_values", [])
                 })
-            return {"success": True, "fields": result}
+            return self._sanitize_output({"success": True, "fields": result})
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting field stories and samples."}
     
     
     def get_current_dashboard_charts(self) -> dict:
@@ -2391,9 +2408,9 @@ class SpatialFunctions:
                 chart_type = widget.get("chart_type")
                 if fields and chart_type:
                     chart_list.append({"fields": fields, "chart_type": chart_type})
-            return {"success": True, "charts": chart_list}
+            return self._sanitize_output({"success": True, "charts": chart_list})
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while getting the current dashboard charts."}
         
         
         
@@ -2438,7 +2455,7 @@ class SpatialFunctions:
                     dashboard_data = layout
                 with open(dashboard_path, "w", encoding="utf-8") as f:
                     json.dump(dashboard_data, f, indent=4)
-            return {"success": True, "updated_count": updated, "charts": charts}
+            return self._sanitize_output({"success": True, "updated_count": updated, "charts": charts})
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            return {"success": False, "error": "An error occurred while updating the dashboard charts."}
     

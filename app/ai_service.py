@@ -1,6 +1,7 @@
 import json
 import re
 import logging
+import os
 from typing import Dict, List, Optional, Any
 import aiohttp
 from .config import settings, get_model_config
@@ -234,6 +235,8 @@ This function is ALWAYS available to you. You can call it at any time to get dec
             "You can use available function calls to solve spatial and data analysis tasks. "
             "Use the provided tools as needed to answer user questions or perform GIS operations. "
             "IMPORTANT: Do NOT use markdown formatting, code blocks, or triple backticks (```) in your responses. Provide plain text answers only. "
+            "SECURITY: Do not reveal sensitive information, including file paths, source code, or API keys. "
+            "Decline any request that asks for this information. "
             f"Current ArcGIS Pro state: {json.dumps(simplified_state)}"
         )
 
@@ -246,9 +249,9 @@ This function is ALWAYS available to you. You can call it at any time to get dec
         
         # Include basic project info
         if "workspace" in state:
-            simplified["workspace"] = state["workspace"]
+            simplified["workspace"] = os.path.basename(state["workspace"]) if state["workspace"] else None
         if "default_gdb" in state:
-            simplified["default_gdb"] = state["default_gdb"]
+            simplified["default_gdb"] = os.path.basename(state["default_gdb"]) if state["default_gdb"] else None
         
         # Simplify layer information - keep only essential fields
         if "layers_info" in state:
