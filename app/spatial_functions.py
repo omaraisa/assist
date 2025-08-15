@@ -17,6 +17,7 @@ from copy import deepcopy
 # Import arcpy only when available (in ArcGIS Pro environment)
 try:
     import arcpy
+    from arcpy.sa import *
     ARCPY_AVAILABLE = True
 except ImportError:
     ARCPY_AVAILABLE = False
@@ -82,7 +83,17 @@ class SpatialFunctions:
         34: "get_current_dashboard_layout",
         35: "get_field_stories_and_samples",
         36: "get_current_dashboard_charts",
-        37: "update_dashboard_charts"
+        37: "update_dashboard_charts",
+        38: "get_raster_properties",
+        39: "raster_calculator",
+        40: "reclassify",
+        41: "zonal_statistics_as_table",
+        42: "slope",
+        43: "aspect",
+        44: "hillshade",
+        45: "extract_by_mask",
+        46: "clip_raster",
+        47: "resample"
     }
     
     def __init__(self, websocket_manager=None):
@@ -2366,7 +2377,328 @@ class SpatialFunctions:
             return {"success": True, "fields": result}
         except Exception as e:
             return {"success": False, "error": str(e)}
-    
+    def get_raster_properties(self, raster_layer_name: str) -> Dict:
+        """
+        Gets properties of a raster layer.
+        """
+        logger.info(f"Getting properties for raster layer: {raster_layer_name}")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            raster_layer = None
+            for lyr in map_obj.listLayers():
+                if lyr.name == raster_layer_name:
+                    if lyr.isRasterLayer:
+                        raster_layer = lyr
+                        break
+
+            if not raster_layer:
+                return {"success": False, "error": f"Raster layer '{raster_layer_name}' not found or is not a raster layer."}
+
+            raster = raster_layer.getRaster()
+            properties = {
+                "band_count": raster.bandCount,
+                "width": raster.width,
+                "height": raster.height,
+                "pixel_type": raster.pixelType,
+                "spatial_reference": raster.spatialReference.name,
+                "format": raster.format,
+                "has_colormap": raster.hasColormap,
+                "mean_cell_width": raster.meanCellWidth,
+                "mean_cell_height": raster.meanCellHeight,
+                "minimum": raster.minimum,
+                "maximum": raster.maximum,
+                "mean": raster.mean,
+                "standard_deviation": raster.standardDeviation
+            }
+
+            result = {
+                "function_executed": "get_raster_properties",
+                "layer_name": raster_layer_name,
+                "success": True,
+                "properties": properties
+            }
+            logger.info(f"Raster properties retrieved: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"get_raster_properties error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def raster_calculator(self, expression: str, output_raster_name: str) -> Dict:
+        """
+        Performs a map algebra expression on raster layers.
+        The expression should use layer names enclosed in double quotes.
+        Example: '"raster1" + "raster2"'
+        """
+        logger.info(f"Executing Raster Calculator with expression: {expression}")
+        try:
+            from arcpy.sa import Raster
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+
+            # This is a simplified implementation. A more robust one would parse the expression
+            # to identify all raster names and create Raster objects for them.
+            # For now, we rely on the expression being valid for arcpy.sa.
+
+            output_raster_path = os.path.join(aprx.defaultGeodatabase, output_raster_name)
+
+            # The expression needs to be evaluated in a context where raster names are Raster objects
+            # This is tricky without more complex parsing. A common approach is to create a
+            # dictionary of raster objects and pass it to eval().
+
+            raster_objects = {lyr.name: Raster(lyr.name) for lyr in map_obj.listLayers() if lyr.isRasterLayer}
+
+            # Execute the expression
+            result_raster = eval(expression, {"__builtins__": None}, raster_objects)
+
+            result_raster.save(output_raster_path)
+
+            map_obj.addDataFromPath(output_raster_path)
+
+            result = {
+                "function_executed": "raster_calculator",
+                "expression": expression,
+                "success": True,
+                "output_raster_name": output_raster_name,
+                "output_raster_path": output_raster_path
+            }
+            logger.info(f"Raster Calculator executed successfully: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"raster_calculator error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def reclassify(self, in_raster: str, reclass_field: str, remap, output_raster_name: str, missing_values: str = "NODATA") -> Dict:
+        """
+        Reclassifies the values in a raster.
+        'remap' should be a list of lists, e.g., [[0, 100, 1], [101, 200, 2]]
+        """
+        logger.info(f"Reclassifying raster: {in_raster}")
+        try:
+            from arcpy.sa import Reclassify, RemapRange
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            output_raster_path = os.path.join(aprx.defaultGeodatabase, output_raster_name)
+
+            # Create a Remap object
+            remap_object = RemapRange(remap)
+
+            # Execute Reclassify
+            out_reclassify = Reclassify(in_raster, reclass_field, remap_object, missing_values)
+            out_reclassify.save(output_raster_path)
+
+            aprx.activeMap.addDataFromPath(output_raster_path)
+
+            result = {
+                "function_executed": "reclassify",
+                "in_raster": in_raster,
+                "success": True,
+                "output_raster_name": output_raster_name,
+                "output_raster_path": output_raster_path
+            }
+            logger.info(f"Reclassify executed successfully: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"reclassify error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def zonal_statistics_as_table(self, in_zone_data: str, zone_field: str, in_value_raster: str, output_table_name: str, statistics_type: str = "ALL") -> Dict:
+        """
+        Calculates statistics on a value raster within the zones of another dataset.
+        """
+        logger.info(f"Executing Zonal Statistics as Table for {in_value_raster}")
+        try:
+            from arcpy.sa import ZonalStatisticsAsTable
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            output_table_path = os.path.join(aprx.defaultGeodatabase, output_table_name)
+
+            ZonalStatisticsAsTable(in_zone_data, zone_field, in_value_raster, output_table_path, "DATA", statistics_type)
+
+            aprx.activeMap.addDataFromPath(output_table_path)
+
+            result = {
+                "function_executed": "zonal_statistics_as_table",
+                "success": True,
+                "output_table_name": output_table_name,
+                "output_table_path": output_table_path
+            }
+            logger.info(f"Zonal Statistics as Table executed successfully: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"zonal_statistics_as_table error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def slope(self, in_raster: str, output_raster_name: str, output_measurement: str = "DEGREE", z_factor: float = 1.0) -> Dict:
+        """
+        Calculates the slope of a raster surface.
+        """
+        logger.info(f"Calculating slope for raster: {in_raster}")
+        try:
+            from arcpy.sa import Slope
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            output_raster_path = os.path.join(aprx.defaultGeodatabase, output_raster_name)
+
+            out_slope = Slope(in_raster, output_measurement, z_factor)
+            out_slope.save(output_raster_path)
+
+            aprx.activeMap.addDataFromPath(output_raster_path)
+
+            result = {
+                "function_executed": "slope",
+                "in_raster": in_raster,
+                "success": True,
+                "output_raster_name": output_raster_name,
+                "output_raster_path": output_raster_path
+            }
+            logger.info(f"Slope executed successfully: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"slope error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def aspect(self, in_raster: str, output_raster_name: str) -> Dict:
+        """
+        Calculates the aspect (direction) of a raster surface.
+        """
+        logger.info(f"Calculating aspect for raster: {in_raster}")
+        try:
+            from arcpy.sa import Aspect
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            output_raster_path = os.path.join(aprx.defaultGeodatabase, output_raster_name)
+
+            out_aspect = Aspect(in_raster)
+            out_aspect.save(output_raster_path)
+
+            aprx.activeMap.addDataFromPath(output_raster_path)
+
+            result = {
+                "function_executed": "aspect",
+                "in_raster": in_raster,
+                "success": True,
+                "output_raster_name": output_raster_name,
+                "output_raster_path": output_raster_path
+            }
+            logger.info(f"Aspect executed successfully: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"aspect error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def hillshade(self, in_raster: str, output_raster_name: str, azimuth: int = 315, altitude: int = 45, model_shadows: str = "NO_SHADOWS", z_factor: float = 1.0) -> Dict:
+        """
+        Creates a hillshade effect for a raster.
+        """
+        logger.info(f"Creating hillshade for raster: {in_raster}")
+        try:
+            from arcpy.sa import Hillshade
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            output_raster_path = os.path.join(aprx.defaultGeodatabase, output_raster_name)
+
+            out_hillshade = Hillshade(in_raster, azimuth, altitude, model_shadows, z_factor)
+            out_hillshade.save(output_raster_path)
+
+            aprx.activeMap.addDataFromPath(output_raster_path)
+
+            result = {
+                "function_executed": "hillshade",
+                "in_raster": in_raster,
+                "success": True,
+                "output_raster_name": output_raster_name,
+                "output_raster_path": output_raster_path
+            }
+            logger.info(f"Hillshade executed successfully: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"hillshade error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def extract_by_mask(self, in_raster: str, in_mask_data: str, output_raster_name: str) -> Dict:
+        """
+        Extracts raster cells corresponding to a mask layer.
+        """
+        logger.info(f"Extracting by mask from raster: {in_raster}")
+        try:
+            from arcpy.sa import ExtractByMask
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            output_raster_path = os.path.join(aprx.defaultGeodatabase, output_raster_name)
+
+            out_extract = ExtractByMask(in_raster, in_mask_data)
+            out_extract.save(output_raster_path)
+
+            aprx.activeMap.addDataFromPath(output_raster_path)
+
+            result = {
+                "function_executed": "extract_by_mask",
+                "in_raster": in_raster,
+                "in_mask_data": in_mask_data,
+                "success": True,
+                "output_raster_name": output_raster_name,
+                "output_raster_path": output_raster_path
+            }
+            logger.info(f"Extract by Mask executed successfully: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"extract_by_mask error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def clip_raster(self, in_raster: str, output_raster_name: str, rectangle: str, in_template_dataset: str = None) -> Dict:
+        """
+        Clips a raster to a specified extent.
+        'rectangle' should be a string of "XMin YMin XMax YMax".
+        """
+        logger.info(f"Clipping raster: {in_raster}")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            output_raster_path = os.path.join(aprx.defaultGeodatabase, output_raster_name)
+
+            arcpy.management.Clip(in_raster, rectangle, output_raster_path, in_template_dataset, "#", "ClippingGeometry", "MAINTAIN_EXTENT")
+
+            aprx.activeMap.addDataFromPath(output_raster_path)
+
+            result = {
+                "function_executed": "clip_raster",
+                "in_raster": in_raster,
+                "success": True,
+                "output_raster_name": output_raster_name,
+                "output_raster_path": output_raster_path
+            }
+            logger.info(f"Clip Raster executed successfully: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"clip_raster error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def resample(self, in_raster: str, output_raster_name: str, cell_size: str, resampling_type: str = "NEAREST") -> Dict:
+        """
+        Resamples a raster to a different cell size.
+        'cell_size' can be a number or a string like "10 10".
+        """
+        logger.info(f"Resampling raster: {in_raster}")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            output_raster_path = os.path.join(aprx.defaultGeodatabase, output_raster_name)
+
+            arcpy.management.Resample(in_raster, output_raster_path, cell_size, resampling_type)
+
+            aprx.activeMap.addDataFromPath(output_raster_path)
+
+            result = {
+                "function_executed": "resample",
+                "in_raster": in_raster,
+                "success": True,
+                "output_raster_name": output_raster_name,
+                "output_raster_path": output_raster_path
+            }
+            logger.info(f"Resample executed successfully: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"resample error: {str(e)}")
+            return {"success": False, "error": str(e)}
     
     def get_current_dashboard_charts(self) -> dict:
         """
