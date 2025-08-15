@@ -1,33 +1,27 @@
 import sys
 import json
-import os
 import traceback
-
-# Add the 'app' directory to the Python path
-# This is a relative path from the location of this script
-progent_dir = os.path.dirname(os.path.abspath(__file__))
-app_dir = os.path.abspath(os.path.join(progent_dir, '..', 'app'))
-if app_dir not in sys.path:
-    sys.path.append(app_dir)
-
-from spatial_functions import SpatialFunctions
 
 def main():
     try:
         input_data = sys.stdin.read()
         data = json.loads(input_data)
+
+        code = data.get("code")
         function_name = data.get("function_name")
         parameters = data.get("parameters", {})
 
-        if not function_name:
-            raise ValueError("function_name not provided in input JSON.")
+        if not code or not function_name:
+            raise ValueError("'code' and 'function_name' must be provided.")
 
-        spatial_functions = SpatialFunctions(None)
+        exec_locals = {}
+        exec(code, globals(), exec_locals)
 
-        if not hasattr(spatial_functions, function_name):
-            raise Exception(f"Function '{function_name}' not found in SpatialFunctions")
+        func = exec_locals.get(function_name)
 
-        func = getattr(spatial_functions, function_name)
+        if not func:
+            raise NameError(f"Function '{function_name}' not found after executing code.")
+
         result = func(**parameters)
 
         print(json.dumps({"status": "success", "data": result}))

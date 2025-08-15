@@ -71,13 +71,14 @@ namespace Progent
 
                 if (type == "execute_function")
                 {
+                    var code = json["code"]?.ToString();
                     var functionName = json["function_name"]?.ToString();
                     var parameters = json["parameters"]?.ToString() ?? "{}";
                     var sessionId = json["session_id"]?.ToString();
                     var sourceClient = json["source_client"]?.ToString();
 
                     Log($"Executing: {functionName}");
-                    var pythonResultString = await ExecutePythonScriptAsync(functionName, parameters);
+                    var pythonResultString = await ExecutePythonScriptAsync(code, functionName, parameters);
                     var pythonResult = JObject.Parse(pythonResultString);
                     var status = pythonResult["status"]?.ToString();
 
@@ -122,7 +123,7 @@ namespace Progent
             }
         }
 
-        private Task<string> ExecutePythonScriptAsync(string functionName, string parameters)
+        private Task<string> ExecutePythonScriptAsync(string code, string functionName, string parameters)
         {
             return Task.Run(() =>
             {
@@ -150,6 +151,7 @@ namespace Progent
                 {
                     var input = new JObject
                     {
+                        ["code"] = code,
                         ["function_name"] = functionName,
                         ["parameters"] = JObject.Parse(parameters)
                     };
