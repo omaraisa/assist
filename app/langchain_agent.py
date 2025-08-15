@@ -29,6 +29,7 @@ class LoggingCallbackHandler(BaseCallbackHandler):
 import logging
 import json
 import ast
+import inspect
 from typing import Dict, List, Any
 
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -180,9 +181,21 @@ class LangChainAgent:
             if isinstance(parameters, dict) and "arguments" in parameters and len(parameters) == 1 and isinstance(parameters["arguments"], dict):
                 parameters = parameters["arguments"]
 
+            # Get the function object from the SpatialFunctions class
+            func_obj = getattr(self.spatial_functions, function_name, None)
+            if not func_obj:
+                return {"error": f"Function object '{function_name}' not found in SpatialFunctions class."}
+
+            # Get the source code of the function
+            try:
+                func_code = inspect.getsource(func_obj)
+            except TypeError:
+                return {"error": f"Could not get source code for '{function_name}'. It might be a built-in or dynamically generated function."}
+
             payload = {
                 "type": "execute_function",
                 "function_name": function_name,
+                "code": func_code,
                 "parameters": parameters,
                 "session_id": session_id  # Add session ID to track this specific call
             }

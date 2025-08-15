@@ -1,10 +1,8 @@
-
 """
 Spatial Functions Module - GIS analysis operations
 """
 
 import os
-import logging
 import math
 import json
 import asyncio
@@ -27,21 +25,6 @@ except ImportError:
                 raise ImportError("ArcPy is not available in this environment")
             return mock_method
     arcpy = MockArcpy()
-
-# Configure logging to write to the functions_log.txt file
-from pathlib import Path
-LOG_FILE_PATH = Path(__file__).parent.parent / "logs" / "system.log"
-LOG_FILE_PATH.parent.mkdir(exist_ok=True)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(name)s %(message)s",
-    handlers=[
-        logging.FileHandler(LOG_FILE_PATH, encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
 
 class SpatialFunctions:
     # Class variable for available functions - accessible without instance
@@ -109,7 +92,7 @@ class SpatialFunctions:
         
     def select_by_attribute(self, layer_name, where_clause, selection_type="NEW_SELECTION"):
         """Execute attribute-based selection"""
-        logger.info(f"Executing select_by_attribute with layer: {layer_name}, where: {where_clause}")
+        print(f"Executing select_by_attribute with layer: {layer_name}, where: {where_clause}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -134,15 +117,15 @@ class SpatialFunctions:
                 "selected_features": selected_count,
                 "success": True
             }
-            logger.info(f"select_by_attribute result: {result}")
+            print(f"select_by_attribute result: {result}")
             return result
         except Exception as e:
-            logger.error(f"select_by_attribute error: {str(e)}")
+            print(f"select_by_attribute error: {str(e)}")
             return {"success": False, "error": str(e)}
     
     def select_by_location(self, input_layer, select_layer, relationship="INTERSECT"):
         """Execute spatial selection"""
-        logger.info(f"Executing select_by_location with input: {input_layer}, select: {select_layer}, relationship: {relationship}")
+        print(f"Executing select_by_location with input: {input_layer}, select: {select_layer}, relationship: {relationship}")
         try:
             # List of supported spatial relationships in arcpy.SelectLayerByLocation_management
             supported_relationships = [
@@ -155,7 +138,7 @@ class SpatialFunctions:
             
             # Check if provided relationship is supported, otherwise use default
             if relationship.upper() not in supported_relationships:
-                logger.warning(f"Relationship '{relationship}' not supported. Falling back to 'INTERSECT'")
+                print(f"Warning: Relationship '{relationship}' not supported. Falling back to 'INTERSECT'")
                 relationship = "INTERSECT"
             else:
                 relationship = relationship.upper()
@@ -191,15 +174,15 @@ class SpatialFunctions:
                 "selected_features": selected_count,
                 "success": True
             }
-            logger.info(f"select_by_location result: {result}")
+            print(f"select_by_location result: {result}")
             return result
         except Exception as e:
-            logger.error(f"select_by_location error: {str(e)}")
+            print(f"select_by_location error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def get_field_statistics(self, layer_name, field_name, where_clause=None):
         """Calculate field statistics"""
-        logger.info(f"Executing get_field_statistics with layer: {layer_name}, field: {field_name}")
+        print(f"Executing get_field_statistics with layer: {layer_name}, field: {field_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -249,15 +232,15 @@ class SpatialFunctions:
                     "median": statistics.median(values)
                 }
             }
-            logger.info(f"get_field_statistics result: {result}")
+            print(f"get_field_statistics result: {result}")
             return result
         except Exception as e:
-            logger.error(f"get_field_statistics error: {str(e)}")
+            print(f"get_field_statistics error: {str(e)}")
             return {"success": False, "error": str(e)}
     
     def get_layer_summary(self, layer_name):
         """Get comprehensive layer summary"""
-        logger.info(f"Executing get_layer_summary with layer: {layer_name}")
+        print(f"Executing get_layer_summary with layer: {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -295,15 +278,15 @@ class SpatialFunctions:
                     "fields": field_info
                 }
             }
-            logger.info(f"get_layer_summary result: {result}")
+            print(f"get_layer_summary result: {result}")
             return result
         except Exception as e:
-            logger.error(f"get_layer_summary error: {str(e)}")
+            print(f"get_layer_summary error: {str(e)}")
             return {"success": False, "error": str(e)}
     
     def calculate_area(self, layer_name: str, units: str = "square_meters") -> Dict:
         """Calculate area for polygon features"""
-        logger.info(f"Calculating area for layer: {layer_name}")
+        print(f"Calculating area for layer: {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -349,15 +332,15 @@ class SpatialFunctions:
                     "feature_count": len(areas)
                 }
             }
-            logger.info(f"Area calculation completed: {result}")
+            print(f"Area calculation completed: {result}")
             return result
         except Exception as e:
-            logger.error(f"calculate_area error: {str(e)}")
+            print(f"calculate_area error: {str(e)}")
             return {"success": False, "error": str(e)}
     
     def calculate_length(self, layer_name: str, units: str = "meters") -> Dict:
         """Calculate length for line features"""
-        logger.info(f"Calculating length for layer: {layer_name}")
+        print(f"Calculating length for layer: {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -403,15 +386,15 @@ class SpatialFunctions:
                     "feature_count": len(lengths)
                 }
             }
-            logger.info(f"Length calculation completed: {result}")
+            print(f"Length calculation completed: {result}")
             return result
         except Exception as e:
-            logger.error(f"calculate_length error: {str(e)}")
+            print(f"calculate_length error: {str(e)}")
             return {"success": False, "error": str(e)}
     
     def get_centroid(self, layer_name: str) -> Dict:
         """Get centroid coordinates for all features in a layer"""
-        logger.info(f"Getting centroids for all features in layer: {layer_name}")
+        print(f"Getting centroids for all features in layer: {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -441,15 +424,15 @@ class SpatialFunctions:
                 "feature_count": len(centroids),
                 "centroids": centroids
             }
-            logger.info(f"Centroid calculation completed: {len(centroids)} features")
+            print(f"Centroid calculation completed: {len(centroids)} features")
             return result
         except Exception as e:
-            logger.error(f"get_centroid error: {str(e)}")
+            print(f"get_centroid error: {str(e)}")
             return {"success": False, "error": str(e)}
     
     def create_buffer(self, layer_name: str, distance: float, units: str = "meters") -> Dict:
         """Create buffer around features"""
-        logger.info(f"Creating buffer for layer: {layer_name}, distance: {distance} {units}")
+        print(f"Creating buffer for layer: {layer_name}, distance: {distance} {units}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -501,16 +484,16 @@ class SpatialFunctions:
                 "buffer_units": units
             }
             
-            logger.info(f"Buffer created successfully: {result}")
+            print(f"Buffer created successfully: {result}")
             return result
             
         except Exception as e:
-            logger.error(f"create_buffer error: {str(e)}")
+            print(f"create_buffer error: {str(e)}")
             return {"success": False, "error": str(e)}
     
     def spatial_join(self, target_layer: str, join_layer: str, join_operation: str = "intersect") -> Dict:
         """Perform spatial join between two layers"""
-        logger.info(f"Performing spatial join: {target_layer} with {join_layer}")
+        print(f"Performing spatial join: {target_layer} with {join_layer}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -565,15 +548,15 @@ class SpatialFunctions:
                     "output_path": output_path
                 }
             }
-            logger.info(f"Spatial join completed: {result}")
+            print(f"Spatial join completed: {result}")
             return result
         except Exception as e:
-            logger.error(f"spatial_join error: {str(e)}")
+            print(f"spatial_join error: {str(e)}")
             return {"success": False, "error": str(e)}
     
     def clip_layer(self, input_layer: str, clip_layer: str) -> Dict:
         """Clip input layer by clip layer boundary"""
-        logger.info(f"Clipping layer: {input_layer} with {clip_layer}")
+        print(f"Clipping layer: {input_layer} with {clip_layer}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -619,10 +602,10 @@ class SpatialFunctions:
                     "output_path": output_path
                 }
             }
-            logger.info(f"Clipping completed: {result}")
+            print(f"Clipping completed: {result}")
             return result
         except Exception as e:
-            logger.error(f"clip_layer error: {str(e)}")
+            print(f"clip_layer error: {str(e)}")
             return {"success": False, "error": str(e)}
     
     def calculate_distance(self, point1: Tuple[float, float], point2: Tuple[float, float], units: str = "meters") -> float:
@@ -665,13 +648,13 @@ class SpatialFunctions:
             return distance
             
         except Exception as e:
-            logger.error(f"calculate_distance error: {str(e)}")
+            print(f"calculate_distance error: {str(e)}")
             return 0.0
 
         
     def get_current_project_path(self) -> Dict:
         """Get the current ArcGIS Pro project path"""
-        logger.info("Getting current ArcGIS Pro project path")
+        print("Getting current ArcGIS Pro project path")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             path = aprx.filePath
@@ -680,15 +663,15 @@ class SpatialFunctions:
                 "success": True,
                 "project_path": path
             }
-            logger.info(f"Current project path: {path}")
+            print(f"Current project path: {path}")
             return result
         except Exception as e:
-            logger.error(f"get_current_project_path error: {str(e)}")
+            print(f"get_current_project_path error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def get_default_db_path(self) -> Dict:
         """Get the default geodatabase path for the current ArcGIS Pro project"""
-        logger.info("Getting default geodatabase path")
+        print("Getting default geodatabase path")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             default_gdb = aprx.defaultGeodatabase
@@ -697,15 +680,15 @@ class SpatialFunctions:
                 "success": True,
                 "default_geodatabase": default_gdb
             }
-            logger.info(f"Default geodatabase: {default_gdb}")
+            print(f"Default geodatabase: {default_gdb}")
             return result
         except Exception as e:
-            logger.error(f"get_default_db_path error: {str(e)}")
+            print(f"get_default_db_path error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def get_field_definitions(self, layer_name: str) -> Dict:
         """Get field definitions for a given layer"""
-        logger.info(f"Getting field definitions for layer: {layer_name}")
+        print(f"Getting field definitions for layer: {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -734,17 +717,17 @@ class SpatialFunctions:
                 "success": True,
                 "fields": fields
             }
-            logger.info(f"Field definitions: {fields}")
+            print(f"Field definitions: {fields}")
             return result
         except Exception as e:
-            logger.error(f"get_field_definitions error: {str(e)}")
+            print(f"get_field_definitions error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def get_layer_type(self, layer_name: str) -> Dict:
         """
         Get the type of a layer (Feature Layer, Raster, LAS, CAD, KML, Table, Service, etc.)
         """
-        logger.info(f"Getting layer type for: {layer_name}")
+        print(f"Getting layer type for: {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -799,15 +782,15 @@ class SpatialFunctions:
                 "success": True,
                 "layer_type": layer_type
             }
-            logger.info(f"Layer type: {layer_type}")
+            print(f"Layer type: {layer_type}")
             return result
         except Exception as e:
-            logger.error(f"get_layer_type error: {str(e)}")
+            print(f"get_layer_type error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def get_list_of_layer_fields(self, layer_name: str) -> Dict:
         """Get a list of field names for a given layer"""
-        logger.info(f"Getting list of fields for layer: {layer_name}")
+        print(f"Getting list of fields for layer: {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -828,15 +811,15 @@ class SpatialFunctions:
                 "success": True,
                 "fields": field_names
             }
-            logger.info(f"Field names: {field_names}")
+            print(f"Field names: {field_names}")
             return result
         except Exception as e:
-            logger.error(f"get_list_of_layer_fields error: {str(e)}")
+            print(f"get_list_of_layer_fields error: {str(e)}")
             return {"success": False, "error": str(e)}
         
     def get_data_source_info(self, layer_name: str) -> Dict:
         """Get data source information for a given layer"""
-        logger.info(f"Getting data source info for: {layer_name}")
+        print(f"Getting data source info for: {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -858,10 +841,10 @@ class SpatialFunctions:
                 "success": True,
                 "data_source": data_source
             }
-            logger.info(f"Data source: {data_source}")
+            print(f"Data source: {data_source}")
             return result
         except Exception as e:
-            logger.error(f"get_data_source_info error: {str(e)}")
+            print(f"get_data_source_info error: {str(e)}")
             return {"success": False, "error": str(e)}
         
     def create_nearest_neighbor_layer(self, layer_name: str, id_field: str = "OBJECTID") -> Dict:
@@ -870,7 +853,7 @@ class SpatialFunctions:
         Returns statistics on the nearest distance field.
         """
 
-        logger.info(f"Creating nearest neighbor layer for: {layer_name}")
+        print(f"Creating nearest neighbor layer for: {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -950,17 +933,17 @@ class SpatialFunctions:
                 "statistics": stats.get("statistics", {}),
                 "feature_count": len(nn_results)
             }
-            logger.info(f"Nearest neighbor layer created: {result}")
+            print(f"Nearest neighbor layer created: {result}")
             return result
         except Exception as e:
-            logger.error(f"create_nearest_neighbor_layer error: {str(e)}")
+            print(f"create_nearest_neighbor_layer error: {str(e)}")
             return {"success": False, "error": str(e)}
         
     def get_unique_values_count(self, layer_name: str, field_name: str) -> Dict:
         """
         Get the count of unique values in a field for a given layer.
         """
-        logger.info(f"Getting unique values count for {field_name} in {layer_name}")
+        print(f"Getting unique values count for {field_name} in {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -981,17 +964,17 @@ class SpatialFunctions:
                 "success": True,
                 "unique_count": len(values)
             }
-            logger.info(f"Unique values count: {result}")
+            print(f"Unique values count: {result}")
             return result
         except Exception as e:
-            logger.error(f"get_unique_values_count error: {str(e)}")
+            print(f"get_unique_values_count error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def calculate_empty_values(self, layer_name: str, field_name: str) -> Dict:
         """
         Calculate the number of empty (null or blank) values in a field for a given layer.
         """
-        logger.info(f"Calculating empty values for {field_name} in {layer_name}")
+        print(f"Calculating empty values for {field_name} in {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -1017,10 +1000,10 @@ class SpatialFunctions:
                 "empty_count": empty_count,
                 "total_count": total
             }
-            logger.info(f"Empty values calculation: {result}")
+            print(f"Empty values calculation: {result}")
             return result
         except Exception as e:
-            logger.error(f"calculate_empty_values error: {str(e)}")
+            print(f"calculate_empty_values error: {str(e)}")
             return {"success": False, "error": str(e)}
         
     def get_map_layers_info(self) -> Dict:
@@ -1028,7 +1011,7 @@ class SpatialFunctions:
         Get information about all layers in the current ArcGIS Pro map.
         Returns a list of dictionaries with layer name, type, visibility, and data source.
         """
-        logger.info("Getting map layers info")
+        print("Getting map layers info")
         try:
             if not ARCPY_AVAILABLE or not hasattr(arcpy, 'mp'):
                 return {"success": False, "error": "ArcGIS Pro environment not detected or arcpy.mp is not available. Please ensure ArcGIS Pro is running and the script is executed within its Python environment."}
@@ -1058,10 +1041,10 @@ class SpatialFunctions:
                 "success": True,
                 "layers": layers_info
             }
-            logger.info(f"Map layers info: {result}")
+            print(f"Map layers info: {result}")
             return result
         except Exception as e:
-            logger.error(f"get_map_layers_info error: {str(e)}")
+            print(f"get_map_layers_info error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def get_map_tables_info(self) -> Dict:
@@ -1069,7 +1052,7 @@ class SpatialFunctions:
         Get information about all standalone tables in the current ArcGIS Pro map.
         Returns a list of dictionaries with table name and data source.
         """
-        logger.info("Getting map tables info")
+        print("Getting map tables info")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -1093,10 +1076,10 @@ class SpatialFunctions:
                 "success": True,
                 "tables": tables_info
             }
-            logger.info(f"Map tables info: {result}")
+            print(f"Map tables info: {result}")
             return result
         except Exception as e:
-            logger.error(f"get_map_tables_info error: {str(e)}")
+            print(f"get_map_tables_info error: {str(e)}")
             return {"success": False, "error": str(e)}
             
     def get_values_frequency(self, layer_name: str, field_name: str) -> Dict:
@@ -1104,7 +1087,7 @@ class SpatialFunctions:
         Gets frequency distribution of field values.
         Returns value-count pairs sorted by frequency.
         """
-        logger.info(f"Getting values frequency for field {field_name} in layer {layer_name}")
+        print(f"Getting values frequency for field {field_name} in layer {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -1141,10 +1124,10 @@ class SpatialFunctions:
                 "frequency_distribution": sorted_frequencies
             }
             
-            logger.info(f"Values frequency: {result}")
+            print(f"Values frequency: {result}")
             return result
         except Exception as e:
-            logger.error(f"get_values_frequency error: {str(e)}")
+            print(f"get_values_frequency error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def get_value_frequency(self, layer_name: str, field_name: str, lookup_value: str) -> Dict:
@@ -1152,7 +1135,7 @@ class SpatialFunctions:
         Gets frequency distribution of a specific field value.
         Returns count for the specific lookup value.
         """
-        logger.info(f"Getting frequency for value '{lookup_value}' in field {field_name} of layer {layer_name}")
+        print(f"Getting frequency for value '{lookup_value}' in field {field_name} of layer {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -1185,10 +1168,10 @@ class SpatialFunctions:
                 "percentage": (value_count / total_count * 100) if total_count > 0 else 0
             }
             
-            logger.info(f"Value frequency: {result}")
+            print(f"Value frequency: {result}")
             return result
         except Exception as e:
-            logger.error(f"get_value_frequency error: {str(e)}")
+            print(f"get_value_frequency error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def get_coordinate_system(self, layer_name: str) -> Dict:
@@ -1196,7 +1179,7 @@ class SpatialFunctions:
         Gets coordinate system information for a layer.
         Returns CRS name, code, and units.
         """
-        logger.info(f"Getting coordinate system info for layer {layer_name}")
+        print(f"Getting coordinate system info for layer {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -1224,10 +1207,10 @@ class SpatialFunctions:
                 "datum": spatial_ref.datumName if hasattr(spatial_ref, 'datumName') else None
             }
             
-            logger.info(f"Coordinate system info: {result}")
+            print(f"Coordinate system info: {result}")
             return result
         except Exception as e:
-            logger.error(f"get_coordinate_system error: {str(e)}")
+            print(f"get_coordinate_system error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def get_attribute_table(self, layer_name: str, start_row: int = 0, row_count: int = 100) -> Dict:
@@ -1235,7 +1218,7 @@ class SpatialFunctions:
         Gets attribute table data with pagination.
         Returns tabular data array with specified rows.
         """
-        logger.info(f"Getting attribute table for layer {layer_name}, rows {start_row}-{start_row + row_count}")
+        print(f"Getting attribute table for layer {layer_name}, rows {start_row}-{start_row + row_count}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -1276,10 +1259,10 @@ class SpatialFunctions:
                 "data": table_data
             }
             
-            logger.info(f"Attribute table retrieved: {len(table_data)} rows")
+            print(f"Attribute table retrieved: {len(table_data)} rows")
             return result
         except Exception as e:
-            logger.error(f"get_attribute_table error: {str(e)}")
+            print(f"get_attribute_table error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def get_field_domain_values(self, layer_name: str, field_name: str) -> Dict:
@@ -1287,7 +1270,7 @@ class SpatialFunctions:
         Gets domain values for coded value fields.
         Returns code-description pairs.
         """
-        logger.info(f"Getting domain values for field {field_name} in layer {layer_name}")
+        print(f"Getting domain values for field {field_name} in layer {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -1336,10 +1319,10 @@ class SpatialFunctions:
                 "domain_values": domain_values
             }
             
-            logger.info(f"Field domain values: {result}")
+            print(f"Field domain values: {result}")
             return result
         except Exception as e:
-            logger.error(f"get_field_domain_values error: {str(e)}")
+            print(f"get_field_domain_values error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def calculate_new_field(self, layer_name: str, new_field_name: str, field_value: str, field_type: str = "TEXT") -> Dict:
@@ -1347,7 +1330,7 @@ class SpatialFunctions:
         Adds a new field to a layer and calculates its values using a Python expression.
         Returns new field name and processed feature count.
         """
-        logger.info(f"Adding and calculating new field {new_field_name} in layer {layer_name}")
+        print(f"Adding and calculating new field {new_field_name} in layer {layer_name}")
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
@@ -1392,10 +1375,10 @@ class SpatialFunctions:
                 "field_added": True
             }
             
-            logger.info(f"New field calculated: {result}")
+            print(f"New field calculated: {result}")
             return result
         except Exception as e:
-            logger.error(f"calculate_new_field error: {str(e)}")
+            print(f"calculate_new_field error: {str(e)}")
             return {"success": False, "error": str(e)}
     
     def analyze_layer_fields(self, layer_name: str) -> Dict:
@@ -1404,7 +1387,7 @@ class SpatialFunctions:
         Skips system fields and numeric fields where most values are unique (likely IDs).
         Returns detailed field metadata including data types, unique values, null percentages, etc.
         """
-        logger.info(f"Starting field analysis for layer: {layer_name}")
+        print(f"Starting field analysis for layer: {layer_name}")
 
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
@@ -1457,18 +1440,18 @@ class SpatialFunctions:
                             return False
                     int_like_ratio = sum(1 for v in values if _int_like(v)) / n
                     if name_hint and uniq >= 0.85 and int_like_ratio >= 0.85:
-                        logger.debug(f"Skipping {field.name} as ID-like numeric field (name hint)")
+                        print(f"Skipping {field.name} as ID-like numeric field (name hint)")
                         continue
                     # Heuristic skip for numeric ID-like fields
                     if self._is_id_like_numeric(values):
-                        logger.debug(f"Skipping {field.name} as ID-like numeric field")
+                        print(f"Skipping {field.name} as ID-like numeric field")
                         continue
 
                 # Smart skip for text fields that look like IDs (e.g., GUIDs, codes, numeric-as-text)
                 if field.type in ['String', 'Text'] and values:
                     text_values = [str(v).strip() for v in values]
                     if self._is_id_like_text(text_values):
-                        logger.debug(f"Skipping {field.name} as ID-like text field")
+                        print(f"Skipping {field.name} as ID-like text field")
                         continue
 
                 field_info = {
@@ -1504,11 +1487,11 @@ class SpatialFunctions:
                 "analysis_timestamp": self._get_timestamp()
             }
 
-            logger.info(f"Field analysis completed for {layer_name}: {len(field_analysis)} fields analyzed")
+            print(f"Field analysis completed for {layer_name}: {len(field_analysis)} fields analyzed")
             return result
 
         except Exception as e:
-            logger.error(f"analyze_layer_fields error: {str(e)}")
+            print(f"analyze_layer_fields error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     
@@ -1583,7 +1566,7 @@ class SpatialFunctions:
             return analysis
             
         except Exception as e:
-            logger.error(f"Error analyzing numeric field {field_name}: {str(e)}")
+            print(f"Error analyzing numeric field {field_name}: {str(e)}")
             return {"data_category": "numeric", "error": str(e)}
     
     def _analyze_text_field(self, layer, field_name: str, total_count: int) -> Dict:
@@ -1655,7 +1638,7 @@ class SpatialFunctions:
             return analysis
             
         except Exception as e:
-            logger.error(f"Error analyzing text field {field_name}: {str(e)}")
+            print(f"Error analyzing text field {field_name}: {str(e)}")
             return {"data_category": "text", "error": str(e)}
     
     def _analyze_date_field(self, layer, field_name: str, total_count: int) -> Dict:
@@ -1700,7 +1683,7 @@ class SpatialFunctions:
             return analysis
             
         except Exception as e:
-            logger.error(f"Error analyzing date field {field_name}: {str(e)}")
+            print(f"Error analyzing date field {field_name}: {str(e)}")
             return {"data_category": "date", "error": str(e)}
     
     def _analyze_generic_field(self, layer, field_name: str, total_count: int) -> Dict:
@@ -1727,7 +1710,7 @@ class SpatialFunctions:
             return analysis
             
         except Exception as e:
-            logger.error(f"Error analyzing generic field {field_name}: {str(e)}")
+            print(f"Error analyzing generic field {field_name}: {str(e)}")
             return {"data_category": "other", "error": str(e)}
 
     def _is_id_like_numeric(self, values: List[float]) -> bool:
@@ -1969,7 +1952,7 @@ class SpatialFunctions:
             return {"ai_insights": ai_insights}
             
         except Exception as e:
-            logger.error(f"Error generating AI insights for {field_name}: {str(e)}")
+            print(f"Error generating AI insights for {field_name}: {str(e)}")
             return {"ai_insights": {"error": str(e), "data_story": "Analysis unavailable"}}
     
     def _detect_numeric_patterns(self, field_info: Dict) -> Dict:
@@ -2001,7 +1984,7 @@ class SpatialFunctions:
             return patterns
             
         except Exception as e:
-            logger.error(f"Error detecting numeric patterns: {str(e)}")
+            print(f"Error detecting numeric patterns: {str(e)}")
             return {"error": str(e)}
     
     def _calculate_median(self, values: List[float]) -> float:
@@ -2077,7 +2060,7 @@ class SpatialFunctions:
         Analyzes a layer and generates a smart dashboard layout with recommended chart types.
         Returns a JSON object with the dashboard layout and saves it to smart_dashboard.json.
         """
-        logger.info(f"Generating smart dashboard layout for layer: {layer_name}")
+        print(f"Generating smart dashboard layout for layer: {layer_name}")
         
         try:
             # Step 1: Analyze the layer fields
@@ -2123,15 +2106,15 @@ class SpatialFunctions:
             if self.websocket_manager is not None:
                 try:
                     self.websocket_manager.send_dashboard_update(complete_dashboard)
-                    logger.info("Complete dashboard data sent to frontend via websocket_manager.")
+                    print("Complete dashboard data sent to frontend via websocket_manager.")
                 except Exception as ws_e:
-                    logger.error(f"Failed to send dashboard update via websocket_manager: {ws_e}")
+                    print(f"Failed to send dashboard update via websocket_manager: {ws_e}")
 
-            logger.info(f"Smart dashboard layout generated: {result}")
+            print(f"Smart dashboard layout generated: {result}")
             return result
             
         except Exception as e:
-            logger.error(f"generate_smart_dashboard_layout error: {str(e)}")
+            print(f"generate_smart_dashboard_layout error: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def recommend_chart_types(self, field_insights: Dict) -> Dict:
@@ -2233,7 +2216,7 @@ class SpatialFunctions:
         Returns validation results and the layout if valid.
         """
         if not isinstance(widget_list, list):
-            logger.error(f"Expected list of widgets, got: {type(widget_list)}")
+            print(f"Expected list of widgets, got: {type(widget_list)}")
             return {"success": False, "error": "Layout must be a list of widget objects"}
 
         if not widget_list:
@@ -2292,9 +2275,9 @@ class SpatialFunctions:
                 dashboard_data["dashboard_layout"] = widget_list
                 with open(dashboard_path, "w", encoding="utf-8") as f:
                     json.dump(dashboard_data, f, indent=4)
-                logger.info(f"Successfully saved optimized layout with {len(widget_list)} widgets (layout only, fields/chart_type must be pre-selected).")
+                print(f"Successfully saved optimized layout with {len(widget_list)} widgets (layout only, fields/chart_type must be pre-selected).")
             except Exception as e:
-                logger.error(f"Failed to save optimized dashboard layout: {e}")
+                print(f"Failed to save optimized dashboard layout: {e}")
                 return {"success": False, "error": f"Failed to save optimized layout: {e}", "optimized_layout": widget_list}
             return {"success": True, "optimized_layout": widget_list}
 
@@ -2329,7 +2312,7 @@ class SpatialFunctions:
                 })
             return {"success": True, "widgets": minimal_widgets}
         except Exception as e:
-            logger.error(f"Failed to load dashboard layout: {e}")
+            print(f"Failed to load dashboard layout: {e}")
             return {"success": False, "error": str(e)}
         
     def get_field_stories_and_samples(self) -> dict:
@@ -2441,4 +2424,3 @@ class SpatialFunctions:
             return {"success": True, "updated_count": updated, "charts": charts}
         except Exception as e:
             return {"success": False, "error": str(e)}
-    
