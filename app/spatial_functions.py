@@ -2401,6 +2401,7 @@ class SpatialFunctions:
         """
         Takes a list of {fields, chart_type} dicts (as from get_current_dashboard_charts),
         updates the first N widgets in the dashboard layout, and saves. No index/match logic.
+        The 'fields' can be a list of strings (legacy) or a dictionary mapping roles (e.g., x_axis, y_axis).
         """
         from pathlib import Path
         import json
@@ -2427,8 +2428,11 @@ class SpatialFunctions:
                 chart_type = chart.get("chart_type")
                 if not fields or not chart_type:
                     continue
+
+                # The new format for fields is a dictionary, e.g., {"x_axis": "field1", "y_axis": "field2"}
+                # The old format was a list of strings, e.g., ["field1", "field2"]
                 layout[i]["fields"] = fields
-                layout[i].pop("field", None)
+                layout[i].pop("field", None) # Remove legacy field
                 layout[i]["chart_type"] = chart_type
                 updated += 1
             if updated:
@@ -2438,7 +2442,54 @@ class SpatialFunctions:
                     dashboard_data = layout
                 with open(dashboard_path, "w", encoding="utf-8") as f:
                     json.dump(dashboard_data, f, indent=4)
+
+                # After updating, send the new layout to the frontend
+                if self.websocket_manager:
+                    asyncio.run(self.websocket_manager.send_dashboard_update(dashboard_data))
+
             return {"success": True, "updated_count": updated, "charts": charts}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def update_chart_by_id(self, widget_id: str, chart_config: dict) -> dict:
+        """
+        Updates a specific chart in the dashboard by its widget ID.
+        """
+        from pathlib import Path
+        import json
+        dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+        try:
+            if not dashboard_path.exists():
+                return {"success": False, "error": "Dashboard file not found"}
+            with open(dashboard_path, "r", encoding="utf-8") as f:
+                dashboard_data = json.load(f)
+
+            layout = dashboard_data.get("dashboard_layout", [])
+            widget_found = False
+            for widget in layout:
+                if widget.get("id") == widget_id:
+                    widget["chart_type"] = chart_config.get("chart_type", widget["chart_type"])
+                    widget["fields"] = chart_config.get("fields", widget["fields"])
+                    widget_found = True
+                    break
+
+            if not widget_found:
+                return {"success": False, "error": f"Widget with ID '{widget_id}' not found"}
+
+            dashboard_data["dashboard_layout"] = layout
+            with open(dashboard_path, "w", encoding="utf-8") as f:
+                json.dump(dashboard_data, f, indent=4)
+
+            # After updating, send a targeted update to the frontend
+            if self.websocket_manager:
+                update_message = {
+                    "type": "chart_update",
+                    "widget_id": widget_id,
+                    "chart_config": chart_config
+                }
+                asyncio.run(self.websocket_manager.send_json(update_message))
+
+            return {"success": True, "widget_id": widget_id, "chart_config": chart_config}
         except Exception as e:
             return {"success": False, "error": str(e)}
     

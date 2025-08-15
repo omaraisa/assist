@@ -536,15 +536,18 @@ class FunctionDeclaration:
         },
         "update_dashboard_charts": {
             "name": "update_dashboard_charts",
-            "description": "Takes a list of {fields, chart_type} dicts and updates the first N widgets in the dashboard layout, then saves to smart_dashboard.json.",
+            "description": "Updates the dashboard layout with a new set of charts. The `fields` parameter can be a list of strings (for simple charts) or a dictionary mapping field roles (e.g., x_axis, y_axis, category) for more complex charts.",
             "parameters": {
                 "charts": {
                     "type": "array",
-                    "description": "List of dicts with fields (array of strings) and chart_type (string)",
+                    "description": "List of chart configuration objects. Each object should have 'fields' and 'chart_type'.",
                     "items": {
                         "type": "object",
                         "properties": {
-                            "fields": {"type": "array", "items": {"type": "string"}},
+                            "fields": {
+                                "type": ["array", "object"],
+                                "description": "Either an array of field names or an object mapping roles like 'x_axis', 'y_axis' to field names."
+                            },
                             "chart_type": {"type": "string"}
                         },
                         "required": ["fields", "chart_type"]
@@ -555,6 +558,37 @@ class FunctionDeclaration:
             "returns": {
                 "updated_count": "Number of widgets updated",
                 "success": "True if updated, False if error"
+            }
+        },
+        "update_chart_by_id": {
+            "name": "update_chart_by_id",
+            "description": "Updates a single chart on the dashboard by its unique widget ID. This allows for targeted changes to a specific chart's type or data fields.",
+            "parameters": {
+                "widget_id": {
+                    "type": "string",
+                    "description": "The unique ID of the widget to update (e.g., 'widget_fieldName')."
+                },
+                "chart_config": {
+                    "type": "object",
+                    "description": "An object containing the new chart configuration. It must have 'chart_type' and 'fields'.",
+                    "properties": {
+                        "chart_type": {
+                            "type": "string",
+                            "description": "The new type for the chart (e.g., 'bar', 'pie', 'scatter')."
+                        },
+                        "fields": {
+                            "type": ["array", "object"],
+                            "description": "The new fields for the chart. Can be a list of strings or a dictionary mapping roles (e.g., x_axis, y_axis)."
+                        }
+                    },
+                    "required": ["chart_type", "fields"]
+                }
+            },
+            "required": ["widget_id", "chart_config"],
+            "returns": {
+                "success": "True if the chart was updated successfully.",
+                "widget_id": "The ID of the updated widget.",
+                "error": "A description of the error if the update failed."
             }
         },
         "recommend_chart_types": {

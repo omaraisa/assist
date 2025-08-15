@@ -209,6 +209,11 @@ class SmartAssistantClient {
             case 'dashboard_update':
                 this.handleDashboardUpdate(message.data);
                 break;
+
+            case 'chart_update':
+                this.dashboard.updateChart(message.widget_id, message.chart_config);
+                this.showDashboard();
+                break;
                 
             case 'error':
                 this.addMessage('System', `Error: ${message.message}`, 'error');
@@ -615,27 +620,57 @@ class DashboardRenderer {
         this.charts = new Map();
         this.currentData = null;
     }
-    
+
     render(dashboardData) {
-        if (!dashboardData || !dashboardData.charts) {
+        if (!dashboardData || !dashboardData.dashboard_layout) {
             this.showPlaceholder();
             return;
         }
-        
+
         this.currentData = dashboardData;
         this.clearGrid();
-        
-        // Create chart containers based on layout
-        dashboardData.charts.forEach((chart, index) => {
-            this.createChartContainer(chart, index);
+
+        const layout = dashboardData.dashboard_layout;
+
+        layout.forEach(chartConfig => {
+            this.createChartContainer(chartConfig);
         });
     }
-    
+
+    updateChart(widgetId, chartConfig) {
+        const chart = this.charts.get(widgetId);
+        const container = document.getElementById(widgetId);
+
+        if (!chart || !container) {
+            console.error(`Chart or container not found for widget ID: ${widgetId}`);
+            return;
+        }
+
+        const fullConfig = { ...this.currentData.dashboard_layout.find(c => c.id === widgetId), ...chartConfig };
+
+        container.querySelector('.chart-title').textContent = fullConfig.title || 'Chart';
+        container.querySelector('.chart-type').textContent = fullConfig.chart_type.toUpperCase();
+
+        const fieldName = (typeof fullConfig.fields === 'object' && !Array.isArray(fullConfig.fields))
+            ? (fullConfig.fields.x_axis || fullConfig.fields.category || Object.values(fullConfig.fields)[0])
+            : fullConfig.fields[0];
+        const fieldInfo = this.currentData.field_insights[fieldName] || {};
+
+        const chartData = this.prepareChartData(fullConfig, fieldInfo);
+        const chartOptions = this.getChartOptions(fullConfig, fieldInfo);
+
+        chart.data = chartData;
+        chart.options = chartOptions;
+        chart.config.type = this.mapChartType(fullConfig.chart_type);
+        chart.update();
+    }
+
     clearGrid() {
         this.gridElement.innerHTML = '';
+        this.charts.forEach(chart => chart.destroy());
         this.charts.clear();
     }
-    
+
     showPlaceholder() {
         this.gridElement.innerHTML = `
             <div class="dashboard-placeholder">
@@ -644,252 +679,165 @@ class DashboardRenderer {
             </div>
         `;
     }
-    
-    createChartContainer(chartConfig, index) {
+
+    createChartContainer(chartConfig) {
         const container = document.createElement('div');
         container.className = 'chart-container';
-        container.id = `chart-${index}`;
+        container.id = chartConfig.id;
+
+        container.style.gridColumn = `span ${chartConfig.w || 3}`;
+        container.style.gridRow = `span ${chartConfig.h || 2}`;
+        container.style.gridColumnStart = chartConfig.x + 1;
+        container.style.gridRowStart = chartConfig.y + 1;
         
-        // Apply grid positioning
-        const layout = chartConfig.layout || { size: 'medium' };
-        const size = layout.size || 'medium';
-        container.classList.add(`chart-${size}`);
-        
-        // Debug logging
-        console.log(`Creating chart ${index}:`, {
-            title: chartConfig.title,
-            size: size,
-            template: layout.template,
-            hasExplicitPosition: !!(layout.column && layout.row),
-            layout: layout
-        });
-        
-        // Only use explicit positioning if we have specific positioning data
-        // Otherwise let CSS grid auto-placement handle positioning with size classes
-        const useExplicitPositioning = layout.column && layout.row && 
-                                     layout.template && layout.template !== 'auto';
-        
-        if (useExplicitPositioning) {
-            const width = layout.width || this.getSizeWidth(size);
-            const height = layout.height || this.getSizeHeight(size);
-            container.style.gridColumn = `${layout.column} / span ${width}`;
-            container.style.gridRow = `${layout.row} / span ${height}`;
-            console.log(`Applied explicit positioning to chart ${index}:`, {
-                gridColumn: container.style.gridColumn,
-                gridRow: container.style.gridRow
-            });
-        } else {
-            console.log(`Using CSS auto-placement for chart ${index} with size class: chart-${size}`);
-        }
-        // Otherwise let CSS handle it with the size class
-        
+        const canvasId = `canvas-${chartConfig.id}`;
         container.innerHTML = `
             <div class="chart-header">
                 <h3 class="chart-title">${chartConfig.title || 'Chart'}</h3>
-                <span class="chart-type">${chartConfig.type.toUpperCase()}</span>
+                <span class="chart-type">${chartConfig.chart_type.toUpperCase()}</span>
             </div>
             <div class="chart-canvas-wrapper">
-                <canvas class="chart-canvas" id="canvas-${index}"></canvas>
+                <canvas class="chart-canvas" id="${canvasId}"></canvas>
             </div>
             <div class="chart-info">
                 ${chartConfig.description || ''}
             </div>
         `;
-        
+
         this.gridElement.appendChild(container);
-        
-        // Create the chart
+
         setTimeout(() => {
-            this.createChart(chartConfig, `canvas-${index}`);
+            this.createChart(chartConfig, canvasId);
         }, 100);
     }
-    
-    getSizeWidth(size) {
-        const widthMap = {
-            'small': 3,
-            'medium': 4,
-            'large': 6,
-            'wide': 8,
-            'tall': 4,
-            'full': 12
-        };
-        return widthMap[size] || 4;
-    }
-    
-    getSizeHeight(size) {
-        const heightMap = {
-            'small': 2,
-            'medium': 3,
-            'large': 4,
-            'wide': 3,
-            'tall': 5,
-            'full': 4
-        };
-        return heightMap[size] || 3;
-    }
-    
+
     createChart(config, canvasId) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
-        
+
         const ctx = canvas.getContext('2d');
         
-        // Prepare chart data and options based on type
-        const chartData = this.prepareChartData(config);
-        const chartOptions = this.getChartOptions(config);
+        const fieldName = (typeof config.fields === 'object' && !Array.isArray(config.fields))
+            ? (config.fields.x_axis || config.fields.category || Object.values(config.fields)[0])
+            : config.fields[0];
+
+        const fieldInfo = this.currentData.field_insights[fieldName] || {};
         
+        const chartData = this.prepareChartData(config, fieldInfo);
+        const chartOptions = this.getChartOptions(config, fieldInfo);
+
         try {
             const chart = new Chart(ctx, {
-                type: this.mapChartType(config.type),
+                type: this.mapChartType(config.chart_type),
                 data: chartData,
                 options: chartOptions
             });
-            
-            this.charts.set(canvasId, chart);
+
+            this.charts.set(config.id, chart);
         } catch (error) {
             console.error('Failed to create chart:', error);
             this.showChartError(canvas.parentElement, error.message);
         }
     }
-    
+
     mapChartType(type) {
         const typeMap = {
-            'pie': 'pie',
-            'donut': 'doughnut',
-            'bar': 'bar',
-            'column': 'bar',
-            'histogram': 'bar',
-            'line': 'line',
-            'scatter': 'scatter',
-            'area': 'line',
-            'box_plot': 'bar'
+            'pie': 'pie', 'donut': 'doughnut', 'bar': 'bar', 'column': 'bar',
+            'histogram': 'bar', 'line': 'line', 'scatter': 'scatter',
+            'area': 'line', 'box_plot': 'bar'
         };
         return typeMap[type] || 'bar';
     }
+
+    prepareChartData(config, fieldInfo) {
+        if (config.data) {
+             return this.preparePrecalculatedData(config);
+        }
+
+        const labels = fieldInfo.sample_values || [];
+        const values = labels.map(() => Math.random() * 100);
+
+        return {
+            labels: labels,
+            datasets: [{
+                label: fieldInfo.field_name || 'Value',
+                data: values,
+                backgroundColor: this.generateColors(labels.length),
+                borderWidth: 1
+            }]
+        };
+    }
     
-    prepareChartData(config) {
+    preparePrecalculatedData(config) {
         const data = config.data || {};
-        
-        // Handle different chart types
-        switch (config.type) {
-            case 'pie':
-            case 'donut':
+        const { chart_type, fields } = config;
+        const x_field = fields.x_axis || 'Category';
+        const y_field = fields.y_axis || 'Value';
+
+        switch (chart_type) {
+            case 'pie': case 'donut':
                 return {
                     labels: data.labels || [],
-                    datasets: [{
-                        data: data.values || [],
-                        backgroundColor: this.generateColors(data.labels?.length || 0),
-                        borderWidth: 1
-                    }]
+                    datasets: [{ data: data.values || [], backgroundColor: this.generateColors(data.labels?.length || 0), borderWidth: 1 }]
                 };
-                
-            case 'bar':
-            case 'column':
-            case 'histogram':
+            case 'bar': case 'column': case 'histogram':
                 return {
                     labels: data.labels || [],
-                    datasets: [{
-                        label: config.y_field || 'Count',
-                        data: data.values || [],
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
+                    datasets: [{ label: y_field, data: data.values || [], backgroundColor: 'rgba(54, 162, 235, 0.6)', borderColor: 'rgba(54, 162, 235, 1)', borderWidth: 1 }]
                 };
-                
-            case 'line':
-            case 'area':
+            case 'line': case 'area':
                 return {
                     labels: data.labels || [],
-                    datasets: [{
-                        label: config.y_field || 'Value',
-                        data: data.values || [],
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: config.type === 'area' ? 'rgba(75, 192, 192, 0.2)' : 'transparent',
-                        fill: config.type === 'area',
-                        tension: 0.1
-                    }]
+                    datasets: [{ label: y_field, data: data.values || [], borderColor: 'rgba(75, 192, 192, 1)', backgroundColor: chart_type === 'area' ? 'rgba(75, 192, 192, 0.2)' : 'transparent', fill: chart_type === 'area', tension: 0.1 }]
                 };
-                
             case 'scatter':
                 return {
-                    datasets: [{
-                        label: `${config.x_field} vs ${config.y_field}`,
-                        data: data.points || [],
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
+                    datasets: [{ label: `${x_field} vs ${y_field}`, data: data.points || [], backgroundColor: 'rgba(255, 99, 132, 0.6)', borderColor: 'rgba(255, 99, 132, 1)', borderWidth: 1 }]
                 };
-                
             default:
                 return { labels: [], datasets: [] };
         }
     }
-    
-    getChartOptions(config) {
+
+    getChartOptions(config, fieldInfo) {
+        const { chart_type, fields } = config;
+        const x_field = fields.x_axis || (fieldInfo ? fieldInfo.field_name : '');
+        const y_field = fields.y_axis || 'Value';
+
         const baseOptions = {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    display: config.type !== 'histogram',
-                    position: 'bottom'
-                },
-                title: {
-                    display: false
-                }
+                legend: { display: chart_type !== 'histogram', position: 'bottom' },
+                title: { display: false }
             }
         };
-        
-        // Add scale options for non-pie charts
-        if (!['pie', 'donut'].includes(config.type)) {
+
+        if (!['pie', 'donut'].includes(chart_type)) {
             baseOptions.scales = {
-                x: {
-                    title: {
-                        display: true,
-                        text: config.x_field || ''
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: config.y_field || 'Count'
-                    },
-                    beginAtZero: true
-                }
+                x: { title: { display: true, text: x_field } },
+                y: { title: { display: true, text: y_field }, beginAtZero: true }
             };
         }
-        
         return baseOptions;
     }
-    
+
     generateColors(count) {
         const colors = [
-            'rgba(255, 99, 132, 0.8)',
-            'rgba(54, 162, 235, 0.8)',
-            'rgba(255, 205, 86, 0.8)',
-            'rgba(75, 192, 192, 0.8)',
-            'rgba(153, 102, 255, 0.8)',
-            'rgba(255, 159, 64, 0.8)',
-            'rgba(199, 199, 199, 0.8)',
-            'rgba(83, 102, 255, 0.8)'
+            'rgba(255, 99, 132, 0.8)', 'rgba(54, 162, 235, 0.8)', 'rgba(255, 205, 86, 0.8)',
+            'rgba(75, 192, 192, 0.8)', 'rgba(153, 102, 255, 0.8)', 'rgba(255, 159, 64, 0.8)',
+            'rgba(199, 199, 199, 0.8)', 'rgba(83, 102, 255, 0.8)'
         ];
-        
         const result = [];
-        for (let i = 0; i < count; i++) {
-            result.push(colors[i % colors.length]);
-        }
+        for (let i = 0; i < count; i++) result.push(colors[i % colors.length]);
         return result;
     }
-    
+
     showChartError(container, message) {
         const wrapper = container.querySelector('.chart-canvas-wrapper');
-        wrapper.innerHTML = `
-            <div class="dashboard-error">
-                <strong>Chart Error:</strong> ${message}
-            </div>
-        `;
+        if (wrapper) {
+            wrapper.innerHTML = `<div class="dashboard-error"><strong>Chart Error:</strong> ${message}</div>`;
+        }
     }
 }
 
