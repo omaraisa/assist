@@ -20,14 +20,14 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <DockPanel Grid.Row="0" Margin="5">
-            <TextBlock Text="Server URL:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <TextBox Text="{Binding ServerUrl}" VerticalAlignment="Center"/>
+        <DockPanel Grid.Row="0" Margin="10">
+            <TextBlock Text="Server URL:" VerticalAlignment="Center" Margin="0,0,10,0" Style="{DynamicResource Esri_TextBlock}"/>
+            <TextBox Text="{Binding ServerUrl}" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBox}"/>
         </DockPanel>
 
-        <Button Grid.Row="1" Content="{Binding ConnectButtonText}" Command="{Binding ConnectCommand}" Margin="5"/>
+        <Button Grid.Row="1" Content="{Binding ConnectButtonText}" Command="{Binding ConnectCommand}" Margin="10,0,10,10" Style="{DynamicResource Esri_Button}"/>
 
-        <TextBox Grid.Row="2" Text="{Binding LogText}" IsReadOnly="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" Margin="5"/>
+        <TextBox Grid.Row="2" Text="{Binding LogText}" IsReadOnly="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" Margin="10,0,10,10" Style="{DynamicResource Esri_TextBox}"/>
 
     </Grid>
 </UserControl>

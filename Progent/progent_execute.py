@@ -14,13 +14,13 @@ from spatial_functions import SpatialFunctions
 
 def main():
     try:
-        if len(sys.argv) != 3:
-            print(json.dumps({"status": "error", "message": "Invalid number of arguments. Expected function_name and parameters_json."}))
-            return
+        input_data = sys.stdin.read()
+        data = json.loads(input_data)
+        function_name = data.get("function_name")
+        parameters = data.get("parameters", {})
 
-        function_name = sys.argv[1]
-        parameters_json = sys.argv[2]
-        parameters = json.loads(parameters_json)
+        if not function_name:
+            raise ValueError("function_name not provided in input JSON.")
 
         spatial_functions = SpatialFunctions(None)
 

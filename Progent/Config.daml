@@ -20,17 +20,17 @@
   <modules>
     <insertModule id="Progent_Module" className="Module1" autoLoad="false" caption="Module1">
       <tabs>
-        <tab id="Progent_Tab1" caption="Progent">
+        <tab id="Progent_Tab1" caption="AI Assistant">
           <group refID="Progent_Group1"/>
         </tab>
       </tabs>
       <groups>
-        <group id="Progent_Group1" caption="Controls" appearsOnAddInTab="false">
+        <group id="Progent_Group1" caption="Controls" appearsOnAddInTab="true">
           <button refID="Progent_Dockpane_ShowButton" />
         </group>
       </groups>
       <controls>
-        <button id="Progent_Dockpane_ShowButton" caption="Show Panel" className="DockpaneShowButton" keytip="P1" largeImage="Images\AddInDesktop32.png" image="Images\AddInDesktop16.png">
+        <button id="Progent_Dockpane_ShowButton" caption="Progent" className="DockpaneShowButton" keytip="P1" largeImage="Images\logo-dark.png" image="Images\logo-dark.png">
           <tooltip heading="Show Panel">
             Shows the Progent dockable panel.<disabledText />
           </tooltip>

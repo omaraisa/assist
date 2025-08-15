@@ -64,7 +64,6 @@ namespace Progent
 
         private async void HandleMessageReceived(string message)
         {
-            Log($"Received: {message}");
             try
             {
                 var json = JObject.Parse(message);
@@ -77,8 +76,17 @@ namespace Progent
                     var sessionId = json["session_id"]?.ToString();
                     var sourceClient = json["source_client"]?.ToString();
 
+                    Log($"Executing: {functionName}");
                     var pythonResultString = await ExecutePythonScriptAsync(functionName, parameters);
                     var pythonResult = JObject.Parse(pythonResultString);
+                    var status = pythonResult["status"]?.ToString();
+
+                    Log($"Status: {status}");
+                    if (status == "error")
+                    {
+                        var errorMessage = pythonResult["message"]?.ToString();
+                        Log($"Error: {errorMessage}");
+                    }
 
                     var response = new JObject
                     {
@@ -95,6 +103,7 @@ namespace Progent
                 }
                 else if (type == "get_software_state")
                 {
+                    Log("Requesting software state...");
                     var response = new JObject
                     {
                         ["type"] = "software_state",
@@ -119,19 +128,17 @@ namespace Progent
             {
                 var pathProExe = Path.GetDirectoryName(new Uri(Assembly.GetEntryAssembly().Location).AbsolutePath);
                 pathProExe = Uri.UnescapeDataString(pathProExe);
-                pathProExe = Path.Combine(pathProExe, @"Python\envs\arcgispro-py3");
+                var pythonExecutable = Path.Combine(pathProExe, @"Python\envs\arcgispro-py3\python.exe");
 
                 var pathPython = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).AbsolutePath);
                 pathPython = Uri.UnescapeDataString(pathPython);
-
                 var scriptPath = Path.Combine(pathPython, "progent_execute.py");
-                var myCommand = $"/c \"\"\"{Path.Combine(pathProExe, "python.exe")}\" \"{scriptPath}\" \"{functionName}\" \"{parameters.Replace("\"", "\\\"")}\"\"\"";
 
-
-                var procStartInfo = new ProcessStartInfo("cmd", myCommand)
+                var procStartInfo = new ProcessStartInfo(pythonExecutable, $"\"{scriptPath}\"")
                 {
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
+                    RedirectStandardInput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
@@ -139,12 +146,31 @@ namespace Progent
                 var proc = new Process { StartInfo = procStartInfo };
                 proc.Start();
 
+                using (var writer = proc.StandardInput)
+                {
+                    var input = new JObject
+                    {
+                        ["function_name"] = functionName,
+                        ["parameters"] = JObject.Parse(parameters)
+                    };
+                    writer.Write(input.ToString());
+                }
+
                 string result = proc.StandardOutput.ReadToEnd();
                 string error = proc.StandardError.ReadToEnd();
+
+                proc.WaitForExit();
+
                 if (!string.IsNullOrEmpty(error))
                 {
-                   return JsonConvert.SerializeObject(new { status = "error", message = error });
+                    return JsonConvert.SerializeObject(new { status = "error", message = error });
                 }
+
+                if (string.IsNullOrEmpty(result))
+                {
+                    return JsonConvert.SerializeObject(new { status = "error", message = "Python script returned no output." });
+                }
+
                 return result;
             });
         }
