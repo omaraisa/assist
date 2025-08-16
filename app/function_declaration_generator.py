@@ -4,12 +4,10 @@ Each AI provider has its own schema format for function/tool calling.
 """
 
 from typing import Dict, List, Any
-from .spatial_functions import SpatialFunctions
 
 class FunctionDeclarationGenerator:
     """Generate function declarations for different AI models"""
     def __init__(self):
-        self.spatial_functions = SpatialFunctions()
         self._function_definitions = self._generate_base_definitions()
     def _generate_base_definitions(self) -> Dict[str, Dict]:
         """Generate base function definitions with parameters and descriptions"""
