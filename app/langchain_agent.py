@@ -180,12 +180,25 @@ class LangChainAgent:
             if isinstance(parameters, dict) and "arguments" in parameters and len(parameters) == 1 and isinstance(parameters["arguments"], dict):
                 parameters = parameters["arguments"]
 
-            payload = {
-                "type": "execute_function",
-                "function_name": function_name,
-                "parameters": parameters,
-                "session_id": session_id  # Add session ID to track this specific call
-            }
+            # --- Start of new logic ---
+            if function_name == "create_buffer":
+                from .function_repo import CREATE_BUFFER_CODE
+                payload = {
+                    "type": "execute_function",
+                    "function_name": "create_buffer",
+                    "code": CREATE_BUFFER_CODE,
+                    "parameters": parameters,
+                    "session_id": session_id
+                }
+            else:
+                # Original payload for other functions
+                payload = {
+                    "type": "execute_function",
+                    "function_name": function_name,
+                    "parameters": parameters,
+                    "session_id": session_id
+                }
+            # --- End of new logic ---
             
             import asyncio
             
