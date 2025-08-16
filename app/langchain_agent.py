@@ -116,8 +116,9 @@ def _get_declarations_stateless(function_ids_str: str) -> str:
 class LangChainAgent:
     """Agent that uses LangChain to interact with AI models."""
 
-    def __init__(self, model_key: str, websocket_manager: Any):
-        self.spatial_functions = SpatialFunctions(websocket_manager)
+    def __init__(self, model_key: str, websocket_manager: Any, spatial_functions: Any):
+        self.spatial_functions = spatial_functions
+        self.websocket_manager = websocket_manager
         self.tools = self._get_tools()
         # Add callback handler for logging all agent steps
         self.callback_handler = LoggingCallbackHandler(logger)
@@ -125,7 +126,7 @@ class LangChainAgent:
 
     def _get_tools(self) -> List[Tool]:
         """Gets the tools for the LangChain agent."""
-        return [
+        tools = [
             Tool(
                 name="get_functions_declaration",
                 func=_get_declarations_stateless,
@@ -137,6 +138,16 @@ class LangChainAgent:
                 description="Executes a spatial function. Input must be a stringified dictionary with 'function_name' and parameters. Parameters can be provided either as top-level keys or inside an 'arguments' object.",
             ),
         ]
+        # Add fallback functions if they exist
+        if hasattr(self.spatial_functions, "echo"):
+            tools.append(
+                Tool(
+                    name="echo",
+                    func=self.spatial_functions.echo,
+                    description="A simple echo function that returns the message it received.",
+                )
+            )
+        return tools
 
 
     def _execute_spatial_function(self, tool_input_str: str) -> Dict[str, Any]:

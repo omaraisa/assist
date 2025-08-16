@@ -11,7 +11,6 @@ import asyncio
 import statistics
 import re
 from typing import Dict, Tuple, List
-from .ai.function_declarations import FunctionDeclaration
 from copy import deepcopy
 
 # Import arcpy only when available (in ArcGIS Pro environment)
@@ -22,10 +21,11 @@ except ImportError:
     ARCPY_AVAILABLE = False
     # Create a mock arcpy for testing purposes
     class MockArcpy:
+        def __init__(self):
+            self.mp = self
+
         def __getattr__(self, name):
-            def mock_method(*args, **kwargs):
-                raise ImportError("ArcPy is not available in this environment")
-            return mock_method
+            raise ImportError("ArcPy is not available in this environment")
     arcpy = MockArcpy()
 
 # Configure logging to write to the functions_log.txt file
@@ -88,23 +88,6 @@ class SpatialFunctions:
     def __init__(self, websocket_manager=None):
         self.websocket_manager = websocket_manager
         self.supported_formats = ['.shp', '.geojson', '.kml', '.gpx', '.gml']
-        
-
-    def get_functions_declaration(self, function_ids: list[int]) -> dict:
-        """
-        Returns the signature and description of another function by providing its function_id (integer).
-        """
-        functions_declaration = FunctionDeclaration.functions_declarations
-        
-        # Filter and return only the requested function declarations
-        result = {}
-        for func_id in function_ids:
-            if func_id in self.AVAILABLE_FUNCTIONS:
-                func_name = self.AVAILABLE_FUNCTIONS[func_id]
-                if func_name in functions_declaration:
-                    result[func_name] = functions_declaration[func_name]
-            
-        return result
         
         
     def select_by_attribute(self, layer_name, where_clause, selection_type="NEW_SELECTION"):

@@ -14,7 +14,10 @@ from .websocket_manager import WebSocketManager
 from .ai_service import AIService
 from .ai.function_declarations import FunctionDeclaration
 from .ai.ai_response_handler import AIResponseHandler
-from .spatial_functions import SpatialFunctions
+try:
+    from .spatial_functions import SpatialFunctions
+except ImportError:
+    from .fallback_functions import FallbackFunctions as SpatialFunctions
 from .config import settings
 from .monitoring import monitoring_service
 
@@ -40,8 +43,13 @@ templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 # Initialize services
 websocket_manager = WebSocketManager()
-ai_service = AIService(initial_model_key=settings.DEFAULT_AI_MODEL, websocket_manager=websocket_manager)
-spatial_functions = SpatialFunctions(websocket_manager=websocket_manager)
+spatial_functions_instance = SpatialFunctions(websocket_manager=websocket_manager)
+ai_service = AIService(
+    initial_model_key=settings.DEFAULT_AI_MODEL,
+    websocket_manager=websocket_manager,
+    spatial_functions=spatial_functions_instance
+)
+spatial_functions = spatial_functions_instance
 
 @app.get("/", response_class=HTMLResponse)
 async def get_chatbot(request: Request):

@@ -19,8 +19,9 @@ logger = logging.getLogger(__name__)
 class AIService:
     """Handles AI model interactions and response generation."""
 
-    def __init__(self, initial_model_key: str, websocket_manager: Any):
+    def __init__(self, initial_model_key: str, websocket_manager: Any, spatial_functions: Any):
         self.websocket_manager = websocket_manager
+        self.spatial_functions = spatial_functions
         self.langchain_agent = None
         self.set_model(initial_model_key)
     
@@ -32,7 +33,7 @@ class AIService:
         self.response_handler = AIResponseHandler(self.session, None)  # ollama_service will be set later
         
         # Initialize LangChain agent
-        self.langchain_agent = LangChainAgent(self.current_model, self.websocket_manager)
+        self.langchain_agent = LangChainAgent(self.current_model, self.websocket_manager, self.spatial_functions)
         
         # Initialize Ollama service if available
         logger.info(f"OLLAMA_AVAILABLE: {OLLAMA_AVAILABLE}")
