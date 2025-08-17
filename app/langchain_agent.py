@@ -109,6 +109,7 @@ class LangChainAgent:
     def __init__(self, model_key: str, websocket_manager: Any):
         self.websocket_manager = websocket_manager
         self.tools = self._get_tools()
+        self.client_id = None
         # Add callback handler for logging all agent steps
         self.callback_handler = LoggingCallbackHandler(logger)
         self.set_model(model_key)
@@ -174,7 +175,8 @@ class LangChainAgent:
                 "type": "execute_function",
                 "function_name": function_name,
                 "parameters": parameters,
-                "session_id": session_id  # Add session ID to track this specific call
+                "session_id": session_id,  # Add session ID to track this specific call
+                "source_client": self.client_id
             }
             
             import asyncio
@@ -279,6 +281,7 @@ class LangChainAgent:
         client_id: str = None
     ) -> Dict[str, Any]:
         """Generates a response using the LangChain agent, now including chat history as plain text."""
+        self.client_id = client_id
         logger.info(f"LangChain agent generating response for: {user_message[:100]}...")
 
         try:
