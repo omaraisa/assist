@@ -14,9 +14,9 @@ from .websocket_manager import WebSocketManager
 from .ai_service import AIService
 from .ai.function_declarations import FunctionDeclaration
 from .ai.ai_response_handler import AIResponseHandler
-from .spatial_functions import SpatialFunctions
 from .config import settings
 from .monitoring import monitoring_service
+from .langchain_agent import REVERSE_AVAILABLE_FUNCTIONS_MAP
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -41,16 +41,15 @@ templates = Jinja2Templates(directory=BASE_DIR / "templates")
 # Initialize services
 websocket_manager = WebSocketManager()
 ai_service = AIService(initial_model_key=settings.DEFAULT_AI_MODEL, websocket_manager=websocket_manager)
-spatial_functions = SpatialFunctions(websocket_manager=websocket_manager)
 
 @app.get("/", response_class=HTMLResponse)
 async def get_chatbot(request: Request):
     """Serve the main chatbot interface"""
     return templates.TemplateResponse(
-        "index.html", 
+        "index.html",
         {
             "request": request,
-            "available_functions": spatial_functions.AVAILABLE_FUNCTIONS
+            "available_functions": REVERSE_AVAILABLE_FUNCTIONS_MAP
         }
     )
 
@@ -92,7 +91,7 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket_manager.send_to_client(client_id, {
             "type": "config",
             "data": {
-                "available_functions": spatial_functions.AVAILABLE_FUNCTIONS,
+                "available_functions": REVERSE_AVAILABLE_FUNCTIONS_MAP,
                 "ai_models": settings.AI_MODELS,
                 "current_model": settings.DEFAULT_AI_MODEL
             }
@@ -133,9 +132,6 @@ async def handle_websocket_message(client_id: str, message: Dict):
             # Handle user chat message
             await handle_user_message(client_id, message.get("content", ""))
             
-        elif message_type == "function_request":
-            # Handle function execution request
-            await handle_function_request(client_id, message)
             
         elif message_type == "software_state":
             # Handle software state update from ArcGIS Pro
@@ -363,254 +359,6 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
             "type": "error",
             "message": f"Error executing functions: {str(e)}"        })
 
-async def handle_local_function_declaration(client_id: str, func_call: Dict, original_response: Dict, is_function_chain: bool):
-    """Handle get_functions_declaration function call locally without sending to ArcGIS Pro"""
-    try:
-        logger.info(f"Processing get_functions_declaration locally for client {client_id}")
-        
-        # Get function IDs from parameters and handle both array and string formats
-        function_ids_raw = func_call["parameters"]["function_ids"]
-        
-        # Handle case where function_ids comes as a string like "[30,31]" instead of array
-        if isinstance(function_ids_raw, str):
-            try:
-                # Remove brackets and split by comma, then convert to integers
-                if function_ids_raw.startswith('[') and function_ids_raw.endswith(']'):
-                    function_ids_raw = function_ids_raw[1:-1]  # Remove brackets
-                function_ids = [int(id.strip()) for id in function_ids_raw.split(',') if id.strip()]
-            except (ValueError, AttributeError) as e:
-                logger.error(f"Error parsing function_ids string '{function_ids_raw}': {e}")
-                function_ids = []
-        elif isinstance(function_ids_raw, list):
-            function_ids = [int(id) for id in function_ids_raw if str(id).isdigit()]
-        else:
-            logger.error(f"Unexpected function_ids format: {type(function_ids_raw)} - {function_ids_raw}")
-            function_ids = []
-        
-        logger.info(f"Parsed function IDs: {function_ids}")
-        
-        if not function_ids:
-            logger.error("No valid function IDs provided")
-            await websocket_manager.send_to_client(client_id, {
-                "type": "error",
-                "message": "No valid function IDs provided"
-            })
-            return
-        
-        # Create spatial functions instance to get the raw function declarations
-        spatial_functions = SpatialFunctions()
-        try:
-            raw_declarations = spatial_functions.get_functions_declaration(function_ids)
-            logger.info(f"Successfully retrieved {len(raw_declarations)} function declarations")
-        except Exception as e:
-            logger.error(f"Error retrieving function declarations: {e}")
-            await websocket_manager.send_to_client(client_id, {
-                "type": "error",
-                "message": f"Error retrieving function declarations: {str(e)}"
-            })
-            return
-        
-        # Process the raw declarations based on the AI model to format them correctly
-        ai_model = original_response.get("model", "gemini")  # Default to gemini if not specified
-        
-        # Convert raw declarations to appropriate format for the AI model
-        formatted_declarations = {}
-        if "openai" in ai_model.lower():
-            # Convert to OpenAI format
-            for func_name, func_def in raw_declarations.items():
-                openai_func = {
-                    "type": "function",
-                    "function": {
-                        "name": func_def["name"],
-                        "description": func_def["description"],
-                        "parameters": {
-                            "type": "object",
-                            "properties": {},
-                            "required": func_def["required"]
-                        }
-                    }
-                }
-                
-                # Convert parameters to OpenAI format
-                for param_name, param_def in func_def["parameters"].items():
-                    openai_param = {
-                        "type": param_def["type"],
-                        "description": param_def["description"]
-                    }
-                    
-                    if "enum" in param_def:
-                        openai_param["enum"] = param_def["enum"]
-                    if "items" in param_def:
-                        openai_param["items"] = param_def["items"]
-                    
-                    openai_func["function"]["parameters"]["properties"][param_name] = openai_param
-                
-                formatted_declarations[func_name] = openai_func
-                
-        elif "claude" in ai_model.lower():
-            # Convert to Claude format
-            for func_name, func_def in raw_declarations.items():
-                claude_tool = {
-                    "name": func_def["name"],
-                    "description": func_def["description"],
-                    "input_schema": {
-                        "type": "object",
-                        "properties": {},
-                        "required": func_def["required"]
-                    }
-                }
-                
-                # Convert parameters to Claude format
-                for param_name, param_def in func_def["parameters"].items():
-                    claude_param = {
-                        "type": param_def["type"],
-                        "description": param_def["description"]
-                    }
-                    
-                    if "enum" in param_def:
-                        claude_param["enum"] = param_def["enum"]
-                    if "items" in param_def:
-                        claude_param["items"] = param_def["items"]
-                    
-                    claude_tool["input_schema"]["properties"][param_name] = claude_param
-                
-                formatted_declarations[func_name] = claude_tool
-        else:
-            # Default to Gemini format or keep raw format
-            for func_name, func_def in raw_declarations.items():
-                gemini_func = {
-                    "name": func_def["name"],
-                    "description": func_def["description"],
-                    "parameters": {
-                        "type": "object",
-                        "properties": {},
-                        "required": func_def["required"]
-                    }
-                }
-                
-                # Convert parameters to Gemini format
-                for param_name, param_def in func_def["parameters"].items():
-                    gemini_param = {
-                        "type": param_def["type"],
-                        "description": param_def["description"]
-                    }
-                    
-                    if "enum" in param_def:
-                        gemini_param["enum"] = param_def["enum"]
-                    if "items" in param_def:
-                        gemini_param["items"] = param_def["items"]
-                    
-                    gemini_func["parameters"]["properties"][param_name] = gemini_param
-                
-                formatted_declarations[func_name] = gemini_func
-        
-        # Create the function result
-        function_result = {
-            "id": func_call["id"],
-            "name": func_call["name"],
-            "parameters": func_call["parameters"],
-            "result": {
-                "success": True,
-                "function_declarations": formatted_declarations,
-                "requested_function_ids": function_ids
-            }
-        }
-          # Handle the result the same way as other function results
-        if is_function_chain:
-            # This is part of a function chain - add to chain context
-            chain_context = websocket_manager.get_chain_context(client_id)
-            if chain_context:
-                chain_context["completed_functions"] += 1
-                chain_context["function_results"].append(function_result)
-                
-                logger.info(f"Function chain progress: {chain_context['completed_functions']}/{chain_context['total_functions']}")
-                
-                # CRITICAL: Dynamically inject discovered functions into AI's available functions
-                # This allows the AI to call the functions it just discovered
-                await inject_discovered_functions_for_client(client_id, raw_declarations)
-                
-                # Check if all functions in the chain are complete
-                if chain_context["completed_functions"] >= chain_context["total_functions"]:
-                    logger.info("All functions in chain completed. Sending batch results to LLM.")
-                    await handle_chain_completion(client_id, chain_context)                
-                else:
-                    logger.info(f"Waiting for {chain_context['total_functions'] - chain_context['completed_functions']} more functions to complete.")
-            else:
-                logger.error("Chain context not found - falling back to single function handling")
-                await handle_single_function_result_with_retry(client_id, function_result, original_response)
-        else:
-            # Single function call - inject discovered functions and handle immediately
-            await inject_discovered_functions_for_client(client_id, raw_declarations)
-            await handle_single_function_result_with_retry(client_id, function_result, original_response)
-            
-    except Exception as e:
-        logger.error(f"Error handling local function declaration: {str(e)}")
-        await websocket_manager.send_to_client(client_id, {
-            "type": "error",
-            "message": f"Error processing function declaration request: {str(e)}"
-        })
-
-async def execute_investigation_command(client_id: str, session_id: str, command: str):
-    """Execute a single investigation command"""
-    try:
-        # Parse the function call
-        function_call = ai_service.parse_function_call(command)
-        
-        if not function_call:
-            logger.error(f"Failed to parse function call: {command}")
-            return
-            
-        # Send function request to ArcGIS Pro
-        arcgis_client = websocket_manager.get_arcgis_client()
-        if not arcgis_client:
-            raise Exception("ArcGIS Pro is not connected")
-              # Prepare function execution message
-        function_message = {
-            "type": "execute_function",
-            "session_id": session_id,
-            "source_client": client_id,  # Add this crucial field!
-            "function_name": function_call["function_name"],
-            "parameters": function_call["parameters"]
-        }
-        
-        await websocket_manager.send_to_client(arcgis_client, function_message)
-        
-    except Exception as e:
-        logger.error(f"Error executing investigation command: {str(e)}")
-
-async def handle_function_request(client_id: str, message: Dict):
-    """Handle direct function execution requests"""
-    try:
-        function_name = message.get("function_name")
-        parameters = message.get("parameters", {})
-        
-        # Validate function name and exists
-        if not function_name:
-            raise Exception("Function name is required")
-        if not hasattr(spatial_functions, function_name):
-            raise Exception(f"Function '{function_name}' not found")
-            
-        # Get ArcGIS Pro client
-        arcgis_client = websocket_manager.get_arcgis_client()
-        if not arcgis_client:
-            raise Exception("ArcGIS Pro is not connected")
-            
-        # Send function execution request
-        function_message = {
-            "type": "execute_function",
-            "function_name": function_name,
-            "parameters": parameters,
-            "source_client": client_id
-        }
-        
-        await websocket_manager.send_to_client(arcgis_client, function_message)
-        
-    except Exception as e:
-        logger.error(f"Error handling function request: {str(e)}")
-        await websocket_manager.send_to_client(client_id, {
-            "type": "error",
-            "message": str(e)
-        })
 
 async def handle_software_state_update(client_id: str, state_data: Dict):
     """Handle software state updates from ArcGIS Pro"""

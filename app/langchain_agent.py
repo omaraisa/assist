@@ -37,45 +37,43 @@ from langchain.agents import create_react_agent, AgentExecutor
 from langchain.tools import Tool
 from langchain_core.messages import AIMessage, HumanMessage
 
-from .spatial_functions import SpatialFunctions
 from .config import settings
 from .ai.function_declarations import FunctionDeclaration
 
 logger = logging.getLogger(__name__)
 
+# Create a reverse mapping from function name to an ID.
+# The agent still uses IDs, so we need this to decouple from the old spatial_functions.py
+AVAILABLE_FUNCTIONS_MAP = {
+    name: i + 1 for i, name in enumerate(FunctionDeclaration.functions_declarations.keys())
+}
+REVERSE_AVAILABLE_FUNCTIONS_MAP = {v: k for k, v in AVAILABLE_FUNCTIONS_MAP.items()}
+
+
 def _get_declarations_stateless(function_ids_str: str) -> str:
     """
     A stateless helper to get function declarations.
-    It imports and accesses the necessary data directly to avoid state issues.
+    It uses the function_declarations.py module as the source of truth.
     """
     try:
-        # Access the class variables directly without creating an instance
-        available_functions = SpatialFunctions.AVAILABLE_FUNCTIONS
         functions_declaration = FunctionDeclaration.functions_declarations
         
-        # Parse the input - handle multiple formats: single int, single string, array of ints, array of strings
+        # Parse the input - handle multiple formats
         function_ids = []
-        
         if isinstance(function_ids_str, str):
             cleaned_input = function_ids_str.strip().strip('"').strip("'")
-            
-            # Try to parse as JSON array first (e.g., "[4]", '["4"]', "[4,5]")
             try:
                 parsed = ast.literal_eval(cleaned_input)
                 if isinstance(parsed, list):
-                    # Convert all elements to integers
                     function_ids = [int(x) for x in parsed]
                 else:
-                    # Single value
                     function_ids = [int(parsed)]
             except (ValueError, SyntaxError):
-                # If JSON parsing fails, try as single value
                 try:
                     function_ids = [int(cleaned_input)]
                 except ValueError:
                     return f"Error: Could not parse function IDs from input: {function_ids_str}"
         else:
-            # Direct input (shouldn't happen, but handle it)
             if isinstance(function_ids_str, list):
                 function_ids = [int(x) for x in function_ids_str]
             else:
@@ -83,12 +81,11 @@ def _get_declarations_stateless(function_ids_str: str) -> str:
         
         result = {}
         for func_id in function_ids:
-            if func_id in available_functions:
-                func_name = available_functions[func_id]
+            if func_id in REVERSE_AVAILABLE_FUNCTIONS_MAP:
+                func_name = REVERSE_AVAILABLE_FUNCTIONS_MAP[func_id]
                 if func_name in functions_declaration:
                     result[func_name] = functions_declaration[func_name]
         
-        # Format the result into a string
         if not result:
             return "No function declarations found for the given IDs."
 
@@ -117,7 +114,7 @@ class LangChainAgent:
     """Agent that uses LangChain to interact with AI models."""
 
     def __init__(self, model_key: str, websocket_manager: Any):
-        self.spatial_functions = SpatialFunctions(websocket_manager)
+        self.websocket_manager = websocket_manager
         self.tools = self._get_tools()
         # Add callback handler for logging all agent steps
         self.callback_handler = LoggingCallbackHandler(logger)
@@ -139,7 +136,7 @@ class LangChainAgent:
         ]
 
 
-    def _execute_spatial_function(self, tool_input_str: str) -> Dict[str, Any]:
+    def _execute_spatial_function(self, tool_input_str: str, session_id_for_test: str = None) -> Dict[str, Any]:
         """
         Parses the input string from the agent and sends the function request to ArcGIS Pro via websocket.
         Waits for and returns the actual function response from ArcGIS Pro.
@@ -147,8 +144,6 @@ class LangChainAgent:
         """
         function_name = "[unknown]"
         try:
-            # The agent can sometimes wrap its output in an extra layer of quotes.
-            # We parse it twice to be safe.
             temp_input = ast.literal_eval(tool_input_str)
             if isinstance(temp_input, str):
                 tool_input = ast.literal_eval(temp_input)
@@ -163,19 +158,20 @@ class LangChainAgent:
                 return {"error": "'function_name' must be provided in the input dictionary."}
 
             # Check if function exists in available functions
-            if function_name not in SpatialFunctions.AVAILABLE_FUNCTIONS.values():
+            if function_name not in FunctionDeclaration.functions_declarations:
                 return {"error": f"Function '{function_name}' is not available."}
 
             # Send function request to ArcGIS Pro via websocket and wait for response
-            arcgis_client = self.spatial_functions.websocket_manager.get_arcgis_client()
+            arcgis_client = self.websocket_manager.get_arcgis_client()
             if not arcgis_client:
                 return {"error": "ArcGIS Pro client not connected."}
 
             # Generate unique session ID for this function call
-            import uuid
-            session_id = str(uuid.uuid4())
+            session_id = session_id_for_test
+            if session_id is None:
+                import uuid
+                session_id = str(uuid.uuid4())
 
-            # Unwrap nested 'arguments' if present to avoid passing unexpected keyword 'arguments'
             parameters = tool_input
             if isinstance(parameters, dict) and "arguments" in parameters and len(parameters) == 1 and isinstance(parameters["arguments"], dict):
                 parameters = parameters["arguments"]
@@ -184,32 +180,27 @@ class LangChainAgent:
                 "type": "execute_function",
                 "function_name": function_name,
                 "parameters": parameters,
-                "session_id": session_id  # Add session ID to track this specific call
+                "session_id": session_id
             }
             
             import asyncio
             
-            # Send the request
-            asyncio.run(self.spatial_functions.websocket_manager.send_to_client(arcgis_client, payload))
+            asyncio.run(self.websocket_manager.send_to_client(arcgis_client, payload))
             
-            # Wait for the response with timeout
-            max_wait_time = 30  # Maximum 30 seconds wait
-            check_interval = 0.2  # Check every 200ms
+            max_wait_time = 30
+            check_interval = 0.2
             elapsed_time = 0
             
             while elapsed_time < max_wait_time:
-                if self.spatial_functions.websocket_manager.has_function_result(session_id):
-                    result = self.spatial_functions.websocket_manager.get_function_result(session_id)
+                if self.websocket_manager.has_function_result(session_id):
+                    result = self.websocket_manager.get_function_result(session_id)
                     if result:
-                        # Return the actual function result from ArcGIS Pro
                         return result.get("data", result)
                 
-                # Sleep and increment elapsed time
                 import time
                 time.sleep(check_interval)
                 elapsed_time += check_interval
             
-            # Timeout reached
             return {"error": f"Timeout waiting for response from ArcGIS Pro for function '{function_name}'. Please check if ArcGIS Pro is responsive."}
 
         except (SyntaxError, ValueError) as e:
@@ -304,7 +295,7 @@ class LangChainAgent:
             response = await self.agent_executor.ainvoke({
                 "input": user_message,
                 "arcgis_state": json.dumps(arcgis_state, indent=2),
-                "available_functions": json.dumps(self.spatial_functions.AVAILABLE_FUNCTIONS, indent=2),
+                "available_functions": json.dumps(REVERSE_AVAILABLE_FUNCTIONS_MAP, indent=2),
                 "chat_history": chat_history_str
             })
 

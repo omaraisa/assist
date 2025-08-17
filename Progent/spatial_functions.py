@@ -11,7 +11,6 @@ import asyncio
 import statistics
 import re
 from typing import Dict, Tuple, List
-from .ai.function_declarations import FunctionDeclaration
 from copy import deepcopy
 
 # Import arcpy only when available (in ArcGIS Pro environment)
@@ -37,8 +36,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
     handlers=[
-        logging.FileHandler(LOG_FILE_PATH, encoding="utf-8"),
-        logging.StreamHandler()
+        logging.FileHandler(LOG_FILE_PATH, encoding="utf-8")
     ]
 )
 logger = logging.getLogger(__name__)
@@ -88,23 +86,6 @@ class SpatialFunctions:
     def __init__(self, websocket_manager=None):
         self.websocket_manager = websocket_manager
         self.supported_formats = ['.shp', '.geojson', '.kml', '.gpx', '.gml']
-        
-
-    def get_functions_declaration(self, function_ids: list[int]) -> dict:
-        """
-        Returns the signature and description of another function by providing its function_id (integer).
-        """
-        functions_declaration = FunctionDeclaration.functions_declarations
-        
-        # Filter and return only the requested function declarations
-        result = {}
-        for func_id in function_ids:
-            if func_id in self.AVAILABLE_FUNCTIONS:
-                func_name = self.AVAILABLE_FUNCTIONS[func_id]
-                if func_name in functions_declaration:
-                    result[func_name] = functions_declaration[func_name]
-            
-        return result
         
         
     def select_by_attribute(self, layer_name, where_clause, selection_type="NEW_SELECTION"):
