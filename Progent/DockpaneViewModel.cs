@@ -66,35 +66,54 @@ namespace Progent
         private async void HandleMessageReceived(string message)
         {
             Log($"Received: {message}");
+            JObject json = null;
+            string sessionId = null;
+            string sourceClient = null;
+            string toolName = null;
+
             try
             {
-                var json = JObject.Parse(message);
+                json = JObject.Parse(message);
                 var type = json["type"]?.ToString();
+                sessionId = json["session_id"]?.ToString();
+                sourceClient = json["source_client"]?.ToString();
+                toolName = json["tool_name"]?.ToString();
 
-                if (type == "execute_function")
+                if (type == "execute_tool")
                 {
-                    var functionName = json["function_name"]?.ToString();
                     var parameters = json["parameters"]?.ToString() ?? "{}";
-                    var sessionId = json["session_id"]?.ToString();
-                    var sourceClient = json["source_client"]?.ToString();
 
-                    var pythonResultString = await ExecutePythonScriptAsync(functionName, parameters);
-                    // Log raw python output to help trace errors during execution
+                    var pythonResultString = await ExecutePythonScriptAsync(parameters);
                     Log($"Python result raw: {pythonResultString}");
-                    var pythonResult = JObject.Parse(pythonResultString);
+
+                    JObject pythonResult;
+                    try
+                    {
+                        pythonResult = JObject.Parse(pythonResultString);
+                    }
+                    catch (JsonReaderException ex)
+                    {
+                        // The python script output was not valid JSON. This is likely a crash/traceback.
+                        // Create a well-formed error response to send back to the server.
+                        pythonResult = new JObject
+                        {
+                            ["status"] = "error",
+                            ["message"] = $"Failed to parse Python script output. It may have crashed. Error: {ex.Message}",
+                            ["traceback"] = pythonResultString // The raw output is the traceback
+                        };
+                    }
 
                     var response = new JObject
                     {
-                        ["type"] = "function_response",
+                        ["type"] = "function_response", // Server expects this response type
                         ["session_id"] = sessionId,
                         ["source_client"] = sourceClient,
                         ["status"] = pythonResult["status"],
-                        ["function_name"] = functionName,
-                        ["data"] = pythonResult["data"],
+                        ["tool_name"] = toolName,
+                        ["data"] = pythonResult["data"] ?? "", // Ensure data is not null
                         ["software_context"] = await GetSoftwareContext()
                     };
 
-                    // If python returned an error payload, forward the message/traceback to the server
                     if (pythonResult["message"] != null)
                     {
                         response["message"] = pythonResult["message"];
@@ -126,7 +145,7 @@ namespace Progent
             }
         }
 
-        private Task<string> ExecutePythonScriptAsync(string functionName, string parameters)
+        private Task<string> ExecutePythonScriptAsync(string parameters)
         {
             return Task.Run(() =>
             {
@@ -139,24 +158,7 @@ namespace Progent
 
                 var scriptPath = Path.Combine(pathPython, "progent_execute.py");
 
-                // Ensure spatial_functions.py is available in the same directory as progent_execute.py
-                var spatialFunctionsSource = Path.Combine(pathPython, "spatial_functions.py");
-                var spatialFunctionsTarget = Path.Combine(Path.GetDirectoryName(scriptPath), "spatial_functions.py");
-                
-                if (File.Exists(spatialFunctionsSource) && !File.Exists(spatialFunctionsTarget))
-                {
-                    try
-                    {
-                        File.Copy(spatialFunctionsSource, spatialFunctionsTarget, overwrite: true);
-                        Log($"Copied spatial_functions.py to: {spatialFunctionsTarget}");
-                    }
-                    catch (Exception ex)
-                    {
-                        Log($"Warning: Could not copy spatial_functions.py: {ex.Message}");
-                    }
-                }
-
-                // Write parameters to temp file to avoid quoting/escaping issues
+                // The tool_name and parameters are now inside the JSON file.
                 var tempParamsPath = Path.Combine(Path.GetTempPath(), $"progent_params_{Guid.NewGuid().ToString()}.json");
                 File.WriteAllText(tempParamsPath, parameters);
 
@@ -165,7 +167,7 @@ namespace Progent
                 var procStartInfo = new ProcessStartInfo
                 {
                     FileName = pythonExePath,
-                    Arguments = $"\"{scriptPath}\" --paramsfile \"{tempParamsPath}\"",
+                    Arguments = $"\"{scriptPath}\" \"{tempParamsPath}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
