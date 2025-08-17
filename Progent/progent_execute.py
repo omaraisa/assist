@@ -20,6 +20,7 @@ except ImportError:
 def execute_arcpy_tool(tool_name: str, parameters: dict) -> dict:
     """
     Dynamically finds and executes an arcpy tool with the given parameters.
+    It searches for the tool in the top-level arcpy module and then in common toolboxes.
 
     Args:
         tool_name (str): The name of the arcpy tool to execute (e.g., 'Buffer_analysis').
@@ -29,27 +30,33 @@ def execute_arcpy_tool(tool_name: str, parameters: dict) -> dict:
         dict: A dictionary containing the result of the execution.
     """
     try:
-        # Check if the tool exists in arcpy.
-        # ArcPy tools can be in arcpy.<toolname> or arcpy.analysis.<toolname>,
-        # arcpy.management.<toolname>, etc. We need to handle this.
-        # A simple getattr(arcpy, tool_name) might not be enough.
-        # Let's try to import the toolbox alias to be safe.
-        # e.g. arcpy.analysis, arcpy.management
+        tool_function = None
 
-        # Most tools are in a toolbox, e.g., arcpy.analysis.Buffer
-        # The tool name from the AI might be "Buffer_analysis".
-        # The actual function is arcpy.Buffer_analysis.
-        # Let's assume for now the AI provides the correct full tool name.
-        if not hasattr(arcpy, tool_name):
-            # If the tool is not found, it might be in a sub-module like 'analysis' or 'management'
-            # The AI should be prompted to provide the full tool name like 'analysis.Buffer'
-            # but we can try to find it.
-            # This is too complex, the AI must provide the correct tool name.
-            # Example: Buffer_analysis, SpatialJoin_analysis
-            raise AttributeError(f"Tool '{tool_name}' not found directly in arcpy module.")
+        # 1. First, try to find the tool in the top-level arcpy module
+        if hasattr(arcpy, tool_name):
+            tool_function = getattr(arcpy, tool_name)
 
-        # Get the actual tool function from the arcpy module.
-        tool_function = getattr(arcpy, tool_name)
+        # 2. If not found, search in common toolboxes
+        else:
+            # List of common toolbox modules to search within arcpy
+            # Note: arcpy.<toolbox_alias> may not be loaded by default, so we import them.
+            toolboxes_to_check = [
+                "analysis", "management", "conversion", "data_management",
+                "cartography", "spatial_analyst", "network_analyst", "geoanalytics"
+            ]
+            for toolbox_alias in toolboxes_to_check:
+                try:
+                    # Dynamically import the toolbox module
+                    toolbox_module = importlib.import_module(f"arcpy.{toolbox_alias}")
+                    if hasattr(toolbox_module, tool_name):
+                        tool_function = getattr(toolbox_module, tool_name)
+                        break # Found it, so exit the loop
+                except ImportError:
+                    # This toolbox may not be available/licensed, just skip it
+                    continue
+
+        if tool_function is None:
+            raise AttributeError(f"Tool '{tool_name}' not found in arcpy or common toolboxes.")
 
         # Execute the tool using keyword arguments.
         # The parameters dictionary keys must match the arcpy tool's parameter names.

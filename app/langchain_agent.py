@@ -181,12 +181,12 @@ class LangChainAgent:
         **Instructions:**
         1.  Analyze the user's request to identify the appropriate ArcGIS Pro geoprocessing tool. For example, if the user asks to "make a buffer", you should use the `Buffer_analysis` tool.
         2.  Based on the user's request and the available layers from `arcgis_state`, determine the parameters for the tool.
-        3.  If the user's request is ambiguous or missing necessary information (e.g., they ask to create a buffer but don't specify a layer or distance), you MUST ask for clarification. Do not attempt to execute a tool with incomplete information.
+        3.  If the user's request is ambiguous or missing necessary information (e.g., they ask to create a buffer but don't specify a layer or distance), you MUST ask for clarification. Do not attempt to execute a tool with incomplete information. To ask a clarifying question, provide your question as the `Final Answer`.
         4.  Use the `execute_arcpy_tool` to run the tool. The input for this tool is a JSON object with two keys: "tool_name" and "parameters".
         5.  The tool name must be the correct, full name of an `arcpy` tool (e.g., `Buffer_analysis`, `SpatialJoin_analysis`, `Clip_analysis`).
         6.  The `parameters` must be a dictionary where keys are the parameter names and values are the corresponding values.
 
-        **Example Workflow:**
+        **Example Workflow 1: Executing a tool**
         Question: Create a 500 meter buffer around the 'cities' layer and call it 'cities_buffer'.
         Thought: The user wants to create a buffer. The `arcpy` tool for this is `Buffer_analysis`. I have all the required parameters: the input layer ('cities'), the distance ('500 meters'), and the output name ('cities_buffer'). I can now call the `execute_arcpy_tool`.
         Action: execute_arcpy_tool
@@ -194,6 +194,11 @@ class LangChainAgent:
         Observation: {{"status": "success", "data": {{"message": "Tool 'Buffer_analysis' executed successfully.", "output_path": "C:\\Users\\...\\pro_project.gdb\\cities_buffer"}}}}
         Thought: The tool executed successfully and the buffer was created. I will now inform the user.
         Final Answer: The 500-meter buffer for the 'cities' layer has been created successfully and saved as 'cities_buffer'. It has been added to your map.
+
+        **Example Workflow 2: Asking a clarifying question**
+        Question: Can you make a buffer for the roads?
+        Thought: The user wants to create a buffer for the 'roads' layer. However, they have not specified a buffer distance or an output name. I need to ask for this information.
+        Final Answer: I can create a buffer for the 'roads' layer, but I need a bit more information. What distance should the buffer be (e.g., 500 meters, 1 mile), and what would you like to name the new output layer?
 
         **Important:**
         - Do NOT use markdown formatting, code blocks, or triple backticks (```) in your final answers.
