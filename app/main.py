@@ -12,11 +12,9 @@ import asyncio
 
 from .websocket_manager import WebSocketManager
 from .ai_service import AIService
-from .ai.function_declarations import FunctionDeclaration
 from .ai.ai_response_handler import AIResponseHandler
 from .config import settings
 from .monitoring import monitoring_service
-from .langchain_agent import REVERSE_AVAILABLE_FUNCTIONS_MAP
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -48,8 +46,7 @@ async def get_chatbot(request: Request):
     return templates.TemplateResponse(
         "index.html",
         {
-            "request": request,
-            "available_functions": REVERSE_AVAILABLE_FUNCTIONS_MAP
+            "request": request
         }
     )
 
@@ -91,7 +88,6 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket_manager.send_to_client(client_id, {
             "type": "config",
             "data": {
-                "available_functions": REVERSE_AVAILABLE_FUNCTIONS_MAP,
                 "ai_models": settings.AI_MODELS,
                 "current_model": settings.DEFAULT_AI_MODEL
             }
@@ -310,12 +306,6 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
                 })
                 return
                 
-            # Handle get_functions_declaration locally instead of sending to ArcGIS Pro
-            if func_call["name"] == "get_functions_declaration":
-                function_ids_param = func_call.get("parameters", {}).get("function_ids", "unknown")
-                logger.info(f"Handling get_functions_declaration locally with IDs: {function_ids_param}")
-                await handle_local_function_declaration(client_id, func_call, original_response, is_function_chain)
-                continue
             # Create function execution request
             function_request = {
                 "type": "execute_function",

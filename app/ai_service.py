@@ -169,55 +169,6 @@ class AIService:
                     "role": msg["role"],
                     "content": msg["content"]
                 })
-          # Ensure get_functions_declaration is always available in the conversation
-        # Check if it's already been declared in the conversation history
-        has_functions_declaration = False
-        for msg in messages:
-            content = msg.get("content", "")
-            # Check if the message contains the get_functions_declaration definition
-            if ("get_functions_declaration" in content and 
-                "Function Declaration:" in content and 
-                "function_ids" in content):
-                has_functions_declaration = True
-                break
-        
-        # Also check the conversation history for function declarations
-        if not has_functions_declaration:
-            for msg in conversation_history[-20:]:  # Check last 20 messages
-                content = msg.get("content", "")
-                if ("get_functions_declaration" in content and 
-                    "Function Declaration:" in content and 
-                    "function_ids" in content):
-                    has_functions_declaration = True
-                    break
-        
-        # If not found in history, add it as a system-provided function declaration
-        if not has_functions_declaration:
-            functions_declaration_info = {
-                "role": "system",
-                "content": '''AVAILABLE FUNCTION: get_functions_declaration
-
-Function Declaration:
-{
-    "name": "get_functions_declaration",
-    "description": "Get function declarations for specific functions by their IDs from the available functions list. MAKE SURE TO SEND VALID IDs. AVAILABLE FUNCTIONS: 1: select_by_attribute, 2: select_by_location, 3: get_field_statistics, 4: get_layer_summary, 5: calculate_area, 6: calculate_length, 7: get_centroid, 8: create_buffer, 9: spatial_join, 10: clip_layer, 11: calculate_distance, 12: get_current_project_path, 13: get_default_db_path, 14: get_field_definitions, 15: get_layer_type, 16: get_list_of_layer_fields, 17: get_data_source_info, 18: create_nearest_neighbor_layer, 19: get_unique_values_count, 20: calculate_empty_values, 21: get_map_layers_info, 22: get_map_tables_info, 23: get_values_frequency, 24: get_value_frequency, 25: get_coordinate_system, 26: get_attribute_table, 27: get_field_domain_values, 28: calculate_new_field, 29: analyze_layer_fields, 30: generate_smart_dashboard_layout, 31: optimize_dashboard_layout, 34: get_current_dashboard_layout, 35: get_field_stories_and_samples, 36: get_current_dashboard_charts, 37: update_dashboard_charts",   
-    "parameters": {
-        "function_ids": {
-            "type": "array",
-            "description": "Array of function IDs (integers) to get declarations for",
-            "items": {
-                "type": "integer"
-            }
-        }
-    },
-    "required": ["function_ids"]
-}
-
-This function is ALWAYS available to you. You can call it at any time to get declarations for other functions.'''
-            }
-            messages.append(functions_declaration_info)
-            logger.info("Added get_functions_declaration availability to conversation")
-        
         # Add current user message (avoid duplicates)
         if not messages or messages[-1]["content"] != user_message or messages[-1]["role"] != "user":
             messages.append({"role": "user", "content": user_message})
