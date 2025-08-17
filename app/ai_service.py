@@ -531,17 +531,3 @@ This function is ALWAYS available to you. You can call it at any time to get dec
         # No more extra system messages for agent mode
         logger.info(f"Processing {len(function_results)} function results in handle_function_response (agent mode, no extra system messages)")
         return await self.response_handler.handle_function_response(messages, function_results)
-
-    def add_dynamic_functions_for_client(self, client_id: str, discovered_functions: Dict):
-        """Add dynamically discovered functions for a specific client"""
-        if client_id not in self.client_dynamic_functions:
-            self.client_dynamic_functions[client_id] = {}
-        
-        self.client_dynamic_functions[client_id].update(discovered_functions)
-        logger.info(f"Added {len(discovered_functions)} dynamic functions for client {client_id}")
-    
-    def clear_dynamic_functions_for_client(self, client_id: str):
-        """Clear dynamic functions for a client (e.g., when conversation ends)"""
-        if client_id in self.client_dynamic_functions:
-            del self.client_dynamic_functions[client_id]
-            logger.info(f"Cleared dynamic functions for client {client_id}")

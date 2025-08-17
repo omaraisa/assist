@@ -249,9 +249,10 @@ class LangChainAgent:
         Here is a list of available functions you can use:
         {available_functions}
 
-        To use a function, you must first get its declaration using the `get_functions_declaration` tool with the function's ID.
-        The declaration will be returned as a string, describing the function, its parameters, and their types.
-        Once you have the declaration, you can execute the function using the `execute_spatial_function` tool.
+        Your goal is to answer the user's question by executing one or more of these functions.
+        - Use the `execute_spatial_function` tool to run a function.
+        - If you are unsure about the parameters of a function, you can use the `get_functions_declaration` tool with the function's ID to get more details.
+        - Try to be efficient. If you have enough information to call `execute_spatial_function` directly, do so.
 
         IMPORTANT: Do NOT use markdown formatting, code blocks, or triple backticks (```) in your responses. Provide plain text answers only.
 
