@@ -73,11 +73,15 @@ namespace Progent
                 if (type == "execute_function")
                 {
                     var functionName = json["function_name"]?.ToString();
-                    var parameters = json["parameters"]?.ToString() ?? "{}";
+                    var parameters = json["parameters"] as JObject;
                     var sessionId = json["session_id"]?.ToString();
                     var sourceClient = json["source_client"]?.ToString();
 
-                    var pythonResultString = await ExecutePythonScriptAsync(functionName, parameters);
+                    // Construct the Python code to execute
+                    var parameterString = string.Join(", ", parameters.Properties().Select(p => $"{p.Name}='{p.Value.ToString()}'"));
+                    string codeToExecute = $"result = {functionName}({parameterString})";
+
+                    var pythonResultString = await ExecuteInProToolAsync(codeToExecute);
                     var pythonResult = JObject.Parse(pythonResultString);
 
                     var response = new JObject
@@ -113,39 +117,31 @@ namespace Progent
             }
         }
 
-        private Task<string> ExecutePythonScriptAsync(string functionName, string parameters)
+        private async Task<string> ExecuteInProToolAsync(string codeToExecute)
         {
-            return Task.Run(() =>
+            return await QueuedTask.Run(async () =>
             {
-                var pathProExe = Path.GetDirectoryName(new Uri(Assembly.GetEntryAssembly().Location).AbsolutePath);
-                pathProExe = Uri.UnescapeDataString(pathProExe);
-                pathProExe = Path.Combine(pathProExe, @"Python\envs\arcgispro-py3");
+                var toolPath = Path.Combine(Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).AbsolutePath), "ProgentTools.pyt");
+                var parameters = Geoprocessing.MakeValueArray(codeToExecute);
+                var result = await Geoprocessing.ExecuteToolAsync($"{toolPath}\\progent.RunPythonCode", parameters);
 
-                var pathPython = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).AbsolutePath);
-                pathPython = Uri.UnescapeDataString(pathPython);
-
-                var scriptPath = Path.Combine(pathPython, "progent_execute.py");
-                var myCommand = $"/c \"\"\"{Path.Combine(pathProExe, "python.exe")}\" \"{scriptPath}\" \"{functionName}\" \"{parameters.Replace("\"", "\\\"")}\"\"\"";
-
-
-                var procStartInfo = new ProcessStartInfo("cmd", myCommand)
+                // Find the JSON response message
+                string jsonResponse = null;
+                foreach (var message in result.Messages)
                 {
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                var proc = new Process { StartInfo = procStartInfo };
-                proc.Start();
-
-                string result = proc.StandardOutput.ReadToEnd();
-                string error = proc.StandardError.ReadToEnd();
-                if (!string.IsNullOrEmpty(error))
-                {
-                   return JsonConvert.SerializeObject(new { status = "error", message = error });
+                    if (message.Text.Trim().StartsWith("{"))
+                    {
+                        jsonResponse = message.Text;
+                        break;
+                    }
                 }
-                return result;
+
+                if (jsonResponse == null)
+                {
+                    return JsonConvert.SerializeObject(new { status = "error", message = "Tool did not return a valid JSON response." });
+                }
+
+                return jsonResponse;
             });
         }
 
