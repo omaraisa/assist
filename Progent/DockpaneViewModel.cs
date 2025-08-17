@@ -14,6 +14,7 @@ using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Core;
 using System.Linq;
 using System.Collections.Generic;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
 
 namespace Progent
 {
@@ -78,6 +79,8 @@ namespace Progent
                     var sourceClient = json["source_client"]?.ToString();
 
                     var pythonResultString = await ExecutePythonScriptAsync(functionName, parameters);
+                    // Log raw python output to help trace errors during execution
+                    Log($"Python result raw: {pythonResultString}");
                     var pythonResult = JObject.Parse(pythonResultString);
 
                     var response = new JObject
@@ -90,6 +93,16 @@ namespace Progent
                         ["data"] = pythonResult["data"],
                         ["software_context"] = await GetSoftwareContext()
                     };
+
+                    // If python returned an error payload, forward the message/traceback to the server
+                    if (pythonResult["message"] != null)
+                    {
+                        response["message"] = pythonResult["message"];
+                    }
+                    if (pythonResult["traceback"] != null)
+                    {
+                        response["traceback"] = pythonResult["traceback"];
+                    }
 
                     await _webSocketService.SendMessageAsync(response.ToString());
                 }
@@ -125,11 +138,34 @@ namespace Progent
                 pathPython = Uri.UnescapeDataString(pathPython);
 
                 var scriptPath = Path.Combine(pathPython, "progent_execute.py");
-                var myCommand = $"/c \"\"\"{Path.Combine(pathProExe, "python.exe")}\" \"{scriptPath}\" \"{functionName}\" \"{parameters.Replace("\"", "\\\"")}\"\"\"";
 
-
-                var procStartInfo = new ProcessStartInfo("cmd", myCommand)
+                // Ensure spatial_functions.py is available in the same directory as progent_execute.py
+                var spatialFunctionsSource = Path.Combine(pathPython, "spatial_functions.py");
+                var spatialFunctionsTarget = Path.Combine(Path.GetDirectoryName(scriptPath), "spatial_functions.py");
+                
+                if (File.Exists(spatialFunctionsSource) && !File.Exists(spatialFunctionsTarget))
                 {
+                    try
+                    {
+                        File.Copy(spatialFunctionsSource, spatialFunctionsTarget, overwrite: true);
+                        Log($"Copied spatial_functions.py to: {spatialFunctionsTarget}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Log($"Warning: Could not copy spatial_functions.py: {ex.Message}");
+                    }
+                }
+
+                // Write parameters to temp file to avoid quoting/escaping issues
+                var tempParamsPath = Path.Combine(Path.GetTempPath(), $"progent_params_{Guid.NewGuid().ToString()}.json");
+                File.WriteAllText(tempParamsPath, parameters);
+
+                var pythonExePath = Path.Combine(pathProExe, "python.exe");
+
+                var procStartInfo = new ProcessStartInfo
+                {
+                    FileName = pythonExePath,
+                    Arguments = $"\"{scriptPath}\" --paramsfile \"{tempParamsPath}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -137,15 +173,27 @@ namespace Progent
                 };
 
                 var proc = new Process { StartInfo = procStartInfo };
-                proc.Start();
-
-                string result = proc.StandardOutput.ReadToEnd();
-                string error = proc.StandardError.ReadToEnd();
-                if (!string.IsNullOrEmpty(error))
+                try
                 {
-                   return JsonConvert.SerializeObject(new { status = "error", message = error });
+                    proc.Start();
+
+                    string result = proc.StandardOutput.ReadToEnd();
+                    string error = proc.StandardError.ReadToEnd();
+                    proc.WaitForExit();
+
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        // Return well-formed JSON so the caller can parse and forward message/traceback
+                        return JsonConvert.SerializeObject(new { status = "error", message = error });
+                    }
+
+                    return result;
                 }
-                return result;
+                finally
+                {
+                    // Cleanup temp params file
+                    try { if (File.Exists(tempParamsPath)) File.Delete(tempParamsPath); } catch { }
+                }
             });
         }
 

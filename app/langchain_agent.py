@@ -118,6 +118,8 @@ class LangChainAgent:
         self.tools = self._get_tools()
         # Add callback handler for logging all agent steps
         self.callback_handler = LoggingCallbackHandler(logger)
+        # Track the current client id for function calls so we can set source_client
+        self._current_request_client_id = None
         self.set_model(model_key)
 
     def _get_tools(self) -> List[Tool]:
@@ -180,7 +182,8 @@ class LangChainAgent:
                 "type": "execute_function",
                 "function_name": function_name,
                 "parameters": parameters,
-                "session_id": session_id
+                "session_id": session_id,
+                "source_client": self._current_request_client_id
             }
             
             import asyncio
@@ -292,12 +295,18 @@ class LangChainAgent:
                     chat_history_lines.append(f"Assistant: {msg.get('content','')}")
             chat_history_str = "\n".join(chat_history_lines)
 
+            # Record the client id so tools (like execute_spatial_function) can set source_client
+            self._current_request_client_id = client_id
+
             response = await self.agent_executor.ainvoke({
                 "input": user_message,
                 "arcgis_state": json.dumps(arcgis_state, indent=2),
                 "available_functions": json.dumps(REVERSE_AVAILABLE_FUNCTIONS_MAP, indent=2),
                 "chat_history": chat_history_str
             })
+
+            # Clear after invocation
+            self._current_request_client_id = None
 
             return response
         except Exception as e:

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArcGIS defaultAssembly="Progent.dll"
+        defaultNamespace="Progent"
+        xmlns="http://schemas.esri.com/DADF/Registry"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+
+  <AddInInfo id="{8f729db9-5d9d-4853-8b9b-ffe35b464a9d}" version="1.0" desktopVersion="3.2.49743">
+    <Name>Progent</Name>   
+    <Description>Progent description</Description>
+    <Image>Images\AddinDesktop32.png</Image>
+    <Author>oelhag</Author>
+    <Company>HP Inc.</Company>
+    <Date>8/13/2025 12:56:27 PM</Date>
+    <Subject>Framework</Subject>
+    <!-- Note subject can be one or more of these topics:
+                    Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
+  </AddInInfo>
+
+  <modules>
+    <insertModule id="Progent_Module" className="Module1" autoLoad="false" caption="Module1">
+      <tabs>
+        <tab id="Progent_Tab1" caption="Progent">
+          <group refID="Progent_Group1"/>
+        </tab>
+      </tabs>
+      <groups>
+        <group id="Progent_Group1" caption="Controls" appearsOnAddInTab="false">
+          <button refID="Progent_Dockpane_ShowButton" />
+        </group>
+      </groups>
+      <controls>
+        <button id="Progent_Dockpane_ShowButton" caption="Show Panel" className="DockpaneShowButton" keytip="P1" largeImage="Images\AddInDesktop32.png" image="Images\AddInDesktop16.png">
+          <tooltip heading="Show Panel">
+            Shows the Progent dockable panel.<disabledText />
+          </tooltip>
+        </button>
+      </controls>
+      <dockPanes>
+        <dockPane id="Progent_Dockpane" caption="Progent" className="DockpaneViewModel" keytip="DP1">
+          <content className="DockpaneView" />
+        </dockPane>
+      </dockPanes>
+    </insertModule>
+  </modules>
+</ArcGIS>
