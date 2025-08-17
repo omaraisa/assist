@@ -130,6 +130,18 @@ async def handle_websocket_message(client_id: str, message: Dict):
         elif message_type == "user_message":
             # Handle user chat message
             await handle_user_message(client_id, message.get("content", ""))
+
+        elif message_type == "execute_function":
+            # Forward function execution request to ArcGIS Pro
+            arcgis_client = websocket_manager.get_arcgis_client()
+            if arcgis_client:
+                await websocket_manager.send_to_client(arcgis_client, message)
+            else:
+                logger.error("No ArcGIS Pro client connected to forward execute_function request.")
+                await websocket_manager.send_to_client(client_id, {
+                    "type": "error",
+                    "message": "ArcGIS Pro is not connected."
+                })
             
         elif message_type == "software_state":
             # Handle software state update from ArcGIS Pro
