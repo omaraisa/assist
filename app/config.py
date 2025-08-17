@@ -151,7 +151,6 @@ class Settings(BaseSettings):
         },
         "COMMAND": {
             "FUNCTION_CALL": "function_request",
-            "EXECUTE_FUNCTION": "execute_function", 
             "GET_STATE": "get_software_state",
             "INVESTIGATE": "investigate_command"
         },

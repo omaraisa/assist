@@ -135,9 +135,9 @@ async def handle_websocket_message(client_id: str, message: Dict):
             if state_data:
                 await handle_software_state_update(client_id, state_data)
             
-        elif message_type == "function_response":
-            # Handle function execution response from ArcGIS Pro
-            await handle_function_response(client_id, message)
+        elif message_type == "tool_response":
+            # Handle tool execution response from ArcGIS Pro
+            await handle_tool_response(client_id, message)
             
         elif message_type == "heartbeat":
             # Handle heartbeat
@@ -248,7 +248,7 @@ async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
                     logger.info(f"Added assistant message with function_calls to history for Gemini: {json.dumps(function_calls, indent=2)}")
                 
                 # Execute functions via ArcGIS Pro
-                await execute_function_calls(client_id, function_calls, ai_response)
+                await execute_tool_calls(client_id, function_calls, ai_response)
             else:
                 # Fallback to text response
                 content = ai_response.get("content", "I encountered an issue processing your request.")
@@ -270,8 +270,8 @@ async def process_ai_response_with_functions(client_id: str, ai_response: Dict):
             "message": f"Error processing AI response: {str(e)}"
         })
 
-async def execute_function_calls(client_id: str, function_calls: List[Dict], original_response: Dict):
-    """Execute function calls via ArcGIS Pro - handles chains by batching all results"""
+async def execute_tool_calls(client_id: str, function_calls: List[Dict], original_response: Dict):
+    """Execute tool calls via ArcGIS Pro - handles chains by batching all results"""
     try:
         # Check for cancellation before starting function execution
         if websocket_manager.is_cancelled(client_id):
@@ -308,10 +308,10 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
                 
             # Create function execution request
             function_request = {
-                "type": "execute_function",
+                "type": "execute_tool",
                 "session_id": f"func_{uuid.uuid4().hex[:8]}",
                 "source_client": client_id,
-                "function_name": func_call["name"],
+                "tool_name": func_call["name"],
                 "parameters": func_call["parameters"]
             }
             
@@ -625,8 +625,8 @@ async def handle_chain_completion(client_id: str, chain_context: Dict):
             "message": f"Error completing function chain: {str(e)}"
         })
 
-async def handle_function_response(client_id: str, message: Dict):
-    """Handle function execution responses from ArcGIS Pro"""
+async def handle_tool_response(client_id: str, message: Dict):
+    """Handle tool execution responses from ArcGIS Pro"""
     try:
         session_id = message.get("session_id")
         source_client = message.get("source_client")

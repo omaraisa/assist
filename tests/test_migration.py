@@ -33,18 +33,21 @@ class TestMigration(unittest.TestCase):
     def tearDown(self):
         self.patcher.stop()
 
-    def test_happy_path_function_call(self):
+    def test_happy_path_tool_call(self):
         """
-        Tests the happy path of a function call from the agent to the WebSocket.
+        Tests the happy path of a tool call from the agent to the WebSocket.
         """
-        # 1. Simulate the AI deciding to call the 'create_buffer' function
-        tool_input_str = "{'function_name': 'create_buffer', 'layer_name': 'TestLayer', 'distance': 100}"
+        # 1. Simulate the AI deciding to call the 'Buffer_analysis' tool
+        tool_input_str = "{'tool_name': 'Buffer_analysis', 'parameters': {'in_features': 'TestLayer', 'out_feature_class': 'TestBuffer', 'buffer_distance_or_field': '100 Meters'}}"
 
         # 2. Mock the websocket manager to return a successful result when checked
         session_id = "testsession"
         expected_result_from_pro = {
-            "success": True,
-            "output_layer": "TestLayer_Buffer_100meters"
+            "status": "success",
+            "data": {
+                "message": "Tool 'Buffer_analysis' executed successfully.",
+                "output_path": "C:\\path\\to\\TestBuffer.shp"
+            }
         }
 
         def has_result_side_effect(s_id):
@@ -54,14 +57,14 @@ class TestMigration(unittest.TestCase):
 
         def get_result_side_effect(s_id):
             if s_id == session_id:
-                return {"data": expected_result_from_pro}
+                return expected_result_from_pro
             return None
 
         self.websocket_manager.has_function_result.side_effect = has_result_side_effect
         self.websocket_manager.get_function_result.side_effect = get_result_side_effect
 
-        # 3. Execute the function
-        result = self.agent._execute_spatial_function(tool_input_str, session_id_for_test=session_id)
+        # 3. Execute the tool
+        result = self.agent._execute_arcpy_tool(tool_input_str, session_id_for_test=session_id)
 
         # 4. Assertions
         # Assert that the websocket_manager was called to send a message
@@ -72,9 +75,9 @@ class TestMigration(unittest.TestCase):
         sent_payload = call_args[0][1] # second argument of the call
 
         # Assert the payload has the correct structure
-        self.assertEqual(sent_payload['type'], 'execute_function')
-        self.assertEqual(sent_payload['function_name'], 'create_buffer')
-        self.assertEqual(sent_payload['parameters']['layer_name'], 'TestLayer')
+        self.assertEqual(sent_payload['type'], 'execute_tool')
+        self.assertEqual(sent_payload['tool_name'], 'Buffer_analysis')
+        self.assertEqual(sent_payload['parameters']['in_features'], 'TestLayer')
         self.assertIn('session_id', sent_payload)
 
         # Assert that the final result matches the mocked result from ArcGIS Pro
@@ -83,31 +86,28 @@ class TestMigration(unittest.TestCase):
     def test_error_case_missing_params(self):
         """
         Tests an error case where a required parameter is missing.
-        This test checks the internal logic before the websocket call.
+        The server should send the request, and we expect an error back from the client.
         """
-        # The agent tries to call a function but omits a required parameter.
-        # In the new architecture, the server doesn't know about required params,
-        # so it will send the request, and we expect an error back from the client.
-        tool_input_str = "{'function_name': 'create_buffer', 'layer_name': 'TestLayer'}" # Missing 'distance'
+        tool_input_str = "{'tool_name': 'Buffer_analysis', 'parameters': {'in_features': 'TestLayer'}}" # Missing other params
 
         # Mock the websocket manager to return an error from "ArcGIS Pro"
-        session_id = "testsession"
+        session_id = "testsession_error"
         error_result_from_pro = {
-            "success": False,
-            "error": "Missing required parameter: distance"
+            "status": "error",
+            "message": "ArcPy ExecuteError: Missing required parameter 'out_feature_class'"
         }
 
         def has_result_side_effect(s_id):
             return True
 
         def get_result_side_effect(s_id):
-            return {"data": error_result_from_pro}
+            return error_result_from_pro
 
         self.websocket_manager.has_function_result.side_effect = has_result_side_effect
         self.websocket_manager.get_function_result.side_effect = get_result_side_effect
 
-        # Execute the function
-        result = self.agent._execute_spatial_function(tool_input_str)
+        # Execute the tool
+        result = self.agent._execute_arcpy_tool(tool_input_str, session_id_for_test=session_id)
 
         # Assert that the final result is the error message
         self.assertEqual(result, error_result_from_pro)

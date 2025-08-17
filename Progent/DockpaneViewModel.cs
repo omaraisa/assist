@@ -105,7 +105,7 @@ namespace Progent
 
                     var response = new JObject
                     {
-                        ["type"] = "function_response", // Server expects this response type
+                        ["type"] = "tool_response",
                         ["session_id"] = sessionId,
                         ["source_client"] = sourceClient,
                         ["status"] = pythonResult["status"],
