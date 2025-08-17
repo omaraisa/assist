@@ -38,77 +38,8 @@ from langchain.tools import Tool
 from langchain_core.messages import AIMessage, HumanMessage
 
 from .config import settings
-from .ai.function_declarations import FunctionDeclaration
 
 logger = logging.getLogger(__name__)
-
-# Create a reverse mapping from function name to an ID.
-# The agent still uses IDs, so we need this to decouple from the old spatial_functions.py
-AVAILABLE_FUNCTIONS_MAP = {
-    name: i + 1 for i, name in enumerate(FunctionDeclaration.functions_declarations.keys())
-}
-REVERSE_AVAILABLE_FUNCTIONS_MAP = {v: k for k, v in AVAILABLE_FUNCTIONS_MAP.items()}
-
-
-def _get_declarations_stateless(function_ids_str: str) -> str:
-    """
-    A stateless helper to get function declarations.
-    It uses the function_declarations.py module as the source of truth.
-    """
-    try:
-        functions_declaration = FunctionDeclaration.functions_declarations
-        
-        # Parse the input - handle multiple formats
-        function_ids = []
-        if isinstance(function_ids_str, str):
-            cleaned_input = function_ids_str.strip().strip('"').strip("'")
-            try:
-                parsed = ast.literal_eval(cleaned_input)
-                if isinstance(parsed, list):
-                    function_ids = [int(x) for x in parsed]
-                else:
-                    function_ids = [int(parsed)]
-            except (ValueError, SyntaxError):
-                try:
-                    function_ids = [int(cleaned_input)]
-                except ValueError:
-                    return f"Error: Could not parse function IDs from input: {function_ids_str}"
-        else:
-            if isinstance(function_ids_str, list):
-                function_ids = [int(x) for x in function_ids_str]
-            else:
-                function_ids = [int(function_ids_str)]
-        
-        result = {}
-        for func_id in function_ids:
-            if func_id in REVERSE_AVAILABLE_FUNCTIONS_MAP:
-                func_name = REVERSE_AVAILABLE_FUNCTIONS_MAP[func_id]
-                if func_name in functions_declaration:
-                    result[func_name] = functions_declaration[func_name]
-        
-        if not result:
-            return "No function declarations found for the given IDs."
-
-        output = []
-        for func_name, details in result.items():
-            output.append(f"Function: {func_name}")
-            output.append(f"  Description: {details.get('description', 'N/A')}")
-            output.append("  Parameters:")
-            params = details.get("parameters", {})
-            if not params:
-                output.append("    - None")
-                continue
-            required_params = details.get("required", [])
-            for param_name, param_details in params.items():
-                param_type = param_details.get('type', 'any')
-                is_required = "required" if param_name in required_params else "optional"
-                default_info = f", default: {param_details['default']}" if 'default' in param_details else ""
-                output.append(f"    - {param_name} ({param_type}, {is_required}{default_info}): {param_details.get('description', '')}")
-        return "\n".join(output)
-
-    except Exception as e:
-        logger.error(f"Error in _get_declarations_stateless: {e}")
-        return f"Error getting function declaration: {e}"
 
 class LangChainAgent:
     """Agent that uses LangChain to interact with AI models."""
@@ -126,42 +57,42 @@ class LangChainAgent:
         """Gets the tools for the LangChain agent."""
         return [
             Tool(
-                name="get_functions_declaration",
-                func=_get_declarations_stateless,
-                description="Gets the function declaration for one or more functions. Input must be a string representing a list of integers (e.g., '[8]' or '[1, 2, 3]').",
-            ),
-            Tool(
-                name="execute_spatial_function",
-                func=self._execute_spatial_function,
-                description="Executes a spatial function. Input must be a stringified dictionary with 'function_name' and parameters. Parameters can be provided either as top-level keys or inside an 'arguments' object.",
+                name="execute_arcpy_tool",
+                func=self._execute_arcpy_tool,
+                description="Executes any ArcGIS Pro geoprocessing tool. The input must be a stringified dictionary containing 'tool_name' (e.g., 'Buffer_analysis') and 'parameters' (a dictionary of the tool's arguments).",
             ),
         ]
 
-
-    def _execute_spatial_function(self, tool_input_str: str, session_id_for_test: str = None) -> Dict[str, Any]:
+    def _execute_arcpy_tool(self, tool_input_str: str, session_id_for_test: str = None) -> Dict[str, Any]:
         """
-        Parses the input string from the agent and sends the function request to ArcGIS Pro via websocket.
-        Waits for and returns the actual function response from ArcGIS Pro.
-        The input string should be a dictionary containing 'function_name' and its arguments.
+        Parses the input string from the agent and sends the tool execution request to ArcGIS Pro via websocket.
+        Waits for and returns the actual tool response from ArcGIS Pro.
+        The input string should be a dictionary containing 'tool_name' and 'parameters'.
         """
-        function_name = "[unknown]"
+        tool_name = "[unknown]"
         try:
-            temp_input = ast.literal_eval(tool_input_str)
-            if isinstance(temp_input, str):
-                tool_input = ast.literal_eval(temp_input)
-            else:
-                tool_input = temp_input
+            # The agent can sometimes pass a string that needs to be evaluated twice
+            try:
+                temp_input = ast.literal_eval(tool_input_str)
+                if isinstance(temp_input, str):
+                    tool_input = ast.literal_eval(temp_input)
+                else:
+                    tool_input = temp_input
+            except (ValueError, SyntaxError):
+                 # Fallback for when the input is already a dict (e.g. from tests)
+                 if isinstance(tool_input_str, dict):
+                     tool_input = tool_input_str
+                 else:
+                    raise
 
             if not isinstance(tool_input, dict):
                 return {"error": f"Parsed input is not a dictionary. Got type: {type(tool_input)}"}
 
-            function_name = tool_input.pop("function_name", None)
-            if not function_name:
-                return {"error": "'function_name' must be provided in the input dictionary."}
+            tool_name = tool_input.get("tool_name")
+            parameters = tool_input.get("parameters")
 
-            # Check if function exists in available functions
-            if function_name not in FunctionDeclaration.functions_declarations:
-                return {"error": f"Function '{function_name}' is not available."}
+            if not tool_name or not isinstance(parameters, dict):
+                return {"error": "'tool_name' (string) and 'parameters' (dict) must be provided in the input."}
 
             # Send function request to ArcGIS Pro via websocket and wait for response
             arcgis_client = self.websocket_manager.get_arcgis_client()
@@ -174,13 +105,9 @@ class LangChainAgent:
                 import uuid
                 session_id = str(uuid.uuid4())
 
-            parameters = tool_input
-            if isinstance(parameters, dict) and "arguments" in parameters and len(parameters) == 1 and isinstance(parameters["arguments"], dict):
-                parameters = parameters["arguments"]
-
             payload = {
-                "type": "execute_function",
-                "function_name": function_name,
+                "type": "execute_tool", # Use a more generic type name
+                "tool_name": tool_name,
                 "parameters": parameters,
                 "session_id": session_id,
                 "source_client": self._current_request_client_id
@@ -188,28 +115,34 @@ class LangChainAgent:
             
             import asyncio
             
+            # Use asyncio.run to execute the async function from a sync context
             asyncio.run(self.websocket_manager.send_to_client(arcgis_client, payload))
             
-            max_wait_time = 30
+            # Wait for the result from ArcGIS Pro
+            max_wait_time = 60  # Increased timeout for potentially long-running tools
             check_interval = 0.2
             elapsed_time = 0
             
             while elapsed_time < max_wait_time:
                 if self.websocket_manager.has_function_result(session_id):
                     result = self.websocket_manager.get_function_result(session_id)
+                    # The result from Pro will be a JSON string, which needs to be parsed
                     if result:
-                        return result.get("data", result)
+                         # The final result could be wrapped in 'data' from the old format
+                        if isinstance(result, dict) and 'data' in result:
+                            return result['data']
+                        return result
                 
                 import time
                 time.sleep(check_interval)
                 elapsed_time += check_interval
             
-            return {"error": f"Timeout waiting for response from ArcGIS Pro for function '{function_name}'. Please check if ArcGIS Pro is responsive."}
+            return {"error": f"Timeout waiting for response from ArcGIS Pro for tool '{tool_name}'. The tool may be running, or ArcGIS Pro may be unresponsive."}
 
         except (SyntaxError, ValueError) as e:
             return {"error": f"Failed to parse input string: {e}. Input was: {tool_input_str}"}
         except Exception as e:
-            return {"error": f"An unexpected error occurred while executing '{function_name}': {e}"}
+            return {"error": f"An unexpected error occurred while preparing to execute '{tool_name}': {e}"}
 
     def set_model(self, model_key: str):
         """Sets the AI model for the agent."""
@@ -237,30 +170,39 @@ class LangChainAgent:
     def _create_prompt_template(self) -> PromptTemplate:
         """Creates the prompt template for the agent, now including chat history."""
         template = """
-        You are a helpful AI assistant for ArcGIS Pro.
+        You are an expert GIS Analyst and your goal is to help users by executing ArcGIS Pro geoprocessing tools.
 
-        Conversation so far:
-        {chat_history}
-
-        You have access to the following tools:
+        You have access to the following tool:
         {tools}
 
-        Here is the current state of the ArcGIS Pro project:
+        Here is the current state of the ArcGIS Pro project, which includes a list of available layers:
         {arcgis_state}
 
-        Here is a list of available functions you can use:
-        {available_functions}
+        **Instructions:**
+        1.  Analyze the user's request to identify the appropriate ArcGIS Pro geoprocessing tool. For example, if the user asks to "make a buffer", you should use the `Buffer_analysis` tool.
+        2.  Based on the user's request and the available layers from `arcgis_state`, determine the parameters for the tool.
+        3.  If the user's request is ambiguous or missing necessary information (e.g., they ask to create a buffer but don't specify a layer or distance), you MUST ask for clarification. Do not attempt to execute a tool with incomplete information.
+        4.  Use the `execute_arcpy_tool` to run the tool. The input for this tool is a JSON object with two keys: "tool_name" and "parameters".
+        5.  The tool name must be the correct, full name of an `arcpy` tool (e.g., `Buffer_analysis`, `SpatialJoin_analysis`, `Clip_analysis`).
+        6.  The `parameters` must be a dictionary where keys are the parameter names and values are the corresponding values.
 
-        To use a function, you must first get its declaration using the `get_functions_declaration` tool with the function's ID.
-        The declaration will be returned as a string, describing the function, its parameters, and their types.
-        Once you have the declaration, you can execute the function using the `execute_spatial_function` tool.
+        **Example Workflow:**
+        Question: Create a 500 meter buffer around the 'cities' layer and call it 'cities_buffer'.
+        Thought: The user wants to create a buffer. The `arcpy` tool for this is `Buffer_analysis`. I have all the required parameters: the input layer ('cities'), the distance ('500 meters'), and the output name ('cities_buffer'). I can now call the `execute_arcpy_tool`.
+        Action: execute_arcpy_tool
+        Action Input: {{"tool_name": "Buffer_analysis", "parameters": {{"in_features": "cities", "out_feature_class": "cities_buffer", "buffer_distance_or_field": "500 Meters"}}}}
+        Observation: {{"status": "success", "data": {{"message": "Tool 'Buffer_analysis' executed successfully.", "output_path": "C:\\Users\\...\\pro_project.gdb\\cities_buffer"}}}}
+        Thought: The tool executed successfully and the buffer was created. I will now inform the user.
+        Final Answer: The 500-meter buffer for the 'cities' layer has been created successfully and saved as 'cities_buffer'. It has been added to your map.
 
-        IMPORTANT: Do NOT use markdown formatting, code blocks, or triple backticks (```) in your responses. Provide plain text answers only.
+        **Important:**
+        - Do NOT use markdown formatting, code blocks, or triple backticks (```) in your final answers.
+        - The `arcgis_state` provides the names of layers you can use as input for tools.
 
-        Use the following format:
+        Use the following format for your thought process:
 
         Question: the input question you must answer
-        Thought: you should always think about what to do
+        Thought: your reasoning and plan
         Action: the action to take, should be one of [{tool_names}]
         Action Input: the input to the action
         Observation: the result of the action
@@ -270,10 +212,13 @@ class LangChainAgent:
 
         Begin!
 
+        Conversation so far:
+        {chat_history}
+
         Question: {input}
         Thought:{agent_scratchpad}
         """
-        return PromptTemplate(template=template, input_variables=["tools", "tool_names", "input", "agent_scratchpad", "arcgis_state", "available_functions", "chat_history"])
+        return PromptTemplate(template=template, input_variables=["tools", "tool_names", "input", "agent_scratchpad", "arcgis_state", "chat_history"])
 
     async def generate_response(
         self,
@@ -295,13 +240,12 @@ class LangChainAgent:
                     chat_history_lines.append(f"Assistant: {msg.get('content','')}")
             chat_history_str = "\n".join(chat_history_lines)
 
-            # Record the client id so tools (like execute_spatial_function) can set source_client
+            # Record the client id so tools can set source_client
             self._current_request_client_id = client_id
 
             response = await self.agent_executor.ainvoke({
                 "input": user_message,
                 "arcgis_state": json.dumps(arcgis_state, indent=2),
-                "available_functions": json.dumps(REVERSE_AVAILABLE_FUNCTIONS_MAP, indent=2),
                 "chat_history": chat_history_str
             })
 
