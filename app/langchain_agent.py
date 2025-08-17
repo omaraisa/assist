@@ -38,7 +38,7 @@ from langchain.tools import Tool
 from langchain_core.messages import AIMessage, HumanMessage
 
 from .config import settings
-from .ai.function_declarations import FunctionDeclaration, AVAILABLE_FUNCTIONS, get_functions_declaration
+from .ai.function_declarations import AVAILABLE_FUNCTIONS, get_functions_declaration
 
 logger = logging.getLogger(__name__)
 

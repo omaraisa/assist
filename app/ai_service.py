@@ -540,19 +540,6 @@ This function is ALWAYS available to you. You can call it at any time to get dec
         self.client_dynamic_functions[client_id].update(discovered_functions)
         logger.info(f"Added {len(discovered_functions)} dynamic functions for client {client_id}")
     
-    def get_available_functions_for_client(self, client_id: str) -> Dict:
-        """Get all available functions (base + dynamic) for a specific client"""
-        from .function_declaration_generator import function_declarations
-        
-        # Start with base functions (just get_functions_declaration)
-        available_functions = function_declarations._function_definitions.copy()
-        
-        # Add any dynamically discovered functions for this client
-        if client_id in self.client_dynamic_functions:
-            available_functions.update(self.client_dynamic_functions[client_id])
-        
-        return available_functions
-    
     def clear_dynamic_functions_for_client(self, client_id: str):
         """Clear dynamic functions for a client (e.g., when conversation ends)"""
         if client_id in self.client_dynamic_functions:

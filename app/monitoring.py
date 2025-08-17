@@ -222,7 +222,7 @@ class MonitoringService:
         """Get detailed usage statistics"""
         return {
             "ai_models": self.ai_metrics.model_usage,
-            "spatial_functions": self.function_metrics.function_usage,
+            "function_usage": self.function_metrics.function_usage,
             "peak_connections": max(
                 [conn.get("active_connections", 0) for conn in self.connection_history] or [0]
             ),

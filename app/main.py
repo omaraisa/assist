@@ -131,10 +131,6 @@ async def handle_websocket_message(client_id: str, message: Dict):
             # Handle user chat message
             await handle_user_message(client_id, message.get("content", ""))
             
-        elif message_type == "function_request":
-            # Handle function execution request
-            await handle_function_request(client_id, message)
-            
         elif message_type == "software_state":
             # Handle software state update from ArcGIS Pro
             state_data = message.get("data")
@@ -544,68 +540,6 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
         await websocket_manager.send_to_client(client_id, {
             "type": "error",
             "message": f"Error processing function declaration request: {str(e)}"
-        })
-
-async def execute_investigation_command(client_id: str, session_id: str, command: str):
-    """Execute a single investigation command"""
-    try:
-        # Parse the function call
-        function_call = ai_service.parse_function_call(command)
-        
-        if not function_call:
-            logger.error(f"Failed to parse function call: {command}")
-            return
-            
-        # Send function request to ArcGIS Pro
-        arcgis_client = websocket_manager.get_arcgis_client()
-        if not arcgis_client:
-            raise Exception("ArcGIS Pro is not connected")
-              # Prepare function execution message
-        function_message = {
-            "type": "execute_function",
-            "session_id": session_id,
-            "source_client": client_id,  # Add this crucial field!
-            "function_name": function_call["function_name"],
-            "parameters": function_call["parameters"]
-        }
-        
-        await websocket_manager.send_to_client(arcgis_client, function_message)
-        
-    except Exception as e:
-        logger.error(f"Error executing investigation command: {str(e)}")
-
-async def handle_function_request(client_id: str, message: Dict):
-    """Handle direct function execution requests"""
-    try:
-        function_name = message.get("function_name")
-        parameters = message.get("parameters", {})
-        
-        # Validate function name and exists
-        if not function_name:
-            raise Exception("Function name is required")
-        if not hasattr(spatial_functions, function_name):
-            raise Exception(f"Function '{function_name}' not found")
-            
-        # Get ArcGIS Pro client
-        arcgis_client = websocket_manager.get_arcgis_client()
-        if not arcgis_client:
-            raise Exception("ArcGIS Pro is not connected")
-            
-        # Send function execution request
-        function_message = {
-            "type": "execute_function",
-            "function_name": function_name,
-            "parameters": parameters,
-            "source_client": client_id
-        }
-        
-        await websocket_manager.send_to_client(arcgis_client, function_message)
-        
-    except Exception as e:
-        logger.error(f"Error handling function request: {str(e)}")
-        await websocket_manager.send_to_client(client_id, {
-            "type": "error",
-            "message": str(e)
         })
 
 async def handle_software_state_update(client_id: str, state_data: Dict):
