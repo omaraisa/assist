@@ -120,12 +120,44 @@ namespace Progent
             try
             {
                 var addinAssemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).AbsolutePath);
+                // Resolve the expected .pyt toolbox path next to the add-in assembly
                 var toolboxPath = Path.Combine(Uri.UnescapeDataString(addinAssemblyPath), "progent.pyt");
 
-                Geoprocessing.ImportToolbox(toolboxPath);
+                // Build the fully-qualified tool reference for ExecuteToolAsync (pyt tool referenced by full path)
+                var toolReference = Path.Combine(toolboxPath, "RunPythonCode");
+
+                // Diagnostic logging: resolved paths and toolbox presence
+                Log($"Resolved add-in assembly path: {addinAssemblyPath}");
+                Log($"Resolved toolbox path: {toolboxPath}");
+                Log($"Tool reference used for ExecuteToolAsync: {toolReference}");
+                Log($"Toolbox file exists: {File.Exists(toolboxPath)}; toolbox directory exists: {Directory.Exists(toolboxPath)}");
+
+                // Defensive: ensure toolbox exists and log helpful message if not
+                if (!File.Exists(toolboxPath) && !Directory.Exists(toolboxPath))
+                {
+                    var missingMsg = $"Toolbox not found at '{toolboxPath}'. Make sure 'progent.pyt' is deployed with the add-in.";
+                    Log(missingMsg);
+                    return JsonConvert.SerializeObject(new { status = "error", data = missingMsg });
+                }
 
                 var parameters = Geoprocessing.MakeValueArray();
-                var result = await Geoprocessing.ExecuteToolAsync("progent.RunPythonCode", parameters, null, new CancelableProgressorSource().Progressor, GPExecuteToolFlags.Default);
+                var result = await Geoprocessing.ExecuteToolAsync(toolReference, parameters, null, new CancelableProgressorSource().Progressor, GPExecuteToolFlags.Default);
+
+                // Log detailed GP result information for troubleshooting
+                try
+                {
+                    var msgs = result.Messages.Select(m => $"[{m.Type}] {m.Text}");
+                    var msgsList = string.Join("\n", msgs);
+                    Log($"Geoprocessing result - IsFailed: {result.IsFailed}; Messages count: {result.Messages.Count()}");
+                    if (!string.IsNullOrEmpty(msgsList))
+                        Log($"Geoprocessing messages:\n{msgsList}");
+                    else
+                        Log("Geoprocessing returned no messages.");
+                }
+                catch (Exception exMsg)
+                {
+                    Log($"Error while logging GP messages: {exMsg}");
+                }
 
                 if (result.IsFailed)
                 {
