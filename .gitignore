@@ -42,3 +42,6 @@ connect_arcgis.bat
 Thumbs.db
 desktop.ini
 
+Progent/bin/
+Progent/.vs/
+Progent/obj/

@@ -109,6 +109,18 @@ if exist "%PROJECT_DIR%\requirements.txt" (
             echo [SUCCESS] Requirements installed successfully with fallback strategy
         ) else (
             echo [WARNING] Requirements installation had issues
+            echo.
+            echo [ERROR]    Some of the system required libraries failed to install automatically.
+            echo [WHY]      This commonly happens when using a very recent Python version.
+            echo            Developers of these open source libraries may not have released compatible versions for new Python releases,
+            echo.
+            echo [RECOMMENDATION] Please install an earlier version of Python and re-run this setup. This will use prebuilt wheels
+            echo              and avoid lengthy/failed builds. Simple steps for non-experts:
+            echo.
+            echo    1 Download and install Python 3.11 from: https://www.python.org/downloads/release/python-311/
+            echo    2 Re-run the setup using the 3.11 launcher:  py -3.11 setup_environment.bat
+            echo.
+            pause
         )
     )
 ) else (
