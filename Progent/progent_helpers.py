@@ -150,9 +150,18 @@ def get_field_statistics(layer_name, field_name, where_clause=None):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-def create_buffer(layer_name: str, distance: float, units: str = "meters") -> Dict:
+def create_buffer(layer_name: str = None, distance: float = None, units: str = "meters", **kwargs) -> Dict:
     """Create buffer around features"""
     try:
+        # Handle alternative parameter names for robustness
+        if layer_name is None:
+            layer_name = kwargs.get("input_layer")
+        if distance is None:
+            distance = kwargs.get("buffer_distance")
+
+        if layer_name is None or distance is None:
+            return {"success": False, "error": "Missing required parameters. Please provide 'layer_name' and 'distance'."}
+
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         map_obj = aprx.activeMap
 
