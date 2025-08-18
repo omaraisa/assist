@@ -74,13 +74,34 @@ namespace Progent
 
                 if (type == "execute_function")
                 {
-                    var functionName = json["function_name"]?.ToString();
-                    var parameters = json["parameters"]?.ToString() ?? "{}";
+                        var functionName = json["function_name"]?.ToString();
+                        var parameters = json["parameters"]?.ToString() ?? "{}";
                     var sessionId = json["session_id"]?.ToString();
                     var sourceClient = json["source_client"]?.ToString();
 
-                    var pythonResultString = await ExecutePytToolAsync();
-                    var pythonResult = JObject.Parse(pythonResultString);
+                        var pythonResultString = await ExecutePytToolAsync(functionName, parameters);
+                        // If the tool returned a JSON message, prefer parsing that; otherwise parse the wrapper
+                        JObject pythonResult;
+                        try
+                        {
+                            pythonResult = JObject.Parse(pythonResultString);
+                            // If data is a JSON string, try to parse it into an object
+                            var dataToken = pythonResult["data"];
+                            if (dataToken != null && dataToken.Type == JTokenType.String)
+                            {
+                                var dataText = dataToken.ToString().Trim();
+                                if (dataText.StartsWith("{") || dataText.StartsWith("["))
+                                {
+                                    try { pythonResult["data"] = JObject.Parse(dataText); }
+                                    catch { /* leave as string or array */ }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            // fallback: embed raw string
+                            pythonResult = new JObject { ["status"] = "error", ["data"] = pythonResultString };
+                        }
 
                     var response = new JObject
                     {
@@ -88,7 +109,7 @@ namespace Progent
                         ["session_id"] = sessionId,
                         ["source_client"] = sourceClient,
                         ["status"] = pythonResult["status"],
-                        ["function_name"] = "RunPythonCode (test)",
+                        ["function_name"] = functionName ?? "RunPythonCode",
                         ["data"] = pythonResult["data"],
                         ["software_context"] = await GetSoftwareContext()
                     };
@@ -115,7 +136,7 @@ namespace Progent
             }
         }
 
-        private async Task<string> ExecutePytToolAsync()
+    private async Task<string> ExecutePytToolAsync(string functionName, string parametersJson)
         {
             try
             {
@@ -140,7 +161,8 @@ namespace Progent
                     return JsonConvert.SerializeObject(new { status = "error", data = missingMsg });
                 }
 
-                var parameters = Geoprocessing.MakeValueArray();
+                // Pass the function name and parameters JSON to the script tool as arguments
+                var parameters = Geoprocessing.MakeValueArray(functionName, parametersJson);
                 var result = await Geoprocessing.ExecuteToolAsync(toolReference, parameters, null, new CancelableProgressorSource().Progressor, GPExecuteToolFlags.Default);
 
                 // Log detailed GP result information for troubleshooting
@@ -157,6 +179,17 @@ namespace Progent
                 catch (Exception exMsg)
                 {
                     Log($"Error while logging GP messages: {exMsg}");
+                }
+
+                // If the script tool emitted a JSON message, prefer returning that JSON directly
+                foreach (var m in result.Messages)
+                {
+                    var text = m.Text?.Trim();
+                    if (!string.IsNullOrEmpty(text) && (text.StartsWith("{") || text.StartsWith("[")))
+                    {
+                        // assume this is the JSON payload from the script tool
+                        return text;
+                    }
                 }
 
                 if (result.IsFailed)
