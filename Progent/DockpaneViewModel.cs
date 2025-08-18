@@ -14,6 +14,7 @@ using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Core;
 using System.Linq;
 using System.Collections.Generic;
+using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 
 namespace Progent
@@ -78,7 +79,7 @@ namespace Progent
                     var sessionId = json["session_id"]?.ToString();
                     var sourceClient = json["source_client"]?.ToString();
 
-                    var pythonResultString = await ExecutePythonScriptAsync(functionName, parameters);
+                    var pythonResultString = await ExecutePytToolAsync();
                     var pythonResult = JObject.Parse(pythonResultString);
 
                     var response = new JObject
@@ -87,7 +88,7 @@ namespace Progent
                         ["session_id"] = sessionId,
                         ["source_client"] = sourceClient,
                         ["status"] = pythonResult["status"],
-                        ["function_name"] = functionName,
+                        ["function_name"] = "RunPythonCode (test)",
                         ["data"] = pythonResult["data"],
                         ["software_context"] = await GetSoftwareContext()
                     };
@@ -114,40 +115,33 @@ namespace Progent
             }
         }
 
-        private Task<string> ExecutePythonScriptAsync(string functionName, string parameters)
+        private async Task<string> ExecutePytToolAsync()
         {
-            return Task.Run(() =>
+            try
             {
-                var pathProExe = Path.GetDirectoryName(new Uri(Assembly.GetEntryAssembly().Location).AbsolutePath);
-                pathProExe = Uri.UnescapeDataString(pathProExe);
-                pathProExe = Path.Combine(pathProExe, @"Python\envs\arcgispro-py3");
+                var addinAssemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).AbsolutePath);
+                var toolboxPath = Path.Combine(Uri.UnescapeDataString(addinAssemblyPath), "progent.pyt");
 
-                var pathPython = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).AbsolutePath);
-                pathPython = Uri.UnescapeDataString(pathPython);
+                Geoprocessing.ImportToolbox(toolboxPath);
 
-                var scriptPath = Path.Combine(pathPython, "progent_execute.py");
-                var myCommand = $"/c \"\"\"{Path.Combine(pathProExe, "python.exe")}\" \"{scriptPath}\" \"{functionName}\" \"{parameters.Replace("\"", "\\\"")}\"\"\"";
+                var parameters = Geoprocessing.MakeValueArray();
+                var result = await Geoprocessing.ExecuteToolAsync("progent.RunPythonCode", parameters, null, new CancelableProgressorSource().Progressor, GPExecuteToolFlags.Default);
 
-
-                var procStartInfo = new ProcessStartInfo("cmd", myCommand)
+                if (result.IsFailed)
                 {
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                var proc = new Process { StartInfo = procStartInfo };
-                proc.Start();
-
-                string result = proc.StandardOutput.ReadToEnd();
-                string error = proc.StandardError.ReadToEnd();
-                if (!string.IsNullOrEmpty(error))
-                {
-                   return JsonConvert.SerializeObject(new { status = "error", message = error });
+                    var messages = string.Join("\n", result.Messages.Select(m => m.Text));
+                    return JsonConvert.SerializeObject(new { status = "error", data = messages });
                 }
-                return result;
-            });
+                else
+                {
+                    var messages = string.Join("\n", result.Messages.Select(m => m.Text));
+                    return JsonConvert.SerializeObject(new { status = "success", data = messages });
+                }
+            }
+            catch (Exception ex)
+            {
+                return JsonConvert.SerializeObject(new { status = "error", data = ex.ToString() });
+            }
         }
 
         private Task<JObject> GetSoftwareContext()
