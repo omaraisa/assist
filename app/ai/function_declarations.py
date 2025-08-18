@@ -590,4 +590,213 @@ class FunctionDeclaration:
             },
             "required": ["layer_name"]
         },
+
+        "raster_calculator": {
+            "name": "raster_calculator",
+            "description": "Performs a map algebra expression using the raster calculator. The expression is a string that can be evaluated by Python's `eval` function, e.g., 'Raster(\"raster1.tif\") + Raster(\"raster2.tif\")'.",
+            "parameters": {
+                "expression": {
+                    "type": "string",
+                    "description": "A map algebra expression."
+                },
+                "output_raster": {
+                    "type": "string",
+                    "description": "The output raster file."
+                }
+            },
+            "required": ["expression", "output_raster"]
+        },
+        "reclassify": {
+            "name": "reclassify",
+            "description": "Reclassifies the values in a raster.",
+            "parameters": {
+                "in_raster": {
+                    "type": "string",
+                    "description": "The input raster to be reclassified."
+                },
+                "reclass_field": {
+                    "type": "string",
+                    "description": "Field denoting the values to be reclassified."
+                },
+                "remap": {
+                    "type": "string",
+                    "description": "A remap object that defines how to reclassify the values."
+                },
+                "out_raster": {
+                    "type": "string",
+                    "description": "The output reclassified raster."
+                }
+            },
+            "required": ["in_raster", "reclass_field", "remap", "out_raster"]
+        },
+        "zonal_statistics_as_table": {
+            "name": "zonal_statistics_as_table",
+            "description": "Calculates statistics on a raster within the zones of another dataset and reports the results as a table.",
+            "parameters": {
+                "in_zone_data": {
+                    "type": "string",
+                    "description": "The dataset that defines the zones."
+                },
+                "zone_field": {
+                    "type": "string",
+                    "description": "The field that contains the values that define each zone."
+                },
+                "in_value_raster": {
+                    "type": "string",
+                    "description": "The raster that contains the values on which to calculate a statistic."
+                },
+                "out_table": {
+                    "type": "string",
+                    "description": "The output table."
+                },
+                "statistics_type": {
+                    "type": "string",
+                    "description": "The statistic type to be calculated.",
+                    "enum": ["MEAN", "MAJORITY", "MAXIMUM", "MEDIAN", "MINORITY", "RANGE", "STD", "SUM", "VARIETY"],
+                    "default": "MEAN"
+                }
+            },
+            "required": ["in_zone_data", "zone_field", "in_value_raster", "out_table"]
+        },
+        "slope": {
+            "name": "slope",
+            "description": "Calculates the slope of a raster surface.",
+            "parameters": {
+                "in_raster": {
+                    "type": "string",
+                    "description": "The input surface raster."
+                },
+                "out_raster": {
+                    "type": "string",
+                    "description": "The output slope raster."
+                },
+                "output_measurement": {
+                    "type": "string",
+                    "description": "The output measurement units.",
+                    "enum": ["DEGREE", "PERCENT_RISE"],
+                    "default": "DEGREE"
+                }
+            },
+            "required": ["in_raster", "out_raster"]
+        },
+        "aspect": {
+            "name": "aspect",
+            "description": "Calculates the aspect of a raster surface.",
+            "parameters": {
+                "in_raster": {
+                    "type": "string",
+                    "description": "The input surface raster."
+                },
+                "out_raster": {
+                    "type": "string",
+                    "description": "The output aspect raster."
+                }
+            },
+            "required": ["in_raster", "out_raster"]
+        },
+        "hillshade": {
+            "name": "hillshade",
+            "description": "Creates a hillshade from a raster surface.",
+            "parameters": {
+                "in_raster": {
+                    "type": "string",
+                    "description": "The input surface raster."
+                },
+                "out_raster": {
+                    "type": "string",
+                    "description": "The output hillshade raster."
+                },
+                "azimuth": {
+                    "type": "integer",
+                    "description": "The azimuth angle of the light source.",
+                    "default": 315
+                },
+                "altitude": {
+                    "type": "integer",
+                    "description": "The altitude angle of the light source.",
+                    "default": 45
+                }
+            },
+            "required": ["in_raster", "out_raster"]
+        },
+        "extract_by_mask": {
+            "name": "extract_by_mask",
+            "description": "Extracts the cells of a raster that correspond to the areas defined by a mask.",
+            "parameters": {
+                "in_raster": {
+                    "type": "string",
+                    "description": "The input raster to be extracted."
+                },
+                "in_mask_data": {
+                    "type": "string",
+                    "description": "The dataset to be used as a mask."
+                },
+                "out_raster": {
+                    "type": "string",
+                    "description": "The output raster."
+                }
+            },
+            "required": ["in_raster", "in_mask_data", "out_raster"]
+        },
+        "clip_raster": {
+            "name": "clip_raster",
+            "description": "Clips a raster dataset.",
+            "parameters": {
+                "in_raster": {
+                    "type": "string",
+                    "description": "The input raster to be clipped."
+                },
+                "out_raster": {
+                    "type": "string",
+                    "description": "The output clipped raster."
+                },
+                "in_template_dataset": {
+                    "type": "string",
+                    "description": "A raster or feature class to use as a template."
+                },
+                "clipping_geometry": {
+                    "type": "string",
+                    "description": "Specifies whether to use the extent of the template or the features within it.",
+                    "enum": ["ClippingGeometry", "NONE"],
+                    "default": "ClippingGeometry"
+                }
+            },
+            "required": ["in_raster", "out_raster", "in_template_dataset"]
+        },
+        "resample": {
+            "name": "resample",
+            "description": "Resamples a raster dataset.",
+            "parameters": {
+                "in_raster": {
+                    "type": "string",
+                    "description": "The input raster to be resampled."
+                },
+                "out_raster": {
+                    "type": "string",
+                    "description": "The output resampled raster."
+                },
+                "cell_size": {
+                    "type": "string",
+                    "description": "The cell size for the output raster."
+                },
+                "resampling_type": {
+                    "type": "string",
+                    "description": "The resampling technique to use.",
+                    "enum": ["NEAREST", "BILINEAR", "CUBIC", "MAJORITY"],
+                    "default": "NEAREST"
+                }
+            },
+            "required": ["in_raster", "out_raster", "cell_size"]
+        },
+        "get_raster_properties": {
+            "name": "get_raster_properties",
+            "description": "Gets properties of a raster dataset.",
+            "parameters": {
+                "in_raster": {
+                    "type": "string",
+                    "description": "The input raster."
+                }
+            },
+            "required": ["in_raster"]
+        }
     }

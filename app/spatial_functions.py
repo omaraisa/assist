@@ -82,7 +82,17 @@ class SpatialFunctions:
         34: "get_current_dashboard_layout",
         35: "get_field_stories_and_samples",
         36: "get_current_dashboard_charts",
-        37: "update_dashboard_charts"
+        37: "update_dashboard_charts",
+        38: "raster_calculator",
+        39: "reclassify",
+        40: "zonal_statistics_as_table",
+        41: "slope",
+        42: "aspect",
+        43: "hillshade",
+        44: "extract_by_mask",
+        45: "clip_raster",
+        46: "resample",
+        47: "get_raster_properties"
     }
     
     def __init__(self, websocket_manager=None):
@@ -2367,6 +2377,219 @@ class SpatialFunctions:
         except Exception as e:
             return {"success": False, "error": str(e)}
     
+    # Raster Analysis Functions
+    def raster_calculator(self, expression: str, output_raster: str) -> Dict:
+        """
+        Performs a map algebra expression using the raster calculator.
+        """
+        logger.info(f"Executing Raster Calculator with expression: {expression}")
+        try:
+            from arcpy.sa import Raster
+
+            # Execute the raster calculator expression
+            result_raster = eval(expression)
+            result_raster.save(output_raster)
+
+            return {
+                "function_executed": "raster_calculator",
+                "success": True,
+                "output_raster": output_raster,
+                "message": f"Raster calculator executed successfully. Output saved to {output_raster}"
+            }
+        except Exception as e:
+            logger.error(f"raster_calculator error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def reclassify(self, in_raster: str, reclass_field: str, remap, out_raster: str) -> Dict:
+        """
+        Reclassifies the values in a raster.
+        """
+        logger.info(f"Reclassifying raster: {in_raster}")
+        try:
+            from arcpy.sa import Reclassify
+
+            # Execute reclassification
+            reclass_raster = Reclassify(in_raster, reclass_field, remap)
+            reclass_raster.save(out_raster)
+
+            return {
+                "function_executed": "reclassify",
+                "success": True,
+                "output_raster": out_raster,
+                "message": f"Raster reclassified successfully. Output saved to {out_raster}"
+            }
+        except Exception as e:
+            logger.error(f"reclassify error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def zonal_statistics_as_table(self, in_zone_data: str, zone_field: str, in_value_raster: str, out_table: str, statistics_type: str = "MEAN") -> Dict:
+        """
+        Calculates statistics on a raster within the zones of another dataset and reports the results as a table.
+        """
+        logger.info(f"Calculating zonal statistics for {in_value_raster} within {in_zone_data}")
+        try:
+            from arcpy.sa import ZonalStatisticsAsTable
+
+            # Execute zonal statistics
+            ZonalStatisticsAsTable(in_zone_data, zone_field, in_value_raster, out_table, "DATA", statistics_type)
+
+            return {
+                "function_executed": "zonal_statistics_as_table",
+                "success": True,
+                "output_table": out_table,
+                "message": f"Zonal statistics calculated successfully. Output table saved to {out_table}"
+            }
+        except Exception as e:
+            logger.error(f"zonal_statistics_as_table error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def slope(self, in_raster: str, out_raster: str, output_measurement: str = "DEGREE") -> Dict:
+        """
+        Calculates the slope of a raster surface.
+        """
+        logger.info(f"Calculating slope for raster: {in_raster}")
+        try:
+            from arcpy.sa import Slope
+
+            # Execute slope calculation
+            slope_raster = Slope(in_raster, output_measurement)
+            slope_raster.save(out_raster)
+
+            return {
+                "function_executed": "slope",
+                "success": True,
+                "output_raster": out_raster,
+                "message": f"Slope calculated successfully. Output saved to {out_raster}"
+            }
+        except Exception as e:
+            logger.error(f"slope error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def aspect(self, in_raster: str, out_raster: str) -> Dict:
+        """
+        Calculates the aspect of a raster surface.
+        """
+        logger.info(f"Calculating aspect for raster: {in_raster}")
+        try:
+            from arcpy.sa import Aspect
+
+            # Execute aspect calculation
+            aspect_raster = Aspect(in_raster)
+            aspect_raster.save(out_raster)
+
+            return {
+                "function_executed": "aspect",
+                "success": True,
+                "output_raster": out_raster,
+                "message": f"Aspect calculated successfully. Output saved to {out_raster}"
+            }
+        except Exception as e:
+            logger.error(f"aspect error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def hillshade(self, in_raster: str, out_raster: str, azimuth: int = 315, altitude: int = 45) -> Dict:
+        """
+        Creates a hillshade from a raster surface.
+        """
+        logger.info(f"Creating hillshade for raster: {in_raster}")
+        try:
+            from arcpy.sa import Hillshade
+
+            # Execute hillshade creation
+            hillshade_raster = Hillshade(in_raster, azimuth, altitude)
+            hillshade_raster.save(out_raster)
+
+            return {
+                "function_executed": "hillshade",
+                "success": True,
+                "output_raster": out_raster,
+                "message": f"Hillshade created successfully. Output saved to {out_raster}"
+            }
+        except Exception as e:
+            logger.error(f"hillshade error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def extract_by_mask(self, in_raster: str, in_mask_data: str, out_raster: str) -> Dict:
+        """
+        Extracts the cells of a raster that correspond to the areas defined by a mask.
+        """
+        logger.info(f"Extracting by mask from {in_raster} using {in_mask_data}")
+        try:
+            from arcpy.sa import ExtractByMask
+
+            # Execute extract by mask
+            extracted_raster = ExtractByMask(in_raster, in_mask_data)
+            extracted_raster.save(out_raster)
+
+            return {
+                "function_executed": "extract_by_mask",
+                "success": True,
+                "output_raster": out_raster,
+                "message": f"Extraction by mask completed successfully. Output saved to {out_raster}"
+            }
+        except Exception as e:
+            logger.error(f"extract_by_mask error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def clip_raster(self, in_raster: str, out_raster: str, in_template_dataset: str, clipping_geometry: str = "ClippingGeometry") -> Dict:
+        """
+        Clips a raster dataset.
+        """
+        logger.info(f"Clipping raster: {in_raster}")
+        try:
+            # Execute clip
+            arcpy.management.Clip(in_raster, "#", out_raster, in_template_dataset, "#", clipping_geometry, "NO_MAINTAIN_EXTENT")
+
+            return {
+                "function_executed": "clip_raster",
+                "success": True,
+                "output_raster": out_raster,
+                "message": f"Raster clipped successfully. Output saved to {out_raster}"
+            }
+        except Exception as e:
+            logger.error(f"clip_raster error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def resample(self, in_raster: str, out_raster: str, cell_size: str, resampling_type: str = "NEAREST") -> Dict:
+        """
+        Resamples a raster dataset.
+        """
+        logger.info(f"Resampling raster: {in_raster}")
+        try:
+            # Execute resample
+            arcpy.management.Resample(in_raster, out_raster, cell_size, resampling_type)
+
+            return {
+                "function_executed": "resample",
+                "success": True,
+                "output_raster": out_raster,
+                "message": f"Raster resampled successfully. Output saved to {out_raster}"
+            }
+        except Exception as e:
+            logger.error(f"resample error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def get_raster_properties(self, in_raster: str) -> Dict:
+        """
+        Gets properties of a raster dataset.
+        """
+        logger.info(f"Getting properties for raster: {in_raster}")
+        try:
+            properties = {}
+            property_types = ["CELLSIZEX", "CELLSIZEY", "BANDCOUNT", "VALUETYPE", "PIXELTYPE", "ANYNODATA", "FORMAT"]
+            for prop_type in property_types:
+                properties[prop_type.lower()] = arcpy.GetRasterProperties_management(in_raster, prop_type).getOutput(0)
+
+            return {
+                "function_executed": "get_raster_properties",
+                "success": True,
+                "properties": properties,
+                "message": f"Raster properties retrieved successfully for {in_raster}"
+            }
+        except Exception as e:
+            logger.error(f"get_raster_properties error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
     
     def get_current_dashboard_charts(self) -> dict:
         """
