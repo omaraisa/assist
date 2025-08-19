@@ -2381,6 +2381,13 @@ class SpatialFunctions:
     def raster_calculator(self, expression: str, output_raster: str) -> Dict:
         """
         Performs a map algebra expression using the raster calculator.
+
+        Note:
+            The 'expression' should be a valid Python string using arcpy.sa.Raster objects.
+            Example usage:
+                # Correct JSON payload (what the agent should send):
+                # {"function_name":"raster_calculator","arguments":{"expression":"Raster('raster1') - Raster('raster2')","output_raster":"raster_difference"}}
+            Replace "raster1" and "raster2" with your actual raster layer names or paths.
         """
         logger.info(f"Executing Raster Calculator with expression: {expression}")
         try:

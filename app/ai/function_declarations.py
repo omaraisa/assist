@@ -593,7 +593,7 @@ class FunctionDeclaration:
 
         "raster_calculator": {
             "name": "raster_calculator",
-            "description": "Performs a map algebra expression using the raster calculator. The expression is a string that can be evaluated by Python's `eval` function, e.g., 'Raster(\"raster1.tif\") + Raster(\"raster2.tif\")'.",
+            "description": "Performs a map algebra expression using the raster calculator. Note: The 'expression' should be a valid Python string using arcpy.sa.Raster objects. Example payload: {\"function_name\":\"raster_calculator\",\"arguments\":{\"expression\":\"Raster('raster1') - Raster('raster2')\",\"output_raster\":\"raster_difference\"}}. Replace 'raster1' and 'raster2' with your actual raster layer names or paths.",
             "parameters": {
                 "expression": {
                     "type": "string",
