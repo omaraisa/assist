@@ -61,18 +61,12 @@ class RunPythonCode(object):
         try:
             func = getattr(self, function_name, None)
             if func:
-                messages.addMessage(f"Executing function: {function_name} with parameters: {params}")
-                result = func(params)
-                messages.addMessage(f"Function {function_name} completed successfully with result: {result}")
-                return result
+                return func(params)
             else:
                 messages.addMessage(f"Function {function_name} not found.")
                 return None
         except Exception as e:
-            import traceback
-            tb = traceback.format_exc()
             messages.addMessage(f"Error in {function_name}: {str(e)}")
-            messages.addMessage(f"Full traceback: {tb}")
             return None
 
     def _add_to_map(self, path):
