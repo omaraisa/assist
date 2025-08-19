@@ -61,12 +61,18 @@ class RunPythonCode(object):
         try:
             func = getattr(self, function_name, None)
             if func:
-                return func(params)
+                messages.addMessage(f"Executing function: {function_name} with parameters: {params}")
+                result = func(params)
+                messages.addMessage(f"Function {function_name} completed successfully with result: {result}")
+                return result
             else:
                 messages.addMessage(f"Function {function_name} not found.")
                 return None
         except Exception as e:
+            import traceback
+            tb = traceback.format_exc()
             messages.addMessage(f"Error in {function_name}: {str(e)}")
+            messages.addMessage(f"Full traceback: {tb}")
             return None
 
     def _add_to_map(self, path):
@@ -973,8 +979,9 @@ class RunPythonCode(object):
                 out_path = out_raster
             else:
                 # Build a reasonable default name
-                base = os.path.splitext(os.path.basename(str(in_raster)))[0]
-                output_name = f"{base}_extracted_by_mask"
+                import re
+                safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_raster))
+                output_name = f"{safe_name}_extracted_by_mask"
                 out_path = os.path.join(aprx.defaultGeodatabase, output_name)
                 out_path = arcpy.CreateUniqueName(out_path)
 
@@ -1026,35 +1033,78 @@ class RunPythonCode(object):
     def feature_to_raster(self, params):
         in_features = params.get("in_features")
         field = params.get("field")
-        output_name = f"{in_features.replace(' ', '_')}_raster"
-        aprx = arcpy.mp.ArcGISProject("CURRENT")
-        out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
-        out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.conversion.FeatureToRaster(in_features, field, out_raster)
-        self._add_to_map(out_raster)
-        return {"success": True, "output_raster": out_raster}
+        try:
+            # Handle special characters in layer names
+            if in_features:
+                import re
+                safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_features))
+                output_name = f"{safe_name}_raster"
+            else:
+                output_name = "feature_raster"
+            
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
+            out_raster = arcpy.CreateUniqueName(out_raster)
+            arcpy.conversion.FeatureToRaster(in_features, field, out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     def polygon_to_raster(self, params):
         in_features = params.get("in_features")
         value_field = params.get("value_field")
-        output_name = f"{in_features.replace(' ', '_')}_raster"
-        aprx = arcpy.mp.ArcGISProject("CURRENT")
-        out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
-        out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.conversion.PolygonToRaster(in_features, value_field, out_raster)
-        self._add_to_map(out_raster)
-        return {"success": True, "output_raster": out_raster}
+        out_raster_param = params.get("out_raster")
+        cell_size = params.get("cell_size")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            
+            # Use provided output path or create default one
+            if out_raster_param and (os.path.isabs(out_raster_param) or os.path.sep in out_raster_param):
+                out_raster = out_raster_param
+            else:
+                # Handle Arabic or special characters in layer names for default name
+                if in_features:
+                    import re
+                    safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_features))
+                    output_name = f"{safe_name}_polygon_raster"
+                else:
+                    output_name = "polygon_raster"
+                
+                out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
+                out_raster = arcpy.CreateUniqueName(out_raster)
+            
+            # Execute conversion with optional cell size
+            if cell_size:
+                arcpy.conversion.PolygonToRaster(in_features, value_field, out_raster, cell_assignment="CELL_CENTER", priority_field=None, cellsize=cell_size)
+            else:
+                arcpy.conversion.PolygonToRaster(in_features, value_field, out_raster)
+            
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     def point_to_raster(self, params):
         in_features = params.get("in_features")
         value_field = params.get("value_field")
-        output_name = f"{in_features.replace(' ', '_')}_raster"
-        aprx = arcpy.mp.ArcGISProject("CURRENT")
-        out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
-        out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.conversion.PointToRaster(in_features, value_field, out_raster)
-        self._add_to_map(out_raster)
-        return {"success": True, "output_raster": out_raster}
+        try:
+            # Handle special characters in layer names
+            if in_features:
+                import re
+                safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_features))
+                output_name = f"{safe_name}_raster"
+            else:
+                output_name = "point_raster"
+            
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
+            out_raster = arcpy.CreateUniqueName(out_raster)
+            arcpy.conversion.PointToRaster(in_features, value_field, out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     def idw_interpolation(self, params):
         in_point_features = params.get("in_point_features")
