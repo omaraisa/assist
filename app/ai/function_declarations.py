@@ -55,7 +55,7 @@ class FunctionDeclaration:
         "slope": {"description": "Compute slope from DEM (stub)", "params": []},
         "aspect": {"description": "Compute aspect from DEM (stub)", "params": []},
         "hillshade": {"description": "Compute hillshade from DEM (stub)", "params": []},
-        "extract_by_mask": {"description": "Extract raster by mask (stub)", "params": []},
+        "extract_by_mask": {"description": "Extracts the cells of a raster that correspond to the areas defined by a mask.", "params": ["in_raster", "in_mask_data", "out_raster"]},
         "clip_raster": {"description": "Clip raster by polygon (stub)", "params": []},
         "resample": {"description": "Resample a raster (stub)", "params": []},
         "get_raster_properties": {"description": "Get simple raster properties", "params": ["raster"]},
@@ -1079,5 +1079,15 @@ class FunctionDeclaration:
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
             "required": ["in_rasters", "out_raster"]
+        },
+        "extract_by_mask": {
+            "name": "extract_by_mask",
+            "description": "Extracts the cells of a raster that correspond to the areas defined by a mask.",
+            "parameters": {
+                "in_raster": {"type": "string", "description": "The input raster to be extracted."},
+                "in_mask_data": {"type": "string", "description": "The dataset to be used as a mask."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_raster", "in_mask_data", "out_raster"]
         }
     }

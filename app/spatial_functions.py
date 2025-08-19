@@ -113,7 +113,8 @@ class SpatialFunctions:
         65: "weighted_sum",
         66: "extract_by_attribute",
         67: "mosaic_to_new_raster",
-        68: "combine_rasters"
+        68: "combine_rasters",
+        44: "extract_by_mask"
     }
     
     def __init__(self, websocket_manager=None):

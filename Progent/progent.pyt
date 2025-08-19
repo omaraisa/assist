@@ -911,18 +911,6 @@ class RunPythonCode(object):
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    def extract_by_mask(self, params):
-        in_raster = params.get("in_raster")
-        in_mask_data = params.get("in_mask_data")
-        out_raster = params.get("out_raster")
-        try:
-            result = {
-                "success": True,
-                "message": f"Raster '{in_raster}' would be extracted by mask and saved to '{out_raster}'."
-            }
-            return result
-        except Exception as e:
-            return {"success": False, "error": str(e)}
 
     def clip_raster(self, params):
         in_raster = params.get("in_raster")
@@ -960,6 +948,47 @@ class RunPythonCode(object):
             props['height'] = getattr(ras, 'height', None)
             props['spatialReference'] = getattr(getattr(ras, 'spatialReference', None), 'name', None)
             return {"success": True, "properties": props}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def extract_by_mask(self, params):
+        in_raster = params.get("in_raster")
+        in_mask_data = params.get("in_mask_data")
+        out_raster = params.get("out_raster")
+        try:
+            # Check if Spatial Analyst extension is available
+            if arcpy.CheckExtension("Spatial") == "Available":
+                arcpy.CheckOutExtension("Spatial")
+            else:
+                return {"success": False, "error": "Spatial Analyst extension is not available"}
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+
+            # If caller provided a simple name (no path separator), save to default geodatabase
+            if out_raster and not (os.path.isabs(out_raster) or os.path.sep in out_raster):
+                output_name = out_raster
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
+                out_path = arcpy.CreateUniqueName(out_path)
+            elif out_raster:
+                out_path = out_raster
+            else:
+                # Build a reasonable default name
+                base = os.path.splitext(os.path.basename(str(in_raster)))[0]
+                output_name = f"{base}_extracted_by_mask"
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
+                out_path = arcpy.CreateUniqueName(out_path)
+
+            # Perform extract by mask using Spatial Analyst
+            from arcpy.sa import ExtractByMask
+            result_ras = ExtractByMask(in_raster, in_mask_data)
+            result_ras.save(out_path)
+
+            try:
+                self._add_to_map(out_path)
+            except Exception:
+                pass
+
+            return {"success": True, "output_raster": out_path, "message": f"Extract by mask completed successfully. Output saved to {out_path}"}
         except Exception as e:
             return {"success": False, "error": str(e)}
 
