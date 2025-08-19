@@ -92,13 +92,42 @@ class SpatialFunctions:
         44: "extract_by_mask",
         45: "clip_raster",
         46: "resample",
-        47: "get_raster_properties"
+        47: "get_raster_properties",
+        48: "raster_to_point",
+        49: "raster_to_polygon",
+        50: "raster_to_polyline",
+        51: "feature_to_raster",
+        52: "polygon_to_raster",
+        53: "point_to_raster",
+        54: "idw_interpolation",
+        55: "kriging_interpolation",
+        56: "spline_interpolation",
+        57: "natural_neighbor",
+        58: "euclidean_distance",
+        59: "euclidean_allocation",
+        60: "euclidean_direction",
+        61: "cost_distance",
+        62: "cost_allocation",
+        63: "cost_path",
+        64: "weighted_overlay",
+        65: "weighted_sum",
+        66: "extract_by_attribute",
+        67: "mosaic_to_new_raster",
+        68: "combine_rasters"
     }
     
     def __init__(self, websocket_manager=None):
         self.websocket_manager = websocket_manager
         self.supported_formats = ['.shp', '.geojson', '.kml', '.gpx', '.gml']
-        
+
+    def _add_to_map(self, path):
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            map_obj.addDataFromPath(path)
+            logger.info(f"Added {path} to map.")
+        except Exception as e:
+            logger.error(f"Could not add {path} to map: {e}")
 
     def get_functions_declaration(self, function_ids: list[int]) -> dict:
         """
@@ -2376,7 +2405,219 @@ class SpatialFunctions:
             return {"success": True, "fields": result}
         except Exception as e:
             return {"success": False, "error": str(e)}
-    
+
+    # New Raster Functions
+    def raster_to_point(self, in_raster: str, out_point_features: str) -> Dict:
+        logger.info(f"Converting raster {in_raster} to points")
+        try:
+            arcpy.conversion.RasterToPoint(in_raster, out_point_features)
+            self._add_to_map(out_point_features)
+            return {"success": True, "output_layer": out_point_features}
+        except Exception as e:
+            logger.error(f"raster_to_point error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def raster_to_polygon(self, in_raster: str, out_polygon_features: str) -> Dict:
+        logger.info(f"Converting raster {in_raster} to polygons")
+        try:
+            arcpy.conversion.RasterToPolygon(in_raster, out_polygon_features)
+            self._add_to_map(out_polygon_features)
+            return {"success": True, "output_layer": out_polygon_features}
+        except Exception as e:
+            logger.error(f"raster_to_polygon error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def raster_to_polyline(self, in_raster: str, out_polyline_features: str) -> Dict:
+        logger.info(f"Converting raster {in_raster} to polylines")
+        try:
+            arcpy.conversion.RasterToPolyline(in_raster, out_polyline_features)
+            self._add_to_map(out_polyline_features)
+            return {"success": True, "output_layer": out_polyline_features}
+        except Exception as e:
+            logger.error(f"raster_to_polyline error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def feature_to_raster(self, in_features: str, field: str, out_raster: str) -> Dict:
+        logger.info(f"Converting features {in_features} to raster")
+        try:
+            arcpy.conversion.FeatureToRaster(in_features, field, out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"feature_to_raster error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def polygon_to_raster(self, in_features: str, value_field: str, out_raster: str) -> Dict:
+        logger.info(f"Converting polygons {in_features} to raster")
+        try:
+            arcpy.conversion.PolygonToRaster(in_features, value_field, out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"polygon_to_raster error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def point_to_raster(self, in_features: str, value_field: str, out_raster: str) -> Dict:
+        logger.info(f"Converting points {in_features} to raster")
+        try:
+            arcpy.conversion.PointToRaster(in_features, value_field, out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"point_to_raster error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def idw_interpolation(self, in_point_features: str, z_field: str, out_raster: str) -> Dict:
+        logger.info(f"Performing IDW interpolation on {in_point_features}")
+        try:
+            arcpy.sa.Idw(in_point_features, z_field).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"idw_interpolation error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def kriging_interpolation(self, in_point_features: str, z_field: str, out_raster: str) -> Dict:
+        logger.info(f"Performing Kriging interpolation on {in_point_features}")
+        try:
+            arcpy.sa.Kriging(in_point_features, z_field).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"kriging_interpolation error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def spline_interpolation(self, in_point_features: str, z_field: str, out_raster: str) -> Dict:
+        logger.info(f"Performing Spline interpolation on {in_point_features}")
+        try:
+            arcpy.sa.Spline(in_point_features, z_field).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"spline_interpolation error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def natural_neighbor(self, in_point_features: str, z_field: str, out_raster: str) -> Dict:
+        logger.info(f"Performing Natural Neighbor interpolation on {in_point_features}")
+        try:
+            arcpy.sa.NaturalNeighbor(in_point_features, z_field).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"natural_neighbor error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def euclidean_distance(self, in_source_data: str, out_raster: str) -> Dict:
+        logger.info(f"Calculating Euclidean distance for {in_source_data}")
+        try:
+            arcpy.sa.EucDistance(in_source_data).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"euclidean_distance error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def euclidean_allocation(self, in_source_data: str, out_raster: str) -> Dict:
+        logger.info(f"Calculating Euclidean allocation for {in_source_data}")
+        try:
+            arcpy.sa.EucAllocation(in_source_data).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"euclidean_allocation error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def euclidean_direction(self, in_source_data: str, out_raster: str) -> Dict:
+        logger.info(f"Calculating Euclidean direction for {in_source_data}")
+        try:
+            arcpy.sa.EucDirection(in_source_data).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"euclidean_direction error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def cost_distance(self, in_source_data: str, in_cost_raster: str, out_raster: str) -> Dict:
+        logger.info(f"Calculating cost distance for {in_source_data}")
+        try:
+            arcpy.sa.CostDistance(in_source_data, in_cost_raster).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"cost_distance error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def cost_allocation(self, in_source_data: str, in_cost_raster: str, out_raster: str) -> Dict:
+        logger.info(f"Calculating cost allocation for {in_source_data}")
+        try:
+            arcpy.sa.CostAllocation(in_source_data, in_cost_raster).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"cost_allocation error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def cost_path(self, in_destination_data: str, in_cost_distance_raster: str, in_cost_backlink_raster: str, out_raster: str) -> Dict:
+        logger.info(f"Calculating cost path for {in_destination_data}")
+        try:
+            arcpy.sa.CostPath(in_destination_data, in_cost_distance_raster, in_cost_backlink_raster).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"cost_path error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def weighted_overlay(self, overlay_table: str, out_raster: str) -> Dict:
+        logger.info(f"Performing weighted overlay")
+        try:
+            arcpy.sa.WeightedOverlay(overlay_table).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"weighted_overlay error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def weighted_sum(self, in_rasters: str, out_raster: str) -> Dict:
+        logger.info(f"Performing weighted sum")
+        try:
+            arcpy.sa.WeightedSum(in_rasters).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"weighted_sum error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def extract_by_attribute(self, in_raster: str, where_clause: str, out_raster: str) -> Dict:
+        logger.info(f"Extracting by attribute from {in_raster}")
+        try:
+            arcpy.sa.ExtractByAttributes(in_raster, where_clause).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"extract_by_attribute error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def mosaic_to_new_raster(self, input_rasters: list, output_location: str, raster_dataset_name_with_extension: str, pixel_type: str, number_of_bands: int) -> Dict:
+        logger.info(f"Mosaicking rasters to {raster_dataset_name_with_extension}")
+        try:
+            arcpy.management.MosaicToNewRaster(input_rasters, output_location, raster_dataset_name_with_extension,
+                                               pixel_type=pixel_type, number_of_bands=number_of_bands)
+            out_path = os.path.join(output_location, raster_dataset_name_with_extension)
+            self._add_to_map(out_path)
+            return {"success": True, "output_raster": out_path}
+        except Exception as e:
+            logger.error(f"mosaic_to_new_raster error: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    def combine_rasters(self, in_rasters: list, out_raster: str) -> Dict:
+        logger.info(f"Combining rasters")
+        try:
+            arcpy.sa.Combine(in_rasters).save(out_raster)
+            self._add_to_map(out_raster)
+            return {"success": True, "output_raster": out_raster}
+        except Exception as e:
+            logger.error(f"combine_rasters error: {str(e)}")
+            return {"success": False, "error": str(e)}
     # Raster Analysis Functions
     def raster_calculator(self, expression: str, output_raster: str) -> Dict:
         """

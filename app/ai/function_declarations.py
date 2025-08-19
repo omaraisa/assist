@@ -798,5 +798,209 @@ class FunctionDeclaration:
                 }
             },
             "required": ["in_raster"]
+        },
+        "raster_to_point": {
+            "name": "raster_to_point",
+            "description": "Converts a raster dataset to point features.",
+            "parameters": {
+                "in_raster": {"type": "string", "description": "The input raster."},
+                "out_point_features": {"type": "string", "description": "The output point feature class."}
+            },
+            "required": ["in_raster", "out_point_features"]
+        },
+        "raster_to_polygon": {
+            "name": "raster_to_polygon",
+            "description": "Converts a raster dataset to polygon features.",
+            "parameters": {
+                "in_raster": {"type": "string", "description": "The input raster."},
+                "out_polygon_features": {"type": "string", "description": "The output polygon feature class."}
+            },
+            "required": ["in_raster", "out_polygon_features"]
+        },
+        "raster_to_polyline": {
+            "name": "raster_to_polyline",
+            "description": "Converts a raster dataset to polyline features.",
+            "parameters": {
+                "in_raster": {"type": "string", "description": "The input raster."},
+                "out_polyline_features": {"type": "string", "description": "The output polyline feature class."}
+            },
+            "required": ["in_raster", "out_polyline_features"]
+        },
+        "feature_to_raster": {
+            "name": "feature_to_raster",
+            "description": "Converts features to a raster dataset.",
+            "parameters": {
+                "in_features": {"type": "string", "description": "The input features."},
+                "field": {"type": "string", "description": "The field used to assign values to the output raster."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_features", "field", "out_raster"]
+        },
+        "polygon_to_raster": {
+            "name": "polygon_to_raster",
+            "description": "Converts polygon features to a raster dataset.",
+            "parameters": {
+                "in_features": {"type": "string", "description": "The input polygon features."},
+                "value_field": {"type": "string", "description": "The field used to assign values to the output raster."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_features", "value_field", "out_raster"]
+        },
+        "point_to_raster": {
+            "name": "point_to_raster",
+            "description": "Converts point features to a raster dataset.",
+            "parameters": {
+                "in_features": {"type": "string", "description": "The input point features."},
+                "value_field": {"type": "string", "description": "The field used to assign values to the output raster."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_features", "value_field", "out_raster"]
+        },
+        "idw_interpolation": {
+            "name": "idw_interpolation",
+            "description": "Interpolates a raster surface from points using an inverse distance weighted (IDW) technique.",
+            "parameters": {
+                "in_point_features": {"type": "string", "description": "The input point features."},
+                "z_field": {"type": "string", "description": "The field that holds the height or magnitude value for each point."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_point_features", "z_field", "out_raster"]
+        },
+        "kriging_interpolation": {
+            "name": "kriging_interpolation",
+            "description": "Interpolates a raster surface from points using kriging.",
+            "parameters": {
+                "in_point_features": {"type": "string", "description": "The input point features."},
+                "z_field": {"type": "string", "description": "The field that holds the height or magnitude value for each point."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_point_features", "z_field", "out_raster"]
+        },
+        "spline_interpolation": {
+            "name": "spline_interpolation",
+            "description": "Interpolates a raster surface from points using a spline.",
+            "parameters": {
+                "in_point_features": {"type": "string", "description": "The input point features."},
+                "z_field": {"type": "string", "description": "The field that holds the height or magnitude value for each point."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_point_features", "z_field", "out_raster"]
+        },
+        "natural_neighbor": {
+            "name": "natural_neighbor",
+            "description": "Interpolates a raster surface from points using natural neighbor.",
+            "parameters": {
+                "in_point_features": {"type": "string", "description": "The input point features."},
+                "z_field": {"type": "string", "description": "The field that holds the height or magnitude value for each point."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_point_features", "z_field", "out_raster"]
+        },
+        "euclidean_distance": {
+            "name": "euclidean_distance",
+            "description": "Calculates for each cell the Euclidean distance to the closest source.",
+            "parameters": {
+                "in_source_data": {"type": "string", "description": "The input source data."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_source_data", "out_raster"]
+        },
+        "euclidean_allocation": {
+            "name": "euclidean_allocation",
+            "description": "Calculates, for each cell, the nearest source based on Euclidean distance.",
+            "parameters": {
+                "in_source_data": {"type": "string", "description": "The input source data."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_source_data", "out_raster"]
+        },
+        "euclidean_direction": {
+            "name": "euclidean_direction",
+            "description": "Calculates, for each cell, the direction in degrees to the nearest source.",
+            "parameters": {
+                "in_source_data": {"type": "string", "description": "The input source data."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_source_data", "out_raster"]
+        },
+        "cost_distance": {
+            "name": "cost_distance",
+            "description": "Calculates the least accumulative cost distance for each cell to the nearest source over a cost surface.",
+            "parameters": {
+                "in_source_data": {"type": "string", "description": "The input source data."},
+                "in_cost_raster": {"type": "string", "description": "A raster defining the impedance or cost to move planimetrically through each cell."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_source_data", "in_cost_raster", "out_raster"]
+        },
+        "cost_allocation": {
+            "name": "cost_allocation",
+            "description": "Calculates, for each cell, its least-cost source based on the least accumulative cost over a cost surface.",
+            "parameters": {
+                "in_source_data": {"type": "string", "description": "The input source data."},
+                "in_cost_raster": {"type": "string", "description": "A raster defining the impedance or cost to move planimetrically through each cell."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_source_data", "in_cost_raster", "out_raster"]
+        },
+        "cost_path": {
+            "name": "cost_path",
+            "description": "Calculates the least-cost path from a source to a destination.",
+            "parameters": {
+                "in_destination_data": {"type": "string", "description": "The input destination data."},
+                "in_cost_distance_raster": {"type": "string", "description": "The cost distance raster to be used to determine the least-cost path."},
+                "in_cost_backlink_raster": {"type": "string", "description": "The cost backlink raster to be used to determine the path."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_destination_data", "in_cost_distance_raster", "in_cost_backlink_raster", "out_raster"]
+        },
+        "weighted_overlay": {
+            "name": "weighted_overlay",
+            "description": "Overlays several rasters using a common measurement scale and weights each according to its importance.",
+            "parameters": {
+                "overlay_table": {"type": "string", "description": "The weighted overlay table."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["overlay_table", "out_raster"]
+        },
+        "weighted_sum": {
+            "name": "weighted_sum",
+            "description": "Overlays several rasters, multiplying each by their given weight and summing them together.",
+            "parameters": {
+                "in_rasters": {"type": "string", "description": "The weighted sum table."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_rasters", "out_raster"]
+        },
+        "extract_by_attribute": {
+            "name": "extract_by_attribute",
+            "description": "Extracts cells from a raster based on a logical query.",
+            "parameters": {
+                "in_raster": {"type": "string", "description": "The input raster."},
+                "where_clause": {"type": "string", "description": "A logical expression to select a subset of raster cells."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_raster", "where_clause", "out_raster"]
+        },
+        "mosaic_to_new_raster": {
+            "name": "mosaic_to_new_raster",
+            "description": "Mosaics multiple raster datasets into a new raster dataset.",
+            "parameters": {
+                "input_rasters": {"type": "array", "items": {"type": "string"}, "description": "A list of input rasters."},
+                "output_location": {"type": "string", "description": "The folder where the output raster will be stored."},
+                "raster_dataset_name_with_extension": {"type": "string", "description": "The name of the output raster."},
+                "pixel_type": {"type": "string", "description": "The pixel type of the output raster."},
+                "number_of_bands": {"type": "integer", "description": "The number of bands of the output raster."}
+            },
+            "required": ["input_rasters", "output_location", "raster_dataset_name_with_extension", "pixel_type", "number_of_bands"]
+        },
+        "combine_rasters": {
+            "name": "combine_rasters",
+            "description": "Combines multiple rasters so that a unique output value is assigned to each unique combination of input values.",
+            "parameters": {
+                "in_rasters": {"type": "array", "items": {"type": "string"}, "description": "A list of input rasters."},
+                "out_raster": {"type": "string", "description": "The output raster."}
+            },
+            "required": ["in_rasters", "out_raster"]
         }
     }
