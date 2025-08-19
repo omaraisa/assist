@@ -32,9 +32,6 @@ import ast
 from typing import Dict, List, Any
 
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_community.chat_models import ChatOllama
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
 from langchain_core.prompts import PromptTemplate
 from langchain.agents import create_react_agent, AgentExecutor
 from langchain.tools import Tool
@@ -225,47 +222,12 @@ class LangChainAgent:
         from .config import get_model_config
         self.model_key = model_key
         model_config = get_model_config(model_key)
-
-        provider = model_config.get("provider")
-        if model_key.startswith("GEMINI"):
-            provider = "google"
-        elif model_key.startswith("GPT"):
-            provider = "openai"
-        elif model_key.startswith("CLAUDE"):
-            provider = "anthropic"
-        elif model_key.startswith("OLLAMA"):
-            provider = "ollama"
-
-        if provider == "google":
-            self.llm = ChatGoogleGenerativeAI(
-                model=model_config["model"],
-                google_api_key=model_config["api_key"],
-                temperature=model_config["temperature"],
-                max_output_tokens=model_config["max_tokens"],
-            )
-        elif provider == "ollama":
-            self.llm = ChatOllama(
-                model=model_config["model"],
-                base_url=model_config["endpoint"],
-                temperature=model_config["temperature"],
-            )
-        elif provider == "openai":
-             self.llm = ChatOpenAI(
-                model=model_config["model"],
-                api_key=model_config["api_key"],
-                temperature=model_config["temperature"],
-                max_tokens=model_config["max_tokens"],
-            )
-        elif provider == "anthropic":
-            self.llm = ChatAnthropic(
-                model=model_config["model"],
-                api_key=model_config["api_key"],
-                temperature=model_config["temperature"],
-                max_tokens=model_config["max_tokens"],
-            )
-        else:
-            raise ValueError(f"Unsupported LLM provider for LangChain agent: {provider}")
-
+        self.llm = ChatGoogleGenerativeAI(
+            model=model_config["model"],
+            google_api_key=model_config["api_key"],
+            temperature=model_config["temperature"],
+            max_output_tokens=model_config["max_tokens"],
+        )
         self.prompt = self._create_prompt_template()
         self.agent = create_react_agent(self.llm, self.tools, self.prompt)
         # Pass the callback handler to the agent executor
