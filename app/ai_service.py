@@ -31,8 +31,7 @@ class AIService:
         # Initialize the response handler
         self.response_handler = AIResponseHandler(self.session, None)  # ollama_service will be set later
         
-        # Initialize LangChain agent
-        self.langchain_agent = LangChainAgent(self.current_model, self.websocket_manager)
+        # LangChain agent will be initialized on-demand
         
         # Initialize Ollama service if available
         logger.info(f"OLLAMA_AVAILABLE: {OLLAMA_AVAILABLE}")
@@ -91,8 +90,12 @@ class AIService:
             
             if self.current_model.startswith("GEMINI"):
                 logger.info("Using LangChain agent for Gemini model")
+                if not self.langchain_agent or self.langchain_agent.model_key != self.current_model:
+                    logger.info(f"Initializing/updating LangChain agent for model: {self.current_model}")
+                    self.langchain_agent = LangChainAgent(self.current_model, self.websocket_manager)
+
                 if not self.langchain_agent:
-                    raise RuntimeError("LangChain agent is not initialized.")
+                    raise RuntimeError("LangChain agent could not be initialized.")
                 
                 response = await self.langchain_agent.generate_response(
                     user_message,
