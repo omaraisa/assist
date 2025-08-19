@@ -3,6 +3,9 @@ import os
 import json
 import math
 import statistics
+import re
+from typing import Dict, Tuple, List
+from copy import deepcopy
 
 class RunPythonCode(object):
     def __init__(self):
@@ -178,6 +181,787 @@ class RunPythonCode(object):
         arcpy.analysis.Clip(input_layer, clip_layer, output_path)
         self._add_to_map(output_path)
         return {"success": True, "output_layer": output_name, "output_path": output_path}
+
+    # Additional helper / missing functions
+    def get_field_statistics(self, params):
+        layer_name = params.get("layer_name")
+        field_name = params.get("field_name")
+        where_clause = params.get("where_clause")
+        try:
+            values = []
+            for row in arcpy.da.SearchCursor(layer_name, [field_name], where_clause):
+                v = row[0]
+                if v is None:
+                    continue
+                # accept numeric types only
+                try:
+                    nv = float(v)
+                    values.append(nv)
+                except Exception:
+                    continue
+            if not values:
+                return {"success": False, "error": "No numeric values found"}
+            return {
+                "success": True,
+                "count": len(values),
+                "total": sum(values),
+                "mean": statistics.mean(values),
+                "min": min(values),
+                "max": max(values),
+                "std_dev": statistics.stdev(values) if len(values) > 1 else 0,
+                "median": statistics.median(values)
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def calculate_distance(self, params):
+        point1 = params.get("point1")
+        point2 = params.get("point2")
+        units = params.get("units", "meters")
+        lon1, lat1 = point1
+        lon2, lat2 = point2
+        
+        # Convert to radians
+        lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+        
+        # Haversine formula
+        dlat = lat2 - lat1
+        dlon = lon2 - lon1
+        a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+        c = 2 * math.asin(math.sqrt(a))
+        
+        # Earth radius in meters
+        r = 6371000
+        distance = c * r
+        
+        # Convert units
+        if units == "kilometers":
+            distance = distance / 1000
+        elif units == "miles":
+            distance = distance / 1609.34
+        
+        return {"success": True, "distance": distance}
+
+
+    def get_current_project_path(self, params=None):
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            path = getattr(aprx, 'filePath', None)
+            return {"success": True, "project_path": path}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_default_db_path(self, params=None):
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            return {"success": True, "default_geodatabase": aprx.defaultGeodatabase}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_field_definitions(self, params):
+        layer_name = params.get("layer_name")
+        try:
+            fields = arcpy.ListFields(layer_name)
+            info = [{"name": f.name, "type": f.type, "length": getattr(f, 'length', None), "alias": getattr(f, 'aliasName', None)} for f in fields]
+            return {"success": True, "fields": info}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_layer_type(self, params):
+        layer_name = params.get("layer_name")
+        try:
+            desc = arcpy.Describe(layer_name)
+            dtype = getattr(desc, 'dataType', None)
+            shape = getattr(desc, 'shapeType', None)
+            return {"success": True, "data_type": dtype, "shape_type": shape}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_list_of_layer_fields(self, params):
+        return self.get_field_definitions(params)
+
+    def get_data_source_info(self, params):
+        layer_name = params.get("layer_name")
+        try:
+            desc = arcpy.Describe(layer_name)
+            return {"success": True, "data_source": getattr(desc, 'catalogPath', None)}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def create_nearest_neighbor_layer(self, params):
+        layer_name = params.get("layer_name")
+        id_field = params.get("id_field", "OBJECTID")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            lyr = None
+            for l in map_obj.listLayers():
+                if l.name == layer_name:
+                    lyr = l
+                    break
+            if not lyr:
+                return {"success": False, "error": f"Layer {layer_name} not found"}            # Prepare output
+            output_name = f"{layer_name.replace(' ', '_')}_ai"
+            default_gdb = aprx.defaultGeodatabase
+            output_path = os.path.join(default_gdb, output_name)
+            # Add the layer to the map
+            ouput_layer = map_obj.addDataFromPath(output_path)
+
+            # Copy features to new layer
+            arcpy.CopyFeatures_management(lyr, output_path)
+
+            # Add fields for nearest neighbor id and distance
+            nn_id_field = "NEAREST_ID"
+            nn_dist_field = "NEAREST_DIST"
+            arcpy.AddField_management(output_path, nn_id_field, "LONG")
+            arcpy.AddField_management(output_path, nn_dist_field, "DOUBLE")
+
+            # Build centroid dictionary
+            coords = {row[0]: row[1].centroid for row in arcpy.da.SearchCursor(output_path, [id_field, "SHAPE@"])}
+
+            def haversine(p1, p2):
+                lon1, lat1 = p1.X, p1.Y
+                lon2, lat2 = p2.X, p2.Y
+                lon1, lat1, lon2, lat2 = map(math.radians, [lon1, lat1, lon2, lat2])
+                dlat = lat2 - lat1
+                dlon = lon2 - lon1
+                a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+                c = 2 * math.asin(math.sqrt(a))
+                r = 6371000
+                return c * r
+
+            # Calculate nearest neighbor for each feature
+            nn_results = {}
+            for oid, pt in coords.items():
+                min_dist = None
+                min_oid = None
+                for oid2, pt2 in coords.items():
+                    if oid == oid2:
+                        continue
+                    dist = haversine(pt, pt2)
+                    if min_dist is None or dist < min_dist:
+                        min_dist = dist
+                        min_oid = oid2
+                if min_dist is not None:
+                    nn_results[oid] = (min_oid, min_dist)
+
+            # Write results to new fields
+            with arcpy.da.UpdateCursor(output_path, [id_field, nn_id_field, nn_dist_field]) as cursor:
+                for row in cursor:
+                    oid = row[0]
+                    if oid in nn_results:
+                        row[1] = nn_results[oid][0]
+                        row[2] = nn_results[oid][1]
+                        cursor.updateRow(row)
+
+            # Get statistics on the nearest distance field
+            # Try to get the layer name from the output path for statistics
+            output_layer_name = os.path.basename(output_path)
+            stats = self.get_field_statistics({'layer_name': output_layer_name, 'field_name': nn_dist_field})
+
+            result = {
+                "function_executed": "create_nearest_neighbor_layer",
+                "layer_name": layer_name,
+                "output_layer": output_name,
+                "output_path": output_path,
+                "nearest_id_field": nn_id_field,
+                "nearest_distance_field": nn_dist_field,
+                "success": True,
+                "statistics": stats.get("statistics", {}),
+                "feature_count": len(nn_results)
+            }
+            return result
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_unique_values_count(self, params):
+        layer_name = params.get("layer_name")
+        field_name = params.get("field_name")
+        try:
+            vals = set()
+            for row in arcpy.da.SearchCursor(layer_name, [field_name]):
+                vals.add(row[0])
+            return {"success": True, "unique_count": len(vals)}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def calculate_empty_values(self, params):
+        layer_name = params.get("layer_name")
+        field_name = params.get("field_name")
+        try:
+            empty = 0
+            total = 0
+            for row in arcpy.da.SearchCursor(layer_name, [field_name]):
+                total += 1
+                if row[0] is None:
+                    empty += 1
+            return {"success": True, "empty": empty, "total": total}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_map_layers_info(self, params=None):
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+            layers = []
+            for lyr in map_obj.listLayers():
+                try:
+                    layers.append({"name": lyr.name, "is_group": lyr.isGroupLayer if hasattr(lyr, 'isGroupLayer') else False, "data_source": getattr(lyr, 'dataSource', None)})
+                except Exception:
+                    layers.append({"name": getattr(lyr, 'name', None)})
+            return {"success": True, "layers": layers}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_map_tables_info(self, params=None):
+        # Tables are treated similarly to layers in ArcGIS Pro
+        return self.get_map_layers_info(params)
+
+    def get_values_frequency(self, params):
+        layer_name = params.get("layer_name")
+        field_name = params.get("field_name")
+        try:
+            freq = {}
+            for row in arcpy.da.SearchCursor(layer_name, [field_name]):
+                k = row[0]
+                freq[k] = freq.get(k, 0) + 1
+            return {"success": True, "frequency": freq}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_value_frequency(self, params):
+        # Single value frequency
+        layer_name = params.get("layer_name")
+        field_name = params.get("field_name")
+        value = params.get("value")
+        res = self.get_values_frequency({'layer_name': layer_name, 'field_name': field_name})
+        if not res.get('success'):
+            return res
+        return {"success": True, "value": value, "count": res['frequency'].get(value, 0)}
+
+    def get_coordinate_system(self, params):
+        layer_name = params.get("layer_name")
+        try:
+            desc = arcpy.Describe(layer_name)
+            sr = getattr(desc, 'spatialReference', None)
+            if sr:
+                return {"success": True, "name": sr.name, "wkid": getattr(sr, 'factoryCode', None)}
+            return {"success": False, "error": "No spatial reference found"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_attribute_table(self, params):
+        layer_name = params.get("layer_name")
+        limit = params.get("limit", 1000)
+        try:
+            fields = [f.name for f in arcpy.ListFields(layer_name)]
+            rows = []
+            for i, row in enumerate(arcpy.da.SearchCursor(layer_name, fields)):
+                if i >= limit:
+                    break
+                rows.append(dict(zip(fields, row)))
+            return {"success": True, "fields": fields, "rows": rows, "returned": len(rows)}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_field_domain_values(self, params):
+        workspace = params.get("workspace")
+        field_domain = params.get("field_domain")
+        try:
+            domains = arcpy.da.ListDomains(workspace)
+            for d in domains:
+                if d.name == field_domain and hasattr(d, 'codedValues'):
+                    return {"success": True, "domain": d.name, "codedValues": d.codedValues}
+            return {"success": False, "error": "Domain not found"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def calculate_new_field(self, params):
+        layer = params.get("layer")
+        field_name = params.get("field_name")
+        field_type = params.get("field_type", "DOUBLE")
+        expression = params.get("expression")
+        try:
+            arcpy.AddField_management(layer, field_name, field_type)
+            if expression:
+                arcpy.CalculateField_management(layer, field_name, expression, "PYTHON3")
+            return {"success": True, "field_added": field_name}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def analyze_layer_fields(self, params):
+        layer_name = params.get("layer")
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map_obj = aprx.activeMap
+
+            # Find the target layer
+            target_layer = next((lyr for lyr in map_obj.listLayers() if lyr.name == layer_name), None)
+            if not target_layer:
+                return {"success": False, "error": f"Layer '{layer_name}' not found"}
+            if not target_layer.isFeatureLayer:
+                return {"success": False, "error": f"Layer '{layer_name}' is not a feature layer"}
+
+            # Get total feature count
+            total_count = int(arcpy.GetCount_management(target_layer)[0])
+            if total_count == 0:
+                return {"success": False, "error": f"Layer '{layer_name}' has no features"}
+
+            fields = arcpy.ListFields(target_layer)
+            field_analysis = {}
+
+            # Cursor for checking uniqueness without loading all values into memory at once
+            with arcpy.da.SearchCursor(target_layer, [f.name for f in fields]) as cursor:
+                rows = list(cursor)  # safe since we have total_count from above
+
+            # Build a name->index map once
+            field_index = {fld.name: idx for idx, fld in enumerate(fields)}
+
+            for field in fields:
+                # Skip system OBJECTID/geometry fields and common system fields
+                if field.type in ['Geometry'] or field.name.upper() in ['OBJECTID', 'SHAPE_LENGTH', 'SHAPE_AREA', 'GLOBALID']:
+                    continue
+
+                # Values for this field
+                col_idx = field_index[field.name]
+                all_values = [r[col_idx] for r in rows]  # Include nulls for proper ratio calculation
+                values = [v for v in all_values if v is not None]  # Non-null values for analysis
+
+                # Smart skip for numeric unique-ID-like fields
+                if field.type in ['SmallInteger', 'Integer', 'Single', 'Double'] and values:
+                    # Name-assisted early skip (soft signal)
+                    name_l = field.name.lower()
+                    name_hint = any(substr in name_l for substr in ["id", "code", "guid"])
+                    n = len(values)
+                    uniq = len(set(values)) / n if n else 0
+                    # Integer-like ratio
+                    def _int_like(x: float, eps: float = 1e-9) -> bool:
+                        try:
+                            return abs(x - round(x)) <= eps
+                        except Exception:
+                            return False
+                    int_like_ratio = sum(1 for v in values if _int_like(v)) / n
+                    if name_hint and uniq >= 0.85 and int_like_ratio >= 0.85:
+                        continue
+                    # Heuristic skip for numeric ID-like fields
+                    if self._is_id_like_numeric(values):
+                        continue
+
+                # Smart skip for text fields that look like IDs (e.g., GUIDs, codes, numeric-as-text)
+                if field.type in ['String', 'Text'] and values:
+                    text_values = [str(v).strip() for v in values]
+                    if self._is_id_like_text(text_values):
+                        continue
+
+                field_info = {
+                    "field_name": field.name,
+                    "field_type": field.type,
+                    "field_length": getattr(field, 'length', None),
+                    "field_precision": getattr(field, 'precision', None),
+                    "field_scale": getattr(field, 'scale', None),
+                    "total_records": total_count
+                }
+
+                # Calculate field statistics based on type
+                if field.type in ['SmallInteger', 'Integer', 'Single', 'Double']:
+                    field_info.update(self._analyze_numeric_field(target_layer, field.name, total_count))
+                elif field.type in ['String', 'Text']:
+                    field_info.update(self._analyze_text_field(target_layer, field.name, total_count))
+                elif field.type == 'Date':
+                    field_info.update(self._analyze_date_field(target_layer, field.name, total_count))
+                else:
+                    field_info.update(self._analyze_generic_field(target_layer, field.name, total_count))
+
+                # AI-ready insights
+                field_info.update(self._generate_ai_insights(field_info, field.name))
+
+                field_analysis[field.name] = field_info
+
+            result = {
+                "success": True,
+                "layer_name": layer_name,
+                "total_features": total_count,
+                "fields_analyzed": len(field_analysis),
+                "field_insights": field_analysis,
+                "analysis_timestamp": self._get_timestamp()
+            }
+            return result
+
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    # Dashboard / layout related ops
+    def generate_smart_dashboard_layout(self, params):
+        layer_name = params.get("layer_name")
+        analysis_type = params.get("analysis_type", "overview")
+        theme = params.get("theme", "default")
+        try:
+            # Step 1: Analyze layer fields
+            field_analysis_result = self.analyze_layer_fields({"layer": layer_name})
+            if not field_analysis_result.get("success"):
+                return field_analysis_result
+            
+            field_insights = field_analysis_result.get("field_insights", {})
+            if not field_insights:
+                return {"success": False, "error": "No suitable fields found for dashboard generation"}
+            
+            # Step 2: Prioritize fields based on AI insights
+            prioritized_fields = sorted(
+                field_insights.values(),
+                key=lambda x: x.get("ai_insights", {}).get("visualization_priority", 0),
+                reverse=True
+            )
+            
+            # Step 3: Select top fields for the dashboard (e.g., top 6)
+            top_fields = prioritized_fields[:6]
+            
+            # Step 4: Generate chart configurations for each selected field
+            charts = []
+            for field_info in top_fields:
+                chart_config = self._create_chart_from_field(field_info, theme)
+                if chart_config:
+                    charts.append(chart_config)
+            
+            # Step 5: Arrange charts into a layout
+            layout = self._arrange_charts_in_layout(charts)
+            
+            result = {
+                "success": True,
+                "layer_name": layer_name,
+                "dashboard_title": f"{analysis_type.title()} Dashboard for {layer_name}",
+                "theme": theme,
+                "layout": layout,
+                "charts": charts,
+                "generation_timestamp": self._get_timestamp()
+            }
+            
+            return result
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def optimize_dashboard_layout(self, params):
+        dashboard_json = params.get("dashboard_json")
+        try:
+            dashboard_data = json.loads(dashboard_json)
+            charts = dashboard_data.get("charts", [])
+            
+            if not charts:
+                return {"success": False, "error": "No charts found in the dashboard JSON"}
+            
+            charts.sort(key=lambda x: (
+                1 if x.get("data_category") == "continuous_numeric" else 2,
+                1 if x.get("data_category") == "categorical_text" else 2
+            ))
+            
+            optimized_layout = self._arrange_charts_in_layout(charts)
+            
+            dashboard_data["layout"] = optimized_layout
+            dashboard_data["charts"] = charts
+            dashboard_data["optimization_timestamp"] = self._get_timestamp()
+            
+            result = {
+                "success": True,
+                "optimized_dashboard": dashboard_data
+            }
+            
+            return result
+            
+        except json.JSONDecodeError:
+            return {"success": False, "error": "Invalid dashboard JSON provided"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def recommend_chart_types(self, params):
+        field_analysis_json = params.get("field_analysis_json")
+        try:
+            field_analysis = json.loads(field_analysis_json)
+            recommendations = {}
+            
+            for field_name, insights in field_analysis.get("field_insights", {}).items():
+                ai_insights = insights.get("ai_insights", {})
+                chart_suitability = ai_insights.get("chart_suitability", {})
+                
+                if chart_suitability:
+                    sorted_charts = sorted(chart_suitability.items(), key=lambda x: x[1], reverse=True)
+                    recommendations[field_name] = {
+                        "primary_recommendation": sorted_charts[0][0],
+                        "other_recommendations": [chart[0] for chart in sorted_charts[1:4]],
+                        "reasoning": ai_insights.get("data_story", "")
+                    }
+            
+            result = {
+                "success": True,
+                "chart_recommendations": recommendations
+            }
+            
+            return result
+            
+        except json.JSONDecodeError:
+            return {"success": False, "error": "Invalid field analysis JSON provided"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def plan_dashboard_layout(self, params):
+        available_fields = params.get("available_fields")
+        user_requirements = params.get("user_requirements")
+        try:
+            if "overview" in user_requirements.lower():
+                plan = {
+                    "title": "General Overview Dashboard",
+                    "layout_type": "grid",
+                    "charts_to_include": available_fields[:4]
+                }
+            elif "comparison" in user_requirements.lower():
+                plan = {
+                    "title": "Comparison Dashboard",
+                    "layout_type": "split_panel",
+                    "charts_to_include": [f for f in available_fields if "categorical" in f]
+                }
+            else:
+                plan = {
+                    "title": "Custom Dashboard",
+                    "layout_type": "flexible",
+                    "charts_to_include": available_fields
+                }
+            
+            result = {
+                "success": True,
+                "dashboard_plan": plan
+            }
+            
+            return result
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_current_dashboard_layout(self, params):
+        try:
+            dashboard_file = os.path.join(os.path.dirname(__file__), "..", "dashboard.json")
+            
+            if not os.path.exists(dashboard_file):
+                return {"success": False, "error": "Dashboard layout file not found"}
+            
+            with open(dashboard_file, 'r') as f:
+                layout = json.load(f)
+            
+            result = {
+                "success": True,
+                "dashboard_layout": layout
+            }
+            
+            return result
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_field_stories_and_samples(self, params):
+        layer_name = params.get("layer_name")
+        field_names = params.get("field_names")
+        try:
+            field_analysis_result = self.analyze_layer_fields({"layer": layer_name})
+            if not field_analysis_result.get("success"):
+                return field_analysis_result
+            
+            field_insights = field_analysis_result.get("field_insights", {})
+            result_data = {}
+            
+            for field_name in field_names:
+                if field_name in field_insights:
+                    insights = field_insights[field_name]
+                    ai_insights = insights.get("ai_insights", {})
+                    
+                    result_data[field_name] = {
+                        "data_story": ai_insights.get("data_story", "No story available."),
+                        "sample_values": insights.get("sample_values", []),
+                        "visualization_potential": ai_insights.get("visualization_potential", "unknown")
+                    }
+            
+            result = {
+                "success": True,
+                "field_data": result_data
+            }
+            
+            return result
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_current_dashboard_charts(self, params):
+        try:
+            dashboard_layout_result = self.get_current_dashboard_layout(params)
+            if not dashboard_layout_result.get("success"):
+                return dashboard_layout_result
+            
+            charts = dashboard_layout_result.get("dashboard_layout", {}).get("charts", [])
+            
+            result = {
+                "success": True,
+                "charts": charts
+            }
+            
+            return result
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def update_dashboard_charts(self, params):
+        updated_charts_json = params.get("updated_charts_json")
+        try:
+            updated_charts = json.loads(updated_charts_json)
+            
+            dashboard_layout_result = self.get_current_dashboard_layout(params)
+            if not dashboard_layout_result.get("success"):
+                return dashboard_layout_result
+            
+            dashboard_layout = dashboard_layout_result.get("dashboard_layout", {})
+            
+            dashboard_layout["charts"] = updated_charts
+            
+            dashboard_file = os.path.join(os.path.dirname(__file__), "..", "dashboard.json")
+            with open(dashboard_file, 'w') as f:
+                json.dump(dashboard_layout, f, indent=4)
+            
+            result = {
+                "success": True,
+                "message": "Dashboard charts updated successfully"
+            }
+            
+            return result
+            
+        except json.JSONDecodeError:
+            return {"success": False, "error": "Invalid updated charts JSON provided"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    # Raster-analysis stubs
+    def raster_calculator(self, params):
+        expression = params.get("expression")
+        output_raster = params.get("output_raster")
+        try:
+            result = {
+                "success": True,
+                "message": f"Raster calculation '{expression}' would be performed to create '{output_raster}'."
+            }
+            return result
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def reclassify(self, params):
+        in_raster = params.get("in_raster")
+        reclass_field = params.get("reclass_field")
+        remap = params.get("remap")
+        out_raster = params.get("out_raster")
+        try:
+            result = {
+                "success": True,
+                "message": f"Raster '{in_raster}' would be reclassified to '{out_raster}'."
+            }
+            return result
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def zonal_statistics_as_table(self, params):
+        in_zone_data = params.get("in_zone_data")
+        zone_field = params.get("zone_field")
+        in_value_raster = params.get("in_value_raster")
+        out_table = params.get("out_table")
+        try:
+            result = {
+                "success": True,
+                "message": f"Zonal statistics would be calculated and saved to '{out_table}'."
+            }
+            return result
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def slope(self, params):
+        in_raster = params.get("in_raster")
+        out_raster = params.get("out_raster")
+        try:
+            result = {
+                "success": True,
+                "message": f"Slope would be calculated for '{in_raster}' and saved to '{out_raster}'."
+            }
+            return result
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def aspect(self, params):
+        in_raster = params.get("in_raster")
+        out_raster = params.get("out_raster")
+        try:
+            result = {
+                "success": True,
+                "message": f"Aspect would be calculated for '{in_raster}' and saved to '{out_raster}'."
+            }
+            return result
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def hillshade(self, params):
+        in_raster = params.get("in_raster")
+        out_raster = params.get("out_raster")
+        try:
+            result = {
+                "success": True,
+                "message": f"Hillshade would be calculated for '{in_raster}' and saved to '{out_raster}'."
+            }
+            return result
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def extract_by_mask(self, params):
+        in_raster = params.get("in_raster")
+        in_mask_data = params.get("in_mask_data")
+        out_raster = params.get("out_raster")
+        try:
+            result = {
+                "success": True,
+                "message": f"Raster '{in_raster}' would be extracted by mask and saved to '{out_raster}'."
+            }
+            return result
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def clip_raster(self, params):
+        in_raster = params.get("in_raster")
+        rectangle = params.get("rectangle")
+        out_raster = params.get("out_raster")
+        try:
+            result = {
+                "success": True,
+                "message": f"Raster '{in_raster}' would be clipped and saved to '{out_raster}'."
+            }
+            return result
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def resample(self, params):
+        in_raster = params.get("in_raster")
+        out_raster = params.get("out_raster")
+        cell_size = params.get("cell_size")
+        try:
+            result = {
+                "success": True,
+                "message": f"Raster '{in_raster}' would be resampled to '{out_raster}' with cell size {cell_size}."
+            }
+            return result
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_raster_properties(self, params):
+        raster = params.get("raster")
+        try:
+            props = {}
+            ras = arcpy.Describe(raster)
+            props['pixelType'] = getattr(ras, 'pixelType', None)
+            props['width'] = getattr(ras, 'width', None)
+            props['height'] = getattr(ras, 'height', None)
+            props['spatialReference'] = getattr(getattr(ras, 'spatialReference', None), 'name', None)
+            return {"success": True, "properties": props}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     # Raster Functions
     def raster_to_point(self, params):
@@ -403,6 +1187,596 @@ class RunPythonCode(object):
         arcpy.sa.Combine(in_rasters).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
+
+    def _analyze_numeric_field(self, layer, field_name: str, total_count: int) -> Dict:
+        """Analyze numeric field characteristics"""
+        try:
+            # Get all values using SearchCursor
+            values = []
+            null_count = 0
+            
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for row in cursor:
+                    value = row[0]
+                    if value is None:
+                        null_count += 1
+                    else:
+                        values.append(value)
+            
+            if not values:
+                return {
+                    "data_category": "numeric",
+                    "unique_count": 0,
+                    "null_count": null_count,
+                    "null_percentage": 100.0,
+                    "sample_values": []
+                }
+            
+            # Calculate statistics
+            unique_values = list(set(values))
+            min_val = min(values)
+            max_val = max(values)
+            avg_val = sum(values) / len(values)
+            
+            # Step 2 Enhancement: Add advanced statistical measures for AI insights
+            median_val = self._calculate_median(values)
+            std_dev = self._calculate_std_dev(values, avg_val) if len(values) > 1 else 0
+            value_range = max_val - min_val
+            
+            # Detect outliers using IQR method
+            outlier_info = self._detect_outliers(values) if len(values) >= 4 else {"outlier_count": 0, "outlier_percentage": 0}
+            
+            # Calculate skewness indicator (simplified)
+            skew_indicator = "symmetric"
+            if len(values) > 2:
+                if avg_val > median_val + (std_dev * 0.5):
+                    skew_indicator = "right_skewed"
+                elif avg_val < median_val - (std_dev * 0.5):
+                    skew_indicator = "left_skewed"
+            
+            # Determine if it's categorical (low unique count) or continuous
+            unique_count = len(unique_values)
+            is_categorical = unique_count <= 20 and unique_count < total_count * 0.1
+            
+            analysis = {
+                "data_category": "categorical_numeric" if is_categorical else "continuous_numeric",
+                "unique_count": unique_count,
+                "null_count": null_count,
+                "null_percentage": round((null_count / total_count) * 100, 2),
+                "min_value": min_val,
+                "max_value": max_val,
+                "average_value": round(avg_val, 3),
+                "median_value": round(median_val, 3),
+                "standard_deviation": round(std_dev, 3),
+                "value_range": round(value_range, 3),
+                "coefficient_of_variation": round((std_dev / avg_val * 100), 2) if avg_val != 0 else 0,
+                "distribution_shape": skew_indicator,
+                "outlier_count": outlier_info["outlier_count"],
+                "outlier_percentage": round(outlier_info["outlier_percentage"], 2),
+                "sample_values": unique_values[:10] if is_categorical else [min_val, max_val, round(avg_val, 3)]
+            }
+            
+            return analysis
+            
+        except Exception as e:
+            return {"data_category": "numeric", "error": str(e)}
+    
+    def _analyze_text_field(self, layer, field_name: str, total_count: int) -> Dict:
+        """Analyze text field characteristics"""
+        try:
+            # Get all values using SearchCursor
+            values = []
+            null_count = 0
+            
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for row in cursor:
+                    value = row[0]
+                    # Treat None, empty string, and whitespace-only as null
+                    if value is None or str(value).strip() == '':
+                        null_count += 1
+                    else:
+                        values.append(str(value).strip())
+            
+            if not values:
+                return {
+                    "data_category": "text",
+                    "unique_count": 0,
+                    "null_count": null_count,
+                    "null_percentage": 100.0,
+                    "sample_values": []
+                }
+            
+            # Calculate statistics
+            unique_values = list(set(values))
+            unique_count = len(unique_values)
+            
+            # Step 2 Enhancement: Add detailed text analysis for AI insights
+            text_lengths = [len(v) for v in values]
+            avg_length = sum(text_lengths) / len(text_lengths) if text_lengths else 0
+            min_length = min(text_lengths) if text_lengths else 0
+            max_length = max(text_lengths) if text_lengths else 0
+            
+            # Analyze text patterns
+            text_patterns = self._analyze_text_patterns(values, unique_values)
+            
+            # Determine if it's categorical or free text
+            is_categorical = unique_count <= 50 and unique_count < total_count * 0.3
+            
+            # Enhanced categorization based on text characteristics
+            if is_categorical and avg_length <= 20 and text_patterns["has_consistent_format"]:
+                data_category = "categorical_text"
+            elif is_categorical and text_patterns["likely_codes"]:
+                data_category = "categorical_codes"
+            elif avg_length > 100 or text_patterns["has_varied_length"]:
+                data_category = "free_text"
+            elif text_patterns["likely_names"]:
+                data_category = "name_field"
+            else:
+                data_category = "categorical_text" if is_categorical else "free_text"
+            
+            analysis = {
+                "data_category": data_category,
+                "unique_count": unique_count,
+                "null_count": null_count,
+                "null_percentage": round((null_count / total_count) * 100, 2),
+                "sample_values": unique_values[:10],
+                "avg_length": round(avg_length, 1),
+                "min_length": min_length,
+                "max_length": max_length,
+                "length_variability": round((max_length - min_length) / avg_length * 100, 1) if avg_length > 0 else 0,
+                "text_patterns": text_patterns
+            }
+            
+            return analysis
+            
+        except Exception as e:
+            return {"data_category": "text", "error": str(e)}
+    
+    def _analyze_date_field(self, layer, field_name: str, total_count: int) -> Dict:
+        """Analyze date field characteristics"""
+        try:
+            # Get all values using SearchCursor
+            values = []
+            null_count = 0
+            
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for row in cursor:
+                    value = row[0]
+                    if value is None:
+                        null_count += 1
+                    else:
+                        values.append(value)
+            
+            if not values:
+                return {
+                    "data_category": "date",
+                    "unique_count": 0,
+                    "null_count": null_count,
+                    "null_percentage": 100.0,
+                    "sample_values": []
+                }
+            
+            # Calculate statistics
+            unique_count = len(set(values))
+            min_date = min(values)
+            max_date = max(values)
+            
+            analysis = {
+                "data_category": "date",
+                "unique_count": unique_count,
+                "null_count": null_count,
+                "null_percentage": round((null_count / total_count) * 100, 2),
+                "min_date": str(min_date),
+                "max_date": str(max_date),
+                "sample_values": [str(v) for v in sorted(set(values))[:5]]
+            }
+            
+            return analysis
+            
+        except Exception as e:
+            return {"data_category": "date", "error": str(e)}
+    
+    def _analyze_generic_field(self, layer, field_name: str, total_count: int) -> Dict:
+        """Generic analysis for other field types"""
+        try:
+            # Get basic statistics
+            null_count = 0
+            value_count = 0
+            
+            with arcpy.da.SearchCursor(layer, [field_name]) as cursor:
+                for row in cursor:
+                    if row[0] is None:
+                        null_count += 1
+                    else:
+                        value_count += 1
+            
+            analysis = {
+                "data_category": "other",
+                "null_count": null_count,
+                "value_count": value_count,
+                "null_percentage": round((null_count / total_count) * 100, 2)
+            }
+            
+            return analysis
+            
+        except Exception as e:
+            return {"data_category": "other", "error": str(e)}
+
+    def _is_id_like_numeric(self, values: List[float]) -> bool:
+        """
+        Heuristically determine if a numeric vector looks like an identifier:
+        - High uniqueness (>= 0.9 of non-null values are unique)
+        - Mostly integer-like values
+        - Dense coverage across min..max (unique_count / value_range >= 0.5 for meaningful ranges)
+        - Common step pattern ~1 when sorted (median diff == 1 or close)
+        """
+        try:
+            if not values:
+                return False
+            n = len(values)
+            unique_vals = sorted(set(values))
+            unique_count = len(unique_vals)
+            # Uniqueness ratio
+            uniq_ratio = unique_count / n if n > 0 else 0
+            if uniq_ratio < 0.9 or n < 10:
+                return False
+            # Integer-likeness: allow small float noise (e.g., cast to int within epsilon)
+            def is_int_like(x: float, eps: float = 1e-9) -> bool:
+                try:
+                    return abs(x - round(x)) <= eps
+                except Exception:
+                    return False
+            int_like_ratio = sum(1 for v in values if is_int_like(v)) / n
+            if int_like_ratio < 0.9:
+                # If many are true floats, likely measurement data, not ID
+                return False
+            vmin, vmax = unique_vals[0], unique_vals[-1]
+            value_range = vmax - vmin
+            if value_range <= 0:
+                return False
+            density = unique_count / (value_range + 1)  # +1 to handle inclusive integer range
+            # Compute median step
+            diffs = [unique_vals[i+1] - unique_vals[i] for i in range(len(unique_vals)-1)]
+            diffs_sorted = sorted(diffs)
+            mid = len(diffs_sorted)//2
+            median_step = (diffs_sorted[mid] if len(diffs_sorted)%2==1 else (diffs_sorted[mid-1]+diffs_sorted[mid])/2)
+            # ID-like if dense and step ~1
+            if density >= 0.5 and 0.9 <= median_step <= 1.1:
+                return True
+            # Also treat strictly consecutive sequences as ID-like
+            if all(abs(d - 1) <= 1e-9 for d in diffs):
+                return True
+            return False
+        except Exception:
+            return False
+
+    def _is_id_like_text(self, values: List[str]) -> bool:
+        """
+        Heuristically determine if a text vector looks like an identifier/code:
+        - High uniqueness
+        - Mostly constrained character set (alnum, -, _)
+        - Consistent length or matches GUID/UUID patterns
+        - Numeric-as-text (e.g., "000123", "101", "987654")
+        """
+        try:
+            if not values:
+                return False
+            n = len(values)
+            unique_vals = list({v for v in values if v != ''})
+            unique_count = len(unique_vals)
+            if n < 10:
+                return False
+            uniq_ratio = unique_count / n if n > 0 else 0
+            if uniq_ratio < 0.85:
+                return False
+
+            # Quick GUID/UUID detection
+            uuid_regex = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
+            hex32_regex = re.compile(r"^[0-9a-fA-F]{32}$")
+            def is_uuid_like(s: str) -> bool:
+                s = s.strip()
+                return bool(uuid_regex.match(s) or hex32_regex.match(s))
+            uuid_ratio = sum(1 for v in values if is_uuid_like(v)) / n
+            if uuid_ratio >= 0.8:
+                return True
+
+            # Numeric-as-text detection
+            digits_regex = re.compile(r"^\d+$")
+            digits_ratio = sum(1 for v in values if digits_regex.match(v)) / n
+            if digits_ratio >= 0.8 and uniq_ratio >= 0.9:
+                # Try numeric ID-like heuristic on parsed ints
+                ints = [int(v) for v in values if digits_regex.match(v)]
+                if self._is_id_like_numeric(ints):
+                    return True
+                # Even if not dense, very high uniqueness numeric codes are often IDs
+                if uniq_ratio >= 0.98:
+                    return True
+
+            # Alphanumeric codes: mostly alnum/_/- and consistent length
+            code_regex = re.compile(r"^[A-Za-z0-9_-]+$")
+            code_ratio = sum(1 for v in values if code_regex.match(v)) / n
+            if code_ratio >= 0.9:
+                lengths = [len(v) for v in values if v]
+                if lengths:
+                    avg_len = sum(lengths) / len(lengths)
+                    var = sum((l - avg_len)**2 for l in lengths) / len(lengths)
+                    # Low variance in lengths suggests formatted codes
+                    if var <= 1.0 and uniq_ratio >= 0.9:
+                        return True
+                    # If many look like hex-ish strings with high uniqueness
+                    hexish_ratio = sum(1 for v in values if re.fullmatch(r"[0-9A-Fa-f]+", v) is not None) / n
+                    if hexish_ratio >= 0.9 and uniq_ratio >= 0.9:
+                        return True
+
+            return False
+        except Exception:
+            return False
+    
+    def _generate_ai_insights(self, field_info: Dict, field_name: str) -> Dict:
+        """
+        Step 2 Enhancement: Generate AI-ready insights for better chart selection
+        Provides rich, descriptive analysis that enables intelligent chart recommendations
+        """
+        try:
+            data_category = field_info.get("data_category", "unknown")
+            unique_count = field_info.get("unique_count", 0)
+            total_records = field_info.get("total_records", 1)
+            null_percentage = field_info.get("null_percentage", 0)
+            
+            ai_insights = {
+                "data_story": "",
+                "visualization_potential": "low",
+                "chart_suitability": {},
+                "data_patterns": {},
+                "analytical_value": "medium",
+                "distribution_characteristics": "",
+                "visualization_priority": 5  # 1-10 scale
+            }
+            
+            # Generate data story based on field characteristics
+            if data_category == "categorical_text":
+                diversity_ratio = unique_count / total_records if total_records > 0 else 0
+                
+                if unique_count <= 5:
+                    ai_insights["data_story"] = f"'{field_name}' contains {unique_count} distinct categories with clear groupings, ideal for showing proportional relationships."
+                    ai_insights["visualization_potential"] = "high"
+                    ai_insights["visualization_priority"] = 9
+                    ai_insights["chart_suitability"] = {
+                        "pie": 0.95, "donut": 0.90, "bar": 0.85, "column": 0.80
+                    }
+                elif unique_count <= 15:
+                    ai_insights["data_story"] = f"'{field_name}' has {unique_count} categories, suitable for comparative analysis and ranking visualizations."
+                    ai_insights["visualization_potential"] = "high"
+                    ai_insights["visualization_priority"] = 8
+                    ai_insights["chart_suitability"] = {
+                        "bar": 0.90, "column": 0.85, "horizontal_bar": 0.80, "pie": 0.70
+                    }
+                elif unique_count <= 30:
+                    ai_insights["data_story"] = f"'{field_name}' contains {unique_count} categories, best visualized with scrollable or grouped displays."
+                    ai_insights["visualization_potential"] = "medium"
+                    ai_insights["visualization_priority"] = 6
+                    ai_insights["chart_suitability"] = {
+                        "bar": 0.75, "treemap": 0.70, "grouped_bar": 0.65
+                    }
+                else:
+                    ai_insights["data_story"] = f"'{field_name}' has high cardinality ({unique_count} categories), requiring aggregation or filtering for effective visualization."
+                    ai_insights["visualization_potential"] = "low"
+                    ai_insights["visualization_priority"] = 3
+                    ai_insights["chart_suitability"] = {
+                        "word_cloud": 0.60, "top_n_bar": 0.55
+                    }
+                    
+            elif data_category == "continuous_numeric":
+                value_range = field_info.get("max_value", 0) - field_info.get("min_value", 0)
+                avg_value = field_info.get("average_value", 0)
+                min_val = field_info.get("min_value", 0)
+                max_val = field_info.get("max_value", 0)
+                
+                # Analyze distribution characteristics
+                if value_range > 0:
+                    cv = (value_range / 4) / avg_value if avg_value != 0 else 0  # Approximate coefficient of variation
+                    
+                    if cv < 0.3:
+                        ai_insights["distribution_characteristics"] = "Low variability - values clustered around the mean"
+                        ai_insights["data_story"] = f"'{field_name}' shows consistent values (range: {min_val:.2f} to {max_val:.2f}), good for trend analysis."
+                    elif cv < 1.0:
+                        ai_insights["distribution_characteristics"] = "Moderate variability - normal distribution likely"
+                        ai_insights["data_story"] = f"'{field_name}' displays moderate variation (range: {min_val:.2f} to {max_val:.2f}), suitable for distribution analysis."
+                    else:
+                        ai_insights["distribution_characteristics"] = "High variability - potential outliers present"
+                        ai_insights["data_story"] = f"'{field_name}' shows high variation (range: {min_val:.2f} to {max_val:.2f}), may contain outliers worth investigating."
+                else:
+                    ai_insights["data_story"] = f"'{field_name}' contains constant or near-constant values, limited visualization value."
+                
+                ai_insights["visualization_potential"] = "high" if value_range > 0 else "low"
+                ai_insights["visualization_priority"] = 8 if value_range > 0 else 2
+                ai_insights["chart_suitability"] = {
+                    "histogram": 0.90, "box_plot": 0.85, "density_plot": 0.80, "violin_plot": 0.75
+                } if value_range > 0 else {"summary_stats": 0.30}
+                
+            elif data_category == "categorical_numeric":
+                ai_insights["data_story"] = f"'{field_name}' represents discrete numeric categories ({unique_count} values), ideal for count-based visualizations."
+                ai_insights["visualization_potential"] = "high"
+                ai_insights["visualization_priority"] = 7
+                ai_insights["chart_suitability"] = {
+                    "bar": 0.85, "column": 0.80, "pie": 0.75 if unique_count <= 8 else 0.50
+                }
+                
+            elif data_category == "free_text":
+                ai_insights["data_story"] = f"'{field_name}' contains free-form text with {unique_count} unique entries, suitable for text analysis."
+                ai_insights["visualization_potential"] = "low"
+                ai_insights["visualization_priority"] = 2
+                ai_insights["chart_suitability"] = {
+                    "word_cloud": 0.60, "text_length_histogram": 0.40
+                }
+                
+            elif data_category == "date":
+                ai_insights["data_story"] = f"'{field_name}' contains temporal data spanning from {field_info.get('min_date', 'unknown')} to {field_info.get('max_date', 'unknown')}."
+                ai_insights["visualization_potential"] = "high"
+                ai_insights["visualization_priority"] = 8
+                ai_insights["chart_suitability"] = {
+                    "timeline": 0.90, "line_chart": 0.85, "date_histogram": 0.80
+                }
+            
+            # Add data quality insights
+            if null_percentage > 50:
+                ai_insights["data_story"] += f" Data quality concern: {null_percentage:.1f}% missing values."
+                ai_insights["visualization_priority"] = max(1, ai_insights["visualization_priority"] - 3)
+            elif null_percentage > 20:
+                ai_insights["data_story"] += f" Note: {null_percentage:.1f}% missing values present."
+                ai_insights["visualization_priority"] = max(1, ai_insights["visualization_priority"] - 1)
+            
+            # Determine analytical value
+            if ai_insights["visualization_priority"] >= 8:
+                ai_insights["analytical_value"] = "high"
+            elif ai_insights["visualization_priority"] >= 5:
+                ai_insights["analytical_value"] = "medium"
+
+            return ai_insights
+            
+        except Exception as e:
+            return {"error": str(e)}
+    
+    def _calculate_median(self, values: List[float]) -> float:
+        """Calculate median of a list of numbers"""
+        sorted_values = sorted(values)
+        n = len(sorted_values)
+        mid = n // 2
+        if n % 2 == 0:
+            return (sorted_values[mid - 1] + sorted_values[mid]) / 2
+        else:
+            return sorted_values[mid]
+    
+    def _calculate_std_dev(self, values: List[float], mean: float) -> float:
+        """Calculate standard deviation"""
+        return math.sqrt(sum((x - mean) ** 2 for x in values) / (len(values) - 1))
+    
+    def _detect_outliers(self, values: List[float]) -> Dict:
+        """Detect outliers using the IQR method"""
+        sorted_values = sorted(values)
+        n = len(sorted_values)
+        q1 = sorted_values[n // 4]
+        q3 = sorted_values[3 * n // 4]
+        iqr = q3 - q1
+        lower_bound = q1 - 1.5 * iqr
+        upper_bound = q3 + 1.5 * iqr
+        
+        outliers = [v for v in values if v < lower_bound or v > upper_bound]
+        outlier_count = len(outliers)
+        outlier_percentage = (outlier_count / n) * 100 if n > 0 else 0
+        
+        return {"outlier_count": outlier_count, "outlier_percentage": outlier_percentage}
+    
+    def _analyze_text_patterns(self, values: List[str], unique_values: List[str]) -> Dict:
+        """Analyze patterns in text data"""
+        patterns = {
+            "has_consistent_format": False,
+            "has_varied_length": False,
+            "likely_codes": False,
+            "likely_names": False
+        }
+        
+        if not values:
+            return patterns
+        
+        lengths = [len(v) for v in values]
+        avg_length = sum(lengths) / len(lengths)
+        
+        # Check for consistent format (low length variance)
+        length_variance = sum((l - avg_length) ** 2 for l in lengths) / len(lengths)
+        if length_variance < 5:
+            patterns["has_consistent_format"] = True
+        
+        # Check for varied length
+        if max(lengths) > avg_length * 2:
+            patterns["has_varied_length"] = True
+        
+        # Check for likely codes (alphanumeric, short)
+        if avg_length <= 15 and all(re.match(r'^[a-zA-Z0-9\s_-]+$', v) for v in unique_values[:10]):
+            patterns["likely_codes"] = True
+        
+        # Check for likely names (capitalized words)
+        name_like_count = sum(1 for v in unique_values[:20] if ' ' in v and all(w.istitle() for w in v.split()))
+        if name_like_count / min(20, len(unique_values)) > 0.5:
+            patterns["likely_names"] = True
+            
+        return patterns
+    
+    def _get_timestamp(self) -> str:
+        """Get current timestamp in ISO format"""
+        from datetime import datetime
+        return datetime.now().isoformat()
+
+    def _create_chart_from_field(self, field_info: Dict, theme: str) -> Dict:
+        """
+        Creates a chart configuration dictionary based on field analysis insights.
+        """
+        try:
+            ai_insights = field_info.get("ai_insights", {})
+            chart_suitability = ai_insights.get("chart_suitability", {})
+            
+            if not chart_suitability:
+                return None
+            
+            # Select the best chart type based on suitability score
+            best_chart_type = max(chart_suitability, key=chart_suitability.get)
+            
+            chart_config = {
+                "id": f"chart_{field_info['field_name']}",
+                "title": f"Analysis of {field_info['field_name']}",
+                "type": best_chart_type,
+                "field": field_info['field_name'],
+                "data_category": field_info['data_category'],
+                "description": ai_insights.get("data_story", ""),
+                "theme": theme,
+                "options": self._get_chart_options(best_chart_type, theme)
+            }
+            
+            return chart_config
+            
+        except Exception as e:
+            return None
+    
+    def _get_chart_options(self, chart_type: str, theme: str) -> Dict:
+        """
+        Provides default chart options based on chart type and theme.
+        """
+        options = {
+            "color_palette": "default_palette",
+            "show_legend": True,
+            "show_labels": True
+        }
+        
+        if chart_type in ["bar", "column", "line_chart"]:
+            options["axis_titles"] = {"x": "Category", "y": "Value"}
+        
+        if chart_type == "histogram":
+            options["bin_count"] = "auto"
+        
+        if theme == "dark":
+            options["color_palette"] = "dark_palette"
+            options["font_color"] = "#FFFFFF"
+        
+        return options
+    
+    def _arrange_charts_in_layout(self, charts: List[Dict]) -> Dict:
+        """
+        Arranges charts into a grid-based layout.
+        """
+        layout = {
+            "grid_template_columns": "1fr 1fr",
+            "gap": "20px",
+            "items": []
+        }
+        
+        for i, chart in enumerate(charts):
+            layout["items"].append({
+                "id": chart["id"],
+                "row": (i // 2) + 1,
+                "col": (i % 2) + 1
+            })
+            
+        return layout
 
 class Toolbox(object):
     def __init__(self):
