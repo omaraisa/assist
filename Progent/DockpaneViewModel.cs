@@ -25,13 +25,24 @@ namespace Progent
         private string _logText = "";
         private string _connectButtonText = "Connect";
         private bool _isConnected = false;
+        public bool IsConnected
+        {
+            get => _isConnected;
+            set
+            {
+                _isConnected = value;
+                OnPropertyChanged();
+            }
+        }
         private WebSocketService _webSocketService;
 
         public DockpaneViewModel()
         {
+            // Set logo based on theme - simple and reliable
+            SetThemeAwareLogo();
             ConnectCommand = new RelayCommand(async () =>
             {
-                if (_isConnected)
+                if (IsConnected)
                 {
                     await _webSocketService.DisconnectAsync();
                 }
@@ -41,7 +52,7 @@ namespace Progent
                     _webSocketService.OnConnected += async () =>
                     {
                         ConnectButtonText = "Disconnect";
-                        _isConnected = true;
+                        IsConnected = true;
                         Log("Connected to server.");
                         Process.Start(new ProcessStartInfo("http://localhost:8000") { UseShellExecute = true });
                         await _webSocketService.SendMessageAsync(JsonConvert.SerializeObject(new { type = "client_register", client_type = "arcgis_pro" }));
@@ -49,14 +60,14 @@ namespace Progent
                     _webSocketService.OnDisconnected += () =>
                     {
                         ConnectButtonText = "Connect";
-                        _isConnected = false;
+                        IsConnected = false;
                         Log("Disconnected from server.");
                     };
                     _webSocketService.OnError += (error) =>
                     {
                         Log(error);
                         ConnectButtonText = "Connect";
-                        _isConnected = false;
+                        IsConnected = false;
                     };
                     _webSocketService.OnMessageReceived += HandleMessageReceived;
                     await _webSocketService.ConnectAsync();
@@ -292,6 +303,39 @@ namespace Progent
         private void Log(string message)
         {
             LogText += $"{DateTime.Now:T} - {message}{Environment.NewLine}";
+        }
+
+        private void SetThemeAwareLogo()
+        {
+            try
+            {
+                var app = System.Windows.Application.Current;
+                if (app?.Resources == null) return;
+
+                // Check if we're in dark theme by looking at background brush
+                bool isDarkTheme = false;
+                if (app.Resources.Contains("Esri_BackgroundBrush"))
+                {
+                    var brush = app.Resources["Esri_BackgroundBrush"] as System.Windows.Media.SolidColorBrush;
+                    if (brush != null)
+                    {
+                        var color = brush.Color;
+                        var brightness = (color.R * 0.299 + color.G * 0.587 + color.B * 0.114);
+                        isDarkTheme = brightness < 128;
+                    }
+                }
+
+                // Use bright logo for dark theme, regular logo for light theme
+                var logoPath = isDarkTheme ? "/Progent;component/Images/logo-bright.png" : "/Progent;component/Images/logo.png";
+                var uri = new Uri($"pack://application:,,,{logoPath}", UriKind.Absolute);
+                var bitmap = new System.Windows.Media.Imaging.BitmapImage(uri);
+                
+                app.Resources["ProgentLogo"] = bitmap;
+            }
+            catch
+            {
+                // If anything fails, silently continue - logo just won't show
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
