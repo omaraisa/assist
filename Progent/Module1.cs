@@ -19,6 +19,8 @@ using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ArcGIS.Desktop.Core;
+using ArcGIS.Desktop.Framework.Events;
 
 namespace Progent
 {
@@ -49,57 +51,36 @@ namespace Progent
         /// <returns>true if the module can be initialized, false otherwise</returns>
         protected override bool Initialize()
         {
-            FrameworkApplication.ActiveThemeChanged += OnActiveThemeChanged;
-            UpdateImageSources();
+            UpdateTheme(FrameworkApplication.ApplicationTheme);
+            ThemeChangedEvent.Subscribe(OnThemeChanged);
             return base.Initialize();
         }
 
-
-        private void OnActiveThemeChanged(ApplicationTheme theme)
+        private void OnThemeChanged(ThemeChangedEventArgs args)
         {
-            UpdateImageSources(theme);
-
-            //Update the button's icon
-            var button = FrameworkApplication.Ribbon.FindControl("Progent_Dockpane_ShowButton") as IPlugInWrapper;
-            if (button != null)
-            {
-                if (theme == ApplicationTheme.Dark)
-                {
-                    button.LargeImage = new BitmapImage(new Uri("pack://application:,,,/Progent;component/Images/logo-bright.png"));
-                    button.SmallImage = new BitmapImage(new Uri("pack://application:,,,/Progent;component/Images/logo-bright.png"));
-                }
-                else
-                {
-                    button.LargeImage = new BitmapImage(new Uri("pack://application:,,,/Progent;component/Images/logo.png"));
-                    button.SmallImage = new BitmapImage(new Uri("pack://application:,,,/Progent;component/Images/logo.png"));
-                }
-            }
+            UpdateTheme(args.NewTheme);
         }
 
-        /// <summary>
-        /// Updates the image sources in the resource dictionary based on the current theme.
-        /// </summary>
-        /// <param name="theme"></param>
-        private void UpdateImageSources(ApplicationTheme? theme = null)
+        private void UpdateTheme(ApplicationTheme theme)
         {
-            if (theme == null)
-                theme = FrameworkApplication.ApplicationTheme;
-
-            // Define the image sources for light and dark themes
+            // Update the ProgentLogo resource
             var lightImage = new BitmapImage(new Uri("pack://application:,,,/Progent;component/Images/logo.png"));
             var darkImage = new BitmapImage(new Uri("pack://application:,,,/Progent;component/Images/logo-bright.png"));
-
-            // Get the current image source based on the theme
             var currentImage = theme == ApplicationTheme.Dark ? darkImage : lightImage;
 
-            // Remove the existing resource if it exists
-            if (FrameworkApplication.Application.Resources.Contains("ProgentLogo"))
+            if (FrameworkApplication.Current.Resources.Contains("ProgentLogo"))
             {
-                FrameworkApplication.Application.Resources.Remove("ProgentLogo");
+                FrameworkApplication.Current.Resources.Remove("ProgentLogo");
             }
+            FrameworkApplication.Current.Resources.Add("ProgentLogo", currentImage);
 
-            // Add the new image source to the resource dictionary
-            FrameworkApplication.Application.Resources.Add("ProgentLogo", currentImage);
+            // Update the ribbon button's icon
+            var button = FrameworkApplication.GetPlugInWrapper("Progent_Dockpane_ShowButton") as IPlugInWrapper;
+            if (button != null)
+            {
+                button.LargeImage = currentImage;
+                button.SmallImage = currentImage;
+            }
         }
 
         #endregion Overrides
