@@ -57,6 +57,30 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+
+            <!-- Style for selectable log text (TextBox) with gray theme-aware foreground -->
+            <Style x:Key="LogSelectableTextBoxStyle" TargetType="TextBox">
+                <Setter Property="IsReadOnly" Value="True"/>
+                <Setter Property="IsReadOnlyCaretVisible" Value="False"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
+                <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+                <!-- Default (Light) medium gray -->
+                <Setter Property="Foreground" Value="#555555"/>
+                <Style.Triggers>
+                    <!-- Dark theme: lighter gray for contrast -->
+                    <DataTrigger Binding="{Binding Source={x:Static framework:FrameworkApplication.ApplicationTheme}}" Value="Dark">
+                        <Setter Property="Foreground" Value="#CCCCCC"/>
+                    </DataTrigger>
+                    <!-- High contrast: defer to system/highlight brush -->
+                    <DataTrigger Binding="{Binding Source={x:Static framework:FrameworkApplication.ApplicationTheme}}" Value="HighContrast">
+                        <Setter Property="Foreground" Value="{DynamicResource Esri_HighlightTextBrush}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -85,7 +109,8 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="Log" FontWeight="Bold" Foreground="{DynamicResource Esri_TextStyleDefaultBrush}" Margin="5,0,5,5"/>
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Background="{DynamicResource Esri_TextControlBackgroundBrush}" Padding="5">
-                    <TextBlock Text="{Binding LogText}" TextWrapping="Wrap" Foreground="{DynamicResource Esri_TextControlForegroundBrush}"/>
+                    <!-- TextBox instead of TextBlock so user can select/copy log text -->
+                    <TextBox Text="{Binding LogText}" Style="{StaticResource LogSelectableTextBoxStyle}"/>
                 </ScrollViewer>
             </Grid>
         </Border>
