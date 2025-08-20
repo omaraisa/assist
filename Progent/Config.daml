@@ -30,7 +30,7 @@
         </group>
       </groups>
       <controls>
-        <button id="Progent_Dockpane_ShowButton" caption="Progent" className="DockpaneShowButton" keytip="P1" largeImage="Images\logo.png" image="Images\logo.png">
+        <button id="Progent_Dockpane_ShowButton" caption="Progent" className="DockpaneShowButton" keytip="P1" largeImage="Images\logo.png" image="Images\logo.png" darkImage="DarkImages\logo.png">
           <tooltip heading="Progent">
             Shows the Progent dockable panel.<disabledText />
           </tooltip>
