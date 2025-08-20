@@ -684,3 +684,21 @@ body.dark .chat-messages::-webkit-scrollbar-thumb {
   text-align: center;
   margin: 1rem 0;
 }
+
+/* Data Warning Banner */
+#data-warning-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--warning-color);
+  color: #000;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 0.9rem;
+  z-index: 1001; /* Higher than the loading indicator */
+}
+
+#data-warning-banner p {
+  margin: 0;
+}
