@@ -5,8 +5,11 @@ import asyncio
 import logging
 from typing import Dict, List, Optional, Any
 from datetime import datetime
+import os
 
 logger = logging.getLogger(__name__)
+
+HISTORY_FILE = "conversation_history.json"
 
 class WebSocketManager:
     """Manages WebSocket connections and message routing"""
@@ -17,8 +20,12 @@ class WebSocketManager:
         
         # Store client types (arcgis_pro, chatbot)
         self.client_types: Dict[str, str] = {}
-          # Store conversation histories per client
-        self.conversation_histories: Dict[str, List[Dict]] = {}
+
+        # Map client_id to user_id
+        self.client_id_to_user_id: Dict[str, str] = {}
+
+        # Store conversation histories per user
+        self.conversation_histories: Dict[str, List[Dict]] = self._load_history()
         
         # Store investigation sessions
         self.investigation_sessions: Dict[str, Dict[str, Any]] = {}
@@ -45,7 +52,6 @@ class WebSocketManager:
         """Accept a new WebSocket connection"""
         await websocket.accept()
         self.active_connections[client_id] = websocket
-        self.conversation_histories[client_id] = []
         logger.info(f"Client {client_id} connected")
     
     async def disconnect(self, client_id: str):
@@ -54,8 +60,8 @@ class WebSocketManager:
             del self.active_connections[client_id]
         if client_id in self.client_types:
             del self.client_types[client_id]
-        if client_id in self.conversation_histories:
-            del self.conversation_histories[client_id]
+        if client_id in self.client_id_to_user_id:
+            del self.client_id_to_user_id[client_id]
         if client_id in self.pending_responses:
             del self.pending_responses[client_id]
         if client_id in self.cancel_flags:
@@ -67,10 +73,16 @@ class WebSocketManager:
         for client_id in list(self.active_connections.keys()):
             await self.disconnect(client_id)
     
-    async def register_client_type(self, client_id: str, client_type: str):
+    async def register_client_type(self, client_id: str, client_type: str, user_id: str = None):
         """Register the type of client (arcgis_pro or chatbot)"""
         self.client_types[client_id] = client_type
-        logger.info(f"Client {client_id} registered as {client_type}")
+        if user_id:
+            self.client_id_to_user_id[client_id] = user_id
+            if user_id not in self.conversation_histories:
+                self.conversation_histories[user_id] = []
+            logger.info(f"Client {client_id} registered as {client_type} for user {user_id}")
+        else:
+            logger.info(f"Client {client_id} registered as {client_type}")
     
     async def send_to_client(self, client_id: str, message: Dict):
         """Send message to a specific client"""
@@ -108,14 +120,21 @@ class WebSocketManager:
     
     def get_conversation_history(self, client_id: str) -> List[Dict]:
         """Get conversation history for a client"""
-        return self.conversation_histories.get(client_id, [])
+        user_id = self.client_id_to_user_id.get(client_id)
+        if user_id:
+            return self.conversation_histories.get(user_id, [])
+        return []
     
     def add_to_history(self, client_id: str, role: str, content: str):
         """Add message to conversation history"""
-        if client_id not in self.conversation_histories:
-            self.conversation_histories[client_id] = []
+        user_id = self.client_id_to_user_id.get(client_id)
+        if not user_id:
+            return
+
+        if user_id not in self.conversation_histories:
+            self.conversation_histories[user_id] = []
         
-        self.conversation_histories[client_id].append({
+        self.conversation_histories[user_id].append({
             "role": role,
             "content": content,
             "timestamp": datetime.now().isoformat()
@@ -123,24 +142,32 @@ class WebSocketManager:
         
         # Keep only last N messages to prevent memory issues
         max_history = 20
-        if len(self.conversation_histories[client_id]) > max_history:
-            self.conversation_histories[client_id] = self.conversation_histories[client_id][-max_history:]
+        if len(self.conversation_histories[user_id]) > max_history:
+            self.conversation_histories[user_id] = self.conversation_histories[user_id][-max_history:]
+
+        self._save_history()
     
     def add_to_history_with_metadata(self, client_id: str, message: Dict):
         """Add message with metadata to conversation history (for function calls)"""
-        if client_id not in self.conversation_histories:
-            self.conversation_histories[client_id] = []
+        user_id = self.client_id_to_user_id.get(client_id)
+        if not user_id:
+            return
+
+        if user_id not in self.conversation_histories:
+            self.conversation_histories[user_id] = []
         
         # Add timestamp to the message
         message_with_timestamp = message.copy()
         message_with_timestamp["timestamp"] = datetime.now().isoformat()
         
-        self.conversation_histories[client_id].append(message_with_timestamp)
+        self.conversation_histories[user_id].append(message_with_timestamp)
         
         # Keep only last N messages to prevent memory issues
         max_history = 20
-        if len(self.conversation_histories[client_id]) > max_history:
-            self.conversation_histories[client_id] = self.conversation_histories[client_id][-max_history:]
+        if len(self.conversation_histories[user_id]) > max_history:
+            self.conversation_histories[user_id] = self.conversation_histories[user_id][-max_history:]
+
+        self._save_history()
     
     def get_arcgis_state(self) -> Dict:
         """Get current ArcGIS Pro state"""
@@ -258,7 +285,7 @@ class WebSocketManager:
                 {
                     "client_id": client_id[:8] + "...",  # Truncate for privacy
                     "client_type": self.client_types.get(client_id, "unknown"),
-                    "history_length": len(self.conversation_histories.get(client_id, []))
+                    "history_length": len(self.conversation_histories.get(self.client_id_to_user_id.get(client_id), []))
                 }
                 for client_id in self.active_connections.keys()
             ]
@@ -295,3 +322,21 @@ class WebSocketManager:
             asyncio.ensure_future(self.broadcast_to_type("chatbot", message))
         else:
             loop.run_until_complete(self.broadcast_to_type("chatbot", message))
+
+    def _load_history(self) -> Dict[str, List[Dict]]:
+        """Load conversation history from file"""
+        if os.path.exists(HISTORY_FILE):
+            try:
+                with open(HISTORY_FILE, "r") as f:
+                    return json.load(f)
+            except (IOError, json.JSONDecodeError) as e:
+                logger.error(f"Error loading history file: {e}")
+        return {}
+
+    def _save_history(self):
+        """Save conversation history to file"""
+        try:
+            with open(HISTORY_FILE, "w") as f:
+                json.dump(self.conversation_histories, f, indent=4)
+        except IOError as e:
+            logger.error(f"Error saving history file: {e}")

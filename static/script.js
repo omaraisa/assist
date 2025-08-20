@@ -1,6 +1,7 @@
 class SmartAssistantClient {
     constructor() {
         this.ws = null;
+        this.userId = this.getOrSetUserId();
         this.clientId = null;
         this.currentModel = 'GEMINI_FLASH';
         this.isConnected = false;
@@ -60,6 +61,22 @@ class SmartAssistantClient {
         }
     }
     
+    getOrSetUserId() {
+        let userId = localStorage.getItem('smartAssistant_userId');
+        if (!userId) {
+            userId = this.generateUUID();
+            localStorage.setItem('smartAssistant_userId', userId);
+        }
+        return userId;
+    }
+
+    generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
     setupEventListeners() {
         // Form submission
         this.elements.chatForm.addEventListener('submit', (e) => {
@@ -130,7 +147,8 @@ class SmartAssistantClient {
                 // Register as chatbot client
                 this.sendWebSocketMessage({
                     type: 'client_register',
-                    client_type: 'chatbot'
+                    client_type: 'chatbot',
+                    user_id: this.userId
                 });
                 
                 // Enable input
@@ -191,6 +209,10 @@ class SmartAssistantClient {
             case 'config':
                 this.handleConfigMessage(message.data);
                 break;
+
+            case 'history':
+                this.handleHistoryMessage(message.data);
+                break;
                 
             case 'assistant_message':
                 this.addMessage('Assistant', message.content, 'bot');
@@ -235,6 +257,16 @@ class SmartAssistantClient {
         }
     }
     
+    handleHistoryMessage(history) {
+        this.elements.chatMessages.innerHTML = '';
+        this.conversationHistory = history;
+        history.forEach(message => {
+            const sender = message.role === 'user' ? 'You' : 'Assistant';
+            const type = message.role === 'user' ? 'user' : 'bot';
+            this.addMessage(sender, message.content, type, new Date(message.timestamp));
+        });
+    }
+
     handleConfigMessage(config) {
         // Update available models
         if (config.ai_models) {
@@ -300,11 +332,12 @@ class SmartAssistantClient {
         });
     }
     
-    addMessage(sender, content, type) {
+    addMessage(sender, content, type, timestamp = null) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `msg ${type}-msg`;
         
-        const timestamp = new Date().toLocaleTimeString([], {
+        const messageTime = timestamp ? new Date(timestamp) : new Date();
+        const timeString = messageTime.toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit'
         });
@@ -318,7 +351,7 @@ class SmartAssistantClient {
             <div class="${messageClass}">
                 <div class="msg-info">
                     <div class="msg-info-name">${sender}</div>
-                    <div class="msg-info-time">${timestamp}</div>
+                    <div class="msg-info-time">${timeString}</div>
                 </div>
                 <div class="msg-text">${this.formatMessage(content)}</div>
             </div>

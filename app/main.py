@@ -120,9 +120,17 @@ async def handle_websocket_message(client_id: str, message: Dict):
         if message_type == "client_register":
             # Register client type (arcgis_pro or chatbot)
             client_type = message.get("client_type")
+            user_id = message.get("user_id")
             if client_type:
-                await websocket_manager.register_client_type(client_id, client_type)
+                await websocket_manager.register_client_type(client_id, client_type, user_id)
                 
+                if client_type == "chatbot" and user_id:
+                    history = websocket_manager.get_conversation_history(client_id)
+                    await websocket_manager.send_to_client(client_id, {
+                        "type": "history",
+                        "data": history
+                    })
+
                 if client_type == "arcgis_pro":
                     # Request initial software state
                     await websocket_manager.send_to_client(client_id, {
