@@ -74,13 +74,21 @@ namespace Progent
             }
             FrameworkApplication.Current.Resources.Add("ProgentLogo", currentImage);
 
-            // Update the ribbon button's icon
-            var button = FrameworkApplication.GetPlugInWrapper("Progent_Dockpane_ShowButton") as IPlugInWrapper;
-            if (button != null)
+            // Update text color resources
+            var textFillColor = theme == ApplicationTheme.Dark ? Brushes.White : Brushes.Black;
+            var textControlForegroundColor = theme == ApplicationTheme.Dark ? Brushes.White : Brushes.Black;
+
+            if (FrameworkApplication.Current.Resources.Contains("ProgentTextFillColorBrush"))
             {
-                button.LargeImage = currentImage;
-                button.SmallImage = currentImage;
+                FrameworkApplication.Current.Resources.Remove("ProgentTextFillColorBrush");
             }
+            FrameworkApplication.Current.Resources.Add("ProgentTextFillColorBrush", textFillColor);
+
+            if (FrameworkApplication.Current.Resources.Contains("ProgentTextControlForegroundBrush"))
+            {
+                FrameworkApplication.Current.Resources.Remove("ProgentTextControlForegroundBrush");
+            }
+            FrameworkApplication.Current.Resources.Add("ProgentTextControlForegroundBrush", textControlForegroundColor);
         }
 
         #endregion Overrides
