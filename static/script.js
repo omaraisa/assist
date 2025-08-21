@@ -8,9 +8,11 @@ class SmartAssistantClient {
         this.apiKeys = this.loadApiKeys();
         this.isThinking = false;
         this.isCancelled = false; // Flag to ignore responses after cancellation
+        this.isRecognizing = false;
         
         this.initializeElements();
         this.setupEventListeners();
+        this.setupVoiceRecognition();
         this.connect();
     }
     
@@ -31,7 +33,8 @@ class SmartAssistantClient {
             dashboardGrid: document.getElementById('dashboard-grid'),
             toggleDashboard: document.getElementById('toggle-dashboard'),
             refreshDashboard: document.getElementById('refresh-dashboard'),
-            viewDashboardBtn: document.getElementById('view-dashboard-btn')
+            viewDashboardBtn: document.getElementById('view-dashboard-btn'),
+            voiceBtn: document.getElementById('voice-btn')
         };
         
         // Initialize dashboard
@@ -108,6 +111,11 @@ class SmartAssistantClient {
         
         // Initial API key section visibility
         this.toggleApiKeySection();
+
+        // Voice recognition
+        this.elements.voiceBtn.addEventListener('click', () => {
+            this.toggleVoiceRecognition();
+        });
     }
     
     autoResizeTextarea(textarea) {
@@ -605,6 +613,65 @@ class SmartAssistantClient {
     
     hideViewDashboardButton() {
         this.elements.viewDashboardBtn.style.display = 'none';
+    }
+
+    setupVoiceRecognition() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            this.recognition = new SpeechRecognition();
+            this.recognition.continuous = false;
+            this.recognition.lang = 'en-US';
+            this.recognition.interimResults = false;
+            this.recognition.maxAlternatives = 1;
+
+            this.recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                this.elements.userInput.value = transcript;
+                this.autoResizeTextarea(this.elements.userInput);
+                    if (transcript && transcript.trim()) {
+                        this.sendMessage();
+                    }
+            };
+
+            this.recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                this.setVoiceRecognitionState(false);
+            };
+
+            this.recognition.onend = () => {
+                this.setVoiceRecognitionState(false);
+            };
+        } else {
+            console.warn('Speech Recognition not supported');
+            if (this.elements.voiceBtn) {
+                this.elements.voiceBtn.style.display = 'none';
+            }
+        }
+    }
+
+    toggleVoiceRecognition() {
+        if (this.recognition && !this.isRecognizing) {
+            try {
+                this.recognition.start();
+                this.setVoiceRecognitionState(true);
+            } catch(e) {
+                console.error("Error starting recognition:", e);
+            }
+
+        } else if (this.recognition && this.isRecognizing) {
+            this.recognition.stop();
+        }
+    }
+
+    setVoiceRecognitionState(isRecognizing) {
+        this.isRecognizing = isRecognizing;
+        if (isRecognizing) {
+            this.elements.voiceBtn.classList.add('recording');
+            this.elements.userInput.placeholder = 'Listening...';
+        } else {
+            this.elements.voiceBtn.classList.remove('recording');
+            this.elements.userInput.placeholder = 'Type your message...';
+        }
     }
 }
 

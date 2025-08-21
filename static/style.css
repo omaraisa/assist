@@ -685,6 +685,30 @@ body.dark .chat-messages::-webkit-scrollbar-thumb {
   margin: 1rem 0;
 }
 
+.voice-btn {
+  border: none;
+  background-color: transparent;
+  color: var(--text-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.voice-btn:hover:not(:disabled) {
+  background-color: var(--bot-msg-bg);
+  transform: scale(1.05);
+}
+
+.voice-btn.recording {
+  color: var(--error-color);
+  animation: pulse 1.5s infinite;
+}
+
 /* Data Warning Banner */
 #data-warning-banner {
   --banner-height: 46px;
