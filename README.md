@@ -6,10 +6,9 @@ A powerful AI-powered assistant for ArcGIS Pro that provides intelligent GIS dat
 
 - 🧠 **Multi-AI Support**: OpenAI GPT-4, Google Gemini, Anthropic Claude
 - 💬 **Natural Language Interface**: Chat with your GIS data in Arabic or English
-- 🔧 **27 GIS Functions**: Comprehensive spatial analysis capabilities
-- 🌐 **Real-time Communication**: WebSocket-based connection with ArcGIS Pro
-- 📊 **Investigation Mode**: AI chains multiple analyses for comprehensive insights
-- 🚀 **Self-contained**: No dependency on ArcGIS Pro Python environment
+- 🔧 **Comprehensive GIS Toolkit**: A wide range of spatial analysis capabilities executed on the client.
+- 🌐 **Decoupled Architecture**: A FastAPI server for AI orchestration and a separate ArcGIS Pro client for all `arcpy` execution, communicating via WebSockets.
+- 📊 **Investigation Mode**: AI chains multiple analyses for comprehensive insights.
 
 ## 🚀 Quick Start
 
@@ -17,20 +16,23 @@ A powerful AI-powered assistant for ArcGIS Pro that provides intelligent GIS dat
 
 ## 📁 Project Structure
 
+The project is divided into two main components: the server-side application (`app/`) and the ArcGIS Pro client (`Progent/`).
 
-smart_assistant/
-├── app/                    # Core application
-│   ├── main.py            # FastAPI server
-│   ├── ai_service.py      # AI model integration
-│   ├── websocket_manager.py # Connection management
-│   ├── spatial_functions.py # GIS analysis functions
-│   └── config.py          # Configuration
-├── static/                # Web interface files
-├── templates/             # HTML templates
-├── start_server.bat       # Server launcher
-├── QUICK_START.md         # Getting started guide
-└── environment_info.txt   # Detailed setup info
+- **`app/`**: The core FastAPI web server.
+  - `main.py`: The main entry point for the FastAPI server.
+  - `langchain_agent.py`: The AI agent responsible for understanding user queries and orchestrating function calls.
+  - `websocket_manager.py`: Manages the WebSocket communication between the server and the ArcGIS Pro client.
+  - `ai/function_declarations.py`: Contains the function signatures that the AI uses to understand the available tools. This acts as a "manual" for the AI, but contains no executable code.
 
+- **`Progent/`**: The ArcGIS Pro Add-in (the client).
+  - `progent.pyt`: A Python Toolbox that contains all the GIS-specific functions using `arcpy`. This is where all the actual GIS work happens.
+  - `WebSocketService.cs`: The C# service that runs within ArcGIS Pro, handling the WebSocket connection and executing functions in `progent.pyt` based on messages from the server.
+
+- **`static/` & `templates/`**: The web UI for the chat interface.
+
+##  architectural-principle
+
+The server application (`app/`) is designed to be completely decoupled from the ArcGIS Pro client (`Progent/`). The server's role is to manage the AI, handle user interactions, and pass messages to the client. It has no knowledge of how the GIS functions are implemented and contains no `arcpy` code. All GIS-specific logic and execution are handled exclusively by the client running within ArcGIS Pro.
 
 ## 🔧 Available AI Models
 
