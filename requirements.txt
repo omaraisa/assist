@@ -8,9 +8,11 @@ requests==2.31.0
 jinja2==3.1.2
 aiohttp==3.10.11
 pydantic-settings==2.1.0
-langchain==0.2.11
-langchain-google-genai==1.0.7
-langchain-experimental==0.0.62
+langchain
+langchain-google-genai
+langchain-experimental
+langchain-openai
+langchain-anthropic
 
 # Additional packages for self-contained environment
 pathlib2>=2.3.0

@@ -32,6 +32,8 @@ import ast
 from typing import Dict, List, Any
 
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 from langchain_core.prompts import PromptTemplate
 from langchain.agents import create_react_agent, AgentExecutor
 from langchain.tools import Tool
@@ -217,12 +219,39 @@ class LangChainAgent:
         from .config import get_model_config
         self.model_key = model_key
         model_config = get_model_config(model_key)
-        self.llm = ChatGoogleGenerativeAI(
-            model=model_config["model"],
-            google_api_key=model_config["api_key"],
-            temperature=model_config["temperature"],
-            max_output_tokens=model_config["max_tokens"],
-        )
+
+        if model_key.startswith("GPT"):
+            self.llm = ChatOpenAI(
+                model=model_config["model"],
+                api_key=model_config["api_key"],
+                temperature=model_config["temperature"],
+                max_tokens=model_config["max_tokens"],
+            )
+        elif model_key.startswith("CLAUDE"):
+            self.llm = ChatAnthropic(
+                model=model_config["model"],
+                anthropic_api_key=model_config["api_key"],
+                temperature=model_config["temperature"],
+                max_tokens=model_config["max_tokens"],
+            )
+        elif model_key.startswith("GEMINI"):
+            self.llm = ChatGoogleGenerativeAI(
+                model=model_config["model"],
+                google_api_key=model_config["api_key"],
+                temperature=model_config["temperature"],
+                max_output_tokens=model_config["max_tokens"],
+            )
+        else:
+            # As a fallback, try to use Gemini, but log a warning.
+            # This maintains original behavior for any unexpected cases.
+            logger.warning(f"Unsupported or unrecognized model provider for LangChain agent: {model_key}. Defaulting to ChatGoogleGenerativeAI.")
+            self.llm = ChatGoogleGenerativeAI(
+                model=model_config.get("model", "gemini-1.5-flash-latest"),
+                google_api_key=model_config.get("api_key"),
+                temperature=model_config.get("temperature", 0.7),
+                max_output_tokens=model_config.get("max_tokens", 8192),
+            )
+
         self.prompt = self._create_prompt_template()
         self.agent = create_react_agent(self.llm, self.tools, self.prompt)
         # Pass the callback handler to the agent executor
