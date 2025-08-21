@@ -117,13 +117,7 @@ class AIService:
             logger.info(f"Messages prepared, count: {len(messages)}")
             
             response = None
-            if self.current_model.startswith("GPT"):
-                logger.info("Using OpenAI model")
-                response = await self.response_handler._generate_openai_response_with_functions(messages, model_config, user_message)
-            elif self.current_model.startswith("CLAUDE"):
-                logger.info("Using Claude model")
-                response = await self.response_handler._generate_claude_response_with_functions(messages, model_config, user_message)
-            elif self.current_model.startswith("OLLAMA"):
+            if self.current_model.startswith("OLLAMA"):
                 if not OLLAMA_AVAILABLE:
                     return {
                         "type": "error",
@@ -272,10 +266,6 @@ This function is ALWAYS available to you. You can call it at any time to get dec
         """Get model-specific identity string"""
         if self.current_model.startswith("GEMINI"):
             return "Gemini AI (Google)"
-        elif self.current_model.startswith("GPT"):
-            return "GPT (OpenAI)"
-        elif self.current_model.startswith("CLAUDE"):
-            return "Claude (Anthropic)"
         elif self.current_model.startswith("OLLAMA"):
             return "Llama (Local)"
         else:
@@ -389,10 +379,6 @@ This function is ALWAYS available to you. You can call it at any time to get dec
               # Use legacy methods for backward compatibility
             if self.current_model.startswith("GEMINI"):
                 return await self._generate_gemini_response_legacy(messages, model_config)
-            elif self.current_model.startswith("GPT"):
-                return await self._generate_openai_response_legacy(messages, model_config)
-            elif self.current_model.startswith("CLAUDE"):
-                return await self._generate_claude_response_legacy(messages, model_config)
             else:
                 # Fallback - simple summary
                 return f"Investigation completed with {len(session.get('steps', []))} steps. Please check the results above."
@@ -438,76 +424,6 @@ This function is ALWAYS available to you. You can call it at any time to get dec
         except Exception as e:
             logger.error(f"Error calling Gemini API: {str(e)}")
             raise
-    
-    async def _generate_openai_response_legacy(self, messages: List[Dict], model_config: Dict) -> str:
-        """Generate response using OpenAI API (legacy method without function calling)"""
-        try:
-            payload = {
-                "model": model_config.get("model", "gpt-4"),
-                "messages": messages,
-                "temperature": model_config["temperature"],
-                "max_tokens": model_config["max_tokens"]
-            }
-            
-            headers = {
-                "Authorization": f"Bearer {model_config['api_key']}",
-                "Content-Type": "application/json"
-            }
-            
-            if self.session is None:
-                raise RuntimeError("aiohttp ClientSession is not initialized. Call 'await initialize()' before making requests.")
-            async with self.session.post(model_config["endpoint"], json=payload, headers=headers) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return data["choices"][0]["message"]["content"]
-                else:
-                    error_text = await response.text()
-                    raise Exception(f"OpenAI API error {response.status}: {error_text}")
-                    
-        except Exception as e:
-            logger.error(f"Error calling OpenAI API: {str(e)}")
-            raise
-    
-    async def _generate_claude_response_legacy(self, messages: List[Dict], model_config: Dict) -> str:
-        """Generate response using Claude API (legacy method without function calling)"""
-        try:
-            # Claude API format is different - system message separate
-            system_message = ""
-            claude_messages = []
-            
-            for msg in messages:
-                if msg["role"] == "system":
-                    system_message = msg["content"]
-                else:
-                    claude_messages.append(msg)
-            
-            payload = {
-                "model": model_config.get("model", "claude-3-5-sonnet-20241022"),
-                "system": system_message,
-                "messages": claude_messages,
-                "temperature": model_config["temperature"],
-                "max_tokens": model_config["max_tokens"]
-            }
-            
-            headers = {
-                "x-api-key": model_config['api_key'],
-                "Content-Type": "application/json",
-                "anthropic-version": "2023-06-01"
-            }
-            
-            if self.session is None:
-                raise RuntimeError("aiohttp ClientSession is not initialized. Call 'await initialize()' before making requests.")
-            async with self.session.post(model_config["endpoint"], json=payload, headers=headers) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return data["content"][0]["text"]
-                else:
-                    error_text = await response.text()
-                    raise Exception(f"Claude API error {response.status}: {error_text}")
-        except Exception as e:
-            logger.error(f"Error calling Claude API: {str(e)}")
-            raise
-
     
     async def handle_function_response(
         self,

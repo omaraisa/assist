@@ -35,62 +35,13 @@ class Settings(BaseSettings):
             "max_tokens": 8192,
             "temperature": 0.7,
             "api_key_env": "GEMINI_API_KEY"
-        },        # Temporarily disabled due to context length limitations with function calling
-        # "GPT4": {
-        #     "name": "GPT-4",
-        #     "model": "gpt-4",
-        #     "endpoint": "https://api.openai.com/v1/chat/completions",
-        #     "max_tokens": 8192,
-        #     "temperature": 0.7,
-        #     "api_key_env": "OPENAI_API_KEY"
-        # },
-        "GPT4_TURBO": {
-            "name": "GPT-4 Turbo",
-            "model": "gpt-4-turbo",
-            "endpoint": "https://api.openai.com/v1/chat/completions",
-            "max_tokens": 4096,
-            "temperature": 0.7,
-            "api_key_env": "OPENAI_API_KEY"
         },
-        "GPT4O": {
-            "name": "GPT-4o",
-            "model": "gpt-4o",
-            "endpoint": "https://api.openai.com/v1/chat/completions",
-            "max_tokens": 4096,
-            "temperature": 0.7,
-            "api_key_env": "OPENAI_API_KEY"
-        },
-        "CLAUDE": {
-            "name": "Claude 3.5 Sonnet",
-            "model": "claude-3-5-sonnet-20241022",
-            "endpoint": "https://api.anthropic.com/v1/messages",
-            "max_tokens": 8192,
-            "temperature": 0.7,
-            "api_key_env": "ANTHROPIC_API_KEY"        },
         # Ollama Models (Local LLMs)
         "OLLAMA_LLAMA31": {
             "name": "Llama 3.2 8B (Local)",
             "model": "llama3.2:latest",
             "provider": "ollama",
             "endpoint": "http://localhost:11434",
-            "max_tokens": 32768,
-            "temperature": 0.7,
-            "local": True
-        },
-        "OLLAMA_CODELLAMA": {
-            "name": "CodeLlama 13B (Local)",
-            "model": "codellama:13b",
-            "provider": "ollama", 
-            "endpoint": "http://localhost:11434",
-            "max_tokens": 32768,
-            "temperature": 0.7,
-            "local": True
-        },
-        "OLLAMA_MISTRAL": {
-            "name": "Mistral 7B (Local)",
-            "model": "mistral:7b",
-            "provider": "ollama",
-            "endpoint": "http://localhost:11434", 
             "max_tokens": 32768,
             "temperature": 0.7,
             "local": True
@@ -103,12 +54,8 @@ class Settings(BaseSettings):
     # API Keys (loaded from environment variables)
     # NOTE: To use different models, set their API keys in .env file:
     # - For Gemini models: Set GEMINI_API_KEY
-    # - For OpenAI models: Set OPENAI_API_KEY 
-    # - For Claude: Set ANTHROPIC_API_KEY
     # - For Ollama: No API key needed (local)
     GEMINI_API_KEY: str = ""
-    OPENAI_API_KEY: str = ""
-    ANTHROPIC_API_KEY: str = ""
     
     # Ollama Configuration
     OLLAMA_BASE_URL: str = "http://localhost:11434"

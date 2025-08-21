@@ -5,7 +5,6 @@ class SmartAssistantClient {
         this.currentModel = 'GEMINI_FLASH';
         this.isConnected = false;
         this.conversationHistory = [];
-        this.apiKeys = this.loadApiKeys();
         this.isThinking = false;
         this.isCancelled = false; // Flag to ignore responses after cancellation
         this.isRecognizing = false;
@@ -84,11 +83,6 @@ class SmartAssistantClient {
         // Model selection
         this.elements.modelSelect.addEventListener('change', (e) => {
             this.changeModel(e.target.value);
-        });
-        
-        // API key management
-        this.elements.saveApiKeyBtn.addEventListener('click', () => {
-            this.saveApiKey();
         });
         
         // Dashboard controls
@@ -389,47 +383,9 @@ class SmartAssistantClient {
     }
     
     toggleApiKeySection() {
-        const needsApiKey = !['GEMINI_FLASH', 'GEMINI_PRO', 'GEMINI_FLASH_EXP'].includes(this.currentModel);
-        
-        if (needsApiKey) {
-            this.elements.apiKeySection.style.display = 'flex';
-            
-            // Load existing API key if available
-            const savedKey = this.apiKeys[this.currentModel];
-            if (savedKey) {
-                this.elements.apiKeyInput.value = savedKey;
-            } else {
-                this.elements.apiKeyInput.value = '';
-            }
-        } else {
+        if (this.elements.apiKeySection) {
             this.elements.apiKeySection.style.display = 'none';
         }
-    }
-    
-    saveApiKey() {
-        const apiKey = this.elements.apiKeyInput.value.trim();
-        if (!apiKey) {
-            alert('Please enter an API key');
-            return;
-        }
-        
-        // Save to local storage
-        this.apiKeys[this.currentModel] = apiKey;
-        localStorage.setItem('smartAssistant_apiKeys', JSON.stringify(this.apiKeys));
-        
-        // Send to server
-        this.sendWebSocketMessage({
-            type: 'set_api_key',
-            model: this.currentModel,
-            api_key: apiKey
-        });
-        
-        alert('API key saved successfully!');
-    }
-    
-    loadApiKeys() {
-        const saved = localStorage.getItem('smartAssistant_apiKeys');
-        return saved ? JSON.parse(saved) : {};
     }
     
     showLoading() {
