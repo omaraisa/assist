@@ -4,7 +4,6 @@ import logging
 from typing import Dict, List, Optional, Any
 import aiohttp
 from .config import settings, get_model_config
-from .spatial_functions import SpatialFunctions
 from .ai.ai_response_handler import AIResponseHandler
 from .langchain_agent import LangChainAgent
 from .ai.utils import (

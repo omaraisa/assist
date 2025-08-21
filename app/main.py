@@ -14,7 +14,6 @@ from .websocket_manager import WebSocketManager
 from .ai_service import AIService
 from .ai.function_declarations import FunctionDeclaration
 from .ai.ai_response_handler import AIResponseHandler
-from .spatial_functions import SpatialFunctions
 from .config import settings
 from .monitoring import monitoring_service
 
@@ -41,7 +40,6 @@ templates = Jinja2Templates(directory=BASE_DIR / "templates")
 # Initialize services
 websocket_manager = WebSocketManager()
 ai_service = AIService(initial_model_key=settings.DEFAULT_AI_MODEL, websocket_manager=websocket_manager)
-spatial_functions = SpatialFunctions(websocket_manager=websocket_manager)
 
 @app.get("/", response_class=HTMLResponse)
 async def get_chatbot(request: Request):
@@ -50,7 +48,6 @@ async def get_chatbot(request: Request):
         "index.html", 
         {
             "request": request,
-            "available_functions": spatial_functions.AVAILABLE_FUNCTIONS
         }
     )
 
@@ -92,7 +89,6 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket_manager.send_to_client(client_id, {
             "type": "config",
             "data": {
-                "available_functions": spatial_functions.AVAILABLE_FUNCTIONS,
                 "ai_models": settings.AI_MODELS,
                 "current_model": settings.DEFAULT_AI_MODEL
             }
@@ -398,9 +394,8 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
             return
         
         # Create spatial functions instance to get the raw function declarations
-        spatial_functions = SpatialFunctions()
         try:
-            raw_declarations = spatial_functions.get_functions_declaration(function_ids)
+            raw_declarations = FunctionDeclaration
             logger.info(f"Successfully retrieved {len(raw_declarations)} function declarations")
         except Exception as e:
             logger.error(f"Error retrieving function declarations: {e}")
@@ -587,8 +582,6 @@ async def handle_function_request(client_id: str, message: Dict):
         # Validate function name and exists
         if not function_name:
             raise Exception("Function name is required")
-        if not hasattr(spatial_functions, function_name):
-            raise Exception(f"Function '{function_name}' not found")
             
         # Get ArcGIS Pro client
         arcgis_client = websocket_manager.get_arcgis_client()
