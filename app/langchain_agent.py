@@ -298,7 +298,7 @@ class LangChainAgent:
                 if msg.get("role") == "user":
                     chat_history_lines.append(f"User: {msg.get('content','')}")
                 elif msg.get("role") == "assistant":
-                    chat_history_lines.append(f"Assistant: {msg.get('content','')}")
+                    chat_history_lines.append(f"Progent: {msg.get('content','')}")
             chat_history_str = "\n".join(chat_history_lines)
 
             response = await self.agent_executor.ainvoke({

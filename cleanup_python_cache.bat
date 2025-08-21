@@ -59,7 +59,7 @@ echo ================================================================
 echo.
 echo Next steps:
 echo 1. Restart ArcGIS Pro completely (close all instances)
-echo 2. Run your Smart Assistant again
+echo 2. Run Progent again
 echo.
 echo Note: The module reload code in arcgis_connector.py should
 echo       handle future cache issues automatically.

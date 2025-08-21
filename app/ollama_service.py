@@ -1,5 +1,5 @@
 """
-Ollama Service for ArcGIS Pro Smart Assistant
+Ollama Service for Progent
 Handles local LLM interactions through Ollama API
 """
 

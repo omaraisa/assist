@@ -4,7 +4,7 @@ import os
 
 # Show the enhanced AI prompt
 if os.path.exists('smart_dashboard.json'):
-    with open('smart_dashboard.json', 'r', encoding='utf-8') as f:
+    with open('progent_dashboard.json', 'r', encoding='utf-8') as f:
         dashboard_data = json.load(f)
     
     field_insights = dashboard_data.get('field_insights', {})

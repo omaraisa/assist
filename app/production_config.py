@@ -38,7 +38,7 @@ class ProductionSettings(BaseSettings):
     AI_RETRY_DELAY: int = 2
     
     # Database settings (for future session storage)
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./smart_assistant.db")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./progent.db")
     
     # Monitoring
     ENABLE_METRICS: bool = True

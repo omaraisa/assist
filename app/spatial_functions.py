@@ -1503,7 +1503,7 @@ class SpatialFunctions:
                         logger.debug(f"Skipping {field.name} as ID-like numeric field")
                         continue
 
-                # Smart skip for text fields that look like IDs (e.g., GUIDs, codes, numeric-as-text)
+                # Intelligent skip for text fields that look like IDs (e.g., GUIDs, codes, numeric-as-text)
                 if field.type in ['String', 'Text'] and values:
                     text_values = [str(v).strip() for v in values]
                     if self._is_id_like_text(text_values):
@@ -2114,7 +2114,7 @@ class SpatialFunctions:
     def generate_smart_dashboard_layout(self, layer_name: str) -> Dict:
         """
         Analyzes a layer and generates a smart dashboard layout with recommended chart types.
-        Returns a JSON object with the dashboard layout and saves it to smart_dashboard.json.
+        Returns a JSON object with the dashboard layout and saves it to progent_dashboard.json.
         """
         logger.info(f"Generating smart dashboard layout for layer: {layer_name}")
         
@@ -2144,7 +2144,7 @@ class SpatialFunctions:
             }
             
             # Save complete dashboard data to JSON file
-            dashboard_file = "smart_dashboard.json"
+            dashboard_file = "progent_dashboard.json"
             with open(dashboard_file, "w") as f:
                 json.dump(complete_dashboard, f, indent=4)
             
@@ -2319,10 +2319,10 @@ class SpatialFunctions:
         if errors:
             return {"success": False, "errors": errors, "optimized_layout": widget_list}
         else:
-            # Save the optimized layout to smart_dashboard.json while preserving all existing data
+            # Save the optimized layout to progent_dashboard.json while preserving all existing data
             import json
             from pathlib import Path
-            dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+            dashboard_path = Path(__file__).parent.parent / "progent_dashboard.json"
             try:
                 dashboard_data = {}
                 if dashboard_path.exists():
@@ -2340,12 +2340,12 @@ class SpatialFunctions:
 
     def get_current_dashboard_layout(self) -> Dict:
         """
-        Get the current dashboard layout from the smart_dashboard.json file.
+        Get the current dashboard layout from the progent_dashboard.json file.
         Returns the dashboard layout as a dictionary.
         """
         import json
         from pathlib import Path
-        dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+        dashboard_path = Path(__file__).parent.parent / "progent_dashboard.json"
         try:
             with open(dashboard_path, "r", encoding="utf-8") as f:
                 dashboard_data = json.load(f)
@@ -2373,12 +2373,12 @@ class SpatialFunctions:
         
     def get_field_stories_and_samples(self) -> dict:
         """
-        Returns a summary for each field: field_name, data_story, and sample_values from smart_dashboard.json.
+        Returns a summary for each field: field_name, data_story, and sample_values from progent_dashboard.json.
         Handles empty or invalid JSON files gracefully.
         """
         import json
         from pathlib import Path
-        dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+        dashboard_path = Path(__file__).parent.parent / "progent_dashboard.json"
         try:
             if not dashboard_path.exists() or dashboard_path.stat().st_size == 0:
                 return {"success": False, "error": "Dashboard file is missing or empty."}
@@ -2841,12 +2841,12 @@ class SpatialFunctions:
     
     def get_current_dashboard_charts(self) -> dict:
         """
-        Get the current [fields, chart_type] pairs from the dashboard layout in smart_dashboard.json.
+        Get the current [fields, chart_type] pairs from the dashboard layout in progent_dashboard.json.
         Returns a list of dicts: {"fields": [...], "chart_type": ...}
         """
         from pathlib import Path
         import json
-        dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+        dashboard_path = Path(__file__).parent.parent / "progent_dashboard.json"
         try:
             with open(dashboard_path, "r", encoding="utf-8") as f:
                 dashboard_data = json.load(f)
@@ -2875,7 +2875,7 @@ class SpatialFunctions:
         """
         from pathlib import Path
         import json
-        dashboard_path = Path(__file__).parent.parent / "smart_dashboard.json"
+        dashboard_path = Path(__file__).parent.parent / "progent_dashboard.json"
         try:
             if not isinstance(charts, list) or not charts:
                 return {"success": False, "error": "Input must be a non-empty list of chart dicts"}

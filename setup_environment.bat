@@ -484,7 +484,7 @@ echo.
 echo [SUCCESS] SmartAssistant environment is now self-contained
 echo.
 echo Next steps:
-echo 1. To start the server: call start_smartassistant.bat
+echo 1. To start the server: call start_progent.bat
 echo 2. To connect ArcGIS Pro: call connect_arcgis.bat  
 echo 3. To manually activate environment: call activate_environment.bat
 echo.

@@ -157,7 +157,7 @@ class Settings(BaseSettings):
         },
         "RESPONSE": {
             "USER_MESSAGE": "user_message",
-            "ASSISTANT_MESSAGE": "assistant_message",
+            "PROGENT_MESSAGE": "progent_message",
             "SYSTEM_MESSAGE": "system_message",
             "FUNCTION_RESULT": "function_result"
         }

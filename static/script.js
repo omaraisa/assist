@@ -201,7 +201,7 @@ class SmartAssistantClient {
                 break;
                 
             case 'assistant_message':
-                this.addMessage('Assistant', message.content, 'bot');
+                this.addMessage('Progent', message.content, 'bot');
                 this.setThinkingState(false);
                 break;
                 
@@ -495,7 +495,7 @@ class SmartAssistantClient {
         this.conversationHistory = [];
         this.elements.chatMessages.innerHTML = `
             <div class="welcome-message">
-                <h3>Welcome to ArcGIS Pro Smart Assistant!</h3>
+                <h3>Welcome to Progent!</h3>
                 <p>I can help you analyze your GIS data, run spatial functions, and provide insights about your ArcGIS Pro project.</p>
                 <p>Just type your question or request below, and I'll investigate your data to provide helpful answers.</p>
             </div>

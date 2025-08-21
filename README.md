@@ -1,6 +1,6 @@
-# 🤖 ArcGIS Pro Smart Assistant
+# 🤖 Progent
 
-A powerful AI-powered assistant for ArcGIS Pro that provides intelligent GIS data analysis through natural language conversation.
+Progent: Your ArcGIS Pro Trusted Agent for intelligent GIS data analysis through natural language conversation.
 
 ## ✨ Features
 
@@ -80,4 +80,4 @@ This project is intended for educational and research purposes. Please ensure co
 ---
 
 **Status: Production Ready** ✅  
-**Last Updated: June 16, 2025**
+**Last Updated: August 16, 2025**

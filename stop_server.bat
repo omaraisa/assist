@@ -40,7 +40,7 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8000"') do (
 
 REM Alternative method: Kill by window title (if the server was started with a title)
 echo [INFO] Looking for FastAPI server windows...
-taskkill /f /fi "windowtitle eq ArcGIS Pro Smart Assistant - FastAPI Server" >nul 2>&1
+taskkill /f /fi "windowtitle eq Progent - FastAPI Server" >nul 2>&1
 if not errorlevel 1 (
     echo [SUCCESS] FastAPI server window closed
 )

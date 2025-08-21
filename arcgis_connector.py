@@ -249,7 +249,7 @@ class ArcGISProConnector:
                     await asyncio.sleep(retry_delay)
                     retry_delay *= 1.5  # Exponential backoff
                 else:
-                    error_msg = "Failed to connect to Smart Assistant server after multiple attempts"
+                    error_msg = "Failed to connect to Progent server after multiple attempts"
                     logger.error(error_msg)
                     arcpy.AddError(error_msg)
                     raise
@@ -321,8 +321,8 @@ class ArcGISProConnector:
         """Main method to run the connector"""
         try:
             # Open the chatbot interface in browser
-            logger.info(f"Opening Smart Assistant interface at {self.chatbot_url}")
-            arcpy.AddMessage(f"Opening Smart Assistant interface at {self.chatbot_url}")
+            logger.info(f"Opening Progent interface at {self.chatbot_url}")
+            arcpy.AddMessage(f"Opening Progent interface at {self.chatbot_url}")
             webbrowser.open(self.chatbot_url)
             
             # Give the server time to start

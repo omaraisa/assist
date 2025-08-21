@@ -2,7 +2,7 @@
 title ArcGIS Pro Smart Assistant - FastAPI Server
 
 echo =========================================
-echo   ArcGIS Pro Smart Assistant - FastAPI
+echo   Progent - FastAPI
 echo =========================================
 echo.
 

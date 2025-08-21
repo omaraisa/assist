@@ -24,8 +24,8 @@ logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="ArcGIS Pro Smart Assistant",
-    description="Smart assistant for ArcGIS Pro with AI-powered analysis",
+    title="Progent",
+    description="Progent: ArcGIS Pro Trusted Agent",
     version="2.0.0"
 )
 
@@ -732,7 +732,7 @@ async def check_and_update_dashboard(client_id: str, function_result: Dict):
             # Try to load latest dashboard data
             dashboard_files = [
                 BASE_DIR / "optimized_dashboard.json",
-                BASE_DIR / "smart_dashboard.json", 
+                BASE_DIR / "progent_dashboard.json", 
                 BASE_DIR / "dashboard.json"
             ]
             
@@ -1080,7 +1080,7 @@ async def shutdown_event():
     # Close all WebSocket connections
     await websocket_manager.disconnect_all()
     
-    logger.info("Smart Assistant shut down successfully!")
+    logger.info("Progent shut down successfully!")
 
 @app.get("/api/dashboard/latest")
 async def get_latest_dashboard():

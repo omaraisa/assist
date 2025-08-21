@@ -20,7 +20,7 @@
   <modules>
     <insertModule id="Progent_Module" className="Module1" autoLoad="false" caption="Module1">
       <tabs>
-        <tab id="Progent_Tab1" caption="AI Assistant">
+        <tab id="Progent_Tab1" caption="Progent">
           <group refID="Progent_Group1"/>
         </tab>
       </tabs>

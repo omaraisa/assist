@@ -591,7 +591,7 @@ class RunPythonCode(object):
             return {"success": False, "error": str(e)}
 
     # Dashboard / layout related ops
-    def generate_smart_dashboard_layout(self, params):
+    def generate_progent_dashboard_layout(self, params):
         layer_name = params.get("layer_name")
         analysis_type = params.get("analysis_type", "overview")
         theme = params.get("theme", "default")

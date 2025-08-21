@@ -41,7 +41,7 @@ class FunctionDeclaration:
         "get_field_domain_values": {"description": "Return coded domain values for a domain", "params": ["workspace", "field_domain"]},
         "calculate_new_field": {"description": "Add and optionally calculate a new field", "params": ["layer", "field_name", "field_type", "expression"]},
         "analyze_layer_fields": {"description": "Return basic analysis of layer fields", "params": ["layer"]},
-        "generate_smart_dashboard_layout": {"description": "Generate a dashboard layout (stub)", "params": []},
+        "generate_progent_dashboard_layout": {"description": "Generate a dashboard layout (stub)", "params": []},
         "optimize_dashboard_layout": {"description": "Optimize a dashboard layout (stub)", "params": []},
         "recommend_chart_types": {"description": "Recommend chart types for data (stub)", "params": []},
         "plan_dashboard_layout": {"description": "Plan a dashboard layout (stub)", "params": []},
@@ -546,7 +546,7 @@ class FunctionDeclaration:
         },
         
 
-        "generate_smart_dashboard_layout": {
+        "generate_progent_dashboard_layout": {
             "name": "generate_smart_dashboard_layout",
             "description": "Stage 2: Enhanced Chart Recommendation Engine with intelligent chart selection and 12x6 grid layout planning. Generates sophisticated dashboard layouts with optimized chart recommendations, detailed configurations, and positioning. This is the main function for Stage 2 of dashboard generation.",
             "parameters": {
@@ -556,33 +556,6 @@ class FunctionDeclaration:
                 }
             },
             "required": ["layer_name"]
-        },
-        "optimize_dashboard_layout": {
-            "name": "optimize_dashboard_layout",
-            "description": "Validate and arrange a dashboard layout for a 12x6 grid. Checks widget positions, sizes, overlap, and grid fit. Saves the layout to smart_dashboard.json if valid. Returns validation results and the layout.",
-            "parameters": {
-                "layout": {
-                    "type": "array",
-                    "description": "Array of dashboard widget objects to validate. Each object must include: id (string), x (int), y (int), w (int), h (int). Optionally, field(s) and chart_type can be included for AI awareness.",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "id": {"type": "string", "description": "Unique widget identifier"},
-                            "x": {"type": "integer", "description": "Left grid position (0-11)"},
-                            "y": {"type": "integer", "description": "Top grid position (0-5)"},
-                            "w": {"type": "integer", "description": "Widget width (columns)"},
-                            "h": {"type": "integer", "description": "Widget height (rows)"}
-                        },
-                        "required": ["id", "x", "y", "w", "h"]
-                    }
-                }
-            },
-            "required": ["layout"],
-            "returns": {
-                "optimized_layout": "The validated layout array (same as input if valid)",
-                "success": "True if layout is valid, False if errors found",
-                "errors": "List of error messages if validation fails"
-            }
         },
         "get_current_dashboard_layout": {
             "name": "get_current_dashboard_layout",

@@ -1,5 +1,5 @@
 """
-Monitoring and analytics service for ArcGIS Pro Smart Assistant
+Monitoring and analytics service for Progent
 """
 
 import time

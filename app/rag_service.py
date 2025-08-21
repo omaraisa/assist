@@ -162,7 +162,7 @@ class RAGService:
             f.write(arcgis_basics)
             
         with open(knowledge_dir / "assistant_capabilities.md", "w", encoding="utf-8") as f:
-            f.write(assistant_capabilities)
+            f.write(progent_capabilities)
             
         with open(knowledge_dir / "spatial_concepts.md", "w", encoding="utf-8") as f:
             f.write(spatial_concepts)

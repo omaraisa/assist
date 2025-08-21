@@ -22,7 +22,7 @@ venv/
 /.history
 /rag_db
 environment_info.txt
-start_smartassistant.bat
+start_progent.bat
 activate_environment.bat
 connect_arcgis.bat
 
