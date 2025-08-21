@@ -37,7 +37,7 @@ from langchain.agents import create_react_agent, AgentExecutor
 from langchain.tools import Tool
 from langchain_core.messages import AIMessage, HumanMessage
 
-from .spatial_functions import SpatialFunctions
+from .progent_functions import AVAILABLE_FUNCTIONS
 from .config import settings
 from .ai.function_declarations import FunctionDeclaration
 
@@ -50,7 +50,6 @@ def _get_declarations_stateless(function_ids_str: str) -> str:
     """
     try:
         # Access the class variables directly without creating an instance
-        available_functions = SpatialFunctions.AVAILABLE_FUNCTIONS
         functions_declaration = FunctionDeclaration.functions_declarations
         
         # Parse the input - handle multiple formats: single int, single string, array of ints, array of strings
@@ -83,8 +82,8 @@ def _get_declarations_stateless(function_ids_str: str) -> str:
         
         result = {}
         for func_id in function_ids:
-            if func_id in available_functions:
-                func_name = available_functions[func_id]
+            if func_id in AVAILABLE_FUNCTIONS:
+                func_name = AVAILABLE_FUNCTIONS[func_id]
                 if func_name in functions_declaration:
                     result[func_name] = functions_declaration[func_name]
         
@@ -117,7 +116,7 @@ class LangChainAgent:
     """Agent that uses LangChain to interact with AI models."""
 
     def __init__(self, model_key: str, websocket_manager: Any):
-        self.spatial_functions = SpatialFunctions(websocket_manager)
+        self.websocket_manager = websocket_manager
         self.tools = self._get_tools()
         # Add callback handler for logging all agent steps
         self.callback_handler = LoggingCallbackHandler(logger)
@@ -162,12 +161,8 @@ class LangChainAgent:
             if not function_name:
                 return {"error": "'function_name' must be provided in the input dictionary."}
 
-            # Check if function exists in available functions
-            if function_name not in SpatialFunctions.AVAILABLE_FUNCTIONS.values():
-                return {"error": f"Function '{function_name}' is not available."}
-
             # Send function request to ArcGIS Pro via websocket and wait for response
-            arcgis_client = self.spatial_functions.websocket_manager.get_arcgis_client()
+            arcgis_client = self.websocket_manager.get_arcgis_client()
             if not arcgis_client:
                 return {"error": "ArcGIS Pro client not connected."}
 
@@ -190,7 +185,7 @@ class LangChainAgent:
             import asyncio
             
             # Send the request
-            asyncio.run(self.spatial_functions.websocket_manager.send_to_client(arcgis_client, payload))
+            asyncio.run(self.websocket_manager.send_to_client(arcgis_client, payload))
             
             # Wait for the response with timeout
             max_wait_time = 30  # Maximum 30 seconds wait
@@ -198,8 +193,8 @@ class LangChainAgent:
             elapsed_time = 0
             
             while elapsed_time < max_wait_time:
-                if self.spatial_functions.websocket_manager.has_function_result(session_id):
-                    result = self.spatial_functions.websocket_manager.get_function_result(session_id)
+                if self.websocket_manager.has_function_result(session_id):
+                    result = self.websocket_manager.get_function_result(session_id)
                     if result:
                         # Return the actual function result from ArcGIS Pro
                         return result.get("data", result)
@@ -304,7 +299,7 @@ class LangChainAgent:
             response = await self.agent_executor.ainvoke({
                 "input": user_message,
                 "arcgis_state": json.dumps(arcgis_state, indent=2),
-                "available_functions": json.dumps(self.spatial_functions.AVAILABLE_FUNCTIONS, indent=2),
+                "available_functions": json.dumps(AVAILABLE_FUNCTIONS, indent=2),
                 "chat_history": chat_history_str
             })
 
