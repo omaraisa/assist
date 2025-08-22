@@ -422,21 +422,21 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
                     }
                 }
                 
-                # Convert parameters to Gemini format
-                for param_name, param_def in func_def["parameters"].items():
-                    gemini_param = {
-                        "type": param_def["type"],
-                        "description": param_def["description"]
-                    }
-                    
-                    if "enum" in param_def:
-                        gemini_param["enum"] = param_def["enum"]
-                    if "items" in param_def:
-                        gemini_param["items"] = param_def["items"]
-                    
-                    gemini_func["parameters"]["properties"][param_name] = gemini_param
+            # Convert parameters to Gemini format
+            for param_name, param_def in func_def["parameters"].items():
+                gemini_param = {
+                    "type": param_def["type"],
+                    "description": param_def["description"]
+                }
+
+                if "enum" in param_def:
+                    gemini_param["enum"] = param_def["enum"]
+                if "items" in param_def:
+                    gemini_param["items"] = param_def["items"]
                 
-                formatted_declarations[func_name] = gemini_func
+                gemini_func["parameters"]["properties"][param_name] = gemini_param
+
+            formatted_declarations[func_name] = gemini_func
         
         # Create the function result
         function_result = {
