@@ -93,6 +93,22 @@ class RunPythonCode(object):
         self._add_to_map(output_fc)
         return {"success": True, "output_layer": output_name, "output_path": output_fc}
 
+    def invert_selection(self, params):
+        """Invert the current selection on a layer.
+
+        params: { "layer_name": <layer name or layer object> }
+        Returns: {"success": True, "selected_features": <count>} or error
+        """
+        layer_name = params.get("layer_name")
+        try:
+            # Use ArcPy to switch/invert the selection on the provided layer
+            # If the layer is a layer object or name, SelectLayerByAttribute_management accepts it.
+            arcpy.SelectLayerByAttribute_management(layer_name, "SWITCH_SELECTION")
+            selected_count = int(arcpy.GetCount_management(layer_name)[0])
+            return {"success": True, "selected_features": selected_count}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
     def select_by_attribute(self, params):
         layer_name = params.get("layer_name")
         where_clause = params.get("where_clause")

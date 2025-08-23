@@ -20,6 +20,7 @@ class FunctionDeclaration:
         "calculate_length": {"description": "Calculate lengths for line features", "params": ["layer_name", "units"]},
         "get_centroid": {"description": "Get centroids for features", "params": ["layer_name"]},
         "create_buffer": {"description": "Create buffer around features", "params": ["layer_name", "distance", "units"]},
+    "invert_selection": {"description": "Invert the current selection on a layer", "params": ["layer_name"]},
         "spatial_join": {"description": "Perform spatial join between two layers", "params": ["target_layer", "join_layer"]},
         "clip_layer": {"description": "Clip a layer by another layer", "params": ["input_layer", "clip_layer"]},
         "calculate_distance": {"description": "Calculate distances between features (stub)", "params": ["layer_a", "layer_b"]},

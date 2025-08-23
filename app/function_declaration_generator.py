@@ -12,10 +12,12 @@ class FunctionDeclarationGenerator:
     def _generate_base_definitions(self) -> Dict[str, Dict]:
         """Generate base function definitions with parameters and descriptions"""
         # Only provide the discovery function - all other functions must be discovered dynamically
+        from .progent_functions import format_available_functions
+
         base_definitions = {
             "get_functions_declaration": {
                 "name": "get_functions_declaration",
-                "description": "Get function declarations for specific functions by their IDs from the available functions list. MAKE SURE TO SEND VALID IDs. AVAILABLE FUNCTIONS: 1: select_by_attribute, 2: select_by_location, 3: get_field_statistics, 4: get_layer_summary, 5: calculate_area, 6: calculate_length, 7: get_centroid, 8: create_buffer, 9: spatial_join, 10: clip_layer, 11: calculate_distance, 12: get_current_project_path, 13: get_default_db_path, 14: get_field_definitions, 15: get_layer_type, 16: get_list_of_layer_fields, 17: get_data_source_info, 18: create_nearest_neighbor_layer, 19: get_unique_values_count, 20: calculate_empty_values, 21: get_map_layers_info, 22: get_map_tables_info, 23: get_values_frequency, 24: get_value_frequency, 25: get_coordinate_system, 26: get_attribute_table, 27: get_field_domain_values, 28: calculate_new_field, 29: analyze_layer_fields, 30: generate_smart_dashboard_layout, 31: optimize_dashboard_layout, 34: get_current_dashboard_layout, 35: get_field_stories_and_samples, 36: get_current_dashboard_charts, 37: update_dashboard_charts",   
+                "description": f"Get function declarations for specific functions by their IDs from the available functions list. MAKE SURE TO SEND VALID IDs. AVAILABLE FUNCTIONS: {format_available_functions()}",
                 "parameters": {
                     "function_ids": {
                         "type": "array",

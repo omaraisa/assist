@@ -1,3 +1,8 @@
+from .ai.function_declarations import FunctionDeclaration
+
+# Build AVAILABLE_FUNCTIONS dynamically from the authoritative declarations
+# The numeric IDs are assigned deterministically based on the declaration order.
+
 AVAILABLE_FUNCTIONS = {
     1: "select_by_attribute",
     2: "select_by_location",
@@ -66,5 +71,20 @@ AVAILABLE_FUNCTIONS = {
     65: "weighted_sum",
     66: "extract_by_attribute",
     67: "mosaic_to_new_raster",
-    68: "combine_rasters"
+    68: "combine_rasters",
+    69: "invert_selection"
 }
+
+try:
+	decls = FunctionDeclaration.functions_declarations
+	# Preserve declaration order; assign IDs starting at 1
+	for i, name in enumerate(decls.keys(), start=1):
+		AVAILABLE_FUNCTIONS[i] = name
+except Exception:
+	AVAILABLE_FUNCTIONS = {}
+
+def format_available_functions() -> str:
+	"""Return a compact single-line listing like '1: name, 2: name'"""
+	parts = [f"{k}: {v}" for k, v in sorted(AVAILABLE_FUNCTIONS.items())]
+	return ", ".join(parts)
+
