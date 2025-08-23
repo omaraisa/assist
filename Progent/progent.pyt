@@ -47,7 +47,13 @@ class RunPythonCode(object):
             result = self.execute_spatial_function(function_name, params, messages)
 
             if result:
-                messages.addMessage(json.dumps({"status": "success", "data": result}))
+                # If the result is a dashboard update, flatten the structure
+                if result.get("is_dashboard_update"):
+                    response = {"status": "success"}
+                    response.update(result)
+                    messages.addMessage(json.dumps(response))
+                else:
+                    messages.addMessage(json.dumps({"status": "success", "data": result}))
             else:
                 messages.addMessage(json.dumps({"status": "error", "message": f"Function {function_name} not implemented or failed"}))
         except Exception as e:

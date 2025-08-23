@@ -91,22 +91,10 @@ namespace Progent
                     var sourceClient = json["source_client"]?.ToString();
 
                         var pythonResultString = await ExecutePytToolAsync(functionName, parameters);
-                        // If the tool returned a JSON message, prefer parsing that; otherwise parse the wrapper
                         JObject pythonResult;
                         try
                         {
                             pythonResult = JObject.Parse(pythonResultString);
-                            // If data is a JSON string, try to parse it into an object
-                            var dataToken = pythonResult["data"];
-                            if (dataToken != null && dataToken.Type == JTokenType.String)
-                            {
-                                var dataText = dataToken.ToString().Trim();
-                                if (dataText.StartsWith("{") || dataText.StartsWith("["))
-                                {
-                                    try { pythonResult["data"] = JObject.Parse(dataText); }
-                                    catch { /* leave as string or array */ }
-                                }
-                            }
                         }
                         catch
                         {
@@ -114,8 +102,7 @@ namespace Progent
                             pythonResult = new JObject { ["status"] = "error", ["data"] = pythonResultString };
                         }
 
-                    var data = pythonResult["data"];
-                        bool isDashboardUpdate = (data is JObject dataObj) && dataObj.Value<bool>("is_dashboard_update");
+                        bool isDashboardUpdate = pythonResult.Value<bool>("is_dashboard_update");
 
                         if (isDashboardUpdate)
                         {
@@ -124,7 +111,7 @@ namespace Progent
                                 ["type"] = "dashboard_update",
                                 ["session_id"] = sessionId,
                                 ["source_client"] = sourceClient,
-                                ["data"] = data
+                                ["data"] = pythonResult
                             };
                             await _webSocketService.SendMessageAsync(dashboardUpdate.ToString());
 
@@ -148,7 +135,7 @@ namespace Progent
                                 ["source_client"] = sourceClient,
                                 ["status"] = pythonResult["status"],
                                 ["function_name"] = functionName ?? "RunPythonCode",
-                                ["data"] = data,
+                                ["data"] = pythonResult["data"],
                                 ["software_context"] = await GetSoftwareContext()
                             };
                             await _webSocketService.SendMessageAsync(response.ToString());
