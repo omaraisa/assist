@@ -41,7 +41,7 @@ class FunctionDeclaration:
         "get_field_domain_values": {"description": "Return coded domain values for a domain", "params": ["workspace", "field_domain"]},
         "calculate_new_field": {"description": "Add and optionally calculate a new field", "params": ["layer", "field_name", "field_type", "expression"]},
         "analyze_layer_fields": {"description": "Return basic analysis of layer fields", "params": ["layer"]},
-        "generate_progent_dashboard_layout": {"description": "Generate a dashboard layout (stub)", "params": []},
+        "generate_smart_dashboard_layout": {"description": "Generate a dashboard layout (stub)", "params": []},
         "optimize_dashboard_layout": {"description": "Optimize a dashboard layout (stub)", "params": []},
         "recommend_chart_types": {"description": "Recommend chart types for data (stub)", "params": []},
         "plan_dashboard_layout": {"description": "Plan a dashboard layout (stub)", "params": []},
@@ -546,7 +546,7 @@ class FunctionDeclaration:
         },
         
 
-        "generate_progent_dashboard_layout": {
+        "generate_smart_dashboard_layout": {
             "name": "generate_smart_dashboard_layout",
             "description": "Stage 2: Enhanced Chart Recommendation Engine with intelligent chart selection and 12x6 grid layout planning. Generates sophisticated dashboard layouts with optimized chart recommendations, detailed configurations, and positioning. This is the main function for Stage 2 of dashboard generation.",
             "parameters": {

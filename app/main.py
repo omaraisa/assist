@@ -725,7 +725,7 @@ async def check_and_update_dashboard(client_id: str, function_result: Dict):
             # Try to load latest dashboard data
             dashboard_files = [
                 BASE_DIR / "optimized_dashboard.json",
-                BASE_DIR / "progent_dashboard.json", 
+                BASE_DIR / "smart_dashboard.json", 
                 BASE_DIR / "dashboard.json"
             ]
             
