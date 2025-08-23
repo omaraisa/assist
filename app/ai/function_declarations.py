@@ -107,26 +107,24 @@ class FunctionDeclaration:
         
         "select_by_location": {
             "name": "select_by_location",
-            "description": "Execute spatial selection between two layers based on their spatial relationship.",
+            "description": "Selects features in a target layer based on their spatial relationship to features in another layer.",
             "parameters": {
-                "input_layer": {
+                "layer_to_select_from": {
                     "type": "string",
-                    "description": "The input layer to select features from"
+                    "description": "The layer from which features will be selected."
                 },
-                "select_layer": {
+                "layer_to_select_with": {
                     "type": "string", 
-                    "description": "The layer used to define the spatial selection criteria"
+                    "description": "The layer containing the features to use for the selection. For example, to select cities inside a state, this would be the state layer."
                 },
                 "relationship": {
                     "type": "string",
-                    "description": "Spatial relationship for selection",
-                    "enum": ["INTERSECT", "WITHIN", "CONTAINS", "WITHIN_A_DISTANCE", "HAVE_THEIR_CENTER_IN", 
-                            "COMPLETELY_CONTAINS", "COMPLETELY_WITHIN", "CLOSEST", "BOUNDARY_TOUCHES", 
-                            "SHARE_A_LINE_SEGMENT_WITH", "CROSSED_BY_THE_OUTLINE_OF"],
+                    "description": "The spatial relationship to be evaluated.",
+                    "enum": ["INTERSECT", "WITHIN_A_DISTANCE", "CONTAINS", "WITHIN", "ARE_IDENTICAL_TO", "BOUNDARY_TOUCHES", "SHARE_A_LINE_SEGMENT_WITH", "CROSSED_BY_THE_OUTLINE_OF", "HAVE_THEIR_CENTER_IN"],
                     "default": "INTERSECT"
                 }
             },
-            "required": ["input_layer", "select_layer"]
+            "required": ["layer_to_select_from", "layer_to_select_with"]
         },
         
         # Rest of the function declarations can be added here
@@ -236,21 +234,27 @@ class FunctionDeclaration:
         
         "spatial_join": {
             "name": "spatial_join",
-            "description": "Perform spatial join between two layers based on their spatial relationship, combining attributes from both layers.",
+            "description": "Joins attributes from one feature layer to another based on their spatial relationship. The attributes from the join features are appended to the attributes of the target features.",
             "parameters": {
                 "target_layer": {
                     "type": "string",
-                    "description": "The target layer that will receive joined attributes"
+                    "description": "The feature layer to which the attributes from the join layer will be added. This layer's feature class is the one that is saved as the output."
                 },
                 "join_layer": {
                     "type": "string",
-                    "description": "The layer providing attributes to join"
+                    "description": "The feature layer whose attributes will be appended to the target layer."
                 },
                 "join_operation": {
                     "type": "string",
-                    "description": "Spatial relationship for the join operation",
-                    "enum": ["intersect", "within", "contains", "closest"],
-                    "default": "intersect"
+                    "description": "The spatial relationship criteria for the join.",
+                    "enum": ["JOIN_ONE_TO_ONE", "JOIN_ONE_TO_MANY"],
+                    "default": "JOIN_ONE_TO_ONE"
+                },
+                "match_option": {
+                    "type": "string",
+                    "description": "The spatial relationship to use for the join.",
+                    "enum": ["INTERSECT", "WITHIN_A_DISTANCE", "CONTAINS", "WITHIN", "ARE_IDENTICAL_TO", "BOUNDARY_TOUCHES", "SHARE_A_LINE_SEGMENT_WITH", "CROSSED_BY_THE_OUTLINE_OF", "HAVE_THEIR_CENTER_IN"],
+                    "default": "INTERSECT"
                 }
             },
             "required": ["target_layer", "join_layer"]
@@ -258,18 +262,18 @@ class FunctionDeclaration:
         
         "clip_layer": {
             "name": "clip_layer",
-            "description": "Clip input layer features using the boundary of a clip layer, extracting only the portions that fall within the clip boundary.",
+            "description": "Clips a feature layer. Extracts input features that overlay the clip features. This is used to cut a piece out of the input layer using a polygon as a cookie cutter.",
             "parameters": {
-                "input_layer": {
+                "layer_to_clip": {
                     "type": "string",
-                    "description": "The layer to be clipped"
+                    "description": "The feature layer (point, line, or polygon) that will be clipped."
                 },
-                "clip_layer": {
+                "clipping_boundary_layer": {
                     "type": "string",
-                    "description": "The layer defining the clip boundary"
+                    "description": "The polygon feature layer that defines the clipping area. Must be a polygon layer."
                 }
             },
-            "required": ["input_layer", "clip_layer"]
+            "required": ["layer_to_clip", "clipping_boundary_layer"]
         },
         
         "calculate_distance": {

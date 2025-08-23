@@ -102,11 +102,11 @@ class RunPythonCode(object):
         return {"success": True, "selected_features": selected_count}
 
     def select_by_location(self, params):
-        input_layer = params.get("input_layer")
-        select_layer = params.get("select_layer")
+        layer_to_select_from = params.get("layer_to_select_from")
+        layer_to_select_with = params.get("layer_to_select_with")
         relationship = params.get("relationship", "INTERSECT")
-        arcpy.SelectLayerByLocation_management(input_layer, relationship, select_layer)
-        selected_count = int(arcpy.GetCount_management(input_layer)[0])
+        arcpy.SelectLayerByLocation_management(layer_to_select_from, relationship, layer_to_select_with)
+        selected_count = int(arcpy.GetCount_management(layer_to_select_from)[0])
         return {"success": True, "selected_features": selected_count}
 
     def get_layer_summary(self, params):
@@ -163,22 +163,24 @@ class RunPythonCode(object):
     def spatial_join(self, params):
         target_layer = params.get("target_layer")
         join_layer = params.get("join_layer")
+        join_operation = params.get("join_operation", "JOIN_ONE_TO_ONE")
+        match_option = params.get("match_option", "INTERSECT")
         output_name = f"{target_layer.replace(' ', '_')}_joined"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         output_path = os.path.join(aprx.defaultGeodatabase, output_name)
         output_path = arcpy.CreateUniqueName(output_path)
-        arcpy.analysis.SpatialJoin(target_layer, join_layer, output_path)
+        arcpy.analysis.SpatialJoin(target_layer, join_layer, output_path, join_operation=join_operation, match_option=match_option)
         self._add_to_map(output_path)
         return {"success": True, "output_layer": output_name, "output_path": output_path}
 
     def clip_layer(self, params):
-        input_layer = params.get("input_layer")
-        clip_layer = params.get("clip_layer")
-        output_name = f"{input_layer.replace(' ', '_')}_clipped"
+        layer_to_clip = params.get("layer_to_clip")
+        clipping_boundary_layer = params.get("clipping_boundary_layer")
+        output_name = f"{layer_to_clip.replace(' ', '_')}_clipped"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         output_path = os.path.join(aprx.defaultGeodatabase, output_name)
         output_path = arcpy.CreateUniqueName(output_path)
-        arcpy.analysis.Clip(input_layer, clip_layer, output_path)
+        arcpy.analysis.Clip(layer_to_clip, clipping_boundary_layer, output_path)
         self._add_to_map(output_path)
         return {"success": True, "output_layer": output_name, "output_path": output_path}
 
@@ -300,15 +302,19 @@ class RunPythonCode(object):
                     lyr = l
                     break
             if not lyr:
-                return {"success": False, "error": f"Layer {layer_name} not found"}            # Prepare output
+            return {"success": False, "error": f"Layer {layer_name} not found"}
+
+        # Prepare output
             output_name = f"{layer_name.replace(' ', '_')}_ai"
             default_gdb = aprx.defaultGeodatabase
             output_path = os.path.join(default_gdb, output_name)
-            # Add the layer to the map
-            ouput_layer = map_obj.addDataFromPath(output_path)
+        output_path = arcpy.CreateUniqueName(output_path)
 
             # Copy features to new layer
             arcpy.CopyFeatures_management(lyr, output_path)
+
+        # Add the layer to the map now that it exists
+        self._add_to_map(output_path)
 
             # Add fields for nearest neighbor id and distance
             nn_id_field = "NEAREST_ID"
@@ -477,15 +483,15 @@ class RunPythonCode(object):
             return {"success": False, "error": str(e)}
 
     def calculate_new_field(self, params):
-        layer = params.get("layer")
-        field_name = params.get("field_name")
-        field_type = params.get("field_type", "DOUBLE")
-        expression = params.get("expression")
+        layer_name = params.get("layer_name")
+        new_field_name = params.get("new_field_name")
+        field_type = params.get("field_type", "TEXT")
+        field_value = params.get("field_value")
         try:
-            arcpy.AddField_management(layer, field_name, field_type)
-            if expression:
-                arcpy.CalculateField_management(layer, field_name, expression, "PYTHON3")
-            return {"success": True, "field_added": field_name}
+            arcpy.AddField_management(layer_name, new_field_name, field_type)
+            if field_value:
+                arcpy.CalculateField_management(layer_name, new_field_name, field_value, "PYTHON3")
+            return {"success": True, "field_added": new_field_name}
         except Exception as e:
             return {"success": False, "error": str(e)}
 
