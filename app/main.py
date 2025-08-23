@@ -647,7 +647,7 @@ async def handle_software_state_update(client_id: str, state_data: Dict):
         logger.error(f"Error handling software state update: {str(e)}")
 
 async def handle_function_calling_response(session_id: str, message: Dict, context: Dict):
-    """Handle function calling response and generate final AI response"""
+    """Handle function calling response, orchestrate dashboard creation, and generate final AI response"""
     try:
         client_id = context["client_id"]
         function_call = context["function_call"]
@@ -662,31 +662,50 @@ async def handle_function_calling_response(session_id: str, message: Dict, conte
             "result": message.get("data", {})
         }
         
-        # Handle chain vs single function call differently
+        # --- Dashboard Orchestration ---
+        # Check if this is a successful analysis result that should trigger dashboard creation
+        if function_call["name"] == "analyze_layer_fields" and function_result["result"].get("success"):
+            logger.info("analyze_layer_fields successful, triggering dashboard creation.")
+            field_insights = function_result["result"].get("field_insights", {})
+            layer_name = function_call["parameters"].get("layer_name", "Unknown Layer")
+
+            # Create dashboard object using server-side logic
+            dashboard_object = _create_dashboard_from_insights(field_insights, layer_name)
+
+            if dashboard_object.get("success"):
+                # Save and broadcast the new dashboard
+                await save_and_broadcast_dashboard(dashboard_object)
+
+                # Modify the function result for the AI to be a simple success message
+                function_result["result"] = {
+                    "success": True,
+                    "message": f"Dashboard for layer '{layer_name}' created and updated successfully."
+                }
+            else:
+                logger.error(f"Dashboard creation failed: {dashboard_object.get('error')}")
+                # Keep original result to inform AI of failure
+
+        # --- Original Flow ---
         if is_chain:
-            # This is part of a function chain - collect the result
             chain_context = websocket_manager.get_chain_context(client_id)
             if chain_context:
                 chain_context["completed_functions"] += 1
                 chain_context["function_results"].append(function_result)
                 logger.info(f"Function chain progress: {chain_context['completed_functions']}/{chain_context['total_functions']}")
                 
-                # Check if all functions in the chain are complete
                 if chain_context["completed_functions"] >= chain_context["total_functions"]:
                     logger.info("All functions in chain completed. Sending batch results to LLM.")
                     await handle_chain_completion(client_id, chain_context)
                 else:
-                    # Still waiting for more functions to complete - don't send anything to user yet
                     logger.info(f"Waiting for {chain_context['total_functions'] - chain_context['completed_functions']} more functions to complete.")
             else:
                 logger.error("Chain context not found - falling back to single function handling")
                 await handle_single_function_result_with_retry(client_id, function_result, original_response)
         else:
-            # Single function call - handle immediately
             await handle_single_function_result_with_retry(client_id, function_result, original_response)
-        
+
     except Exception as e:
-        logger.error(f"Error handling function calling response: {str(e)}")
+        logger.error(f"Error in handle_function_calling_response: {e}", exc_info=True)
         await websocket_manager.send_to_client(client_id, {
             "type": "error",
             "message": f"Error processing function result: {str(e)}"
@@ -946,34 +965,30 @@ async def complete_investigation_session(client_id: str, session_id: str):
         })
         logger.error(f"Error completing investigation session: {str(e)}")
 
-async def check_and_update_dashboard(client_id: str, function_result: Dict):
-    """Check if function result should trigger dashboard update and save to progent_dashboard.json"""
+async def save_and_broadcast_dashboard(dashboard_data: Dict):
+    """Saves dashboard data to file and broadcasts update to all clients."""
     try:
-        # Check if this function result contains dashboard data
-        result_data = function_result.get("result", {})
+        if not dashboard_data or not dashboard_data.get("success"):
+            logger.warning("Attempted to save an unsuccessful or empty dashboard object.")
+            return
+
+        dashboard_file = BASE_DIR / "progent_dashboard.json"
+
+        with open(dashboard_file, "w", encoding="utf-8") as f:
+            json.dump(dashboard_data, f, indent=4)
+
+        logger.info(f"Dashboard data saved to {dashboard_file}")
+
+        # Notify all chatbot clients about the dashboard update
+        await websocket_manager.broadcast_to_type("chatbot", {
+            "type": "dashboard_update",
+            "data": dashboard_data
+        })
+
+        logger.info("Dashboard update broadcast to all chatbot clients")
         
-        # Look for the dashboard update flag
-        if result_data.get("is_dashboard_update"):
-            logger.info(f"Dashboard update detected from function: {function_result.get('name')}")
-            
-            # Save dashboard data to progent_dashboard.json
-            dashboard_file = BASE_DIR / "progent_dashboard.json"
-            
-            with open(dashboard_file, "w", encoding="utf-8") as f:
-                json.dump(result_data, f, indent=4)
-            
-            logger.info(f"Dashboard data saved to {dashboard_file}")
-            
-            # Notify all chatbot clients about the dashboard update
-            await websocket_manager.broadcast_to_type("chatbot", {
-                "type": "dashboard_update",
-                "data": result_data
-            })
-            
-            logger.info("Dashboard update broadcast to all chatbot clients")
-            
     except Exception as e:
-        logger.error(f"Error in check_and_update_dashboard: {str(e)}")
+        logger.error(f"Error in save_and_broadcast_dashboard: {str(e)}")
 
 async def send_final_response(client_id: str, response: str):
     """Send final response to chatbot client"""
@@ -1097,6 +1112,138 @@ async def get_latest_dashboard():
     except Exception as e:
         logger.error(f"Error loading dashboard data: {str(e)}")
         return {"error": f"Failed to load dashboard: {str(e)}"}
+
+# =============================================================================
+# DASHBOARD GENERATION AND TRANSFORMATION
+# =============================================================================
+# This module handles the creation of dashboard layouts from field insights
+# and their transformation into frontend-compatible formats.
+# =============================================================================
+
+from datetime import datetime
+
+def _get_timestamp() -> str:
+    """Get current timestamp in ISO format"""
+    return datetime.now().isoformat()
+
+def _get_chart_options(chart_type: str, theme: str) -> Dict:
+    """
+    Provides default chart options based on chart type and theme.
+    """
+    options = {
+        "color_palette": "default_palette",
+        "show_legend": True,
+        "show_labels": True
+    }
+
+    if chart_type in ["bar", "column", "line_chart"]:
+        options["axis_titles"] = {"x": "Category", "y": "Value"}
+
+    if chart_type == "histogram":
+        options["bin_count"] = "auto"
+
+    if theme == "dark":
+        options["color_palette"] = "dark_palette"
+        options["font_color"] = "#FFFFFF"
+
+    return options
+
+def _create_chart_from_field(field_info: Dict, theme: str) -> Dict:
+    """
+    Creates a chart configuration dictionary based on field analysis insights.
+    """
+    try:
+        field_name = field_info.get("field_name", "unknown")
+        ai_insights = field_info.get("ai_insights", {})
+        chart_suitability = ai_insights.get("chart_suitability", {})
+
+        if not chart_suitability:
+            return None
+
+        best_chart_type = max(chart_suitability, key=chart_suitability.get)
+
+        chart_config = {
+            "id": f"chart_{field_info['field_name']}",
+            "title": f"Analysis of {field_info['field_name']}",
+            "type": best_chart_type,
+            "field": field_info['field_name'],
+            "data_category": field_info['data_category'],
+            "description": ai_insights.get("data_story", ""),
+            "theme": theme,
+            "options": _get_chart_options(best_chart_type, theme)
+        }
+
+        return chart_config
+
+    except Exception as e:
+        logger.error(f"Error creating chart from field: {e}")
+        return None
+
+def _arrange_charts_in_layout(charts: List[Dict]) -> Dict:
+    """
+    Arranges charts into a grid-based layout.
+    """
+    layout = {
+        "grid_template_columns": "1fr 1fr",
+        "gap": "20px",
+        "items": []
+    }
+
+    for i, chart in enumerate(charts):
+        layout["items"].append({
+            "id": chart["id"],
+            "row": (i // 2) + 1,
+            "col": (i % 2) + 1
+        })
+
+    return layout
+
+def _create_dashboard_from_insights(field_insights: Dict, layer_name: str, theme: str = "default", analysis_type: str = "overview") -> Dict:
+    """
+    Generates a full dashboard object from field insights.
+    This function is the server-side equivalent of the logic originally in progent.pyt.
+    """
+    try:
+        if not field_insights:
+            return {"success": False, "error": "No suitable fields found for dashboard generation"}
+
+        # Step 1: Prioritize fields based on AI insights
+        prioritized_fields = sorted(
+            field_insights.values(),
+            key=lambda x: x.get("ai_insights", {}).get("visualization_priority", 0),
+            reverse=True
+        )
+
+        # Step 2: Select top fields for the dashboard (e.g., top 6)
+        top_fields = prioritized_fields[:6]
+
+        # Step 3: Generate chart configurations for each selected field
+        charts = []
+        for field_info in top_fields:
+            chart_config = _create_chart_from_field(field_info, theme)
+            if chart_config:
+                charts.append(chart_config)
+
+        # Step 4: Arrange charts into a layout
+        layout = _arrange_charts_in_layout(charts)
+
+        result = {
+            "success": True,
+            "is_dashboard_update": True,
+            "layer_name": layer_name,
+            "dashboard_title": f"{analysis_type.title()} Dashboard for {layer_name}",
+            "theme": theme,
+            "layout": layout,
+            "charts": charts,
+            "field_insights": field_insights,
+            "generation_timestamp": _get_timestamp()
+        }
+
+        return result
+
+    except Exception as e:
+        logger.error(f"Error creating dashboard from insights: {e}")
+        return {"success": False, "error": str(e)}
 
 # =============================================================================
 # DASHBOARD TRANSFORMATION MODULE
