@@ -1156,6 +1156,9 @@ def _parse_dashboard_data(dashboard_data):
     elif "dashboard_layout" in dashboard_data:
         # New comprehensive format with dashboard_layout + field_insights + chart_recommendations
         return _parse_dashboard_layout(dashboard_data)
+    elif "layout" in dashboard_data and "charts" in dashboard_data:
+        # Current format with layout + charts array
+        return _parse_layout_charts_format(dashboard_data)
     elif "chart_recommendations" in dashboard_data:
         # Legacy format with only chart recommendations
         return dashboard_data.get("chart_recommendations", []), "auto"
@@ -1206,6 +1209,35 @@ def _parse_dashboard_layout(dashboard_data):
         chart_configs.append(chart_config)
     
     return chart_configs, layout_template
+
+def _parse_layout_charts_format(dashboard_data):
+    """Parse layout + charts format"""
+    layout = dashboard_data.get("layout", {})
+    charts = dashboard_data.get("charts", [])
+    layout_items = layout.get("items", [])
+    
+    chart_configs = []
+    
+    # Create a mapping of chart IDs to chart data
+    chart_data_map = {chart.get("id", ""): chart for chart in charts}
+    
+    # Use layout items as the primary source, enriched with chart data
+    for i, item in enumerate(layout_items):
+        chart_id = item.get("id", f"chart_{i}")
+        chart_data = chart_data_map.get(chart_id, {})
+        
+        chart_config = {
+            "chart_id": chart_id,
+            "chart_type": item.get("chart_type", chart_data.get("chart_type", "bar")),
+            "title": chart_data.get("title", item.get("field_name", f"Chart {i + 1}")),
+            "primary_field": item.get("field_name", chart_data.get("field_name", "")),
+            "recommended_size": DEFAULT_CHART_SIZE,
+            "priority": 1,
+            "chart_data": chart_data  # Include full chart data for insights
+        }
+        chart_configs.append(chart_config)
+    
+    return chart_configs, "grid"
 
 def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
     """Build frontend chart objects from configurations"""

@@ -154,7 +154,15 @@ def generate_smart_dashboard_layout(layer_name: str, analysis_type: str = "overv
         with open(dashboard_path, 'w', encoding='utf-8') as f:
             json.dump(result, f, indent=4, ensure_ascii=False)
         
-        return result
+        # Return simple acknowledgment to AI (to save API credits)
+        return {
+            "success": True,
+            "is_dashboard_update": True,
+            "message": f"Dashboard successfully generated for '{layer_name}' with {len(charts)} charts",
+            "layer_name": layer_name,
+            "chart_count": len(charts),
+            "dashboard_saved": True
+        }
         
     except Exception as e:
         return {"success": False, "error": str(e)}
