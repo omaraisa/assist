@@ -30,8 +30,9 @@ class AIService:
         # Initialize the response handler
         self.response_handler = AIResponseHandler(self.session, None)  # ollama_service will be set later
         
-        # Initialize LangChain agent
-        self.langchain_agent = LangChainAgent(self.current_model, self.websocket_manager)
+        # Initialize LangChain agent if a Gemini model is selected
+        if self.current_model.startswith("GEMINI"):
+            self.langchain_agent = LangChainAgent(self.current_model, self.websocket_manager)
         
         # Initialize Ollama service if available
         logger.info(f"OLLAMA_AVAILABLE: {OLLAMA_AVAILABLE}")

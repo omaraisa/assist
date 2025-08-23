@@ -68,6 +68,15 @@ class Settings(BaseSettings):
         #     "temperature": 0.7,
         #     "api_key_env": "ANTHROPIC_API_KEY"        },
         # Ollama Models (Local LLMs)
+            "OLLAMA_GEMMA": {
+                "name": "Gemma 2B (Local)",
+                "model": "gemma:2b",
+                "provider": "ollama",
+                "endpoint": "http://localhost:11434",
+                "max_tokens": 8192,
+                "temperature": 0.7,
+                "local": True
+            },
             # "OLLAMA_LLAMA31": {
             #     "name": "Llama 3.2 8B (Local)",
             #     "model": "llama3.2:latest",
@@ -98,7 +107,7 @@ class Settings(BaseSettings):
     }
     
     # Default AI Model
-    DEFAULT_AI_MODEL: str = "GEMINI_FLASH"
+    DEFAULT_AI_MODEL: str = "OLLAMA_GEMMA"
     
     # API Keys (loaded from environment variables)
     # NOTE: To use different models, set their API keys in .env file:
