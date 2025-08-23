@@ -5,11 +5,139 @@
     "dashboard_title": "Overview Dashboard for jeddah_fuel_stations_ai",
     "theme": "default",
     "layout": {
-        "grid_template_columns": "1fr 1fr",
+        "grid_template_columns": "1fr 1fr 1fr",
         "gap": "20px",
-        "items": []
+        "items": [
+            {
+                "id": "chart_has_ev_charging",
+                "chart_type": "pie",
+                "field_name": "has_ev_charging",
+                "grid_area": "chart-1"
+            },
+            {
+                "id": "chart_Public_Transport_Availability",
+                "chart_type": "pie",
+                "field_name": "Public_Transport_Availability",
+                "grid_area": "chart-2"
+            },
+            {
+                "id": "chart_Development_Stage",
+                "chart_type": "pie",
+                "field_name": "Development_Stage",
+                "grid_area": "chart-3"
+            },
+            {
+                "id": "chart_DistrictID",
+                "chart_type": "histogram",
+                "field_name": "DistrictID",
+                "grid_area": "chart-4"
+            },
+            {
+                "id": "chart_operator",
+                "chart_type": "bar",
+                "field_name": "operator",
+                "grid_area": "chart-5"
+            },
+            {
+                "id": "chart_Long",
+                "chart_type": "histogram",
+                "field_name": "Long",
+                "grid_area": "chart-6"
+            }
+        ]
     },
-    "charts": [],
+    "charts": [
+        {
+            "id": "chart_has_ev_charging",
+            "field_name": "has_ev_charging",
+            "chart_type": "pie",
+            "data_category": "categorical_text",
+            "title": "'has_ev_charging' contains 2 distinct categories with clear groupings, ideal for showing proportional relationships.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "pie": 0.95,
+                "donut": 0.9,
+                "bar": 0.85,
+                "column": 0.8
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_Public_Transport_Availability",
+            "field_name": "Public_Transport_Availability",
+            "chart_type": "pie",
+            "data_category": "categorical_text",
+            "title": "'Public_Transport_Availability' contains 3 distinct categories with clear groupings, ideal for showing proportional relationships.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "pie": 0.95,
+                "donut": 0.9,
+                "bar": 0.85,
+                "column": 0.8
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_Development_Stage",
+            "field_name": "Development_Stage",
+            "chart_type": "pie",
+            "data_category": "categorical_text",
+            "title": "'Development_Stage' contains 3 distinct categories with clear groupings, ideal for showing proportional relationships.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "pie": 0.95,
+                "donut": 0.9,
+                "bar": 0.85,
+                "column": 0.8
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_DistrictID",
+            "field_name": "DistrictID",
+            "chart_type": "histogram",
+            "data_category": "continuous_numeric",
+            "title": "'DistrictID' displays moderate variation (range: 4.00 to 176.00), suitable for distribution analysis.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "histogram": 0.9,
+                "box_plot": 0.85,
+                "density_plot": 0.8,
+                "violin_plot": 0.75
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_operator",
+            "field_name": "operator",
+            "chart_type": "bar",
+            "data_category": "categorical_text",
+            "title": "'operator' has 7 categories, suitable for comparative analysis and ranking visualizations.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "bar": 0.9,
+                "column": 0.85,
+                "horizontal_bar": 0.8,
+                "pie": 0.7
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_Long",
+            "field_name": "Long",
+            "chart_type": "histogram",
+            "data_category": "continuous_numeric",
+            "title": "'Long' shows consistent values (range: 39.14 to 39.27), good for trend analysis.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "histogram": 0.9,
+                "box_plot": 0.85,
+                "density_plot": 0.8,
+                "violin_plot": 0.75
+            },
+            "theme": "default"
+        }
+    ],
     "field_insights": {
         "Join_Count": {
             "field_name": "Join_Count",
@@ -98,16 +226,16 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
-                "Aldrees Klein Route",
-                "Aldrees Tina Haven",
-                "Aldrees Brandon Turnpike",
+                "Sas Ronnie Creek",
+                "Aldrees Bush Landing",
                 "Aldrees Norris Neck",
-                "Sas Hardy Drive",
-                "Aldrees Tony Walk",
-                "Aldrees Ibarra Fork",
-                "Sas Virginia Crescent",
-                "Sas Jennifer Way",
-                "Sas Donna Via"
+                "Tas'helat Melissa Village",
+                "Aldrees Lee Station",
+                "Aldrees Day Haven",
+                "Aldrees Tracy Manor",
+                "Sas Jackson Drive",
+                "Sas White Forest",
+                "Sas William Orchard"
             ],
             "avg_length": 19.3,
             "min_length": 13,
@@ -139,13 +267,13 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
-                "Sas",
+                "Petromin",
                 "Aldrees",
-                "Naft",
-                "Shell",
+                "Sas",
                 "Tas'helat",
+                "Naft",
                 "Wafi",
-                "Petromin"
+                "Shell"
             ],
             "avg_length": 5.7,
             "min_length": 3,
@@ -332,16 +460,16 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
+                "car wash, tire repair",
+                "tire repair, mosque",
+                "store, coffee shop, tire repair, mosque, atm, car wash",
+                "atm, coffee shop",
                 "mosque, atm",
-                "atm, tire repair, store, coffee shop, car wash",
-                "coffee shop, mosque, store",
-                "coffee shop, atm, mosque, car wash",
-                "atm, car wash, coffee shop, mosque",
-                "car wash, coffee shop, store, mosque",
-                "store, atm, car wash, mosque",
-                "atm, tire repair, car wash, coffee shop, mosque, store",
-                "tire repair",
-                "car wash"
+                "car wash, store, coffee shop, tire repair, mosque, atm",
+                "atm, tire repair, car wash",
+                "mosque, store",
+                "car wash, store, tire repair",
+                "atm, mosque, car wash, store, tire repair"
             ],
             "avg_length": 28.4,
             "min_length": 3,
@@ -806,8 +934,8 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
-                "FALSE",
-                "TRUE"
+                "TRUE",
+                "FALSE"
             ],
             "avg_length": 4.7,
             "min_length": 4,
@@ -922,16 +1050,16 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
-                "\u0627\u0644\u0633\u0644\u0627\u0645\u0629",
-                "\u0627\u0644\u0645\u0631\u0648\u0629",
-                "\u0645\u0637\u0627\u0631 \u0627\u0644\u0645\u0644\u0643 \u0639\u0628\u062f \u0627\u0644\u0639\u0632\u064a\u0632",
-                "\u0627\u0644\u0633\u0627\u0645\u0631",
-                "\u0628\u0631\u064a\u0645\u0627\u0646",
-                "\u0627\u0644\u0631\u0628\u0648\u0647",
-                "\u0627\u0644\u0631\u0648\u0636\u0629",
-                "\u0627\u0644\u0641\u064a\u0635\u0644\u064a\u0629",
-                "\u0627\u0644\u0628\u0648\u0627\u062f\u0649",
-                "\u0627\u0644\u0635\u0641\u0627"
+                "البوادى",
+                "السلامة",
+                "الزهراء",
+                "المنتزه",
+                "الفيصلية",
+                "المروة",
+                "الصفا",
+                "بريمان",
+                "الروضة",
+                "النعيم"
             ],
             "avg_length": 7.0,
             "min_length": 5,
@@ -1005,16 +1133,16 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
-                "\u0627\u0644\u0633\u0644\u0627\u0645\u0629",
-                "\u0627\u0644\u0645\u0631\u0648\u0629",
-                "\u0645\u0637\u0627\u0631 \u0627\u0644\u0645\u0644\u0643 \u0639\u0628\u062f \u0627\u0644\u0639\u0632\u064a\u0632",
-                "\u0627\u0644\u0633\u0627\u0645\u0631",
-                "\u0628\u0631\u064a\u0645\u0627\u0646",
-                "\u0627\u0644\u0631\u0628\u0648\u0647",
-                "\u0627\u0644\u0631\u0648\u0636\u0629",
-                "\u0627\u0644\u0641\u064a\u0635\u0644\u064a\u0629",
-                "\u0627\u0644\u0628\u0648\u0627\u062f\u0649",
-                "\u0627\u0644\u0635\u0641\u0627"
+                "البوادى",
+                "السلامة",
+                "الزهراء",
+                "المنتزه",
+                "الفيصلية",
+                "المروة",
+                "الصفا",
+                "بريمان",
+                "الروضة",
+                "النعيم"
             ],
             "avg_length": 7.0,
             "min_length": 5,
@@ -1508,5 +1636,5 @@
             "visualization_priority": 9
         }
     },
-    "generation_timestamp": "2025-08-23T13:27:52.675357"
+    "generation_timestamp": "2025-08-23T14:59:19.790663"
 }

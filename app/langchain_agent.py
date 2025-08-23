@@ -60,47 +60,28 @@ class ExecuteSpatialFunctionTool(BaseTool):
             if not function_name:
                 return {"error": "'function_name' must be provided in the input dictionary."}
 
+            # Extract parameters (remaining tool_input after removing function_name)
+            parameters = tool_input
+
+            # Handle dashboard functions locally (server-side)
+            dashboard_functions = [
+                "generate_smart_dashboard_layout",
+                "get_current_dashboard_layout", 
+                "get_current_dashboard_charts",
+                "get_field_stories_and_samples",
+                "update_dashboard_charts",
+                "plan_dashboard_layout"
+            ]
+            
+            if function_name in dashboard_functions:
+                return self._execute_dashboard_function(function_name, parameters)
+
             arcgis_client = self.websocket_manager.get_arcgis_client()
             if not arcgis_client:
                 return {"error": "ArcGIS Pro client not connected."}
 
-            parameters = tool_input
             if isinstance(parameters, dict) and "arguments" in parameters and len(parameters) == 1 and isinstance(parameters["arguments"], dict):
                 parameters = parameters["arguments"]
-
-            if function_name == "generate_smart_dashboard_layout":
-                layer_name = parameters.get("layer_name")
-                if not layer_name:
-                    return {"error": "'layer_name' is required for generate_smart_dashboard_layout"}
-
-                analysis_payload = {
-                    "type": "execute_function",
-                    "function_name": "analyze_layer_fields",
-                    "parameters": {"layer": layer_name},
-                    "session_id": str(uuid.uuid4()),
-                    "source_client": self.client_id
-                }
-                asyncio.run(self.websocket_manager.send_to_client(arcgis_client, analysis_payload))
-
-                max_wait_time = 120
-                check_interval = 0.2
-                elapsed_time = 0
-                field_insights = None
-
-                while elapsed_time < max_wait_time:
-                    if self.websocket_manager.has_function_result(analysis_payload['session_id']):
-                        result = self.websocket_manager.get_function_result(analysis_payload['session_id'])
-                        if result and result.get("data", {}).get("success"):
-                            field_insights = result.get("data", {}).get("field_insights")
-                            break
-                    import time
-                    time.sleep(check_interval)
-                    elapsed_time += check_interval
-                
-                if not field_insights:
-                    return {"error": "Failed to get field insights from analyze_layer_fields"}
-                
-                parameters["field_insights"] = field_insights
 
             session_id = str(uuid.uuid4())
             payload = {
@@ -134,9 +115,78 @@ class ExecuteSpatialFunctionTool(BaseTool):
         except Exception as e:
             return {"error": f"An unexpected error occurred while executing '{function_name}': {e}"}
 
+    def _execute_dashboard_function(self, function_name: str, parameters: dict) -> dict:
+        """Execute dashboard functions locally on the server side"""
+        try:
+            if function_name == "generate_smart_dashboard_layout":
+                # For generate_smart_dashboard_layout, we need to get field insights first
+                layer_name = parameters.get("layer_name")
+                analysis_type = parameters.get("analysis_type", "overview")
+                theme = parameters.get("theme", "default")
+                field_insights = parameters.get("field_insights")
+                
+                if not field_insights:
+                    # Get field insights from ArcGIS Pro first
+                    arcgis_client = self.websocket_manager.get_arcgis_client()
+                    if not arcgis_client:
+                        return {"error": "ArcGIS Pro client not connected for field analysis."}
+                    
+                    analysis_payload = {
+                        "type": "execute_function",
+                        "function_name": "analyze_layer_fields",
+                        "parameters": {"layer": layer_name},
+                        "session_id": str(uuid.uuid4()),
+                        "source_client": self.client_id
+                    }
+                    asyncio.run(self.websocket_manager.send_to_client(arcgis_client, analysis_payload))
+
+                    max_wait_time = 120
+                    check_interval = 0.2
+                    elapsed_time = 0
+
+                    while elapsed_time < max_wait_time:
+                        if self.websocket_manager.has_function_result(analysis_payload['session_id']):
+                            result = self.websocket_manager.get_function_result(analysis_payload['session_id'])
+                            if result and result.get("data", {}).get("success"):
+                                field_insights = result.get("data", {}).get("field_insights")
+                                break
+                        import time
+                        time.sleep(check_interval)
+                        elapsed_time += check_interval
+                    
+                    if not field_insights:
+                        return {"error": "Failed to get field insights from analyze_layer_fields"}
+                
+                return generate_smart_dashboard_layout(layer_name, analysis_type, theme, field_insights)
+                
+            elif function_name == "get_current_dashboard_layout":
+                return get_current_dashboard_layout()
+                
+            elif function_name == "get_current_dashboard_charts":
+                return get_current_dashboard_charts()
+                
+            elif function_name == "get_field_stories_and_samples":
+                return get_field_stories_and_samples()
+                
+            elif function_name == "update_dashboard_charts":
+                charts_data = parameters.get("charts_data", [])
+                return update_dashboard_charts(charts_data)
+                
+            elif function_name == "plan_dashboard_layout":
+                chart_recommendations = parameters.get("chart_recommendations", [])
+                grid_width = parameters.get("grid_width", 12)
+                grid_height = parameters.get("grid_height", 6)
+                return plan_dashboard_layout(chart_recommendations, grid_width, grid_height)
+                
+            else:
+                return {"error": f"Unknown dashboard function: {function_name}"}
+                
+        except Exception as e:
+            return {"error": f"Error executing dashboard function '{function_name}': {str(e)}"}
+
 from langchain_core.messages import AIMessage, HumanMessage
 
-from .progent_functions import AVAILABLE_FUNCTIONS
+from .progent_functions import AVAILABLE_FUNCTIONS, generate_smart_dashboard_layout, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts, plan_dashboard_layout
 from .config import settings
 from .ai.function_declarations import FunctionDeclaration
 
