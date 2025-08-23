@@ -29,12 +29,111 @@ class LoggingCallbackHandler(BaseCallbackHandler):
 import logging
 import json
 import ast
+import uuid
+import asyncio
 from typing import Dict, List, Any
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from langchain.agents import create_react_agent, AgentExecutor
-from langchain.tools import Tool
+from langchain.tools import Tool, BaseTool
+
+class ExecuteSpatialFunctionTool(BaseTool):
+    name = "execute_spatial_function"
+    description = "Executes a spatial function. Input must be a stringified dictionary with 'function_name' and parameters. Parameters can be provided either as top-level keys or inside an 'arguments' object."
+    websocket_manager: Any
+    client_id: str
+
+    def _run(self, tool_input_str: str) -> Dict[str, Any]:
+        function_name = "[unknown]"
+        try:
+            temp_input = ast.literal_eval(tool_input_str)
+            if isinstance(temp_input, str):
+                tool_input = ast.literal_eval(temp_input)
+            else:
+                tool_input = temp_input
+
+            if not isinstance(tool_input, dict):
+                return {"error": f"Parsed input is not a dictionary. Got type: {type(tool_input)}"}
+
+            function_name = tool_input.pop("function_name", None)
+            if not function_name:
+                return {"error": "'function_name' must be provided in the input dictionary."}
+
+            arcgis_client = self.websocket_manager.get_arcgis_client()
+            if not arcgis_client:
+                return {"error": "ArcGIS Pro client not connected."}
+
+            parameters = tool_input
+            if isinstance(parameters, dict) and "arguments" in parameters and len(parameters) == 1 and isinstance(parameters["arguments"], dict):
+                parameters = parameters["arguments"]
+
+            if function_name == "generate_smart_dashboard_layout":
+                layer_name = parameters.get("layer_name")
+                if not layer_name:
+                    return {"error": "'layer_name' is required for generate_smart_dashboard_layout"}
+
+                analysis_payload = {
+                    "type": "execute_function",
+                    "function_name": "analyze_layer_fields",
+                    "parameters": {"layer": layer_name},
+                    "session_id": str(uuid.uuid4()),
+                    "source_client": self.client_id
+                }
+                asyncio.run(self.websocket_manager.send_to_client(arcgis_client, analysis_payload))
+
+                max_wait_time = 120
+                check_interval = 0.2
+                elapsed_time = 0
+                field_insights = None
+
+                while elapsed_time < max_wait_time:
+                    if self.websocket_manager.has_function_result(analysis_payload['session_id']):
+                        result = self.websocket_manager.get_function_result(analysis_payload['session_id'])
+                        if result and result.get("data", {}).get("success"):
+                            field_insights = result.get("data", {}).get("field_insights")
+                            break
+                    import time
+                    time.sleep(check_interval)
+                    elapsed_time += check_interval
+                
+                if not field_insights:
+                    return {"error": "Failed to get field insights from analyze_layer_fields"}
+                
+                parameters["field_insights"] = field_insights
+
+            session_id = str(uuid.uuid4())
+            payload = {
+                "type": "execute_function",
+                "function_name": function_name,
+                "parameters": parameters,
+                "session_id": session_id,
+                "source_client": self.client_id
+            }
+            
+            asyncio.run(self.websocket_manager.send_to_client(arcgis_client, payload))
+            
+            max_wait_time = 120
+            check_interval = 0.2
+            elapsed_time = 0
+            
+            while elapsed_time < max_wait_time:
+                if self.websocket_manager.has_function_result(session_id):
+                    result = self.websocket_manager.get_function_result(session_id)
+                    if result:
+                        return result.get("data", result)
+                
+                import time
+                time.sleep(check_interval)
+                elapsed_time += check_interval
+            
+            return {"error": f"Timeout waiting for response from ArcGIS Pro for function '{function_name}'."}
+
+        except (SyntaxError, ValueError) as e:
+            return {"error": f"Failed to parse input string: {e}. Input was: {tool_input_str}"}
+        except Exception as e:
+            return {"error": f"An unexpected error occurred while executing '{function_name}': {e}"}
+
 from langchain_core.messages import AIMessage, HumanMessage
 
 from .progent_functions import AVAILABLE_FUNCTIONS
@@ -117,12 +216,10 @@ class LangChainAgent:
 
     def __init__(self, model_key: str, websocket_manager: Any):
         self.websocket_manager = websocket_manager
-        self.tools = self._get_tools()
-        # Add callback handler for logging all agent steps
         self.callback_handler = LoggingCallbackHandler(logger)
         self.set_model(model_key)
 
-    def _get_tools(self) -> List[Tool]:
+    def _get_tools(self, client_id: str) -> List[BaseTool]:
         """Gets the tools for the LangChain agent."""
         return [
             Tool(
@@ -130,87 +227,11 @@ class LangChainAgent:
                 func=_get_declarations_stateless,
                 description="Gets the function declaration for one or more functions. Input must be a string representing a list of integers (e.g., '[8]' or '[1, 2, 3]').",
             ),
-            Tool(
-                name="execute_spatial_function",
-                func=self._execute_spatial_function,
-                description="Executes a spatial function. Input must be a stringified dictionary with 'function_name' and parameters. Parameters can be provided either as top-level keys or inside an 'arguments' object.",
-            ),
+            ExecuteSpatialFunctionTool(websocket_manager=self.websocket_manager, client_id=client_id),
         ]
 
 
-    def _execute_spatial_function(self, tool_input_str: str) -> Dict[str, Any]:
-        """
-        Parses the input string from the agent and sends the function request to ArcGIS Pro via websocket.
-        Waits for and returns the actual function response from ArcGIS Pro.
-        The input string should be a dictionary containing 'function_name' and its arguments.
-        """
-        function_name = "[unknown]"
-        try:
-            # The agent can sometimes wrap its output in an extra layer of quotes.
-            # We parse it twice to be safe.
-            temp_input = ast.literal_eval(tool_input_str)
-            if isinstance(temp_input, str):
-                tool_input = ast.literal_eval(temp_input)
-            else:
-                tool_input = temp_input
-
-            if not isinstance(tool_input, dict):
-                return {"error": f"Parsed input is not a dictionary. Got type: {type(tool_input)}"}
-
-            function_name = tool_input.pop("function_name", None)
-            if not function_name:
-                return {"error": "'function_name' must be provided in the input dictionary."}
-
-            # Send function request to ArcGIS Pro via websocket and wait for response
-            arcgis_client = self.websocket_manager.get_arcgis_client()
-            if not arcgis_client:
-                return {"error": "ArcGIS Pro client not connected."}
-
-            # Generate unique session ID for this function call
-            import uuid
-            session_id = str(uuid.uuid4())
-
-            # Unwrap nested 'arguments' if present to avoid passing unexpected keyword 'arguments'
-            parameters = tool_input
-            if isinstance(parameters, dict) and "arguments" in parameters and len(parameters) == 1 and isinstance(parameters["arguments"], dict):
-                parameters = parameters["arguments"]
-
-            payload = {
-                "type": "execute_function",
-                "function_name": function_name,
-                "parameters": parameters,
-                "session_id": session_id  # Add session ID to track this specific call
-            }
-            
-            import asyncio
-            
-            # Send the request
-            asyncio.run(self.websocket_manager.send_to_client(arcgis_client, payload))
-            
-            # Wait for the response with timeout
-            max_wait_time = 30  # Maximum 30 seconds wait
-            check_interval = 0.2  # Check every 200ms
-            elapsed_time = 0
-            
-            while elapsed_time < max_wait_time:
-                if self.websocket_manager.has_function_result(session_id):
-                    result = self.websocket_manager.get_function_result(session_id)
-                    if result:
-                        # Return the actual function result from ArcGIS Pro
-                        return result.get("data", result)
-                
-                # Sleep and increment elapsed time
-                import time
-                time.sleep(check_interval)
-                elapsed_time += check_interval
-            
-            # Timeout reached
-            return {"error": f"Timeout waiting for response from ArcGIS Pro for function '{function_name}'. Please check if ArcGIS Pro is responsive."}
-
-        except (SyntaxError, ValueError) as e:
-            return {"error": f"Failed to parse input string: {e}. Input was: {tool_input_str}"}
-        except Exception as e:
-            return {"error": f"An unexpected error occurred while executing '{function_name}': {e}"}
+    
 
     def set_model(self, model_key: str):
         """Sets the AI model for the agent."""
@@ -224,15 +245,6 @@ class LangChainAgent:
             max_output_tokens=model_config["max_tokens"],
         )
         self.prompt = self._create_prompt_template()
-        self.agent = create_react_agent(self.llm, self.tools, self.prompt)
-        # Pass the callback handler to the agent executor
-        self.agent_executor = AgentExecutor(
-            agent=self.agent,
-            tools=self.tools,
-            verbose=True,
-            handle_parsing_errors=True,
-            callbacks=[self.callback_handler]
-        )
         logger.info(f"LangChain agent model set to: {self.model_key}")
 
     def _create_prompt_template(self) -> PromptTemplate:
@@ -287,6 +299,16 @@ class LangChainAgent:
         logger.info(f"LangChain agent generating response for: {user_message[:100]}...")
 
         try:
+            tools = self._get_tools(client_id)
+            agent = create_react_agent(self.llm, tools, self.prompt)
+            agent_executor = AgentExecutor(
+                agent=agent,
+                tools=tools,
+                verbose=True,
+                handle_parsing_errors=True,
+                callbacks=[self.callback_handler]
+            )
+
             # Only include user and assistant (final answer) messages in history
             chat_history_lines = []
             for msg in conversation_history:
@@ -296,7 +318,7 @@ class LangChainAgent:
                     chat_history_lines.append(f"Progent: {msg.get('content','')}")
             chat_history_str = "\n".join(chat_history_lines)
 
-            response = await self.agent_executor.ainvoke({
+            response = await agent_executor.ainvoke({
                 "input": user_message,
                 "arcgis_state": json.dumps(arcgis_state, indent=2),
                 "available_functions": json.dumps(AVAILABLE_FUNCTIONS, indent=2),

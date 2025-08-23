@@ -611,13 +611,17 @@ class RunPythonCode(object):
         layer_name = params.get("layer_name")
         analysis_type = params.get("analysis_type", "overview")
         theme = params.get("theme", "default")
+        field_insights = params.get("field_insights")
+
         try:
-            # Step 1: Analyze layer fields
-            field_analysis_result = self.analyze_layer_fields({"layer": layer_name})
-            if not field_analysis_result.get("success"):
-                return field_analysis_result
+            if not field_insights:
+                # Step 1: Analyze layer fields
+                field_analysis_result = self.analyze_layer_fields({"layer": layer_name})
+                if not field_analysis_result.get("success"):
+                    return field_analysis_result
+                
+                field_insights = field_analysis_result.get("field_insights", {})
             
-            field_insights = field_analysis_result.get("field_insights", {})
             if not field_insights:
                 return {"success": False, "error": "No suitable fields found for dashboard generation"}
             
@@ -643,6 +647,7 @@ class RunPythonCode(object):
             
             result = {
                 "success": True,
+                "is_dashboard_update": True,
                 "layer_name": layer_name,
                 "dashboard_title": f"{analysis_type.title()} Dashboard for {layer_name}",
                 "theme": theme,

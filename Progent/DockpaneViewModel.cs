@@ -114,19 +114,20 @@ namespace Progent
                             pythonResult = new JObject { ["status"] = "error", ["data"] = pythonResultString };
                         }
 
-                    // If the function is for dashboard generation, send a specific update message
-                        if (functionName == "generate_smart_dashboard_layout" && pythonResult["status"]?.ToString() == "success")
+                    var data = pythonResult["data"];
+                        bool isDashboardUpdate = (data is JObject dataObj) && dataObj.Value<bool>("is_dashboard_update");
+
+                        if (isDashboardUpdate)
                         {
                             var dashboardUpdate = new JObject
                             {
                                 ["type"] = "dashboard_update",
                                 ["session_id"] = sessionId,
                                 ["source_client"] = sourceClient,
-                                ["data"] = pythonResult["data"]
+                                ["data"] = data
                             };
                             await _webSocketService.SendMessageAsync(dashboardUpdate.ToString());
 
-                            // Send a simple acknowledgment back to the AI
                             var ackResponse = new JObject
                             {
                                 ["type"] = "function_response",
@@ -147,7 +148,7 @@ namespace Progent
                                 ["source_client"] = sourceClient,
                                 ["status"] = pythonResult["status"],
                                 ["function_name"] = functionName ?? "RunPythonCode",
-                                ["data"] = pythonResult["data"],
+                                ["data"] = data,
                                 ["software_context"] = await GetSoftwareContext()
                             };
                             await _webSocketService.SendMessageAsync(response.ToString());
