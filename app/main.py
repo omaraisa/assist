@@ -171,9 +171,22 @@ async def handle_websocket_message(client_id: str, message: Dict):
                     "message": "Model key is required for model change"
                 })
                 
-        elif message_type == "cancel_request":
-            # Handle cancel/stop request
-            await handle_cancel_request(client_id)
+        elif message_type == "dashboard_update":
+            # Handle dashboard update from ArcGIS Pro
+            dashboard_data = message.get("data")
+            if dashboard_data:
+                try:
+                    with open(BASE_DIR / "progent_dashboard.json", "w", encoding="utf-8") as f:
+                        json.dump(dashboard_data, f, indent=4)
+                    logger.info("progent_dashboard.json has been updated.")
+                    
+                    # Notify all chatbot clients about the update
+                    await websocket_manager.broadcast_to_type("chatbot", {
+                        "type": "dashboard_update",
+                        "data": dashboard_data
+                    })
+                except Exception as e:
+                    logger.error(f"Error writing dashboard data: {str(e)}")
             
         else:
             logger.warning(f"Unknown message type: {message_type}")
@@ -718,59 +731,6 @@ async def handle_single_function_result(client_id: str, function_result: Dict, o
             "message": f"Error processing function result: {str(e)}"
         })
 
-async def check_and_update_dashboard(client_id: str, function_result: Dict):
-    """Check if function result requires dashboard update and send update to frontend"""
-    try:
-        function_name = function_result.get("name", "")
-        dashboard_functions = [
-            "analyze_layer_fields",
-            "generate_smart_dashboard_layout",
-            "recommend_chart_types", 
-            "plan_dashboard_layout",
-            "optimize_dashboard_layout"
-        ]
-        
-        if function_name in dashboard_functions:
-            logger.info(f"Dashboard function {function_name} completed, checking for dashboard data")
-            
-            # Try to load latest dashboard data
-            dashboard_files = [
-                BASE_DIR / "optimized_dashboard.json",
-                BASE_DIR / "smart_dashboard.json", 
-                BASE_DIR / "dashboard.json"
-            ]
-            
-            for dashboard_file in dashboard_files:
-                if dashboard_file.exists():
-                    try:
-                        with open(dashboard_file, 'r', encoding='utf-8') as f:
-                            dashboard_data = json.load(f)
-                            
-                        # Transform to frontend format
-                        frontend_data = transform_dashboard_for_frontend(dashboard_data)
-                        
-                        if "error" not in frontend_data:
-                            # Send dashboard update to all chatbot clients
-                            chatbot_clients = websocket_manager.get_clients_by_type("chatbot")
-                            for chatbot_client in chatbot_clients:
-                                await websocket_manager.send_to_client(chatbot_client, {
-                                    "type": "dashboard_update",
-                                    "data": frontend_data
-                                })
-                            
-                            logger.info(f"Dashboard update sent to {len(chatbot_clients)} clients")
-                            break
-                        else:
-                            # Log the error but don't send AI guidance - let the user see the error in UI
-                            logger.warning(f"Dashboard transformation failed: {frontend_data.get('error', 'Unknown error')}")
-                            
-                    except Exception as e:
-                        logger.error(f"Error loading dashboard file {dashboard_file}: {str(e)}")
-                        continue
-                        
-    except Exception as e:
-        logger.error(f"Error checking dashboard update: {str(e)}")
-
 async def handle_single_function_result_with_retry(client_id: str, function_result: Dict, original_response: Dict):
     """Handle a single function result with retry logic for function declarations"""
     try:
@@ -1090,25 +1050,19 @@ async def shutdown_event():
 async def get_latest_dashboard():
     """Get the latest dashboard data"""
     try:
-        # Check for optimized dashboard first, then smart dashboard, then basic dashboard
-        dashboard_files = [
-            BASE_DIR / "optimized_dashboard.json",
-            BASE_DIR / "smart_dashboard.json", 
-            BASE_DIR / "dashboard.json"
-        ]
+        dashboard_file = BASE_DIR / "progent_dashboard.json"
         
-        for dashboard_file in dashboard_files:
-            if dashboard_file.exists():
-                logger.info(f"Loading dashboard file: {dashboard_file}")
-                with open(dashboard_file, 'r', encoding='utf-8') as f:
-                    dashboard_data = json.load(f)
-                    
-                logger.info(f"Loaded dashboard data type: {type(dashboard_data)}")
-                logger.info(f"Dashboard data keys: {list(dashboard_data.keys()) if isinstance(dashboard_data, dict) else 'NOT A DICT'}")
-                    
-                # Transform to frontend format
-                frontend_data = transform_dashboard_for_frontend(dashboard_data)
-                return frontend_data
+        if dashboard_file.exists():
+            logger.info(f"Loading dashboard file: {dashboard_file}")
+            with open(dashboard_file, 'r', encoding='utf-8') as f:
+                dashboard_data = json.load(f)
+                
+            logger.info(f"Loaded dashboard data type: {type(dashboard_data)}")
+            logger.info(f"Dashboard data keys: {list(dashboard_data.keys()) if isinstance(dashboard_data, dict) else 'NOT A DICT'}")
+                
+            # Transform to frontend format
+            frontend_data = transform_dashboard_for_frontend(dashboard_data)
+            return frontend_data
         
         return {"error": "No dashboard data available"}
     except Exception as e:

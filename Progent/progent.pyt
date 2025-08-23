@@ -752,24 +752,7 @@ class RunPythonCode(object):
             return {"success": False, "error": str(e)}
 
     def get_current_dashboard_layout(self, params):
-        try:
-            dashboard_file = os.path.join(os.path.dirname(__file__), "..", "dashboard.json")
-            
-            if not os.path.exists(dashboard_file):
-                return {"success": False, "error": "Dashboard layout file not found"}
-            
-            with open(dashboard_file, 'r') as f:
-                layout = json.load(f)
-            
-            result = {
-                "success": True,
-                "dashboard_layout": layout
-            }
-            
-            return result
-            
-        except Exception as e:
-            return {"success": False, "error": str(e)}
+        return {"success": False, "error": "Not implemented yet. Dashboard is now managed by the server."}
 
     def get_field_stories_and_samples(self, params):
         layer_name = params.get("layer_name")
@@ -822,33 +805,7 @@ class RunPythonCode(object):
             return {"success": False, "error": str(e)}
 
     def update_dashboard_charts(self, params):
-        updated_charts_json = params.get("updated_charts_json")
-        try:
-            updated_charts = json.loads(updated_charts_json)
-            
-            dashboard_layout_result = self.get_current_dashboard_layout(params)
-            if not dashboard_layout_result.get("success"):
-                return dashboard_layout_result
-            
-            dashboard_layout = dashboard_layout_result.get("dashboard_layout", {})
-            
-            dashboard_layout["charts"] = updated_charts
-            
-            dashboard_file = os.path.join(os.path.dirname(__file__), "..", "dashboard.json")
-            with open(dashboard_file, 'w') as f:
-                json.dump(dashboard_layout, f, indent=4)
-            
-            result = {
-                "success": True,
-                "message": "Dashboard charts updated successfully"
-            }
-            
-            return result
-            
-        except json.JSONDecodeError:
-            return {"success": False, "error": "Invalid updated charts JSON provided"}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
+        return {"success": False, "error": "Not implemented yet. Dashboard is now managed by the server."}
 
     # Raster-analysis stubs
     def raster_calculator(self, params):

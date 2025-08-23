@@ -477,7 +477,7 @@ class FunctionDeclaration:
 
         "generate_smart_dashboard_layout": {
             "name": "generate_smart_dashboard_layout",
-            "description": "Stage 2: Enhanced Chart Recommendation Engine with intelligent chart selection and 12x6 grid layout planning. Generates sophisticated dashboard layouts with optimized chart recommendations, detailed configurations, and positioning. This is the main function for Stage 2 of dashboard generation.",
+            "description": "Generates sophisticated dashboard layouts with optimized chart recommendations, detailed configurations, and positioning",
             "parameters": {
                 "layer_name": {
                     "type": "string",
