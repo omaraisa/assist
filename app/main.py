@@ -946,6 +946,35 @@ async def complete_investigation_session(client_id: str, session_id: str):
         })
         logger.error(f"Error completing investigation session: {str(e)}")
 
+async def check_and_update_dashboard(client_id: str, function_result: Dict):
+    """Check if function result should trigger dashboard update and save to progent_dashboard.json"""
+    try:
+        # Check if this function result contains dashboard data
+        result_data = function_result.get("result", {})
+        
+        # Look for the dashboard update flag
+        if result_data.get("is_dashboard_update"):
+            logger.info(f"Dashboard update detected from function: {function_result.get('name')}")
+            
+            # Save dashboard data to progent_dashboard.json
+            dashboard_file = BASE_DIR / "progent_dashboard.json"
+            
+            with open(dashboard_file, "w", encoding="utf-8") as f:
+                json.dump(result_data, f, indent=4)
+            
+            logger.info(f"Dashboard data saved to {dashboard_file}")
+            
+            # Notify all chatbot clients about the dashboard update
+            await websocket_manager.broadcast_to_type("chatbot", {
+                "type": "dashboard_update",
+                "data": result_data
+            })
+            
+            logger.info("Dashboard update broadcast to all chatbot clients")
+            
+    except Exception as e:
+        logger.error(f"Error in check_and_update_dashboard: {str(e)}")
+
 async def send_final_response(client_id: str, response: str):
     """Send final response to chatbot client"""
     try:

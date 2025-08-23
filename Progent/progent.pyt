@@ -4,6 +4,7 @@ import json
 import math
 import statistics
 import re
+import traceback
 from typing import Dict, Tuple, List
 from copy import deepcopy
 
@@ -626,21 +627,36 @@ class RunPythonCode(object):
                 return {"success": False, "error": "No suitable fields found for dashboard generation"}
             
             # Step 2: Prioritize fields based on AI insights
+            print(f"DEBUG: Field insights keys: {list(field_insights.keys())}")
+            print(f"DEBUG: Total fields for prioritization: {len(field_insights)}")
+            
             prioritized_fields = sorted(
                 field_insights.values(),
                 key=lambda x: x.get("ai_insights", {}).get("visualization_priority", 0),
                 reverse=True
             )
             
+            print(f"DEBUG: Prioritized fields count: {len(prioritized_fields)}")
+            for i, field in enumerate(prioritized_fields[:3]):  # Show top 3
+                print(f"DEBUG: Field {i+1}: {field.get('field_name', 'unknown')} priority: {field.get('ai_insights', {}).get('visualization_priority', 0)}")
+            
             # Step 3: Select top fields for the dashboard (e.g., top 6)
             top_fields = prioritized_fields[:6]
+            print(f"DEBUG: Selected top {len(top_fields)} fields for dashboard")
             
             # Step 4: Generate chart configurations for each selected field
             charts = []
-            for field_info in top_fields:
+            print(f"DEBUG: Processing {len(top_fields)} top fields for charts")
+            for i, field_info in enumerate(top_fields):
+                print(f"DEBUG: Processing field {i+1}: {field_info.get('field_name', 'unknown')}")
                 chart_config = self._create_chart_from_field(field_info, theme)
                 if chart_config:
                     charts.append(chart_config)
+                    print(f"DEBUG: Added chart config for field {field_info.get('field_name', 'unknown')}")
+                else:
+                    print(f"DEBUG: No chart config created for field {field_info.get('field_name', 'unknown')}")
+            
+            print(f"DEBUG: Total charts created: {len(charts)}")
             
             # Step 5: Arrange charts into a layout
             layout = self._arrange_charts_in_layout(charts)
@@ -653,6 +669,7 @@ class RunPythonCode(object):
                 "theme": theme,
                 "layout": layout,
                 "charts": charts,
+                "field_insights": field_insights,  # Include field insights for frontend data generation
                 "generation_timestamp": self._get_timestamp()
             }
             
@@ -1763,14 +1780,22 @@ class RunPythonCode(object):
         Creates a chart configuration dictionary based on field analysis insights.
         """
         try:
+            field_name = field_info.get("field_name", "unknown")
+            print(f"DEBUG: Creating chart for field: {field_name}")
+            
             ai_insights = field_info.get("ai_insights", {})
+            print(f"DEBUG: AI insights present: {bool(ai_insights)}")
+            
             chart_suitability = ai_insights.get("chart_suitability", {})
+            print(f"DEBUG: Chart suitability: {chart_suitability}")
             
             if not chart_suitability:
+                print(f"DEBUG: No chart suitability for field {field_name}, returning None")
                 return None
             
             # Select the best chart type based on suitability score
             best_chart_type = max(chart_suitability, key=chart_suitability.get)
+            print(f"DEBUG: Best chart type for {field_name}: {best_chart_type}")
             
             chart_config = {
                 "id": f"chart_{field_info['field_name']}",
@@ -1783,9 +1808,11 @@ class RunPythonCode(object):
                 "options": self._get_chart_options(best_chart_type, theme)
             }
             
+            print(f"DEBUG: Created chart config for {field_name}: {chart_config}")
             return chart_config
             
         except Exception as e:
+            print(f"DEBUG: Exception in _create_chart_from_field: {str(e)}")
             return None
     
     def _get_chart_options(self, chart_type: str, theme: str) -> Dict:
