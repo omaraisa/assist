@@ -69,8 +69,7 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 "get_current_dashboard_layout", 
                 "get_current_dashboard_charts",
                 "get_field_stories_and_samples",
-                "update_dashboard_charts",
-                "plan_dashboard_layout"
+                "update_dashboard_charts"
             ]
             
             if function_name in dashboard_functions:
@@ -172,12 +171,6 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 charts_data = parameters.get("charts_data", [])
                 return update_dashboard_charts(charts_data)
                 
-            elif function_name == "plan_dashboard_layout":
-                chart_recommendations = parameters.get("chart_recommendations", [])
-                grid_width = parameters.get("grid_width", 12)
-                grid_height = parameters.get("grid_height", 6)
-                return plan_dashboard_layout(chart_recommendations, grid_width, grid_height)
-                
             else:
                 return {"error": f"Unknown dashboard function: {function_name}"}
                 
@@ -186,7 +179,7 @@ class ExecuteSpatialFunctionTool(BaseTool):
 
 from langchain_core.messages import AIMessage, HumanMessage
 
-from .progent_functions import AVAILABLE_FUNCTIONS, generate_smart_dashboard_layout, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts, plan_dashboard_layout
+from .progent_functions import AVAILABLE_FUNCTIONS, generate_smart_dashboard_layout, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts
 from .config import settings
 from .ai.function_declarations import FunctionDeclaration
 

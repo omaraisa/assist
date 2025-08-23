@@ -5,139 +5,11 @@
     "dashboard_title": "Overview Dashboard for jeddah_fuel_stations_ai",
     "theme": "default",
     "layout": {
-        "grid_template_columns": "1fr 1fr 1fr",
+        "grid_template_columns": "1fr 1fr",
         "gap": "20px",
-        "items": [
-            {
-                "id": "chart_has_ev_charging",
-                "chart_type": "pie",
-                "field_name": "has_ev_charging",
-                "grid_area": "chart-1"
-            },
-            {
-                "id": "chart_Public_Transport_Availability",
-                "chart_type": "pie",
-                "field_name": "Public_Transport_Availability",
-                "grid_area": "chart-2"
-            },
-            {
-                "id": "chart_Development_Stage",
-                "chart_type": "pie",
-                "field_name": "Development_Stage",
-                "grid_area": "chart-3"
-            },
-            {
-                "id": "chart_DistrictID",
-                "chart_type": "histogram",
-                "field_name": "DistrictID",
-                "grid_area": "chart-4"
-            },
-            {
-                "id": "chart_operator",
-                "chart_type": "bar",
-                "field_name": "operator",
-                "grid_area": "chart-5"
-            },
-            {
-                "id": "chart_Long",
-                "chart_type": "histogram",
-                "field_name": "Long",
-                "grid_area": "chart-6"
-            }
-        ]
+        "items": []
     },
-    "charts": [
-        {
-            "id": "chart_has_ev_charging",
-            "field_name": "has_ev_charging",
-            "chart_type": "pie",
-            "data_category": "categorical_text",
-            "title": "'has_ev_charging' contains 2 distinct categories with clear groupings, ideal for showing proportional relationships.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "pie": 0.95,
-                "donut": 0.9,
-                "bar": 0.85,
-                "column": 0.8
-            },
-            "theme": "default"
-        },
-        {
-            "id": "chart_Public_Transport_Availability",
-            "field_name": "Public_Transport_Availability",
-            "chart_type": "pie",
-            "data_category": "categorical_text",
-            "title": "'Public_Transport_Availability' contains 3 distinct categories with clear groupings, ideal for showing proportional relationships.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "pie": 0.95,
-                "donut": 0.9,
-                "bar": 0.85,
-                "column": 0.8
-            },
-            "theme": "default"
-        },
-        {
-            "id": "chart_Development_Stage",
-            "field_name": "Development_Stage",
-            "chart_type": "pie",
-            "data_category": "categorical_text",
-            "title": "'Development_Stage' contains 3 distinct categories with clear groupings, ideal for showing proportional relationships.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "pie": 0.95,
-                "donut": 0.9,
-                "bar": 0.85,
-                "column": 0.8
-            },
-            "theme": "default"
-        },
-        {
-            "id": "chart_DistrictID",
-            "field_name": "DistrictID",
-            "chart_type": "histogram",
-            "data_category": "continuous_numeric",
-            "title": "'DistrictID' displays moderate variation (range: 4.00 to 176.00), suitable for distribution analysis.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "histogram": 0.9,
-                "box_plot": 0.85,
-                "density_plot": 0.8,
-                "violin_plot": 0.75
-            },
-            "theme": "default"
-        },
-        {
-            "id": "chart_operator",
-            "field_name": "operator",
-            "chart_type": "bar",
-            "data_category": "categorical_text",
-            "title": "'operator' has 7 categories, suitable for comparative analysis and ranking visualizations.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "bar": 0.9,
-                "column": 0.85,
-                "horizontal_bar": 0.8,
-                "pie": 0.7
-            },
-            "theme": "default"
-        },
-        {
-            "id": "chart_Long",
-            "field_name": "Long",
-            "chart_type": "histogram",
-            "data_category": "continuous_numeric",
-            "title": "'Long' shows consistent values (range: 39.14 to 39.27), good for trend analysis.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "histogram": 0.9,
-                "box_plot": 0.85,
-                "density_plot": 0.8,
-                "violin_plot": 0.75
-            },
-            "theme": "default"
-        }
-    ],
+    "charts": [],
     "field_insights": {
         "Join_Count": {
             "field_name": "Join_Count",
@@ -1636,5 +1508,5 @@
             "visualization_priority": 9
         }
     },
-    "generation_timestamp": "2025-08-23T14:59:19.790663"
+    "generation_timestamp": "2025-08-23T15:18:23.970351"
 }

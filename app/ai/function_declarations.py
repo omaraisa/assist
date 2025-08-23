@@ -551,24 +551,6 @@ class FunctionDeclaration:
             },
             "required": ["layer_name"]
         },
-        "plan_dashboard_layout": {
-            "name": "plan_dashboard_layout",
-            "description": "AI-Powered Dashboard Layout Planning System. Uses AI to create optimal dashboard layouts that maximize space utilization and visual effectiveness. Works with chart recommendations to create intelligent 12x6 grid layouts with proper positioning and sizing.",
-            "parameters": {
-                "layer_name": {
-                    "type": "string",
-                    "description": "The name of the layer to plan dashboard layout for"
-                },
-                "chart_recommendations": {
-                    "type": "array",
-                    "description": "Optional array of chart recommendation objects. If not provided, will use existing recommendations or generate new ones",
-                    "items": {
-                        "type": "object"
-                    }
-                }
-            },
-            "required": ["layer_name"]
-        },
 
         "raster_calculator": {
             "name": "raster_calculator",

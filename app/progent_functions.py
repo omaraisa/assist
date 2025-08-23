@@ -42,43 +42,42 @@ AVAILABLE_FUNCTIONS = {
     30: "generate_smart_dashboard_layout",
     31: "optimize_dashboard_layout",
     32: "recommend_chart_types",
-    33: "plan_dashboard_layout",
-    34: "get_current_dashboard_layout",
-    35: "get_field_stories_and_samples",
-    36: "get_current_dashboard_charts",
-    37: "update_dashboard_charts",
-    38: "raster_calculator",
-    39: "reclassify",
-    40: "zonal_statistics_as_table",
-    41: "slope",
-    42: "aspect",
-    43: "hillshade",
-    44: "extract_by_mask",
-    45: "clip_raster",
-    46: "resample",
-    47: "get_raster_properties",
-    48: "raster_to_point",
-    49: "raster_to_polygon",
-    50: "raster_to_polyline",
-    51: "feature_to_raster",
-    52: "polygon_to_raster",
-    53: "point_to_raster",
-    54: "idw_interpolation",
-    55: "kriging_interpolation",
-    56: "spline_interpolation",
-    57: "natural_neighbor",
-    58: "euclidean_distance",
-    59: "euclidean_allocation",
-    60: "euclidean_direction",
-    61: "cost_distance",
-    62: "cost_allocation",
-    63: "cost_path",
-    64: "weighted_overlay",
-    65: "weighted_sum",
-    66: "extract_by_attribute",
-    67: "mosaic_to_new_raster",
-    68: "combine_rasters",
-    69: "invert_selection"
+    33: "get_current_dashboard_layout",
+    34: "get_field_stories_and_samples",
+    35: "get_current_dashboard_charts",
+    36: "update_dashboard_charts",
+    37: "raster_calculator",
+    38: "reclassify",
+    39: "zonal_statistics_as_table",
+    40: "slope",
+    41: "aspect",
+    42: "hillshade",
+    43: "extract_by_mask",
+    44: "clip_raster",
+    45: "resample",
+    46: "get_raster_properties",
+    47: "raster_to_point",
+    48: "raster_to_polygon",
+    49: "raster_to_polyline",
+    50: "feature_to_raster",
+    51: "polygon_to_raster",
+    52: "point_to_raster",
+    53: "idw_interpolation",
+    54: "kriging_interpolation",
+    55: "spline_interpolation",
+    56: "natural_neighbor",
+    57: "euclidean_distance",
+    58: "euclidean_allocation",
+    59: "euclidean_direction",
+    60: "cost_distance",
+    61: "cost_allocation",
+    62: "cost_path",
+    63: "weighted_overlay",
+    64: "weighted_sum",
+    65: "extract_by_attribute",
+    66: "mosaic_to_new_raster",
+    67: "combine_rasters",
+    68: "invert_selection"
 }
 
 try:
@@ -387,46 +386,6 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
         return {
             "success": True,
             "message": f"Updated {len(updated_charts)} charts in dashboard"
-        }
-        
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-
-def plan_dashboard_layout(chart_recommendations: List[Dict], grid_width: int = 12, grid_height: int = 6) -> Dict:
-    """AI-Powered Dashboard Layout Planning System"""
-    try:
-        if not chart_recommendations:
-            return {"success": False, "error": "No chart recommendations provided"}
-        
-        # Simple grid layout planning
-        layout_items = []
-        col_width = grid_width // min(len(chart_recommendations), 3)  # Max 3 columns
-        
-        for i, chart in enumerate(chart_recommendations):
-            x = (i % 3) * col_width
-            y = (i // 3) * 2  # 2 rows per chart
-            w = col_width
-            h = 2
-            
-            layout_items.append({
-                "id": chart.get("id", f"chart_{i}"),
-                "x": x,
-                "y": y,
-                "w": w,
-                "h": h,
-                "chart_type": chart.get("chart_type", "bar"),
-                "field_name": chart.get("field_name", f"field_{i}")
-            })
-        
-        return {
-            "success": True,
-            "layout": {
-                "grid_width": grid_width,
-                "grid_height": grid_height,
-                "items": layout_items
-            },
-            "total_charts": len(chart_recommendations)
         }
         
     except Exception as e:
