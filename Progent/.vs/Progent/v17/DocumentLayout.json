@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "E:\\Sandbox\\Progent\\assist\\Progent\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0D3CDB2B-A64F-46B5-8353-041EAD749E41}|Progent.csproj|e:\\sandbox\\progent\\assist\\progent\\module1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0D3CDB2B-A64F-46B5-8353-041EAD749E41}|Progent.csproj|solutionrelative:module1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{0D3CDB2B-A64F-46B5-8353-041EAD749E41}|Progent.csproj|e:\\sandbox\\progent\\assist\\progent\\progent.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{0D3CDB2B-A64F-46B5-8353-041EAD749E41}|Progent.csproj|solutionrelative:progent.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0D3CDB2B-A64F-46B5-8353-041EAD749E41}|Progent.csproj|e:\\sandbox\\progent\\assist\\progent\\dockpaneviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0D3CDB2B-A64F-46B5-8353-041EAD749E41}|Progent.csproj|solutionrelative:dockpaneviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0D3CDB2B-A64F-46B5-8353-041EAD749E41}|Progent.csproj|e:\\sandbox\\progent\\assist\\progent\\module1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0D3CDB2B-A64F-46B5-8353-041EAD749E41}|Progent.csproj|solutionrelative:module1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,7 +30,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Module1.cs",
               "DocumentMoniker": "E:\\Sandbox\\Progent\\assist\\Progent\\Module1.cs",
               "RelativeDocumentMoniker": "Module1.cs",
@@ -43,7 +43,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "DockpaneViewModel.cs",
               "DocumentMoniker": "E:\\Sandbox\\Progent\\assist\\Progent\\DockpaneViewModel.cs",
               "RelativeDocumentMoniker": "DockpaneViewModel.cs",
@@ -51,17 +51,18 @@
               "RelativeToolTip": "DockpaneViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAKQAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-18T18:39:13.885Z"
+              "WhenOpened": "2025-08-18T18:39:13.885Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Progent.csproj",
               "DocumentMoniker": "E:\\Sandbox\\Progent\\assist\\Progent\\Progent.csproj",
               "RelativeDocumentMoniker": "Progent.csproj",
               "ToolTip": "E:\\Sandbox\\Progent\\assist\\Progent\\Progent.csproj",
               "RelativeToolTip": "Progent.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGUAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
               "WhenOpened": "2025-08-18T18:34:33.794Z",
               "EditorCaption": ""

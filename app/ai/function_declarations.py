@@ -3,7 +3,7 @@ Function Declarations for AI Models
 """
 
 class FunctionDeclaration:
-    """Generate function declarations for different AI models
+    """Store function declarations for different AI models
 
     Provides a simple mapping `functions_declarations` where keys are
     function names and values are small metadata objects (description,
@@ -11,78 +11,6 @@ class FunctionDeclaration:
     what functions are available and their purpose.
     """
 
-    functions_declarations = {
-        "select_by_attribute": {"description": "Select features by attribute query", "params": ["layer_name", "where_clause", "selection_type"]},
-        "select_by_location": {"description": "Select features by spatial relationship", "params": ["input_layer", "select_layer", "relationship"]},
-        "get_field_statistics": {"description": "Compute numeric statistics for a field", "params": ["layer_name", "field_name", "where_clause"]},
-        "get_layer_summary": {"description": "Return summary information about a layer", "params": ["layer_name"]},
-        "calculate_area": {"description": "Calculate areas for polygon features", "params": ["layer_name", "units"]},
-        "calculate_length": {"description": "Calculate lengths for line features", "params": ["layer_name", "units"]},
-        "get_centroid": {"description": "Get centroids for features", "params": ["layer_name"]},
-        "create_buffer": {"description": "Create buffer around features", "params": ["layer_name", "distance", "units"]},
-    "invert_selection": {"description": "Invert the current selection on a layer", "params": ["layer_name"]},
-        "spatial_join": {"description": "Perform spatial join between two layers", "params": ["target_layer", "join_layer"]},
-        "clip_layer": {"description": "Clip a layer by another layer", "params": ["input_layer", "clip_layer"]},
-        "calculate_distance": {"description": "Calculate distances between features (stub)", "params": ["layer_a", "layer_b"]},
-        "get_current_project_path": {"description": "Return the current ArcGIS Pro project path", "params": []},
-        "get_default_db_path": {"description": "Return the project's default geodatabase path", "params": []},
-        "get_field_definitions": {"description": "Return field definitions for a layer", "params": ["layer_name"]},
-        "get_layer_type": {"description": "Return layer data/shape type", "params": ["layer_name"]},
-        "get_list_of_layer_fields": {"description": "Alias for get_field_definitions", "params": ["layer_name"]},
-        "get_data_source_info": {"description": "Return data source information for a layer", "params": ["layer_name"]},
-        "create_nearest_neighbor_layer": {"description": "Create a nearest-neighbor layer (stub)", "params": []},
-        "get_unique_values_count": {"description": "Count unique values in a field", "params": ["layer_name", "field_name"]},
-        "calculate_empty_values": {"description": "Count empty/null values in a field", "params": ["layer_name", "field_name"]},
-        "get_map_layers_info": {"description": "Return basic info about map layers", "params": []},
-        "get_map_tables_info": {"description": "Return info about map tables", "params": []},
-        "get_values_frequency": {"description": "Return frequency distribution of values in a field", "params": ["layer_name", "field_name"]},
-        "get_value_frequency": {"description": "Return frequency for a single value", "params": ["layer_name", "field_name", "value"]},
-        "get_coordinate_system": {"description": "Return spatial reference info for a layer", "params": ["layer_name"]},
-        "get_attribute_table": {"description": "Return rows from a layer's attribute table", "params": ["layer_name", "limit"]},
-        "get_field_domain_values": {"description": "Return coded domain values for a domain", "params": ["workspace", "field_domain"]},
-        "calculate_new_field": {"description": "Add and optionally calculate a new field", "params": ["layer", "field_name", "field_type", "expression"]},
-        "analyze_layer_fields": {"description": "Return basic analysis of layer fields", "params": ["layer"]},
-        "generate_smart_dashboard_layout": {"description": "Generate a dashboard layout (stub)", "params": []},
-        "optimize_dashboard_layout": {"description": "Optimize a dashboard layout (stub)", "params": []},
-        "recommend_chart_types": {"description": "Recommend chart types for data (stub)", "params": []},
-        "plan_dashboard_layout": {"description": "Plan a dashboard layout (stub)", "params": []},
-        "get_current_dashboard_layout": {"description": "Get the active dashboard layout (stub)", "params": []},
-        "get_field_stories_and_samples": {"description": "Extract field stories and sample rows (stub)", "params": []},
-        "get_current_dashboard_charts": {"description": "List charts in the current dashboard (stub)", "params": []},
-        "update_dashboard_charts": {"description": "Update dashboard charts (stub)", "params": []},
-        "raster_calculator": {"description": "Evaluate a raster calculator expression (stub)", "params": []},
-        "reclassify": {"description": "Reclassify raster values (stub)", "params": []},
-        "zonal_statistics_as_table": {"description": "Zonal statistics (stub)", "params": []},
-        "slope": {"description": "Compute slope from DEM (stub)", "params": []},
-        "aspect": {"description": "Compute aspect from DEM (stub)", "params": []},
-        "hillshade": {"description": "Compute hillshade from DEM (stub)", "params": []},
-        "extract_by_mask": {"description": "Extracts the cells of a raster that correspond to the areas defined by a mask.", "params": ["in_raster", "in_mask_data", "out_raster"]},
-        "clip_raster": {"description": "Clip raster by polygon (stub)", "params": []},
-        "resample": {"description": "Resample a raster (stub)", "params": []},
-        "get_raster_properties": {"description": "Get simple raster properties", "params": ["raster"]},
-        "raster_to_point": {"description": "Convert raster to point features", "params": ["in_raster"]},
-        "raster_to_polygon": {"description": "Convert raster to polygons", "params": ["in_raster"]},
-        "raster_to_polyline": {"description": "Convert raster to polylines", "params": ["in_raster"]},
-        "feature_to_raster": {"description": "Convert features to raster", "params": ["in_features", "field"]},
-        "polygon_to_raster": {"description": "Convert polygon features to raster", "params": ["in_features", "value_field"]},
-        "point_to_raster": {"description": "Convert point features to raster", "params": ["in_features", "value_field"]},
-        "idw_interpolation": {"description": "IDW interpolation from points", "params": ["in_point_features", "z_field"]},
-        "kriging_interpolation": {"description": "Kriging interpolation from points", "params": ["in_point_features", "z_field"]},
-        "spline_interpolation": {"description": "Spline interpolation from points", "params": ["in_point_features", "z_field"]},
-        "natural_neighbor": {"description": "Natural Neighbor interpolation", "params": ["in_point_features", "z_field"]},
-        "euclidean_distance": {"description": "Compute Euclidean distance raster", "params": ["in_source_data"]},
-        "euclidean_allocation": {"description": "Compute Euclidean allocation raster", "params": ["in_source_data"]},
-        "euclidean_direction": {"description": "Compute Euclidean direction raster", "params": ["in_source_data"]},
-        "cost_distance": {"description": "Compute cost distance raster", "params": ["in_source_data", "in_cost_raster"]},
-        "cost_allocation": {"description": "Compute cost allocation raster", "params": ["in_source_data", "in_cost_raster"]},
-        "cost_path": {"description": "Compute cost path raster", "params": ["in_destination_data", "in_cost_distance_raster", "in_cost_backlink_raster"]},
-        "weighted_overlay": {"description": "Weighted overlay analysis", "params": ["overlay_table"]},
-        "weighted_sum": {"description": "Weighted sum of rasters", "params": ["in_rasters"]},
-        "extract_by_attribute": {"description": "Extract raster by attribute", "params": ["in_raster", "where_clause"]},
-        "mosaic_to_new_raster": {"description": "Mosaic rasters to a new dataset", "params": ["input_rasters", "output_location", "raster_dataset_name_with_extension"]},
-        "combine_rasters": {"description": "Combine multiple rasters into one", "params": ["in_rasters"]}
-    }
-    
     functions_declarations = {
         "select_by_attribute": {
             "name": "select_by_attribute",
@@ -1063,5 +991,13 @@ class FunctionDeclaration:
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
             "required": ["in_raster", "in_mask_data", "out_raster"]
+        },
+        "invert_selection": {
+            "name": "invert_selection",
+            "description": "Invert the current selection on a layer.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer."}
+            },
+            "required": ["layer_name"]
         }
     }
