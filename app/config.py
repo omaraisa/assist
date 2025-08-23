@@ -44,57 +44,57 @@ class Settings(BaseSettings):
         #     "temperature": 0.7,
         #     "api_key_env": "OPENAI_API_KEY"
         # },
-        "GPT4_TURBO": {
-            "name": "GPT-4 Turbo",
-            "model": "gpt-4-turbo",
-            "endpoint": "https://api.openai.com/v1/chat/completions",
-            "max_tokens": 4096,
-            "temperature": 0.7,
-            "api_key_env": "OPENAI_API_KEY"
-        },
-        "GPT4O": {
-            "name": "GPT-4o",
-            "model": "gpt-4o",
-            "endpoint": "https://api.openai.com/v1/chat/completions",
-            "max_tokens": 4096,
-            "temperature": 0.7,
-            "api_key_env": "OPENAI_API_KEY"
-        },
-        "CLAUDE": {
-            "name": "Claude 3.5 Sonnet",
-            "model": "claude-3-5-sonnet-20241022",
-            "endpoint": "https://api.anthropic.com/v1/messages",
-            "max_tokens": 8192,
-            "temperature": 0.7,
-            "api_key_env": "ANTHROPIC_API_KEY"        },
+        # "GPT4_TURBO": {
+        #     "name": "GPT-4 Turbo",
+        #     "model": "gpt-4-turbo",
+        #     "endpoint": "https://api.openai.com/v1/chat/completions",
+        #     "max_tokens": 4096,
+        #     "temperature": 0.7,
+        #     "api_key_env": "OPENAI_API_KEY"
+        # },
+        # "GPT4O": {
+        #     "name": "GPT-4o",
+        #     "model": "gpt-4o",
+        #     "endpoint": "https://api.openai.com/v1/chat/completions",
+        #     "max_tokens": 4096,
+        #     "temperature": 0.7,
+        #     "api_key_env": "OPENAI_API_KEY"
+        # },
+        # "CLAUDE": {
+        #     "name": "Claude 3.5 Sonnet",
+        #     "model": "claude-3-5-sonnet-20241022",
+        #     "endpoint": "https://api.anthropic.com/v1/messages",
+        #     "max_tokens": 8192,
+        #     "temperature": 0.7,
+        #     "api_key_env": "ANTHROPIC_API_KEY"        },
         # Ollama Models (Local LLMs)
-        "OLLAMA_LLAMA31": {
-            "name": "Llama 3.2 8B (Local)",
-            "model": "llama3.2:latest",
-            "provider": "ollama",
-            "endpoint": "http://localhost:11434",
-            "max_tokens": 32768,
-            "temperature": 0.7,
-            "local": True
-        },
-        "OLLAMA_CODELLAMA": {
-            "name": "CodeLlama 13B (Local)",
-            "model": "codellama:13b",
-            "provider": "ollama", 
-            "endpoint": "http://localhost:11434",
-            "max_tokens": 32768,
-            "temperature": 0.7,
-            "local": True
-        },
-        "OLLAMA_MISTRAL": {
-            "name": "Mistral 7B (Local)",
-            "model": "mistral:7b",
-            "provider": "ollama",
-            "endpoint": "http://localhost:11434", 
-            "max_tokens": 32768,
-            "temperature": 0.7,
-            "local": True
-        }
+            # "OLLAMA_LLAMA31": {
+            #     "name": "Llama 3.2 8B (Local)",
+            #     "model": "llama3.2:latest",
+            #     "provider": "ollama",
+            #     "endpoint": "http://localhost:11434",
+            #     "max_tokens": 32768,
+            #     "temperature": 0.7,
+            #     "local": True
+            # },
+            # "OLLAMA_CODELLAMA": {
+            #     "name": "CodeLlama 13B (Local)",
+            #     "model": "codellama:13b",
+            #     "provider": "ollama", 
+            #     "endpoint": "http://localhost:11434",
+            #     "max_tokens": 32768,
+            #     "temperature": 0.7,
+            #     "local": True
+            # },
+            # "OLLAMA_MISTRAL": {
+            #     "name": "Mistral 7B (Local)",
+            #     "model": "mistral:7b",
+            #     "provider": "ollama",
+            #     "endpoint": "http://localhost:11434", 
+            #     "max_tokens": 32768,
+            #     "temperature": 0.7,
+            #     "local": True
+            # }
     }
     
     # Default AI Model

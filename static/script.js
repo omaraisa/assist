@@ -495,7 +495,7 @@ class SmartAssistantClient {
         this.conversationHistory = [];
         this.elements.chatMessages.innerHTML = `
             <div class="welcome-message">
-                <h3>Welcome to Progent!</h3>
+                <h3>Hi there,</h3>
                 <p>I can help you analyze your GIS data, run spatial functions, and provide insights about your ArcGIS Pro project.</p>
                 <p>Just type your question or request below, and I'll investigate your data to provide helpful answers.</p>
             </div>
