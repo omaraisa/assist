@@ -515,25 +515,45 @@ class FunctionDeclaration:
         },
         "update_dashboard_charts": {
             "name": "update_dashboard_charts",
-            "description": "Takes a list of {fields, chart_type} dicts and updates the first N widgets in the dashboard layout, then saves to smart_dashboard.json.",
+            "description": "Updates existing charts or adds new ones to the dashboard. Each chart is identified by a unique 'id'. If a chart with the given 'id' exists, it's updated. If not, it's added. For bar charts, you can provide multiple fields: the first is the category, and the rest are numerical values for a multi-series chart.",
             "parameters": {
                 "charts": {
                     "type": "array",
-                    "description": "List of dicts with fields (array of strings) and chart_type (string)",
+                    "description": "A list of chart objects to add or update.",
                     "items": {
                         "type": "object",
                         "properties": {
-                            "fields": {"type": "array", "items": {"type": "string"}},
-                            "chart_type": {"type": "string"}
+                            "id": {
+                                "type": "string",
+                                "description": "Unique identifier for the chart. This is used to find and update an existing chart."
+                            },
+                            "chart_type": {
+                                "type": "string",
+                                "description": "Type of chart (e.g., 'bar', 'pie', 'scatter')."
+                            },
+                            "fields": {
+                                "type": "array",
+                                "description": "List of fields to use in the chart. For multi-series bar charts, the first field is the category and subsequent fields are the values.",
+                                "items": {"type": "string"}
+                            },
+                            "title": {
+                                "type": "string",
+                                "description": "Optional title for the chart."
+                            },
+                            "x": {"type": "integer", "description": "Optional grid column position."},
+                            "y": {"type": "integer", "description": "Optional grid row position."},
+                            "w": {"type": "integer", "description": "Optional grid width."},
+                            "h": {"type": "integer", "description": "Optional grid height."}
                         },
-                        "required": ["fields", "chart_type"]
+                        "required": ["id", "chart_type", "fields"]
                     }
                 }
             },
             "required": ["charts"],
             "returns": {
-                "updated_count": "Number of widgets updated",
-                "success": "True if updated, False if error"
+                "updated_count": "Number of charts updated.",
+                "added_count": "Number of charts added.",
+                "success": "True if the update was successful."
             }
         },
         "recommend_chart_types": {

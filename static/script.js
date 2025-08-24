@@ -853,6 +853,18 @@ class DashboardRenderer {
             case 'bar':
             case 'column':
             case 'histogram':
+                // Check if the backend provided a multi-dataset structure
+                if (data.datasets && Array.isArray(data.datasets)) {
+                    return {
+                        labels: data.labels || [],
+                        datasets: data.datasets.map((dataset, index) => ({
+                            ...dataset,
+                            borderColor: this.generateColors(1, index)[0].replace('0.8)', '1)'),
+                            borderWidth: 1
+                        }))
+                    };
+                }
+                // Fallback for single-series data
                 return {
                     labels: data.labels || [],
                     datasets: [{
@@ -931,7 +943,7 @@ class DashboardRenderer {
         return baseOptions;
     }
     
-    generateColors(count) {
+    generateColors(count, offset = 0) {
         const colors = [
             'rgba(255, 99, 132, 0.8)',
             'rgba(54, 162, 235, 0.8)',
@@ -945,7 +957,7 @@ class DashboardRenderer {
         
         const result = [];
         for (let i = 0; i < count; i++) {
-            result.push(colors[i % colors.length]);
+            result.push(colors[(i + offset) % colors.length]);
         }
         return result;
     }

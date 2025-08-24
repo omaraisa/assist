@@ -340,6 +340,52 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
                 logger.info(f"Handling get_functions_declaration locally with IDs: {function_ids_param}")
                 await handle_local_function_declaration(client_id, func_call, original_response, is_function_chain)
                 continue
+
+            # Handle local dashboard functions
+            local_dashboard_functions = {
+                "get_current_dashboard_layout": get_current_dashboard_layout,
+                "get_field_stories_and_samples": get_field_stories_and_samples,
+                "get_current_dashboard_charts": get_current_dashboard_charts,
+                "update_dashboard_charts": update_dashboard_charts,
+            }
+            if func_call["name"] in local_dashboard_functions:
+                logger.info(f"Handling local dashboard function: {func_call['name']}")
+
+                target_function = local_dashboard_functions[func_call['name']]
+
+                # Functions with parameters
+                if func_call["name"] == "update_dashboard_charts":
+                    charts_param = func_call.get("parameters", {}).get("charts", [])
+                    result_data = target_function(charts_param)
+                else:
+                    # Functions without parameters
+                    result_data = target_function()
+
+                function_result = {
+                    "id": func_call["id"],
+                    "name": func_call["name"],
+                    "parameters": func_call.get("parameters", {}),
+                    "result": result_data
+                }
+
+                if is_function_chain:
+                    chain_context = websocket_manager.get_chain_context(client_id)
+                    if chain_context:
+                        chain_context["completed_functions"] += 1
+                        chain_context["function_results"].append(function_result)
+                        logger.info(f"Function chain progress: {chain_context['completed_functions']}/{chain_context['total_functions']}")
+
+                        if chain_context["completed_functions"] >= chain_context["total_functions"]:
+                            logger.info("All functions in chain completed. Sending batch results to LLM.")
+                            await handle_chain_completion(client_id, chain_context)
+                    else:
+                        logger.error("Chain context not found for local dashboard function - falling back.")
+                        await handle_single_function_result_with_retry(client_id, function_result, original_response)
+                else:
+                    await handle_single_function_result_with_retry(client_id, function_result, original_response)
+
+                continue
+
             # Create function execution request
             function_request = {
                 "type": "execute_function",
@@ -1053,6 +1099,160 @@ async def inject_discovered_functions_for_client(client_id: str, discovered_func
     except Exception as e:
         logger.error(f"Error injecting discovered functions: {str(e)}")
 
+# =============================================================================
+# Local Dashboard Functions
+# =============================================================================
+# These functions are executed on the server-side to manage the dashboard state
+# stored in progent_dashboard.json. They are called by the AI agent.
+# =============================================================================
+
+def _load_dashboard_data():
+    """Loads dashboard data from progent_dashboard.json, handling errors."""
+    try:
+        dashboard_file = BASE_DIR / "progent_dashboard.json"
+        if not dashboard_file.exists():
+            return {"success": False, "error": "Dashboard file not found.", "data": {}}
+        with open(dashboard_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return {"success": True, "data": data}
+    except json.JSONDecodeError:
+        logger.error("Failed to decode progent_dashboard.json.")
+        return {"success": False, "error": "Dashboard file is not valid JSON.", "data": {}}
+    except Exception as e:
+        logger.error(f"Error loading dashboard data: {str(e)}")
+        return {"success": False, "error": str(e), "data": {}}
+
+def get_current_dashboard_layout():
+    """Get the current dashboard layout from the smart_dashboard.json file."""
+    result = _load_dashboard_data()
+    if not result["success"]:
+        return {"success": False, "error": result["error"]}
+
+    data = result["data"]
+    layout = data.get("dashboard_layout", [])
+
+    if not layout:
+        return {"success": False, "error": "No dashboard layout found in the file."}
+
+    widgets = [
+        {
+            "id": item.get("id"),
+            "x": item.get("x"),
+            "y": item.get("y"),
+            "w": item.get("w"),
+            "h": item.get("h"),
+            "fields": item.get("fields", [])
+        }
+        for item in layout
+    ]
+
+    return {"success": True, "widgets": widgets}
+
+def get_field_stories_and_samples():
+    """Returns a summary for each field from smart_dashboard.json."""
+    result = _load_dashboard_data()
+    if not result["success"]:
+        return {"success": False, "error": result["error"]}
+
+    data = result["data"]
+    field_insights = data.get("field_insights", {})
+
+    if not field_insights:
+        return {"success": False, "error": "No field insights found in the file."}
+
+    fields_summary = []
+    for field_name, insights in field_insights.items():
+        fields_summary.append({
+            "field_name": field_name,
+            "data_story": insights.get("ai_insights", {}).get("data_story", "No story available."),
+            "sample_values": insights.get("sample_values", [])
+        })
+
+    return {"success": True, "fields": fields_summary}
+
+def _save_dashboard_data(data: dict):
+    """Saves dashboard data to progent_dashboard.json."""
+    try:
+        dashboard_file = BASE_DIR / "progent_dashboard.json"
+        with open(dashboard_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4)
+        return {"success": True}
+    except Exception as e:
+        logger.error(f"Error saving dashboard data: {str(e)}")
+        return {"success": False, "error": str(e)}
+
+def update_dashboard_charts(charts: list):
+    """
+    Updates or adds charts in the dashboard layout.
+    This function performs a read-modify-write operation on progent_dashboard.json.
+    """
+    load_result = _load_dashboard_data()
+    # Allow creating/updating a dashboard file even if it doesn't exist.
+    if not load_result["success"] and "file not found" not in load_result.get("error", "").lower():
+        return {"success": False, "error": load_result["error"]}
+
+    dashboard_data = load_result.get("data", {})
+    if "dashboard_layout" not in dashboard_data:
+        dashboard_data["dashboard_layout"] = []
+
+    # Create a map of chart_id to its index in the list for quick lookups.
+    layout_index_map = {item.get("id"): index for index, item in enumerate(dashboard_data["dashboard_layout"])}
+
+    updated_count = 0
+    added_count = 0
+
+    for chart_update in charts:
+        chart_id = chart_update.get("id")
+        if not chart_id:
+            logger.warning(f"Skipping chart update because 'id' is missing: {chart_update}")
+            continue
+
+        if chart_id in layout_index_map:
+            # Update existing chart in place.
+            chart_index = layout_index_map[chart_id]
+            dashboard_data["dashboard_layout"][chart_index].update(chart_update)
+            updated_count += 1
+        else:
+            # Add new chart.
+            new_chart = {
+                "x": 0, "y": 99, "w": 4, "h": 3,  # Default position at the bottom.
+                **chart_update
+            }
+            dashboard_data["dashboard_layout"].append(new_chart)
+            # Update the map to handle multiple operations on the new chart within the same call.
+            layout_index_map[chart_id] = len(dashboard_data["dashboard_layout"]) - 1
+            added_count += 1
+
+    save_result = _save_dashboard_data(dashboard_data)
+    if not save_result["success"]:
+        return save_result
+
+    return {"success": True, "updated_count": updated_count, "added_count": added_count}
+
+
+def get_current_dashboard_charts():
+    """Get the current [fields, chart_type] pairs from the dashboard layout."""
+    result = _load_dashboard_data()
+    if not result["success"]:
+        return {"success": False, "error": result["error"]}
+
+    data = result["data"]
+    layout = data.get("dashboard_layout", [])
+
+    if not layout:
+        return {"success": False, "error": "No dashboard layout found."}
+
+    charts = [
+        {
+            "id": item.get("id"),
+            "fields": item.get("fields", []),
+            "chart_type": item.get("chart_type")
+        }
+        for item in layout
+    ]
+
+    return {"success": True, "charts": charts}
+
 # Startup event
 @app.on_event("startup")
 async def startup_event():
@@ -1186,17 +1386,22 @@ def _parse_optimized_layout(dashboard_data):
     return chart_configs, layout_template
 
 def _parse_dashboard_layout(dashboard_data):
-    """Parse standard dashboard layout format"""
+    """Parse standard dashboard layout format, now with support for multiple fields."""
     dashboard_layout = dashboard_data.get("dashboard_layout", [])
     layout_template = "grid"
     
     chart_configs = []
     for i, widget in enumerate(dashboard_layout):
+        fields = widget.get("fields", [])
+        primary_field = fields[0] if fields else ""
+        title = widget.get("title", f"Chart for {primary_field}" if primary_field else f"Chart {i + 1}")
+
         chart_config = {
             "chart_id": widget.get("id", f"chart_{i}"),
             "chart_type": widget.get("chart_type", "bar"),
-            "title": widget.get("field", f"Chart {i + 1}"),
-            "primary_field": widget.get("field", ""),
+            "title": title,
+            "fields": fields,  # Pass the full list of fields
+            "primary_field": primary_field,
             "recommended_size": DEFAULT_CHART_SIZE,
             "priority": 1,
             "position": {
@@ -1289,14 +1494,19 @@ def prepare_chart_data_from_insights(chart_config, dashboard_data):
     try:
         field_insights = dashboard_data.get("field_insights", {})
         chart_type = chart_config.get("chart_type", chart_config.get("type", "bar"))
-        primary_field = chart_config.get("primary_field", chart_config.get("x_field", ""))
-        group_by_field = chart_config.get("group_by_field", chart_config.get("y_field", ""))
-        
+        fields = chart_config.get("fields", [])
+        primary_field = fields[0] if fields else ""
+        group_by_field = fields[1] if len(fields) > 1 else ""
+
+        # Handle multi-series bar charts
+        if chart_type in ["bar", "column"] and len(fields) > 2:
+            return _generate_multi_series_bar_chart_data(field_insights, fields, chart_config)
+
         # Validate field insights availability
         if not field_insights:
             return _create_error_data("Field analysis data missing: Dashboard layout was created but field analysis was not performed. The dashboard generation function should analyze fields as part of its process.")
         
-        if primary_field not in field_insights:
+        if primary_field and primary_field not in field_insights:
             return _create_error_data(f"Field '{primary_field}' analysis missing: This field exists in the dashboard layout but wasn't analyzed during dashboard generation.")
         
         # Generate chart data based on chart type
@@ -1312,7 +1522,10 @@ def prepare_chart_data_from_insights(chart_config, dashboard_data):
         
         generator = chart_data_generators.get(chart_type)
         if generator:
-            return generator(field_insights, primary_field, group_by_field, chart_config)
+            # For scatter, pass primary and group_by fields explicitly
+            if chart_type == "scatter":
+                 return generator(field_insights, primary_field, group_by_field, chart_config)
+            return generator(field_insights, primary_field, chart_config)
         
         # Fallback for unknown chart types
         return _create_error_data(f"Unsupported chart type: {chart_type}")
@@ -1329,7 +1542,47 @@ def _create_error_data(error_message):
         "error": error_message
     }
 
-def _generate_pie_chart_data(field_insights, primary_field, group_by_field, chart_config):
+def _generate_multi_series_bar_chart_data(field_insights, fields, chart_config):
+    """Generate data for multi-series bar charts."""
+    category_field = fields[0]
+    value_fields = fields[1:]
+
+    if category_field not in field_insights:
+        return _create_error_data(f"Category field '{category_field}' not found in insights.")
+
+    category_data = field_insights[category_field]
+    labels = [str(val) for val in category_data.get("sample_values", [])[:MAX_BAR_CATEGORIES]]
+    if not labels:
+        return _create_error_data("No sample values for category field.")
+
+    datasets = []
+    colors = ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(75, 192, 192, 0.6)', 'rgba(255, 205, 86, 0.6)']
+
+    for i, value_field in enumerate(value_fields):
+        if value_field not in field_insights:
+            # Skip this field but don't fail the whole chart
+            logger.warning(f"Value field '{value_field}' not found in insights for multi-series chart.")
+            continue
+
+        value_field_data = field_insights[value_field]
+        total_records = value_field_data.get("total_records", 1)
+        base_count = max(int(total_records / len(labels)), 1)
+        # Generate some plausible but different data for each series
+        values = [max(base_count - (j * base_count // 4) + (i * 5), 10) for j in range(len(labels))]
+
+        datasets.append({
+            "label": value_field,
+            "data": values,
+            "backgroundColor": colors[i % len(colors)],
+        })
+
+    if not datasets:
+        return _create_error_data("No valid value fields found for multi-series chart.")
+
+    return {"labels": labels, "datasets": datasets}
+
+
+def _generate_pie_chart_data(field_insights, primary_field, chart_config):
     """Generate data for pie/donut charts"""
     field_data = field_insights[primary_field]
     unique_count = field_data.get("unique_count", 0)
@@ -1377,7 +1630,7 @@ def _generate_binary_pie_data(field_data, total_records):
         ]
     }
 
-def _generate_bar_chart_data(field_insights, primary_field, group_by_field, chart_config):
+def _generate_bar_chart_data(field_insights, primary_field, chart_config):
     """Generate data for bar/column charts"""
     field_data = field_insights[primary_field]
     unique_count = field_data.get("unique_count", 0)
@@ -1423,7 +1676,7 @@ def _generate_numeric_range_data(field_data, total_records, bins=8):
     
     return {"labels": labels, "values": values}
 
-def _generate_histogram_data(field_insights, primary_field, group_by_field, chart_config):
+def _generate_histogram_data(field_insights, primary_field, chart_config):
     """Generate data for histogram charts"""
     field_data = field_insights[primary_field]
     total_records = field_data.get("total_records", 0)
@@ -1455,7 +1708,7 @@ def _generate_scatter_data(field_insights, primary_field, group_by_field, chart_
     
     return {"points": points}
 
-def _generate_box_plot_data(field_insights, primary_field, group_by_field, chart_config):
+def _generate_box_plot_data(field_insights, primary_field, chart_config):
     """Generate data for box plots"""
     field_data = field_insights[primary_field]
     min_val = field_data.get("min_value", 0)
