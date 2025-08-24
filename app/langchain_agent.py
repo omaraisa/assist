@@ -370,12 +370,55 @@ class LangChainAgent:
                 )
                 logger.info("LangChain agent LLM set to Google Gemini")
         else:
-            # For non-Gemini models we do not create a Google client here.
-            # The LangChain-based agent execution is currently intended for
-            # Gemini (Google) models. For other providers the code paths
-            # in AIService use the response handler directly.
-            self.llm = None
-            logger.info(f"LangChain agent not instantiated for model: {model_key}")
+            # For non-Gemini models, try to provide a LangChain-compatible
+            # adapter for Ollama so the same agent/tools can be reused.
+            if model_key.startswith("OLLAMA") or "ollama" in model_config.get("provider", "").lower():
+                try:
+                    # Lazy-import OllamaService from the local module
+                    from .ollama_service import OllamaService
+
+                    class OllamaLLMAdapter:
+                        """Minimal adapter that exposes a generate-like interface
+                        compatible with LangChain's expected LLM contract.
+                        It forwards requests to the existing OllamaService.
+                        """
+                        def __init__(self, ollama_service: OllamaService, model_name: str, temperature: float = 0.7, max_tokens: int = 1024):
+                            self.ollama = ollama_service
+                            self.model = model_name
+                            self.temperature = temperature
+                            self.max_tokens = max_tokens
+
+                        async def agenerate(self, prompts: List[str], **kwargs):
+                            # Convert single prompt into Ollama messages
+                            prompt = prompts[0] if isinstance(prompts, list) and prompts else prompts
+                            messages = [{"role": "user", "content": prompt}]
+                            resp = await self.ollama.generate_response(messages, model=self.model, temperature=self.temperature, max_tokens=self.max_tokens)
+                            # LangChain expects a structure with 'generations'
+                            return {"generations": [[{"text": resp.get("content", ""), "generation_info": resp.get("usage", {})}]]}
+
+                        async def __call__(self, prompt: str, **kwargs):
+                            return await self.agenerate([prompt], **kwargs)
+
+                    # Create or reuse a global OllamaService instance stored on this class
+                    if not hasattr(self, "_ollama_service") or self._ollama_service is None:
+                        self._ollama_service = OllamaService()
+                        # Initialize the service synchronously if necessary
+                        try:
+                            import asyncio as _asyncio
+                            _asyncio.get_event_loop().run_until_complete(self._ollama_service.initialize())
+                        except Exception:
+                            # If event loop is already running (e.g., uvicorn), create task instead
+                            pass
+
+                    self.llm = OllamaLLMAdapter(self._ollama_service, model_config.get("model", "gemma:2b"), temperature=model_config.get("temperature", 0.7), max_tokens=model_config.get("max_tokens", 1024))
+                    logger.info("LangChain agent LLM set to Ollama adapter for local model")
+                except Exception as ie:
+                    logger.warning(f"Could not create Ollama adapter: {ie}. LangChain agent will not be available for Ollama.")
+                    self.llm = None
+            else:
+                # No adapter available; do not instantiate LangChain LLM
+                self.llm = None
+                logger.info(f"LangChain agent not instantiated for model: {model_key}")
         self.prompt = self._create_prompt_template()
         logger.info(f"LangChain agent model set to: {self.model_key}")
 
