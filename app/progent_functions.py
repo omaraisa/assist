@@ -279,13 +279,24 @@ def get_current_dashboard_charts() -> Dict:
         
         charts = data.get("charts", [])
         chart_pairs = []
-        
+
         for chart in charts:
+            # include category_field when present so callers can understand multi-field charts
+            fields = []
+            if chart.get("field_name"):
+                fields.append(chart.get("field_name"))
+            if chart.get("category_field"):
+                fields.append(chart.get("category_field"))
+
+            # Fallback: if no field_name exists but id encodes a name, try to preserve something
+            if not fields and chart.get("id"):
+                fields = [chart.get("id")]
+
             chart_pairs.append({
-                "fields": [chart.get("field_name")],
+                "fields": fields,
                 "chart_type": chart.get("chart_type")
             })
-        
+
         return {
             "success": True,
             "charts": chart_pairs
@@ -333,45 +344,172 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
         
         with open(dashboard_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        
-        # Update charts
-        updated_charts = []
-        layout_items = []
-        
-        for i, chart_data in enumerate(charts_data):
-            fields = chart_data.get("fields", [])
-            chart_type = chart_data.get("chart_type", "bar")
-            
-            if fields:
-                field_name = fields[0]  # Use first field
+        # Load existing charts and layout (if any)
+        existing_charts = data.get("charts", []) or []
+        layout = data.get("layout", {}) or {}
+        layout_items = layout.get("items", []) or []
+
+        updated_count = 0
+
+        # If caller provides a list without explicit indices, treat the list as positional updates
+        for pos, entry in enumerate(charts_data, start=1):
+            # Allow caller to override the positional target with explicit index
+            requested_index = entry.get("index")
+            target_index = requested_index if isinstance(requested_index, int) and requested_index >= 1 else pos
+
+            fields = entry.get("fields", [])
+            chart_type = entry.get("chart_type", "bar")
+            # Allow explicit category_field or infer from second field in list
+            category_field = entry.get("category_field") or (fields[1] if len(fields) > 1 else None)
+
+            # Allow caller to explicitly specify which field should be treated as the primary (value) field.
+            # This lets callers pass a fields list like ["operator", "gallons_sold_july_91", ...]
+            # while still indicating the numeric primary field to visualize.
+            primary_field = entry.get("primary_field") if entry.get("primary_field") else (fields[0] if fields else None)
+
+            if not fields:
+                # nothing to do for this entry
+                continue
+
+            # Build chart config; include category_field when provided
+            chart_id = f"chart_{primary_field}"
+            if category_field:
+                chart_id = f"chart_{primary_field}_by_{category_field}"
+
+            # Preserve the original requested fields order if provided so frontends
+            # that expect a `fields` array can render multi-field charts correctly.
+            input_fields = entry.get("fields") if entry.get("fields") else []
+
+            default_title = f"Analysis of {primary_field}"
+            if category_field:
+                default_title = f"Analysis of {primary_field} by {category_field}"
+
+            chart_config = {
+                "id": chart_id,
+                "field_name": primary_field,
+                "fields": input_fields or ([primary_field] + ([category_field] if category_field else [])),
+                "chart_type": chart_type,
+                "title": entry.get("title", default_title),
+                "theme": data.get("theme", "default")
+            }
+            if category_field:
+                chart_config["category_field"] = category_field
                 
-                chart_config = {
-                    "id": f"chart_{field_name}",
-                    "field_name": field_name,
-                    "chart_type": chart_type,
-                    "title": f"Analysis of {field_name}",
-                    "theme": data.get("theme", "default")
-                }
+                # For multi-field charts with category, extract numeric fields for series
+                numeric_fields = [f for f in input_fields if f != category_field]
+                if len(numeric_fields) > 1:
+                    chart_config["series"] = [{"field": f, "name": f} for f in numeric_fields]
+                    chart_config["chart_config"] = {
+                        "category_axis": category_field,
+                        "value_axes": numeric_fields,
+                        "chart_subtype": "grouped"
+                    }
                 
-                updated_charts.append(chart_config)
-                
+                # For multi-field charts, add series configuration
+                numeric_fields = [f for f in input_fields if f != category_field]
+                if len(numeric_fields) > 1:
+                    chart_config["series"] = [
+                        {"field": field, "name": field.replace("_", " ").title(), "type": "column"}
+                        for field in numeric_fields
+                    ]
+                    chart_config["x_axis"] = category_field
+                    chart_config["chart_structure"] = "grouped"
+
+            # Ensure existing_charts and layout_items are in sync and can accept the target_index
+            # If target_index falls into the existing range, replace that slot
+            if 1 <= target_index <= len(existing_charts):
+                existing_charts[target_index - 1] = chart_config
+
+                # update corresponding layout item (match grid_area chart-N)
+                grid_area = f"chart-{target_index}"
+                matched = False
+                for item in layout_items:
+                    if item.get("grid_area") == grid_area:
+                        item.update({
+                            "id": chart_config["id"],
+                            "chart_type": chart_type,
+                            "field_name": primary_field
+                        })
+                        matched = True
+                        break
+                if not matched:
+                    # ensure a layout item exists for this slot
+                    layout_items.append({
+                        "id": chart_config["id"],
+                        "chart_type": chart_type,
+                        "field_name": primary_field,
+                        "grid_area": grid_area
+                    })
+
+                updated_count += 1
+            elif target_index > len(existing_charts):
+                # If the caller asked to place the chart at a position beyond current length,
+                # append placeholders up to target_index-1 so grid areas remain consistent, then add.
+                while len(existing_charts) < target_index - 1:
+                    placeholder_idx = len(existing_charts) + 1
+                    placeholder_id = f"chart_placeholder_{placeholder_idx}"
+                    existing_charts.append({
+                        "id": placeholder_id,
+                        "field_name": None,
+                        "chart_type": "placeholder",
+                        "title": None
+                    })
+                    layout_items.append({
+                        "id": placeholder_id,
+                        "chart_type": "placeholder",
+                        "field_name": None,
+                        "grid_area": f"chart-{placeholder_idx}"
+                    })
+
+                # Now append the requested chart at the target position
+                existing_charts.append(chart_config)
                 layout_items.append({
                     "id": chart_config["id"],
                     "chart_type": chart_type,
-                    "field_name": field_name,
-                    "grid_area": f"chart-{i+1}"
+                    "field_name": primary_field,
+                    "grid_area": f"chart-{target_index}"
                 })
+                updated_count += 1
+            else:
+                # target_index is not valid; as a fallback try to replace by id or append
+                replaced = False
+                for i, c in enumerate(existing_charts):
+                    if c.get("id") == chart_config["id"]:
+                        existing_charts[i] = chart_config
+                        # update layout item for same slot
+                        grid_area = f"chart-{i+1}"
+                        for item in layout_items:
+                            if item.get("grid_area") == grid_area:
+                                item.update({
+                                    "id": chart_config["id"],
+                                    "chart_type": chart_type,
+                                    "field_name": primary_field
+                                })
+                                break
+                        replaced = True
+                        updated_count += 1
+                        break
+                if not replaced:
+                    existing_charts.append(chart_config)
+                    new_idx = len(existing_charts)
+                    layout_items.append({
+                        "id": chart_config["id"],
+                        "chart_type": chart_type,
+                        "field_name": primary_field,
+                        "grid_area": f"chart-{new_idx}"
+                    })
+                    updated_count += 1
         
-        # Update layout
-        num_charts = len(updated_charts)
+        # Update layout based on the resulting number of charts
+        num_charts = len(existing_charts)
         if num_charts <= 2:
             grid_cols = "1fr 1fr"
         elif num_charts <= 4:
             grid_cols = "1fr 1fr"
         else:
             grid_cols = "1fr 1fr 1fr"
-        
-        data["charts"] = updated_charts
+
+        data["charts"] = existing_charts
         data["layout"] = {
             "grid_template_columns": grid_cols,
             "gap": "20px",
@@ -385,7 +523,8 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
         
         return {
             "success": True,
-            "message": f"Updated {len(updated_charts)} charts in dashboard"
+            "message": f"Updated {updated_count} charts in dashboard",
+            "chart_count": num_charts
         }
         
     except Exception as e:

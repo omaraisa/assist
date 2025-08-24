@@ -382,7 +382,7 @@ class LangChainAgent:
                     from langchain_ollama import ChatOllama
                     
                     self.llm = ChatOllama(
-                        model=model_config.get("model", "gemma:2b"),
+                        model=model_config.get("model", "llama3.2:3b"),
                         base_url=model_config.get("endpoint", "http://localhost:11434"),
                         temperature=model_config.get("temperature", 0.7),
                         num_predict=model_config.get("max_tokens", 1024),

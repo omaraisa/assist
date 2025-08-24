@@ -853,16 +853,33 @@ class DashboardRenderer {
             case 'bar':
             case 'column':
             case 'histogram':
-                return {
-                    labels: data.labels || [],
-                    datasets: [{
-                        label: config.y_field || 'Count',
-                        data: data.values || [],
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                };
+                // Check if this is a multi-series chart with datasets
+                if (data.datasets && Array.isArray(data.datasets) && data.datasets.length > 1) {
+                    // Multi-series bar chart
+                    const colors = this.generateColors(data.datasets.length);
+                    return {
+                        labels: data.labels || [],
+                        datasets: data.datasets.map((dataset, index) => ({
+                            label: dataset.name || `Series ${index + 1}`,
+                            data: dataset.data || [],
+                            backgroundColor: colors[index],
+                            borderColor: colors[index].replace('0.8', '1'),
+                            borderWidth: 1
+                        }))
+                    };
+                } else {
+                    // Single-series bar chart (backward compatibility)
+                    return {
+                        labels: data.labels || [],
+                        datasets: [{
+                            label: config.y_field || 'Count',
+                            data: data.values || [],
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    };
+                }
                 
             case 'line':
             case 'area':

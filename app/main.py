@@ -1228,6 +1228,9 @@ def _parse_layout_charts_format(dashboard_data):
             "chart_type": item.get("chart_type", chart_data.get("chart_type", "bar")),
             "title": chart_data.get("title", item.get("field_name", f"Chart {i + 1}")),
             "primary_field": item.get("field_name", chart_data.get("field_name", "")),
+            "category_field": chart_data.get("category_field"),
+            "series": chart_data.get("series", []),
+            "fields": chart_data.get("fields", []),
             "recommended_size": DEFAULT_CHART_SIZE,
             "priority": 1,
             "chart_data": chart_data  # Include full chart data for insights
@@ -1246,7 +1249,7 @@ def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
             "title": chart.get("title", f"Chart {i+1}"),
             "type": chart.get("chart_type", chart.get("type", "bar")),
             "description": chart.get("description", chart.get("reasoning", "")),
-            "x_field": chart.get("primary_field", chart.get("x_field", "")),
+            "x_field": chart.get("category_field") or chart.get("primary_field", chart.get("x_field", "")),
             "y_field": chart.get("group_by_field", chart.get("y_field", "")),
             "data": chart_data,
             "layout": {
@@ -1376,6 +1379,14 @@ def _generate_binary_pie_data(field_data, total_records):
 
 def _generate_bar_chart_data(field_insights, primary_field, group_by_field, chart_config):
     """Generate data for bar/column charts"""
+    # Check if this is a multi-series chart with category_field
+    category_field = chart_config.get("category_field")
+    series = chart_config.get("series", [])
+    
+    if category_field and series and len(series) > 1:
+        return _generate_multi_series_bar_data(field_insights, category_field, series, chart_config)
+    
+    # Original single-field logic
     field_data = field_insights[primary_field]
     unique_count = field_data.get("unique_count", 0)
     total_records = field_data.get("total_records", 0)
@@ -1398,6 +1409,44 @@ def _generate_categorical_bar_data(field_data, total_records):
     values = [max(base_count - (i * base_count // 4), 10) for i in range(len(labels))]
     
     return {"labels": labels, "values": values}
+
+def _generate_multi_series_bar_data(field_insights, category_field, series, chart_config):
+    """Generate multi-series bar chart data for grouped charts"""
+    if category_field not in field_insights:
+        return _create_error_data(f"Category field '{category_field}' not found in field insights")
+    
+    category_data = field_insights[category_field]
+    sample_values = category_data.get("sample_values", [])[:MAX_BAR_CATEGORIES]
+    
+    if not sample_values:
+        return _create_error_data(f"No sample values available for category field '{category_field}'")
+    
+    # Create labels from category field values
+    labels = [str(val) for val in sample_values]
+    
+    # For multi-series, create a dataset structure that frontend can handle
+    # Each series will be a separate dataset
+    datasets = []
+    for i, series_config in enumerate(series):
+        field_name = series_config.get("field", "")
+        series_name = series_config.get("name", field_name)
+        
+        # Generate sample values for this series across categories
+        base_value = 100 + (i * 50)  # Different base for each series
+        values = [base_value + (j * 20) - (j * j * 2) for j in range(len(labels))]
+        
+        datasets.append({
+            "name": series_name,
+            "data": values
+        })
+    
+    # Return in a format that can handle multiple series
+    # Frontend should check for 'datasets' property for multi-series charts
+    return {
+        "labels": labels,
+        "values": datasets[0]["data"] if datasets else [],  # Primary series for backward compatibility
+        "datasets": datasets  # Full multi-series data
+    }
 
 def _generate_numeric_range_data(field_data, total_records, bins=8):
     """Generate range-based data for high cardinality numeric fields"""
