@@ -467,17 +467,12 @@ class RunPythonCode(object):
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    def get_attribute_table(self, params):
+    def clear_selection(self, params):
+        """Clears the current selection for a given layer."""
         layer_name = params.get("layer_name")
-        limit = params.get("limit", 1000)
         try:
-            fields = [f.name for f in arcpy.ListFields(layer_name)]
-            rows = []
-            for i, row in enumerate(arcpy.da.SearchCursor(layer_name, fields)):
-                if i >= limit:
-                    break
-                rows.append(dict(zip(fields, row)))
-            return {"success": True, "fields": fields, "rows": rows, "returned": len(rows)}
+            arcpy.SelectLayerByAttribute_management(layer_name, "CLEAR_SELECTION")
+            return {"success": True, "message": f"Selection cleared for layer: {layer_name}"}
         except Exception as e:
             return {"success": False, "error": str(e)}
 

@@ -35,7 +35,7 @@ AVAILABLE_FUNCTIONS = {
     23: "get_values_frequency",
     24: "get_value_frequency",
     25: "get_coordinate_system",
-    26: "get_attribute_table",
+    26: "clear_selection",
     27: "get_field_domain_values",
     28: "calculate_new_field",
     29: "analyze_layer_fields",

@@ -398,28 +398,18 @@ class FunctionDeclaration:
             "required": ["layer_name"]
         },
         
-        "get_attribute_table": {
-            "name": "get_attribute_table",
-            "description": "Get attribute table data from a layer with pagination support. Use with caution as it can return large datasets.",
+        "clear_selection": {
+            "name": "clear_selection",
+            "description": "Clears the current selection for a given layer.",
             "parameters": {
                 "layer_name": {
                     "type": "string",
-                    "description": "The name of the layer"
-                },
-                "start_row": {
-                    "type": "integer",
-                    "description": "Starting row index (0-based)",
-                    "default": 0
-                },
-                "row_count": {
-                    "type": "integer",
-                    "description": "Number of rows to return",
-                    "default": 100
+                    "description": "The name of the layer to clear selection from."
                 }
             },
             "required": ["layer_name"]
         },
-        
+
         "get_field_domain_values": {
             "name": "get_field_domain_values",
             "description": "Get domain values for coded value fields, showing allowed values and their descriptions.",
