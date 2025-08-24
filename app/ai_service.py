@@ -17,10 +17,16 @@ logger = logging.getLogger(__name__)
 
 class AIService:
     """Handles AI model interactions and response generation."""
-
     def __init__(self, initial_model_key: str, websocket_manager: Any):
         self.websocket_manager = websocket_manager
         self.langchain_agent = None
+        # Holds dynamic functions discovered per client_id
+        self.client_dynamic_functions = {}
+        # Initialize other optional services to None; they'll be set in initialize()
+        self.session = None
+        self.ollama_service = None
+        self.rag_service = None
+        # Set initial model
         self.set_model(initial_model_key)
     
     async def initialize(self):

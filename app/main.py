@@ -419,7 +419,8 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
         
         # Create spatial functions instance to get the raw function declarations
         try:
-            raw_declarations = FunctionDeclaration
+            # Use the declarations mapping stored on the FunctionDeclaration class
+            raw_declarations = FunctionDeclaration.functions_declarations
             logger.info(f"Successfully retrieved {len(raw_declarations)} function declarations")
         except Exception as e:
             logger.error(f"Error retrieving function declarations: {e}")

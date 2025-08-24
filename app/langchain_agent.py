@@ -1,8 +1,37 @@
-from langchain_core.callbacks.base import BaseCallbackHandler
+try:
+    from langchain_core.callbacks.base import BaseCallbackHandler
+except Exception:
+    # Minimal fallback so module can be imported when LangChain is not installed.
+    class BaseCallbackHandler:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def on_chain_start(self, *args, **kwargs):
+            return None
+
+        def on_chain_end(self, *args, **kwargs):
+            return None
+
+        def on_tool_start(self, *args, **kwargs):
+            return None
+
+        def on_tool_end(self, *args, **kwargs):
+            return None
+
+        def on_text(self, *args, **kwargs):
+            return None
+
+        def on_agent_action(self, *args, **kwargs):
+            return None
+
+        def on_agent_finish(self, *args, **kwargs):
+            return None
+
 
 # Custom callback to log all agent intermediate steps (thoughts, actions, etc.)
 class LoggingCallbackHandler(BaseCallbackHandler):
     def __init__(self, logger):
+        super().__init__()
         self.logger = logger
 
     def on_chain_start(self, serialized, inputs, **kwargs):
@@ -18,7 +47,7 @@ class LoggingCallbackHandler(BaseCallbackHandler):
         self.logger.info(f"[Tool End] Output: {output}")
 
     def on_text(self, text, **kwargs):
-        # This is called for every intermediate step (thought, action, observation, etc.)
+        # This is called for every intermediate step (thought, action, etc.)
         self.logger.info(f"[Agent Step] {text}")
 
     def on_agent_action(self, action, **kwargs):
@@ -33,14 +62,44 @@ import uuid
 import asyncio
 from typing import Dict, List, Any
 
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.prompts import PromptTemplate
-from langchain.agents import create_react_agent, AgentExecutor
-from langchain.tools import Tool, BaseTool
+try:
+    from langchain_core.prompts import PromptTemplate
+except Exception:
+    # Minimal PromptTemplate fallback
+    class PromptTemplate:
+        def __init__(self, template: str, input_variables: list):
+            self.template = template
+            self.input_variables = input_variables
+
+try:
+    from langchain.agents import create_react_agent, AgentExecutor
+except Exception:
+    def create_react_agent(llm, tools, prompt):
+        raise RuntimeError("LangChain agents not available in this environment")
+
+    class AgentExecutor:
+        def __init__(self, *args, **kwargs):
+            raise RuntimeError("LangChain AgentExecutor not available in this environment")
+
+try:
+    from langchain.tools import Tool, BaseTool
+except Exception:
+    class Tool:
+        def __init__(self, name: str, func, description: str = ""):
+            self.name = name
+            self.func = func
+            self.description = description
+
+    class BaseTool:
+        name = "base_tool"
+        description = "Base fallback tool"
 
 class ExecuteSpatialFunctionTool(BaseTool):
-    name = "execute_spatial_function"
-    description = "Executes a spatial function. Input must be a stringified dictionary with 'function_name' and parameters. Parameters can be provided either as top-level keys or inside an 'arguments' object."
+    name: str = "execute_spatial_function"
+    description: str = (
+        "Executes a spatial function. Input must be a stringified dictionary with 'function_name' "
+        "and parameters. Parameters can be provided either as top-level keys or inside an 'arguments' object."
+    )
     websocket_manager: Any
     client_id: str
 
@@ -177,7 +236,17 @@ class ExecuteSpatialFunctionTool(BaseTool):
         except Exception as e:
             return {"error": f"Error executing dashboard function '{function_name}': {str(e)}"}
 
-from langchain_core.messages import AIMessage, HumanMessage
+try:
+    from langchain_core.messages import AIMessage, HumanMessage
+except Exception:
+    # Minimal message fallbacks
+    class AIMessage:
+        def __init__(self, content: str):
+            self.content = content
+
+    class HumanMessage:
+        def __init__(self, content: str):
+            self.content = content
 
 from .progent_functions import AVAILABLE_FUNCTIONS, generate_smart_dashboard_layout, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts
 from .config import settings
@@ -281,12 +350,32 @@ class LangChainAgent:
         from .config import get_model_config
         self.model_key = model_key
         model_config = get_model_config(model_key)
-        self.llm = ChatGoogleGenerativeAI(
-            model=model_config["model"],
-            google_api_key=model_config["api_key"],
-            temperature=model_config["temperature"],
-            max_output_tokens=model_config["max_tokens"],
-        )
+        # Only instantiate the Google Gemini LLM when a Gemini model is selected.
+        # Creating a ChatGoogleGenerativeAI instance for non-Gemini models causes
+        # the langchain google client to validate the presence of GOOGLE_API_KEY
+        # (or google_api_key param) which is not required for local models like Ollama.
+        if model_key.startswith("GEMINI"):
+            try:
+                from langchain_google_genai import ChatGoogleGenerativeAI
+            except Exception as ie:
+                # If the Google client isn't available, log and set llm to None.
+                logger.warning(f"Could not import langchain_google_genai: {ie}. Gemini agent will not be available.")
+                self.llm = None
+            else:
+                self.llm = ChatGoogleGenerativeAI(
+                    model=model_config["model"],
+                    google_api_key=model_config.get("api_key", None),
+                    temperature=model_config["temperature"],
+                    max_output_tokens=model_config["max_tokens"],
+                )
+                logger.info("LangChain agent LLM set to Google Gemini")
+        else:
+            # For non-Gemini models we do not create a Google client here.
+            # The LangChain-based agent execution is currently intended for
+            # Gemini (Google) models. For other providers the code paths
+            # in AIService use the response handler directly.
+            self.llm = None
+            logger.info(f"LangChain agent not instantiated for model: {model_key}")
         self.prompt = self._create_prompt_template()
         logger.info(f"LangChain agent model set to: {self.model_key}")
 
@@ -343,6 +432,8 @@ class LangChainAgent:
 
         try:
             tools = self._get_tools(client_id)
+            if not self.llm:
+                raise RuntimeError("LangChain LLM not instantiated. LangChain agent is only available for GEMINI models.")
             agent = create_react_agent(self.llm, tools, self.prompt)
             agent_executor = AgentExecutor(
                 agent=agent,
