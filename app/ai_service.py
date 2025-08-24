@@ -94,10 +94,10 @@ class AIService:
             logger.info(f"Generating response for model: {self.current_model}")
             logger.info(f"User message: {user_message[:100]}...")
             
-            if self.current_model.startswith("GEMINI"):
-                logger.info("Using LangChain agent for Gemini model")
-                if not self.langchain_agent:
-                    raise RuntimeError("LangChain agent is not initialized.")
+            # Use LangChain agent for Gemini AND Ollama models (if agent has an LLM)
+            if (self.current_model.startswith("GEMINI") or 
+                self.current_model.startswith("OLLAMA")) and self.langchain_agent and self.langchain_agent.llm:
+                logger.info(f"Using LangChain agent for model: {self.current_model}")
                 
                 response = await self.langchain_agent.generate_response(
                     user_message,
@@ -106,6 +106,10 @@ class AIService:
                     client_id
                 )
                 return {"type": "text", "content": response["output"], "model": self.current_model}
+            elif self.current_model.startswith("GEMINI"):
+                logger.warning(f"LangChain agent not available for Gemini model: {self.current_model}")
+            elif self.current_model.startswith("OLLAMA"):
+                logger.info(f"LangChain agent not available for Ollama, falling back to direct flow: {self.current_model}")
 
             # Fallback to existing logic for other models
             model_config = get_model_config(self.current_model)

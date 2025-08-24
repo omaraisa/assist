@@ -446,7 +446,7 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
                         "parameters": {
                             "type": "object",
                             "properties": {},
-                            "required": func_def["required"]
+                            "required": func_def.get("required", [])
                         }
                     }
                 }
@@ -470,60 +470,56 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
         elif "claude" in ai_model.lower():
             # Convert to Claude format
             for func_name, func_def in raw_declarations.items():
-                claude_tool = {
-                    "name": func_def["name"],
-                    "description": func_def["description"],
-                    "input_schema": {
-                        "type": "object",
-                        "properties": {},
-                        "required": func_def["required"]
-                    }
+                    claude_tool = {
+                        "name": func_def["name"],
+                        "description": func_def["description"],
+                        "input_schema": {
+                            "type": "object",
+                            "properties": {},
+                            "required": func_def.get("required", [])
+                        }
+                    }                # Convert parameters to Claude format
+            for param_name, param_def in func_def["parameters"].items():
+                claude_param = {
+                    "type": param_def["type"],
+                    "description": param_def["description"]
                 }
                 
-                # Convert parameters to Claude format
-                for param_name, param_def in func_def["parameters"].items():
-                    claude_param = {
-                        "type": param_def["type"],
-                        "description": param_def["description"]
-                    }
-                    
-                    if "enum" in param_def:
-                        claude_param["enum"] = param_def["enum"]
-                    if "items" in param_def:
-                        claude_param["items"] = param_def["items"]
-                    
-                    claude_tool["input_schema"]["properties"][param_name] = claude_param
+                if "enum" in param_def:
+                    claude_param["enum"] = param_def["enum"]
+                if "items" in param_def:
+                    claude_param["items"] = param_def["items"]
                 
-                formatted_declarations[func_name] = claude_tool
+                claude_tool["input_schema"]["properties"][param_name] = claude_param
+            
+            formatted_declarations[func_name] = claude_tool
         else:
             # Default to Gemini format or keep raw format
             for func_name, func_def in raw_declarations.items():
-                gemini_func = {
-                    "name": func_def["name"],
-                    "description": func_def["description"],
-                    "parameters": {
-                        "type": "object",
-                        "properties": {},
-                        "required": func_def["required"]
-                    }
+                    gemini_func = {
+                        "name": func_def["name"],
+                        "description": func_def["description"],
+                        "parameters": {
+                            "type": "object",
+                            "properties": {},
+                            "required": func_def.get("required", [])
+                        }
+                    }                # Convert parameters to Gemini format
+            for param_name, param_def in func_def["parameters"].items():
+                gemini_param = {
+                    "type": param_def["type"],
+                    "description": param_def["description"]
                 }
                 
-                # Convert parameters to Gemini format
-                for param_name, param_def in func_def["parameters"].items():
-                    gemini_param = {
-                        "type": param_def["type"],
-                        "description": param_def["description"]
-                    }
-                    
-                    if "enum" in param_def:
-                        gemini_param["enum"] = param_def["enum"]
-                    if "items" in param_def:
-                        gemini_param["items"] = param_def["items"]
-                    
-                    gemini_func["parameters"]["properties"][param_name] = gemini_param
+                if "enum" in param_def:
+                    gemini_param["enum"] = param_def["enum"]
+                if "items" in param_def:
+                    gemini_param["items"] = param_def["items"]
                 
-                formatted_declarations[func_name] = gemini_func
-        
+                gemini_func["parameters"]["properties"][param_name] = gemini_param
+            
+            formatted_declarations[func_name] = gemini_func
+    
         # Create the function result
         function_result = {
             "id": func_call["id"],

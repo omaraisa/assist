@@ -350,6 +350,10 @@ class LangChainAgent:
         from .config import get_model_config
         self.model_key = model_key
         model_config = get_model_config(model_key)
+        
+        logger.info(f"LangChainAgent.set_model called with: {model_key}")
+        logger.info(f"Model config: {model_config}")
+        
         # Only instantiate the Google Gemini LLM when a Gemini model is selected.
         # Creating a ChatGoogleGenerativeAI instance for non-Gemini models causes
         # the langchain google client to validate the presence of GOOGLE_API_KEY
@@ -374,46 +378,24 @@ class LangChainAgent:
             # adapter for Ollama so the same agent/tools can be reused.
             if model_key.startswith("OLLAMA") or "ollama" in model_config.get("provider", "").lower():
                 try:
-                    # Lazy-import OllamaService from the local module
-                    from .ollama_service import OllamaService
-
-                    class OllamaLLMAdapter:
-                        """Minimal adapter that exposes a generate-like interface
-                        compatible with LangChain's expected LLM contract.
-                        It forwards requests to the existing OllamaService.
-                        """
-                        def __init__(self, ollama_service: OllamaService, model_name: str, temperature: float = 0.7, max_tokens: int = 1024):
-                            self.ollama = ollama_service
-                            self.model = model_name
-                            self.temperature = temperature
-                            self.max_tokens = max_tokens
-
-                        async def agenerate(self, prompts: List[str], **kwargs):
-                            # Convert single prompt into Ollama messages
-                            prompt = prompts[0] if isinstance(prompts, list) and prompts else prompts
-                            messages = [{"role": "user", "content": prompt}]
-                            resp = await self.ollama.generate_response(messages, model=self.model, temperature=self.temperature, max_tokens=self.max_tokens)
-                            # LangChain expects a structure with 'generations'
-                            return {"generations": [[{"text": resp.get("content", ""), "generation_info": resp.get("usage", {})}]]}
-
-                        async def __call__(self, prompt: str, **kwargs):
-                            return await self.agenerate([prompt], **kwargs)
-
-                    # Create or reuse a global OllamaService instance stored on this class
-                    if not hasattr(self, "_ollama_service") or self._ollama_service is None:
-                        self._ollama_service = OllamaService()
-                        # Initialize the service synchronously if necessary
-                        try:
-                            import asyncio as _asyncio
-                            _asyncio.get_event_loop().run_until_complete(self._ollama_service.initialize())
-                        except Exception:
-                            # If event loop is already running (e.g., uvicorn), create task instead
-                            pass
-
-                    self.llm = OllamaLLMAdapter(self._ollama_service, model_config.get("model", "gemma:2b"), temperature=model_config.get("temperature", 0.7), max_tokens=model_config.get("max_tokens", 1024))
-                    logger.info("LangChain agent LLM set to Ollama adapter for local model")
+                    # Use the official langchain-ollama integration with timeout
+                    from langchain_ollama import ChatOllama
+                    
+                    self.llm = ChatOllama(
+                        model=model_config.get("model", "gemma:2b"),
+                        base_url=model_config.get("endpoint", "http://localhost:11434"),
+                        temperature=model_config.get("temperature", 0.7),
+                        num_predict=model_config.get("max_tokens", 1024),
+                        # Add timeout and other parameters to prevent hanging
+                        timeout=30,  # 30 second timeout
+                        verbose=True
+                    )
+                    logger.info(f"LangChain agent LLM set to ChatOllama for model: {model_config.get('model')} with 30s timeout")
+                except ImportError as ie:
+                    logger.warning(f"langchain-ollama not available: {ie}. Ollama models will use direct flow.")
+                    self.llm = None
                 except Exception as ie:
-                    logger.warning(f"Could not create Ollama adapter: {ie}. LangChain agent will not be available for Ollama.")
+                    logger.error(f"Error setting up ChatOllama: {ie}. Ollama models will use direct flow.")
                     self.llm = None
             else:
                 # No adapter available; do not instantiate LangChain LLM
