@@ -452,68 +452,70 @@ class FunctionDeclaration:
             "required": ["layer_name", "new_field_name", "field_value"]
         },
         
-        "generate_smart_dashboard_layout": {
-            "name": "generate_smart_dashboard_layout",
-            "description": "Generates sophisticated dashboard layouts with optimized chart recommendations, detailed configurations, and positioning",
+        "mission_generate_dashboard": {
+            "name": "mission_generate_dashboard",
+            "description": "Generates a smart dashboard for a given layer, either from layer data or existing dashboard insights.",
             "parameters": {
-                "layer_name": {
-                    "type": "string",
-                    "description": "The name of the layer to generate smart dashboard layout for"
-                }
+                "layer_name": {"type": "string", "description": "The name of the layer to analyze."},
+                "source": {"type": "string", "description": "'layer' to fetch fresh data, 'dashboard' to use existing. Defaults to 'dashboard' if available.", "enum": ["layer", "dashboard"], "optional": True}
             },
             "required": ["layer_name"]
         },
-        "get_current_dashboard_layout": {
-            "name": "get_current_dashboard_layout",
-            "description": "Get the current dashboard layout from the smart_dashboard.json file. Returns a list of widgets with id, x, y, w, h, and fields.",
-            "parameters": {},
-            "returns": {
-                "widgets": "List of minimal widget info (id, x, y, w, h, fields)",
-                "success": "True if loaded, False if error"
-            }
+        "mission_get_layout": {
+            "name": "mission_get_layout",
+            "description": "Retrieves the current dashboard layout, including charts and their arrangement.",
+            "parameters": {}
         },
-        "get_dashboard_fields_info": {
-            "name": "get_dashboard_fields_info",
-            "description": "Returns a summary for each field: field_name, data_story, and sample_values from smart_dashboard.json",
-            "parameters": {},
-            "returns": {
-                "fields": "List of dicts with field_name, data_story, and sample_values",
-                "success": "True if loaded, False if error"
-            }
+        "mission_get_charts": {
+            "name": "mission_get_charts",
+            "description": "Retrieves a simplified list of current dashboard charts.",
+            "parameters": {}
         },
-        "get_current_dashboard_charts": {
-            "name": "get_current_dashboard_charts",
-            "description": "Get the current [fields, chart_type] pairs from the dashboard layout in smart_dashboard.json. Returns a list of dicts: {'fields': [...], 'chart_type': ...}",
-            "parameters": {},
-            "returns": {
-                "charts": "List of dicts with fields and chart_type",
-                "success": "True if loaded, False if error"
-            }
-        },
-        "update_dashboard_charts": {
-            "name": "update_dashboard_charts",
-            "description": "Takes a list of {fields, chart_type} dicts and updates the first N widgets in the dashboard layout, then saves to smart_dashboard.json.",
+        "mission_get_field_info": {
+            "name": "mission_get_field_info",
+            "description": "Retrieves information about fields from the dashboard's field_insights.",
             "parameters": {
-                "charts": {
+                "field_name": {"type": "string", "description": "Specific field to get info for. If omitted, returns all.", "optional": True}
+            }
+        },
+        "mission_update_charts": {
+            "name": "mission_update_charts",
+            "description": "Updates existing charts in the dashboard.",
+            "parameters": {
+                "charts_data": {
                     "type": "array",
-                    "description": "List of dicts with fields (array of strings) and chart_type (string)",
+                    "description": "List of charts to update, with index, fields, and chart_type.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "index": {"type": "integer"},
+                            "fields": {"type": "array", "items": {"type": "string"}},
+                            "chart_type": {"type": "string"}
+                        }
+                    }
+                }
+            },
+            "required": ["charts_data"]
+        },
+        "mission_add_charts": {
+            "name": "mission_add_charts",
+            "description": "Adds new charts to the dashboard.",
+            "parameters": {
+                "new_charts": {
+                    "type": "array",
+                    "description": "List of new chart definitions.",
                     "items": {
                         "type": "object",
                         "properties": {
                             "fields": {"type": "array", "items": {"type": "string"}},
                             "chart_type": {"type": "string"}
-                        },
-                        "required": ["fields", "chart_type"]
+                        }
                     }
                 }
             },
-            "required": ["charts"],
-            "returns": {
-                "updated_count": "Number of widgets updated",
-                "success": "True if updated, False if error"
-            }
+            "required": ["new_charts"]
         },
-      
+
         "raster_calculator": {
             "name": "raster_calculator",
             "description": "Performs a map algebra expression using the raster calculator. Note: The 'expression' should be a valid Python string using arcpy.sa.Raster objects. Example payload: {\"function_name\":\"raster_calculator\",\"arguments\":{\"expression\":\"Raster('raster1') - Raster('raster2')\",\"output_raster\":\"raster_difference\"}}. Replace 'raster1' and 'raster2' with your actual raster layer names or paths.",
