@@ -602,31 +602,6 @@ class RunPythonCode(object):
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    # Dashboard / layout related ops
-    def generate_smart_dashboard_layout(self, params):
-        return {"success": False, "error": "Dashboard functions are now handled server-side. This function has been moved to the FastAPI server."}
-
-    def optimize_dashboard_layout(self, params):
-        return {"success": False, "error": "Dashboard functions are now handled server-side. This function has been moved to the FastAPI server."}
-
-    def recommend_chart_types(self, params):
-        return {"success": False, "error": "Dashboard functions are now handled server-side. This function has been moved to the FastAPI server."}
-
-    def plan_dashboard_layout(self, params):
-        return {"success": False, "error": "Dashboard functions are now handled server-side. This function has been moved to the FastAPI server."}
-
-    def get_current_dashboard_layout(self, params):
-        return {"success": False, "error": "Dashboard functions are now handled server-side. This function has been moved to the FastAPI server."}
-
-    def get_field_stories_and_samples(self, params):
-        return {"success": False, "error": "Dashboard functions are now handled server-side. This function has been moved to the FastAPI server."}
-
-    def get_current_dashboard_charts(self, params):
-        return {"success": False, "error": "Dashboard functions are now handled server-side. This function has been moved to the FastAPI server."}
-
-    def update_dashboard_charts(self, params):
-        return {"success": False, "error": "Dashboard functions are now handled server-side. This function has been moved to the FastAPI server."}
-
     # Raster-analysis stubs
     def raster_calculator(self, params):
         expression = params.get("expression")

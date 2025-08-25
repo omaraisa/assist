@@ -38,12 +38,9 @@ AVAILABLE_FUNCTIONS = {
     26: "clear_selection",
     27: "get_field_domain_values",
     28: "calculate_new_field",
-    29: "analyze_layer_fields",
     30: "generate_smart_dashboard_layout",
-    31: "optimize_dashboard_layout",
-    32: "recommend_chart_types",
     33: "get_current_dashboard_layout",
-    34: "get_field_stories_and_samples",
+    34: "get_dashboard_fields_info",
     35: "get_current_dashboard_charts",
     36: "update_dashboard_charts",
     37: "raster_calculator",
@@ -307,7 +304,7 @@ def get_current_dashboard_charts() -> Dict:
         return {"success": False, "error": str(e)}
 
 
-def get_field_stories_and_samples() -> Dict:
+def get_dashboard_fields_info() -> Dict:
     """Get field stories and samples from progent_dashboard.json"""
     try:
         dashboard_path = "progent_dashboard.json"

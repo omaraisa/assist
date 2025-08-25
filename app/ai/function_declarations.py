@@ -452,19 +452,6 @@ class FunctionDeclaration:
             "required": ["layer_name", "new_field_name", "field_value"]
         },
         
-        "analyze_layer_fields": {
-            "name": "analyze_layer_fields",
-            "description": "Analyze all fields in a GIS layer to understand their characteristics for dashboard generation. Returns detailed field metadata including data types, unique values, null percentages, statistical summaries, and data categories (numeric, categorical, date, etc.).",
-            "parameters": {
-                "layer_name": {
-                    "type": "string",
-                    "description": "The name of the layer to analyze"
-                }
-            },
-            "required": ["layer_name"]
-        },
-        
-
         "generate_smart_dashboard_layout": {
             "name": "generate_smart_dashboard_layout",
             "description": "Generates sophisticated dashboard layouts with optimized chart recommendations, detailed configurations, and positioning",
@@ -485,9 +472,9 @@ class FunctionDeclaration:
                 "success": "True if loaded, False if error"
             }
         },
-        "get_field_stories_and_samples": {
-            "name": "get_field_stories_and_samples",
-            "description": "Returns a summary for each field: field_name, data_story, and sample_values from smart_dashboard.json. Handles empty or invalid JSON files gracefully.",
+        "get_dashboard_fields_info": {
+            "name": "get_dashboard_fields_info",
+            "description": "Returns a summary for each field: field_name, data_story, and sample_values from smart_dashboard.json",
             "parameters": {},
             "returns": {
                 "fields": "List of dicts with field_name, data_story, and sample_values",
@@ -526,22 +513,7 @@ class FunctionDeclaration:
                 "success": "True if updated, False if error"
             }
         },
-        "recommend_chart_types": {
-            "name": "recommend_chart_types",
-            "description": "Enhanced AI-Powered Chart Type Recommendation System (Step 3). Analyzes both single-field characteristics and multi-field relationships to recommend diverse chart types that avoid the 'too many histograms' problem. Features: field relationship detection for scatter plots/grouped charts, token-efficient AI prompts, chart diversity optimization, and integration with existing retry mechanisms.",
-            "parameters": {
-                "layer_name": {
-                    "type": "string",
-                    "description": "The name of the layer to analyze for enhanced chart recommendations"
-                },
-                "target_field": {
-                    "type": "string",
-                    "description": "Optional specific field to focus chart recommendations on"
-                }
-            },
-            "required": ["layer_name"]
-        },
-
+      
         "raster_calculator": {
             "name": "raster_calculator",
             "description": "Performs a map algebra expression using the raster calculator. Note: The 'expression' should be a valid Python string using arcpy.sa.Raster objects. Example payload: {\"function_name\":\"raster_calculator\",\"arguments\":{\"expression\":\"Raster('raster1') - Raster('raster2')\",\"output_raster\":\"raster_difference\"}}. Replace 'raster1' and 'raster2' with your actual raster layer names or paths.",

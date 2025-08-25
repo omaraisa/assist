@@ -127,7 +127,7 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 "generate_smart_dashboard_layout",
                 "get_current_dashboard_layout", 
                 "get_current_dashboard_charts",
-                "get_field_stories_and_samples",
+                "get_dashboard_fields_info",
                 "update_dashboard_charts"
             ]
             
@@ -223,8 +223,8 @@ class ExecuteSpatialFunctionTool(BaseTool):
             elif function_name == "get_current_dashboard_charts":
                 return get_current_dashboard_charts()
                 
-            elif function_name == "get_field_stories_and_samples":
-                return get_field_stories_and_samples()
+            elif function_name == "get_dashboard_fields_info":
+                return get_dashboard_fields_info()
                 
             elif function_name == "update_dashboard_charts":
                 charts_data = parameters.get("charts_data", [])
@@ -248,7 +248,7 @@ except Exception:
         def __init__(self, content: str):
             self.content = content
 
-from .progent_functions import AVAILABLE_FUNCTIONS, generate_smart_dashboard_layout, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts
+from .progent_functions import AVAILABLE_FUNCTIONS, generate_smart_dashboard_layout, get_current_dashboard_layout, get_current_dashboard_charts, get_dashboard_fields_info, update_dashboard_charts
 from .config import settings
 from .ai.function_declarations import FunctionDeclaration
 
