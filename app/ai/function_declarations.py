@@ -971,5 +971,45 @@ class FunctionDeclaration:
                 "layer_name": {"type": "string", "description": "The name of the layer."}
             },
             "required": ["layer_name"]
+        },
+        
+        "add_dashboard_charts": {
+            "name": "add_dashboard_charts",
+            "description": "Append new charts to the current dashboard. Use this function to add charts to a dashboard that already exists. Each chart definition should include 'fields' (required) and optional 'chart_type', 'title', 'category_field', or 'primary_field'.",
+            "parameters": {
+                "new_charts": {
+                    "type": "array",
+                    "description": "Array of chart definitions to append to the dashboard",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "fields": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "Array of field names for the chart (required)"
+                            },
+                            "chart_type": {
+                                "type": "string", 
+                                "description": "Type of chart (bar, pie, histogram, etc.)",
+                                "default": "bar"
+                            },
+                            "title": {
+                                "type": "string",
+                                "description": "Custom title for the chart"
+                            },
+                            "category_field": {
+                                "type": "string",
+                                "description": "Field to use as category axis (for grouped charts)"
+                            },
+                            "primary_field": {
+                                "type": "string", 
+                                "description": "Field to use as primary value field"
+                            }
+                        },
+                        "required": ["fields"]
+                    }
+                }
+            },
+            "required": ["new_charts"]
         }
     }

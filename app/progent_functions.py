@@ -77,7 +77,8 @@ AVAILABLE_FUNCTIONS = {
     65: "extract_by_attribute",
     66: "mosaic_to_new_raster",
     67: "combine_rasters",
-    68: "invert_selection"
+    68: "invert_selection",
+    69: "add_dashboard_charts"
 }
 
 try:
@@ -527,6 +528,127 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
             "chart_count": num_charts
         }
         
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def add_dashboard_charts(new_charts: List[Dict]) -> Dict:
+    """Simple function to append new charts to the end of the dashboard.
+    
+    Args:
+        new_charts: List of chart definitions. Each chart should have:
+            - fields: ["field1", "field2", ...] (required)
+            - chart_type: "bar"/"pie"/"histogram" (optional, defaults to "bar")
+            - title: Custom title (optional)
+            - category_field: Field to use as category axis (optional, inferred from fields[1])
+            - primary_field: Field to use as primary value (optional, inferred from fields[0])
+    
+    Returns:
+        Dict with success status, message, and updated chart count
+    """
+    try:
+        dashboard_path = "progent_dashboard.json"
+        if not os.path.exists(dashboard_path):
+            return {"success": False, "error": "Dashboard file not found"}
+
+        with open(dashboard_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        existing_charts = data.get("charts", [])
+        layout = data.get("layout", {})
+        layout_items = layout.get("items", [])
+        
+        # Get current chart count to determine where to append
+        current_count = len(existing_charts)
+        added_count = 0
+
+        for chart_def in new_charts:
+            fields = chart_def.get("fields", [])
+            if not fields:
+                continue  # Skip invalid chart definitions
+                
+            chart_type = chart_def.get("chart_type", "bar")
+            category_field = chart_def.get("category_field") or (fields[1] if len(fields) > 1 else None)
+            primary_field = chart_def.get("primary_field") or (fields[0] if fields else None)
+            
+            # Generate chart ID
+            chart_id = f"chart_{primary_field}"
+            if category_field:
+                chart_id = f"chart_{primary_field}_by_{category_field}"
+            
+            # Create chart config
+            chart_config = {
+                "id": chart_id,
+                "field_name": primary_field,
+                "fields": fields,
+                "chart_type": chart_type,
+                "title": chart_def.get("title", f"Analysis of {primary_field}"),
+                "theme": data.get("theme", "default")
+            }
+            
+            # Add multi-series support if category field is present
+            if category_field:
+                chart_config["category_field"] = category_field
+                numeric_fields = [f for f in fields if f != category_field]
+                if len(numeric_fields) > 1:
+                    chart_config["series"] = [
+                        {"field": f, "name": f.replace("_", " ").title(), "type": "column"}
+                        for f in numeric_fields
+                    ]
+                    chart_config["chart_config"] = {
+                        "category_axis": category_field,
+                        "value_axes": numeric_fields,
+                        "chart_subtype": "grouped"
+                    }
+                    chart_config["x_axis"] = category_field
+                    chart_config["chart_structure"] = "grouped"
+            
+            # Append to existing charts
+            existing_charts.append(chart_config)
+            new_position = current_count + added_count + 1
+            
+            # Add layout item
+            layout_items.append({
+                "id": chart_id,
+                "chart_type": chart_type,
+                "field_name": primary_field,
+                "grid_area": f"chart-{new_position}"
+            })
+            
+            added_count += 1
+
+        # Update grid layout based on new total
+        total_charts = len(existing_charts)
+        if total_charts <= 2:
+            grid_cols = "1fr 1fr"
+        elif total_charts <= 4:
+            grid_cols = "1fr 1fr"
+        elif total_charts <= 6:
+            grid_cols = "1fr 1fr 1fr"
+        else:
+            # For more than 6 charts, use a wider grid
+            grid_cols = "1fr 1fr 1fr 1fr"
+
+        # Update the data structure
+        data["charts"] = existing_charts
+        data["layout"] = {
+            "grid_template_columns": grid_cols,
+            "gap": "20px",
+            "items": layout_items
+        }
+        data["generation_timestamp"] = _get_timestamp()
+
+        # Save the updated dashboard
+        with open(dashboard_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+
+        return {
+            "success": True,
+            "message": f"Added {added_count} new charts to dashboard",
+            "chart_count": total_charts,
+            "added_charts": added_count
+        }
+
     except Exception as e:
         return {"success": False, "error": str(e)}
 

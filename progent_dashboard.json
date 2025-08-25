@@ -27,9 +27,9 @@
                 "grid_area": "chart-3"
             },
             {
-                "id": "chart_gallons_sold_july_91_by_operator",
-                "chart_type": "bar",
-                "field_name": "gallons_sold_july_91",
+                "id": "chart_DistrictID",
+                "chart_type": "histogram",
+                "field_name": "DistrictID",
                 "grid_area": "chart-4"
             },
             {
@@ -93,39 +93,19 @@
             "theme": "default"
         },
         {
-            "id": "chart_gallons_sold_july_91_by_operator",
-            "field_name": "gallons_sold_july_91",
-            "fields": [
-                "operator",
-                "gallons_sold_july_91",
-                "gallons_sold_july_95"
-            ],
-            "chart_type": "bar",
-            "title": "Analysis of gallons_sold_july_91 by operator",
-            "theme": "default",
-            "category_field": "operator",
-            "series": [
-                {
-                    "field": "gallons_sold_july_91",
-                    "name": "Gallons Sold July 91",
-                    "type": "column"
-                },
-                {
-                    "field": "gallons_sold_july_95",
-                    "name": "Gallons Sold July 95",
-                    "type": "column"
-                }
-            ],
-            "chart_config": {
-                "category_axis": "operator",
-                "value_axes": [
-                    "gallons_sold_july_91",
-                    "gallons_sold_july_95"
-                ],
-                "chart_subtype": "grouped"
+            "id": "chart_DistrictID",
+            "field_name": "DistrictID",
+            "chart_type": "histogram",
+            "data_category": "continuous_numeric",
+            "title": "'DistrictID' displays moderate variation (range: 1.00 to 181.00), suitable for distribution analysis.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "histogram": 0.9,
+                "box_plot": 0.85,
+                "density_plot": 0.8,
+                "violin_plot": 0.75
             },
-            "x_axis": "operator",
-            "chart_structure": "grouped"
+            "theme": "default"
         },
         {
             "id": "chart_operator",
@@ -1668,5 +1648,5 @@
             "visualization_priority": 9
         }
     },
-    "generation_timestamp": "2025-08-24T22:58:56.339288"
+    "generation_timestamp": "2025-08-25T00:14:32.893311"
 }
