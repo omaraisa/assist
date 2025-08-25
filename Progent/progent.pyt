@@ -632,104 +632,257 @@ class RunPythonCode(object):
         expression = params.get("expression")
         output_raster = params.get("output_raster")
         try:
-            result = {
-                "success": True,
-                "message": f"Raster calculation '{expression}' would be performed to create '{output_raster}'."
-            }
-            return result
+            if arcpy.CheckExtension("Spatial") == "Available":
+                arcpy.CheckOutExtension("Spatial")
+            else:
+                return {"success": False, "error": "Spatial Analyst extension is not available."}
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            if not os.path.isabs(output_raster) and not os.path.sep in output_raster:
+                out_path = os.path.join(aprx.defaultGeodatabase, output_raster)
+                out_path = arcpy.CreateUniqueName(out_path)
+            else:
+                out_path = output_raster
+
+            # The expression is evaluated directly. This is powerful but requires the input
+            # from the AI to be trusted. The function declaration explicitly states that the
+            # expression will contain `Raster` objects.
+            from arcpy.sa import *
+
+            # Execute the map algebra expression
+            result_raster = eval(expression)
+            result_raster.save(out_path)
+
+            self._add_to_map(out_path)
+
+            return {"success": True, "output_raster": out_path, "message": f"Raster calculation executed successfully. Output saved to {out_path}"}
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
+        finally:
+            arcpy.CheckInExtension("Spatial")
 
     def reclassify(self, params):
         in_raster = params.get("in_raster")
         reclass_field = params.get("reclass_field")
-        remap = params.get("remap")
+        remap_str = params.get("remap")
         out_raster = params.get("out_raster")
         try:
-            result = {
-                "success": True,
-                "message": f"Raster '{in_raster}' would be reclassified to '{out_raster}'."
-            }
-            return result
+            if arcpy.CheckExtension("Spatial") == "Available":
+                arcpy.CheckOutExtension("Spatial")
+            else:
+                return {"success": False, "error": "Spatial Analyst extension is not available."}
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
+                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                out_path = arcpy.CreateUniqueName(out_path)
+            else:
+                out_path = out_raster
+
+            # The remap parameter is a string representation of a Remap object (e.g., RemapRange, RemapValue)
+            # which needs to be evaluated. This requires trusting the AI-generated input.
+            from arcpy.sa import RemapRange, RemapValue
+
+            remap_obj = eval(remap_str)
+
+            # Perform the reclassification
+            result_raster = arcpy.sa.Reclassify(in_raster, reclass_field, remap_obj, "DATA")
+            result_raster.save(out_path)
+
+            self._add_to_map(out_path)
+
+            return {"success": True, "output_raster": out_path, "message": f"Reclassify completed successfully. Output saved to {out_path}"}
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
+        finally:
+            arcpy.CheckInExtension("Spatial")
 
     def zonal_statistics_as_table(self, params):
         in_zone_data = params.get("in_zone_data")
         zone_field = params.get("zone_field")
         in_value_raster = params.get("in_value_raster")
         out_table = params.get("out_table")
+        statistics_type = params.get("statistics_type", "MEAN")
         try:
-            result = {
-                "success": True,
-                "message": f"Zonal statistics would be calculated and saved to '{out_table}'."
-            }
-            return result
+            if arcpy.CheckExtension("Spatial") == "Available":
+                arcpy.CheckOutExtension("Spatial")
+            else:
+                return {"success": False, "error": "Spatial Analyst extension is not available."}
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            if not os.path.isabs(out_table) and not os.path.sep in out_table:
+                out_path = os.path.join(aprx.defaultGeodatabase, out_table)
+                out_path = arcpy.CreateUniqueName(out_path)
+            else:
+                out_path = out_table
+
+            from arcpy.sa import ZonalStatisticsAsTable
+
+            # Perform the zonal statistics
+            ZonalStatisticsAsTable(in_zone_data, zone_field, in_value_raster, out_path, "DATA", statistics_type)
+
+            # Add the resulting table to the map
+            self._add_to_map(out_path)
+
+            return {"success": True, "output_table": out_path, "message": f"Zonal statistics table created successfully at {out_path}"}
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
+        finally:
+            arcpy.CheckInExtension("Spatial")
 
     def slope(self, params):
         in_raster = params.get("in_raster")
         out_raster = params.get("out_raster")
+        output_measurement = params.get("output_measurement", "DEGREE")
         try:
-            result = {
-                "success": True,
-                "message": f"Slope would be calculated for '{in_raster}' and saved to '{out_raster}'."
-            }
-            return result
+            if arcpy.CheckExtension("Spatial") == "Available":
+                arcpy.CheckOutExtension("Spatial")
+            else:
+                return {"success": False, "error": "Spatial Analyst extension is not available."}
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
+                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                out_path = arcpy.CreateUniqueName(out_path)
+            else:
+                out_path = out_raster
+
+            from arcpy.sa import Slope
+
+            # Perform the slope analysis
+            result_raster = Slope(in_raster, output_measurement)
+            result_raster.save(out_path)
+
+            self._add_to_map(out_path)
+
+            return {"success": True, "output_raster": out_path, "message": f"Slope analysis completed successfully. Output saved to {out_path}"}
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
+        finally:
+            arcpy.CheckInExtension("Spatial")
 
     def aspect(self, params):
         in_raster = params.get("in_raster")
         out_raster = params.get("out_raster")
         try:
-            result = {
-                "success": True,
-                "message": f"Aspect would be calculated for '{in_raster}' and saved to '{out_raster}'."
-            }
-            return result
+            if arcpy.CheckExtension("Spatial") == "Available":
+                arcpy.CheckOutExtension("Spatial")
+            else:
+                return {"success": False, "error": "Spatial Analyst extension is not available."}
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
+                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                out_path = arcpy.CreateUniqueName(out_path)
+            else:
+                out_path = out_raster
+
+            from arcpy.sa import Aspect
+
+            # Perform the aspect analysis
+            result_raster = Aspect(in_raster)
+            result_raster.save(out_path)
+
+            self._add_to_map(out_path)
+
+            return {"success": True, "output_raster": out_path, "message": f"Aspect analysis completed successfully. Output saved to {out_path}"}
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
+        finally:
+            arcpy.CheckInExtension("Spatial")
 
     def hillshade(self, params):
         in_raster = params.get("in_raster")
         out_raster = params.get("out_raster")
+        azimuth = params.get("azimuth", 315)
+        altitude = params.get("altitude", 45)
         try:
-            result = {
-                "success": True,
-                "message": f"Hillshade would be calculated for '{in_raster}' and saved to '{out_raster}'."
-            }
-            return result
+            if arcpy.CheckExtension("Spatial") == "Available":
+                arcpy.CheckOutExtension("Spatial")
+            else:
+                return {"success": False, "error": "Spatial Analyst extension is not available."}
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
+                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                out_path = arcpy.CreateUniqueName(out_path)
+            else:
+                out_path = out_raster
+
+            from arcpy.sa import Hillshade
+
+            # Perform the hillshade analysis
+            result_raster = Hillshade(in_raster, azimuth, altitude)
+            result_raster.save(out_path)
+
+            self._add_to_map(out_path)
+
+            return {"success": True, "output_raster": out_path, "message": f"Hillshade analysis completed successfully. Output saved to {out_path}"}
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
+        finally:
+            arcpy.CheckInExtension("Spatial")
 
 
     def clip_raster(self, params):
         in_raster = params.get("in_raster")
-        rectangle = params.get("rectangle")
         out_raster = params.get("out_raster")
+        in_template_dataset = params.get("in_template_dataset")
+        clipping_geometry = params.get("clipping_geometry", "ClippingGeometry")
         try:
-            result = {
-                "success": True,
-                "message": f"Raster '{in_raster}' would be clipped and saved to '{out_raster}'."
-            }
-            return result
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
+                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                out_path = arcpy.CreateUniqueName(out_path)
+            else:
+                out_path = out_raster
+
+            # Perform the clip analysis
+            arcpy.management.Clip(
+                in_raster,
+                "#", # rectangle
+                out_path,
+                in_template_dataset,
+                "#", # nodata_value
+                clipping_geometry,
+                "MAINTAIN_EXTENT" # maintain_clipping_extent
+            )
+
+            self._add_to_map(out_path)
+
+            return {"success": True, "output_raster": out_path, "message": f"Raster clip completed successfully. Output saved to {out_path}"}
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
 
     def resample(self, params):
         in_raster = params.get("in_raster")
         out_raster = params.get("out_raster")
         cell_size = params.get("cell_size")
+        resampling_type = params.get("resampling_type", "NEAREST")
         try:
-            result = {
-                "success": True,
-                "message": f"Raster '{in_raster}' would be resampled to '{out_raster}' with cell size {cell_size}."
-            }
-            return result
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
+                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                out_path = arcpy.CreateUniqueName(out_path)
+            else:
+                out_path = out_raster
+
+            # Perform the resample
+            arcpy.management.Resample(in_raster, out_path, cell_size, resampling_type)
+
+            self._add_to_map(out_path)
+
+            return {"success": True, "output_raster": out_path, "message": f"Resample completed successfully. Output saved to {out_path}"}
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
 
     def get_raster_properties(self, params):
         raster = params.get("raster")
