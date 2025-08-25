@@ -454,7 +454,7 @@ class FunctionDeclaration:
         
         "generate_smart_dashboard_layout": {
             "name": "generate_smart_dashboard_layout",
-            "description": "Generates sophisticated dashboard layouts with optimized chart recommendations, detailed configurations, and positioning",
+            "description": "[DEPRECATED] Use mission_generate_dashboard instead. Generates sophisticated dashboard layouts with optimized chart recommendations, detailed configurations, and positioning",
             "parameters": {
                 "layer_name": {
                     "type": "string",
@@ -465,7 +465,7 @@ class FunctionDeclaration:
         },
         "get_current_dashboard_layout": {
             "name": "get_current_dashboard_layout",
-            "description": "Get the current dashboard layout from the smart_dashboard.json file. Returns a list of widgets with id, x, y, w, h, and fields.",
+            "description": "[DEPRECATED] Use mission_get_layout instead. Get the current dashboard layout from the smart_dashboard.json file.",
             "parameters": {},
             "returns": {
                 "widgets": "List of minimal widget info (id, x, y, w, h, fields)",
@@ -474,7 +474,7 @@ class FunctionDeclaration:
         },
         "get_dashboard_fields_info": {
             "name": "get_dashboard_fields_info",
-            "description": "Returns a summary for each field: field_name, data_story, and sample_values from smart_dashboard.json",
+            "description": "[DEPRECATED] Use mission_get_field_info instead. Returns a summary for each field from smart_dashboard.json",
             "parameters": {},
             "returns": {
                 "fields": "List of dicts with field_name, data_story, and sample_values",
@@ -483,7 +483,7 @@ class FunctionDeclaration:
         },
         "get_current_dashboard_charts": {
             "name": "get_current_dashboard_charts",
-            "description": "Get the current [fields, chart_type] pairs from the dashboard layout in smart_dashboard.json. Returns a list of dicts: {'fields': [...], 'chart_type': ...}",
+            "description": "[DEPRECATED] Use mission_get_charts instead. Get the current charts from the dashboard layout in smart_dashboard.json.",
             "parameters": {},
             "returns": {
                 "charts": "List of dicts with fields and chart_type",
@@ -492,7 +492,7 @@ class FunctionDeclaration:
         },
         "update_dashboard_charts": {
             "name": "update_dashboard_charts",
-            "description": "Takes a list of {fields, chart_type} dicts and updates the first N widgets in the dashboard layout, then saves to smart_dashboard.json.",
+            "description": "[DEPRECATED] Use mission_update_charts instead. Takes a list of {fields, chart_type} dicts and updates widgets in the dashboard.",
             "parameters": {
                 "charts": {
                     "type": "array",
@@ -512,6 +512,77 @@ class FunctionDeclaration:
                 "updated_count": "Number of widgets updated",
                 "success": "True if updated, False if error"
             }
+        },
+
+        # New Mission-Oriented Dashboard API
+        "mission_generate_dashboard": {
+            "name": "mission_generate_dashboard",
+            "description": "Generates a new dashboard for a layer. Use the 'source' parameter to specify whether to use live layer data or cached dashboard data.",
+            "parameters": {
+                "layer_name": {"type": "string", "description": "The name of the layer to generate the dashboard for."},
+                "source": {"type": "string", "description": "Source of field information, either 'layer' or 'dashboard'. Defaults to 'dashboard'.", "enum": ["layer", "dashboard"], "default": "dashboard"},
+                "field_insights": {"type": "object", "description": "Optional. Pre-computed field insights to use for generation.", "default": None}
+            },
+            "required": ["layer_name"]
+        },
+        "mission_get_layout": {
+            "name": "mission_get_layout",
+            "description": "Retrieves the layout of the current dashboard.",
+            "parameters": {},
+            "required": []
+        },
+        "mission_get_charts": {
+            "name": "mission_get_charts",
+            "description": "Retrieves the list of chart configurations from the current dashboard.",
+            "parameters": {},
+            "required": []
+        },
+        "mission_get_field_info": {
+            "name": "mission_get_field_info",
+            "description": "Retrieves metadata and insights for fields stored in the current dashboard.",
+            "parameters": {
+                "field_name": {"type": "string", "description": "Optional. The name of a specific field to get information for.", "default": None}
+            },
+            "required": []
+        },
+        "mission_update_charts": {
+            "name": "mission_update_charts",
+            "description": "Updates one or more charts in the current dashboard.",
+            "parameters": {
+                "charts_data": {
+                    "type": "array",
+                    "description": "A list of objects, where each object specifies a chart to update by its 'index' and includes the new chart data.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "index": {"type": "integer", "description": "The zero-based index of the chart to update."},
+                            "fields": {"type": "array", "items": {"type": "string"}},
+                            "chart_type": {"type": "string"}
+                        },
+                        "required": ["index"]
+                    }
+                }
+            },
+            "required": ["charts_data"]
+        },
+        "mission_add_charts": {
+            "name": "mission_add_charts",
+            "description": "Adds one or more new charts to the current dashboard.",
+            "parameters": {
+                "new_charts": {
+                    "type": "array",
+                    "description": "A list of chart configuration objects to add to the dashboard.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "fields": {"type": "array", "items": {"type": "string"}},
+                            "chart_type": {"type": "string"}
+                        },
+                        "required": ["fields", "chart_type"]
+                    }
+                }
+            },
+            "required": ["new_charts"]
         },
       
         "raster_calculator": {
