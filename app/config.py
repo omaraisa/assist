@@ -200,8 +200,11 @@ def get_api_key(model_key: str) -> str:
     
     if not api_key:
         model_name = model_config["name"]
-        raise ValueError(f"API key not found for {model_name}. Please set {env_var} environment variable or update config.py")
-    
+        # Allow server to start without API key, but log a warning.
+        # The key will be requested from the user via the UI when needed.
+        print(f"Warning: API key not found for {model_name}. Please set {env_var} or add it through the UI.")
+        return ""
+
     return api_key
 
 # Helper function to get model config

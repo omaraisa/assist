@@ -389,13 +389,19 @@ class LangChainAgent:
                 logger.warning(f"Could not import langchain_google_genai: {ie}. Gemini agent will not be available.")
                 self.llm = None
             else:
-                self.llm = ChatGoogleGenerativeAI(
-                    model=model_config["model"],
-                    google_api_key=model_config.get("api_key", None),
-                    temperature=model_config["temperature"],
-                    max_output_tokens=model_config["max_tokens"],
-                )
-                logger.info("LangChain agent LLM set to Google Gemini")
+                # Only instantiate the LLM if an API key is provided.
+                # This prevents crashes when the user hasn't set up their key yet.
+                if model_config.get("api_key"):
+                    self.llm = ChatGoogleGenerativeAI(
+                        model=model_config["model"],
+                        google_api_key=model_config.get("api_key"),
+                        temperature=model_config["temperature"],
+                        max_output_tokens=model_config["max_tokens"],
+                    )
+                    logger.info("LangChain agent LLM set to Google Gemini")
+                else:
+                    self.llm = None
+                    logger.warning("Google Gemini model selected, but no API key found. The agent will not be functional until a key is provided.")
         else:
             # For non-Gemini models, try to provide a LangChain-compatible
             # adapter for Ollama so the same agent/tools can be reused.

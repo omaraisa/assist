@@ -5,7 +5,6 @@ class SmartAssistantClient {
         this.currentModel = 'GEMINI_FLASH';
         this.isConnected = false;
         this.conversationHistory = [];
-        this.apiKeys = this.loadApiKeys();
         this.isThinking = false;
         this.isCancelled = false; // Flag to ignore responses after cancellation
         this.isRecognizing = false;
@@ -24,9 +23,10 @@ class SmartAssistantClient {
             chatForm: document.getElementById('chat-form'),
             connectionStatus: document.getElementById('connection-status'),
             modelSelect: document.getElementById('ai-model-select'),
-            apiKeySection: document.querySelector('.api-key-section'),
+            apiKeyBtn: document.getElementById('api-key-btn'),
+            apiKeySection: document.getElementById('api-key-section'),
             apiKeyInput: document.getElementById('api-key-input'),
-            saveApiKeyBtn: document.getElementById('save-api-key'),
+            saveApiKeyBtn: document.getElementById('save-api-key-btn'),
             loadingIndicator: document.getElementById('loading-indicator'),
             // Dashboard elements
             dashboardPanel: document.getElementById('dashboard-panel'),
@@ -87,8 +87,13 @@ class SmartAssistantClient {
         });
         
         // API key management
+        this.elements.apiKeyBtn.addEventListener('click', () => {
+            const section = this.elements.apiKeySection;
+            section.style.display = section.style.display === 'none' ? 'flex' : 'none';
+        });
+
         this.elements.saveApiKeyBtn.addEventListener('click', () => {
-            this.saveApiKey();
+            this.saveApiKeyAndUpdate();
         });
         
         // Dashboard controls
@@ -104,14 +109,6 @@ class SmartAssistantClient {
             this.showDashboard();
         });
         
-        // Show/hide API key section based on model
-        this.elements.modelSelect.addEventListener('change', () => {
-            this.toggleApiKeySection();
-        });
-        
-        // Initial API key section visibility
-        this.toggleApiKeySection();
-
         // Voice recognition
         this.elements.voiceBtn.addEventListener('click', () => {
             this.toggleVoiceRecognition();
@@ -388,48 +385,49 @@ class SmartAssistantClient {
         this.toggleApiKeySection();
     }
     
-    toggleApiKeySection() {
-        const needsApiKey = !['GEMINI_FLASH', 'GEMINI_PRO', 'GEMINI_FLASH_EXP'].includes(this.currentModel);
-        
-        if (needsApiKey) {
-            this.elements.apiKeySection.style.display = 'flex';
-            
-            // Load existing API key if available
-            const savedKey = this.apiKeys[this.currentModel];
-            if (savedKey) {
-                this.elements.apiKeyInput.value = savedKey;
-            } else {
-                this.elements.apiKeyInput.value = '';
-            }
-        } else {
-            this.elements.apiKeySection.style.display = 'none';
-        }
-    }
-    
-    saveApiKey() {
+    async saveApiKeyAndUpdate() {
         const apiKey = this.elements.apiKeyInput.value.trim();
         if (!apiKey) {
-            alert('Please enter an API key');
+            this.showNotification('Please enter an API key.', 'error');
             return;
         }
-        
-        // Save to local storage
-        this.apiKeys[this.currentModel] = apiKey;
-        localStorage.setItem('smartAssistant_apiKeys', JSON.stringify(this.apiKeys));
-        
-        // Send to server
-        this.sendWebSocketMessage({
-            type: 'set_api_key',
-            model: this.currentModel,
-            api_key: apiKey
-        });
-        
-        alert('API key saved successfully!');
+
+        try {
+            const response = await fetch('/api/update_api_key', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    model_key: this.currentModel,
+                    api_key: apiKey,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                this.showNotification('API key saved successfully! The model is now ready.', 'success');
+                this.elements.apiKeySection.style.display = 'none';
+                this.elements.apiKeyInput.value = '';
+            } else {
+                this.showNotification(`Error: ${result.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Failed to save API key:', error);
+            this.showNotification('An unexpected error occurred while saving the API key.', 'error');
+        }
     }
-    
-    loadApiKeys() {
-        const saved = localStorage.getItem('smartAssistant_apiKeys');
-        return saved ? JSON.parse(saved) : {};
+
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
     }
     
     showLoading() {
