@@ -595,6 +595,31 @@ class FunctionDeclaration:
             },
             "required": ["indices"]
         },
+        "mission_update_layout": {
+            "name": "mission_update_layout",
+            "description": "Updates the overall dashboard layout, such as changing the number of columns, or updates the layout of specific chart items, such as their grid area to make them span multiple columns/rows.",
+            "parameters": {
+                "layout_updates": {
+                    "type": "object",
+                    "description": "An object containing layout updates. Can have 'grid_template_columns' for the whole grid, or an 'items' array for specific charts.",
+                    "properties": {
+                        "grid_template_columns": {"type": "string", "description": "e.g., '1fr 1fr 1fr' for three columns."},
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "index": {"type": "integer", "description": "The index of the chart item to update."},
+                                    "grid_area": {"type": "string", "description": "The new grid area, e.g., 'span 2 / span 2'."}
+                                },
+                                "required": ["index"]
+                            }
+                        }
+                    }
+                }
+            },
+            "required": ["layout_updates"]
+        },
       
         "raster_calculator": {
             "name": "raster_calculator",

@@ -81,6 +81,7 @@ AVAILABLE_FUNCTIONS = {
     74: "mission_update_charts",
     75: "mission_add_charts",
     76: "mission_delete_charts",
+    77: "mission_update_layout",
 }
 
 # This dynamic update is kept for other functions, but we are manually managing

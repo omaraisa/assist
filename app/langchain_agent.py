@@ -130,7 +130,8 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 "mission_get_field_info",
                 "mission_update_charts",
                 "mission_add_charts",
-                "mission_delete_charts"
+                "mission_delete_charts",
+                "mission_update_layout"
             ]
             
             if function_name in dashboard_functions:
@@ -225,6 +226,7 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 "mission_update_charts": mission_update_charts,
                 "mission_add_charts": mission_add_charts,
                 "mission_delete_charts": mission_delete_charts,
+                "mission_update_layout": mission_update_layout,
             }
 
             if function_name in mission_functions:
@@ -267,7 +269,8 @@ from .dashboard_api import (
     mission_get_field_info,
     mission_update_charts,
     mission_add_charts,
-    mission_delete_charts
+    mission_delete_charts,
+    mission_update_layout
 )
 from .config import settings
 from .ai.function_declarations import FunctionDeclaration

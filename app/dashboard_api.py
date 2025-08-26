@@ -187,11 +187,17 @@ def mission_update_charts(charts_data: List[Dict]) -> Dict:
         index = update.get("index")
         new_chart_data = update.get("chart")
         if index is not None and new_chart_data and 0 <= index < len(charts):
+            # Ensure field_name is a string, not a list, to prevent downstream errors.
+            # The 'fields' key can hold the list for multi-field charts.
+            if 'field_name' in new_chart_data and isinstance(new_chart_data['field_name'], list):
+                new_chart_data['fields'] = new_chart_data['field_name']
+                new_chart_data['field_name'] = new_chart_data['fields'][0]
+
             charts[index] = new_chart_data # Full replacement
             updated_count += 1
 
     dashboard["charts"] = charts
-    dashboard["layout"] = _rebuild_layout(charts) # Rebuild layout to reflect potential changes
+    dashboard["layout"] = _rebuild_layout(charts)
     if _save_dashboard(dashboard):
         return {"success": True, "is_dashboard_update": True, "message": f"Successfully updated {updated_count} charts.", "data": {"updated_count": updated_count}}
     return {"success": False, "message": "Failed to save updated dashboard."}
@@ -201,12 +207,23 @@ def mission_add_charts(new_charts: List[Dict]) -> Dict:
     dashboard = _load_dashboard()
     charts = dashboard.get("charts", [])
     for i, new_chart in enumerate(new_charts):
-        if "fields" in new_chart and "chart_type" in new_chart:
+        # The agent might pass 'field_name' as a list. We need to handle this.
+        if 'field_name' in new_chart and isinstance(new_chart['field_name'], list):
+            new_chart['fields'] = new_chart['field_name']
+            new_chart['field_name'] = new_chart['fields'][0]
+
+        if ("fields" in new_chart or "field_name" in new_chart) and "chart_type" in new_chart:
+            # Ensure 'fields' exists if 'field_name' does
+            if "field_name" in new_chart and "fields" not in new_chart:
+                new_chart["fields"] = [new_chart["field_name"]]
+
+            primary_field = new_chart.get("field_name", new_chart.get("fields")[0])
+
             chart_to_add = {
                 "id": f"chart_new_{len(charts) + i}",
-                "field_name": new_chart.get("fields")[0],
-                "title": f"Analysis of {new_chart.get('fields')[0]}",
-                **new_chart
+                "title": f"Analysis of {primary_field}",
+                **new_chart,
+                "field_name": primary_field, # Ensure it's explicitly set
             }
             charts.append(chart_to_add)
 
@@ -236,3 +253,22 @@ def mission_delete_charts(indices: List[int]) -> Dict:
     if _save_dashboard(dashboard):
         return {"success": True, "is_dashboard_update": True, "message": f"Successfully deleted {deleted_count} charts.", "data": {"deleted_count": deleted_count}}
     return {"success": False, "message": "Failed to save dashboard after deleting charts."}
+
+def mission_update_layout(layout_updates: Dict) -> Dict:
+    """
+    Mission: Update the dashboard's overall layout properties or individual item layouts.
+    """
+    dashboard = _load_dashboard()
+
+    if "grid_template_columns" in layout_updates:
+        dashboard["layout"]["grid_template_columns"] = layout_updates["grid_template_columns"]
+
+    if "items" in layout_updates and isinstance(layout_updates["items"], list):
+        for item_update in layout_updates["items"]:
+            index = item_update.get("index")
+            if index is not None and 0 <= index < len(dashboard["layout"]["items"]):
+                dashboard["layout"]["items"][index].update(item_update)
+
+    if _save_dashboard(dashboard):
+        return {"success": True, "is_dashboard_update": True, "message": "Dashboard layout updated successfully."}
+    return {"success": False, "message": "Failed to save updated dashboard layout."}
