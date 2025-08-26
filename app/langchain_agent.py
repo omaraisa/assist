@@ -232,17 +232,15 @@ class ExecuteSpatialFunctionTool(BaseTool):
             else:
                 return {"success": False, "message": f"Unknown or unsupported dashboard function: {function_name}"}
 
-            # If the operation was successful and was an update, send a notification to the client
+            # If the operation was successful and was an update, send a notification to all chatbot clients
             if result.get("success") and result.get("is_dashboard_update"):
-                chatbot_client = self.websocket_manager.get_chatbot_client()
-                if chatbot_client:
-                    from .dashboard_api import _load_dashboard
-                    updated_dashboard_data = _load_dashboard()
-                    update_payload = {
-                        "type": "dashboard_update",
-                        "data": updated_dashboard_data
-                    }
-                    asyncio.run(self.websocket_manager.send_to_client(chatbot_client, update_payload))
+                from .dashboard_api import _load_dashboard
+                updated_dashboard_data = _load_dashboard()
+                update_payload = {
+                    "type": "dashboard_update",
+                    "data": updated_dashboard_data
+                }
+                asyncio.run(self.websocket_manager.broadcast_to_type("chatbot", update_payload))
 
             return result
                 
