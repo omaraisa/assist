@@ -517,10 +517,10 @@ class FunctionDeclaration:
         # New Mission-Oriented Dashboard API
         "mission_generate_dashboard": {
             "name": "mission_generate_dashboard",
-            "description": "Generates a new dashboard for a layer. Use the 'source' parameter to specify whether to use live layer data or cached dashboard data.",
+            "description": "Generates or regenerates a dashboard. If the dashboard is empty, it will automatically use the 'layer' as the source to build a new one. If a dashboard already exists, it uses the cached 'dashboard' data by default.",
             "parameters": {
-                "layer_name": {"type": "string", "description": "The name of the layer to generate the dashboard for."},
-                "source": {"type": "string", "description": "Source of field information, either 'layer' or 'dashboard'. Defaults to 'dashboard'.", "enum": ["layer", "dashboard"], "default": "dashboard"},
+                "layer_name": {"type": "string", "description": "The name of the layer for the dashboard."},
+                "source": {"type": "string", "description": "Optional. Specify 'layer' to force regeneration from live data, or 'dashboard' to use cached data.", "enum": ["layer", "dashboard"], "default": None},
                 "field_insights": {"type": "object", "description": "Optional. Pre-computed field insights to use for generation.", "default": None}
             },
             "required": ["layer_name"]
@@ -547,19 +547,18 @@ class FunctionDeclaration:
         },
         "mission_update_charts": {
             "name": "mission_update_charts",
-            "description": "Updates one or more charts in the current dashboard.",
+            "description": "Updates one or more charts by replacing them entirely. To perform complex updates (e.g., with new data), first get the chart data, modify it, then use this function to replace the old chart at the specified index.",
             "parameters": {
                 "charts_data": {
                     "type": "array",
-                    "description": "A list of objects, where each object specifies a chart to update by its 'index' and includes the new chart data.",
+                    "description": "A list of objects, each specifying a chart to update. Must contain 'index' and the new 'chart' object.",
                     "items": {
                         "type": "object",
                         "properties": {
-                            "index": {"type": "integer", "description": "The zero-based index of the chart to update."},
-                            "fields": {"type": "array", "items": {"type": "string"}},
-                            "chart_type": {"type": "string"}
+                            "index": {"type": "integer", "description": "The zero-based index of the chart to replace."},
+                            "chart": {"type": "object", "description": "The full new chart object."}
                         },
-                        "required": ["index"]
+                        "required": ["index", "chart"]
                     }
                 }
             },
@@ -571,7 +570,7 @@ class FunctionDeclaration:
             "parameters": {
                 "new_charts": {
                     "type": "array",
-                    "description": "A list of chart configuration objects to add to the dashboard.",
+                    "description": "A list of chart configuration objects to add.",
                     "items": {
                         "type": "object",
                         "properties": {
@@ -583,6 +582,18 @@ class FunctionDeclaration:
                 }
             },
             "required": ["new_charts"]
+        },
+        "mission_delete_charts": {
+            "name": "mission_delete_charts",
+            "description": "Deletes one or more charts from the dashboard using their indices.",
+            "parameters": {
+                "indices": {
+                    "type": "array",
+                    "description": "A list of zero-based integer indices of the charts to delete.",
+                    "items": {"type": "integer"}
+                }
+            },
+            "required": ["indices"]
         },
       
         "raster_calculator": {

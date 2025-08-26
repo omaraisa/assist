@@ -129,7 +129,8 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 "mission_get_charts",
                 "mission_get_field_info",
                 "mission_update_charts",
-                "mission_add_charts"
+                "mission_add_charts",
+                "mission_delete_charts"
             ]
             
             if function_name in dashboard_functions:
@@ -177,65 +178,55 @@ class ExecuteSpatialFunctionTool(BaseTool):
     def _execute_dashboard_function(self, function_name: str, parameters: dict) -> dict:
         """Execute dashboard functions locally on the server side using the new API."""
         try:
-            if function_name == "mission_generate_dashboard":
-                layer_name = parameters.get("layer_name")
-                source = parameters.get("source", "dashboard")
+            # Special handling for mission_generate_dashboard to fetch insights if needed
+            if function_name == "mission_generate_dashboard" and parameters.get("source") == "layer":
+                arcgis_client = self.websocket_manager.get_arcgis_client()
+                if not arcgis_client:
+                    return {"success": False, "message": "ArcGIS Pro client not connected for field analysis."}
                 
-                # If the source is 'layer', we must fetch field insights from ArcGIS Pro first.
-                if source == "layer":
-                    arcgis_client = self.websocket_manager.get_arcgis_client()
-                    if not arcgis_client:
-                        return {"success": False, "message": "ArcGIS Pro client not connected for field analysis."}
-                    
-                    session_id = str(uuid.uuid4())
-                    analysis_payload = {
-                        "type": "execute_function",
-                        "function_name": "analyze_layer_fields", # This function needs to exist on the client
-                        "parameters": {"layer": layer_name},
-                        "session_id": session_id,
-                        "source_client": self.client_id
-                    }
-                    asyncio.run(self.websocket_manager.send_to_client(arcgis_client, analysis_payload))
+                session_id = str(uuid.uuid4())
+                analysis_payload = {
+                    "type": "execute_function", "function_name": "analyze_layer_fields",
+                    "parameters": {"layer": parameters.get("layer_name")}, "session_id": session_id,
+                    "source_client": self.client_id
+                }
+                asyncio.run(self.websocket_manager.send_to_client(arcgis_client, analysis_payload))
 
-                    # Wait for the result
-                    max_wait_time = 120
-                    check_interval = 0.2
-                    elapsed_time = 0
-                    field_insights = None
-                    while elapsed_time < max_wait_time:
-                        if self.websocket_manager.has_function_result(session_id):
-                            result = self.websocket_manager.get_function_result(session_id)
-                            if result and result.get("data", {}).get("success"):
-                                field_insights = result.get("data", {}).get("field_insights")
-                                break
-                        import time
-                        time.sleep(check_interval)
-                        elapsed_time += check_interval
-                    
-                    if not field_insights:
-                        return {"success": False, "message": "Failed to get field insights from ArcGIS Pro."}
+                # Wait for the result
+                max_wait_time = 120
+                check_interval = 0.2
+                elapsed_time = 0
+                field_insights = None
+                while elapsed_time < max_wait_time:
+                    if self.websocket_manager.has_function_result(session_id):
+                        result = self.websocket_manager.get_function_result(session_id)
+                        if result and result.get("data", {}).get("success"):
+                            field_insights = result.get("data", {}).get("field_insights")
+                            break
+                    import time
+                    time.sleep(check_interval)
+                    elapsed_time += check_interval
 
-                    # Call the mission function with the retrieved insights
-                    return mission_generate_dashboard(layer_name, source="layer", field_insights=field_insights)
-                else:
-                    # If source is 'dashboard' or not provided, just call the function directly.
-                    return mission_generate_dashboard(layer_name, source="dashboard")
+                if not field_insights:
+                    return {"success": False, "message": "Failed to get field insights from ArcGIS Pro."}
 
+                parameters["field_insights"] = field_insights
+
+            # Dynamically call the correct mission function
+            if function_name == "mission_generate_dashboard":
+                return mission_generate_dashboard(**parameters)
             elif function_name == "mission_get_layout":
                 return mission_get_layout()
-
             elif function_name == "mission_get_charts":
                 return mission_get_charts()
-                
             elif function_name == "mission_get_field_info":
-                return mission_get_field_info(parameters.get("field_name"))
-                
+                return mission_get_field_info(**parameters)
             elif function_name == "mission_update_charts":
-                return mission_update_charts(parameters.get("charts_data", []))
-                
+                return mission_update_charts(**parameters)
             elif function_name == "mission_add_charts":
-                return mission_add_charts(parameters.get("new_charts", []))
-
+                return mission_add_charts(**parameters)
+            elif function_name == "mission_delete_charts":
+                return mission_delete_charts(**parameters)
             else:
                 return {"success": False, "message": f"Unknown or unsupported dashboard function: {function_name}"}
                 
@@ -261,7 +252,8 @@ from .dashboard_api import (
     mission_get_charts,
     mission_get_field_info,
     mission_update_charts,
-    mission_add_charts
+    mission_add_charts,
+    mission_delete_charts
 )
 from .config import settings
 from .ai.function_declarations import FunctionDeclaration
