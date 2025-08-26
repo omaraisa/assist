@@ -177,7 +177,12 @@ class ExecuteSpatialFunctionTool(BaseTool):
 
     def _execute_dashboard_function(self, function_name: str, parameters: dict) -> dict:
         """Execute dashboard functions locally on the server side using the new API."""
+        result = {}
         try:
+            # The agent sometimes wraps parameters in an 'arguments' dict. Unwrap it.
+            if isinstance(parameters, dict) and "arguments" in parameters and isinstance(parameters["arguments"], dict):
+                parameters = parameters["arguments"]
+
             # Special handling for mission_generate_dashboard to fetch insights if needed
             if function_name == "mission_generate_dashboard" and parameters.get("source") == "layer":
                 arcgis_client = self.websocket_manager.get_arcgis_client()
@@ -192,16 +197,15 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 }
                 asyncio.run(self.websocket_manager.send_to_client(arcgis_client, analysis_payload))
 
-                # Wait for the result
                 max_wait_time = 120
                 check_interval = 0.2
                 elapsed_time = 0
                 field_insights = None
                 while elapsed_time < max_wait_time:
                     if self.websocket_manager.has_function_result(session_id):
-                        result = self.websocket_manager.get_function_result(session_id)
-                        if result and result.get("data", {}).get("success"):
-                            field_insights = result.get("data", {}).get("field_insights")
+                        insight_result = self.websocket_manager.get_function_result(session_id)
+                        if insight_result and insight_result.get("data", {}).get("success"):
+                            field_insights = insight_result.get("data", {}).get("field_insights")
                             break
                     import time
                     time.sleep(check_interval)
@@ -213,22 +217,34 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 parameters["field_insights"] = field_insights
 
             # Dynamically call the correct mission function
-            if function_name == "mission_generate_dashboard":
-                return mission_generate_dashboard(**parameters)
-            elif function_name == "mission_get_layout":
-                return mission_get_layout()
-            elif function_name == "mission_get_charts":
-                return mission_get_charts()
-            elif function_name == "mission_get_field_info":
-                return mission_get_field_info(**parameters)
-            elif function_name == "mission_update_charts":
-                return mission_update_charts(**parameters)
-            elif function_name == "mission_add_charts":
-                return mission_add_charts(**parameters)
-            elif function_name == "mission_delete_charts":
-                return mission_delete_charts(**parameters)
+            mission_functions = {
+                "mission_generate_dashboard": mission_generate_dashboard,
+                "mission_get_layout": mission_get_layout,
+                "mission_get_charts": mission_get_charts,
+                "mission_get_field_info": mission_get_field_info,
+                "mission_update_charts": mission_update_charts,
+                "mission_add_charts": mission_add_charts,
+                "mission_delete_charts": mission_delete_charts,
+            }
+
+            if function_name in mission_functions:
+                result = mission_functions[function_name](**parameters)
             else:
                 return {"success": False, "message": f"Unknown or unsupported dashboard function: {function_name}"}
+
+            # If the operation was successful and was an update, send a notification to the client
+            if result.get("success") and result.get("is_dashboard_update"):
+                chatbot_client = self.websocket_manager.get_chatbot_client()
+                if chatbot_client:
+                    from .dashboard_api import _load_dashboard
+                    updated_dashboard_data = _load_dashboard()
+                    update_payload = {
+                        "type": "dashboard_update",
+                        "data": updated_dashboard_data
+                    }
+                    asyncio.run(self.websocket_manager.send_to_client(chatbot_client, update_payload))
+
+            return result
                 
         except Exception as e:
             return {"success": False, "message": f"Error executing dashboard function '{function_name}': {str(e)}"}

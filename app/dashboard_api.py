@@ -91,9 +91,14 @@ def _create_chart_from_field(field_info: Dict, theme: str) -> Dict:
 def _rebuild_layout(charts: List[Dict]) -> Dict:
     """Rebuilds the entire layout based on the current list of charts."""
     num_charts = len(charts)
-    if num_charts <= 2: grid_cols = "1fr 1fr"
-    elif num_charts <= 4: grid_cols = "1fr 1fr"
-    else: grid_cols = "1fr 1fr 1fr"
+    if num_charts == 1:
+        grid_cols = "1fr"
+    elif 2 <= num_charts <= 4:
+        grid_cols = "1fr 1fr"
+    elif 5 <= num_charts <= 9:
+        grid_cols = "1fr 1fr 1fr"
+    else: # 10+ charts
+        grid_cols = "1fr 1fr 1fr 1fr"
 
     layout_items = []
     for i, chart in enumerate(charts):
@@ -188,7 +193,7 @@ def mission_update_charts(charts_data: List[Dict]) -> Dict:
     dashboard["charts"] = charts
     dashboard["layout"] = _rebuild_layout(charts) # Rebuild layout to reflect potential changes
     if _save_dashboard(dashboard):
-        return {"success": True, "message": f"Successfully updated {updated_count} charts.", "data": {"updated_count": updated_count}}
+        return {"success": True, "is_dashboard_update": True, "message": f"Successfully updated {updated_count} charts.", "data": {"updated_count": updated_count}}
     return {"success": False, "message": "Failed to save updated dashboard."}
 
 def mission_add_charts(new_charts: List[Dict]) -> Dict:
@@ -208,7 +213,7 @@ def mission_add_charts(new_charts: List[Dict]) -> Dict:
     dashboard["charts"] = charts
     dashboard["layout"] = _rebuild_layout(charts)
     if _save_dashboard(dashboard):
-        return {"success": True, "message": f"Successfully added {len(new_charts)} new charts.", "data": {"added_count": len(new_charts)}}
+        return {"success": True, "is_dashboard_update": True, "message": f"Successfully added {len(new_charts)} new charts.", "data": {"added_count": len(new_charts)}}
     return {"success": False, "message": "Failed to save dashboard with new charts."}
 
 def mission_delete_charts(indices: List[int]) -> Dict:
@@ -229,5 +234,5 @@ def mission_delete_charts(indices: List[int]) -> Dict:
     dashboard["charts"] = charts
     dashboard["layout"] = _rebuild_layout(charts) # Rebuild layout after deletion
     if _save_dashboard(dashboard):
-        return {"success": True, "message": f"Successfully deleted {deleted_count} charts.", "data": {"deleted_count": deleted_count}}
+        return {"success": True, "is_dashboard_update": True, "message": f"Successfully deleted {deleted_count} charts.", "data": {"deleted_count": deleted_count}}
     return {"success": False, "message": "Failed to save dashboard after deleting charts."}
