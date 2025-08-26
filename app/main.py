@@ -1082,6 +1082,7 @@ async def shutdown_event():
 async def update_api_key(request: ApiKeyUpdateRequest):
     """Update an API key in the configuration."""
     try:
+        global settings
         model_key = request.model_key
         new_api_key = request.api_key
 
@@ -1101,7 +1102,6 @@ async def update_api_key(request: ApiKeyUpdateRequest):
         if success:
             # IMPORTANT: Reload the settings and re-initialize the AI service
             # to make the new key take effect immediately.
-            global settings
             settings = type(settings)()  # Re-instantiate the settings class
 
             # Re-initialize the AI service with the potentially new default model's key

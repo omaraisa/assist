@@ -5,7 +5,6 @@ class SmartAssistantClient {
         this.currentModel = 'GEMINI_FLASH';
         this.isConnected = false;
         this.conversationHistory = [];
-        this.apiKeys = this.loadApiKeys();
         this.isThinking = false;
         this.isCancelled = false; // Flag to ignore responses after cancellation
         this.isRecognizing = false;
@@ -110,14 +109,6 @@ class SmartAssistantClient {
             this.showDashboard();
         });
         
-        // Show/hide API key section based on model
-        this.elements.modelSelect.addEventListener('change', () => {
-            this.toggleApiKeySection();
-        });
-        
-        // Initial API key section visibility
-        this.toggleApiKeySection();
-
         // Voice recognition
         this.elements.voiceBtn.addEventListener('click', () => {
             this.toggleVoiceRecognition();
@@ -394,19 +385,6 @@ class SmartAssistantClient {
         this.toggleApiKeySection();
     }
     
-    toggleApiKeySection() {
-        if (!this.aiModels) return;
-
-        const modelConfig = this.aiModels[this.currentModel];
-        const needsApiKey = modelConfig && !modelConfig.local;
-
-        if (needsApiKey) {
-            this.elements.apiKeySection.style.display = 'flex';
-        } else {
-            this.elements.apiKeySection.style.display = 'none';
-        }
-    }
-
     async saveApiKeyAndUpdate() {
         const apiKey = this.elements.apiKeyInput.value.trim();
         if (!apiKey) {
@@ -450,11 +428,6 @@ class SmartAssistantClient {
         setTimeout(() => {
             notification.remove();
         }, 5000);
-    }
-    
-    loadApiKeys() {
-        const saved = localStorage.getItem('smartAssistant_apiKeys');
-        return saved ? JSON.parse(saved) : {};
     }
     
     showLoading() {
