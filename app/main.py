@@ -16,6 +16,12 @@ from .ai.function_declarations import FunctionDeclaration
 from .ai.ai_response_handler import AIResponseHandler
 from .config import settings
 from .monitoring import monitoring_service
+from .config_manager import update_api_key_in_config
+from pydantic import BaseModel
+
+class ApiKeyUpdateRequest(BaseModel):
+    model_key: str
+    api_key: str
 
 # Configure logging
 log_dir = Path("logs")
@@ -1071,6 +1077,46 @@ async def shutdown_event():
     await websocket_manager.disconnect_all()
     
     logger.info("Progent shut down successfully!")
+
+@app.post("/api/update_api_key")
+async def update_api_key(request: ApiKeyUpdateRequest):
+    """Update an API key in the configuration."""
+    try:
+        model_key = request.model_key
+        new_api_key = request.api_key
+
+        if not model_key or not new_api_key:
+            return {"success": False, "message": "Model key and API key are required."}
+
+        # Get the environment variable name from the model's configuration
+        model_config = settings.AI_MODELS.get(model_key)
+        if not model_config or "api_key_env" not in model_config:
+            return {"success": False, "message": f"Invalid model key: {model_key}"}
+
+        api_key_env_var = model_config["api_key_env"]
+
+        # Update the config file
+        success = update_api_key_in_config(api_key_env_var, new_api_key)
+
+        if success:
+            # IMPORTANT: Reload the settings and re-initialize the AI service
+            # to make the new key take effect immediately.
+            global settings
+            settings = type(settings)()  # Re-instantiate the settings class
+
+            # Re-initialize the AI service with the potentially new default model's key
+            await ai_service.initialize()
+
+            # Also, explicitly set the model for the AI service to reload its config
+            ai_service.set_model(ai_service.current_model)
+
+            return {"success": True, "message": "API key updated successfully. The application has been reloaded."}
+        else:
+            return {"success": False, "message": "Failed to update the configuration file."}
+
+    except Exception as e:
+        logger.error(f"Error updating API key: {e}", exc_info=True)
+        return {"success": False, "message": f"An unexpected error occurred: {str(e)}"}
 
 @app.get("/api/dashboard/latest")
 async def get_latest_dashboard():
