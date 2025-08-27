@@ -566,7 +566,7 @@ class FunctionDeclaration:
         },
         "mission_add_charts": {
             "name": "mission_add_charts",
-            "description": "Adds one or more new charts to the current dashboard.",
+            "description": "Adds one or more new charts to the current dashboard. If an 'index' is provided, charts are inserted at that position; otherwise, they are appended to the end.",
             "parameters": {
                 "new_charts": {
                     "type": "array",
@@ -579,6 +579,11 @@ class FunctionDeclaration:
                         },
                         "required": ["fields", "chart_type"]
                     }
+                },
+                "index": {
+                    "type": "integer",
+                    "description": "Optional. The zero-based index at which to insert the new charts.",
+                    "default": None
                 }
             },
             "required": ["new_charts"]

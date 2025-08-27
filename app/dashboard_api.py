@@ -202,18 +202,22 @@ def mission_update_charts(charts_data: List[Dict]) -> Dict:
         return {"success": True, "is_dashboard_update": True, "message": f"Successfully updated {updated_count} charts.", "data": {"updated_count": updated_count}}
     return {"success": False, "message": "Failed to save updated dashboard."}
 
-def mission_add_charts(new_charts: List[Dict]) -> Dict:
-    """Mission: Add new charts to the dashboard."""
+def mission_add_charts(new_charts: List[Dict], index: int = None) -> Dict:
+    """
+    Mission: Add or insert new charts into the dashboard.
+    If index is provided, charts are inserted at that position. Otherwise, they are appended.
+    """
     dashboard = _load_dashboard()
     charts = dashboard.get("charts", [])
+
+    # Process new charts to ensure data model is correct
+    processed_charts = []
     for i, new_chart in enumerate(new_charts):
-        # The agent might pass 'field_name' as a list. We need to handle this.
         if 'field_name' in new_chart and isinstance(new_chart['field_name'], list):
             new_chart['fields'] = new_chart['field_name']
             new_chart['field_name'] = new_chart['fields'][0]
 
         if ("fields" in new_chart or "field_name" in new_chart) and "chart_type" in new_chart:
-            # Ensure 'fields' exists if 'field_name' does
             if "field_name" in new_chart and "fields" not in new_chart:
                 new_chart["fields"] = [new_chart["field_name"]]
 
@@ -223,9 +227,15 @@ def mission_add_charts(new_charts: List[Dict]) -> Dict:
                 "id": f"chart_new_{len(charts) + i}",
                 "title": f"Analysis of {primary_field}",
                 **new_chart,
-                "field_name": primary_field, # Ensure it's explicitly set
+                "field_name": primary_field,
             }
-            charts.append(chart_to_add)
+            processed_charts.append(chart_to_add)
+
+    # Insert or append the new charts
+    if index is not None and 0 <= index <= len(charts):
+        charts[index:index] = processed_charts
+    else:
+        charts.extend(processed_charts)
 
     dashboard["charts"] = charts
     dashboard["layout"] = _rebuild_layout(charts)

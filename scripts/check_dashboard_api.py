@@ -76,16 +76,34 @@ def run_tests():
     mission_add_charts([{"fields": ["F1"], "chart_type": "bar"}]) # 1 chart
     layout = mission_get_layout()['data']
     assert layout['grid_template_columns'] == '1fr', "Test 5.1 Failed: 1 chart should be 1 column."
+    print("  - Passed: 1 chart -> 1 column")
     mission_add_charts([{"fields": ["F2"], "chart_type": "bar"}, {"fields": ["F3"], "chart_type": "bar"}]) # 3 charts
     layout = mission_get_layout()['data']
     assert layout['grid_template_columns'] == '1fr 1fr', "Test 5.2 Failed: 3 charts should be 2 columns."
+    print("  - Passed: 3 charts -> 2 columns")
     mission_add_charts([{"fields": ["F4"], "chart_type": "bar"}, {"fields": ["F5"], "chart_type": "bar"}]) # 5 charts
     layout = mission_get_layout()['data']
     assert layout['grid_template_columns'] == '1fr 1fr 1fr', "Test 5.3 Failed: 5 charts should be 3 columns."
+    print("  - Passed: 5 charts -> 3 columns")
     mission_delete_charts(indices=[0, 1, 2, 3]) # 1 chart left
     layout = mission_get_layout()['data']
     assert layout['grid_template_columns'] == '1fr', "Test 5.4 Failed: 1 chart should be 1 column after deletion."
+    print("  - Passed: 1 chart -> 1 column (after deletion)")
     print("Test 5 Passed: Layout logic is responsive.")
+
+    # Test 6: Insert a chart at the beginning
+    print("\n[Test 6] Insert a chart at index 0")
+    initial_charts = mission_get_charts()['data']
+    initial_first_chart_id = initial_charts[0]['id']
+    insert_payload = [{"fields": ["InsertedField"], "chart_type": "line"}]
+    result = mission_add_charts(insert_payload, index=0)
+    assert result.get("success") and result.get("is_dashboard_update"), "Test 6 Failed: Chart insertion failed."
+    final_charts = mission_get_charts()['data']
+    assert len(final_charts) == len(initial_charts) + 1, "Test 6 Failed: Chart count did not increase."
+    assert final_charts[0]['fields'][0] == "InsertedField", "Test 6 Failed: Chart was not inserted at the beginning."
+    assert final_charts[1]['id'] == initial_first_chart_id, "Test 6 Failed: Original first chart is not in the second position."
+    print("Test 6 Passed: Chart inserted at the beginning successfully.")
+
 
     print("\n--- All smoke tests passed successfully! ---")
     cleanup()
