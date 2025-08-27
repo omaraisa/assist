@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 import json
+import os
 import logging
 import random
 from pathlib import Path
@@ -224,7 +225,19 @@ async def handle_user_message(client_id: str, user_message: str):
             arcgis_state=arcgis_state,
             client_id=client_id
         )
-        
+
+        # If AI service returned an explicit error, surface it to the client
+        if isinstance(ai_response, dict) and ai_response.get('type') == 'error':
+            err_content = ai_response.get('content', 'AI service reported an error')
+            logger.warning(f"AI service error for client {client_id}: {err_content}")
+            await websocket_manager.send_to_client(client_id, {
+                "type": "assistant_message",
+                "content": f"Error: {err_content}"
+            })
+            # Add to conversation history as system/assistant message
+            websocket_manager.add_to_history(client_id, "assistant", f"Error: {err_content}")
+            return
+
         # Check for cancellation before processing response
         if websocket_manager.is_cancelled(client_id):
             websocket_manager.clear_cancel_flag(client_id)
@@ -1100,17 +1113,39 @@ async def update_api_key(request: ApiKeyUpdateRequest):
         success = update_api_key_in_config(api_key_env_var, new_api_key)
 
         if success:
-            # IMPORTANT: Reload the settings and re-initialize the AI service
-            # to make the new key take effect immediately.
-            settings = type(settings)()  # Re-instantiate the settings class
+            # Update environment so new Settings will pick it up if reloaded later
+            os.environ[api_key_env_var] = new_api_key
 
-            # Re-initialize the AI service with the potentially new default model's key
-            await ai_service.initialize()
+            # Try to update the existing settings instance in-place (preferred)
+            try:
+                # Pydantic BaseSettings exposes attributes for simple fields
+                if hasattr(settings, api_key_env_var):
+                    setattr(settings, api_key_env_var, new_api_key)
 
-            # Also, explicitly set the model for the AI service to reload its config
-            ai_service.set_model(ai_service.current_model)
+                # Also update the AI_MODELS entry so get_model_config includes api_key immediately
+                model_cfg = settings.AI_MODELS.get(model_key, {})
+                model_cfg = model_cfg.copy() if isinstance(model_cfg, dict) else {}
+                model_cfg['api_key'] = new_api_key
+                # Ensure the AI_MODELS mapping is updated in-place
+                settings.AI_MODELS[model_key] = model_cfg
 
-            return {"success": True, "message": "API key updated successfully. The application has been reloaded."}
+                logger.info(f"In-memory settings updated for {api_key_env_var} and model {model_key}")
+
+            except Exception as e:
+                logger.warning(f"Failed to update in-memory settings cleanly: {e}")
+
+            # Notify AI service to reload any cached model config where possible
+            try:
+                # If AIService has a method to refresh model configuration, use it; otherwise call set_model
+                ai_service.set_model(ai_service.current_model)
+            except Exception:
+                try:
+                    # As a fallback, re-run initialize (async)
+                    await ai_service.initialize()
+                except Exception as e:
+                    logger.error(f"Failed to reinitialize ai_service after API key update: {e}")
+
+            return {"success": True, "message": "API key updated successfully and loaded into memory."}
         else:
             return {"success": False, "message": "Failed to update the configuration file."}
 

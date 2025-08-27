@@ -259,11 +259,40 @@ class SmartAssistantClient {
         const select = this.elements.modelSelect;
         select.innerHTML = '';
         
+        // Store models locally for later visibility checks
+        this.availableModels = models;
+
         for (const [key, model] of Object.entries(models)) {
             const option = document.createElement('option');
             option.value = key;
             option.textContent = model.name;
+            // Attach api_key_env as data attribute if present
+            if (model.api_key_env) {
+                option.dataset.apiKeyEnv = model.api_key_env;
+            }
             select.appendChild(option);
+        }
+
+        // Ensure API key section visibility reflects the current model
+        this.toggleApiKeySection();
+    }
+
+    // Show or hide the API key section depending on the selected model
+    toggleApiKeySection() {
+        const select = this.elements.modelSelect;
+        const section = this.elements.apiKeySection;
+        if (!select || !section || !this.availableModels) return;
+
+        const modelKey = select.value || this.currentModel;
+        const model = this.availableModels ? this.availableModels[modelKey] : null;
+
+        // If model requires an API key (has api_key_env), show the input; otherwise hide
+        if (model && model.api_key_env) {
+            section.style.display = 'flex';
+            // Set placeholder to indicate which env var will be set
+            this.elements.apiKeyInput.placeholder = `Enter API key for ${model.name} (${model.api_key_env})`;
+        } else {
+            section.style.display = 'none';
         }
     }
     

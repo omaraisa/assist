@@ -622,7 +622,6 @@ class RunPythonCode(object):
             # The expression is evaluated directly. This is powerful but requires the input
             # from the AI to be trusted. The function declaration explicitly states that the
             # expression will contain `Raster` objects.
-            from arcpy.sa import *
 
             # Execute the map algebra expression
             result_raster = eval(expression)

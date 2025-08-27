@@ -93,6 +93,23 @@ class AIService:
         try:
             logger.info(f"Generating response for model: {self.current_model}")
             logger.info(f"User message: {user_message[:100]}...")
+
+            # Pre-check: try to fetch model config early so we can provide clear feedback
+            try:
+                model_config = get_model_config(self.current_model)
+            except Exception as e:
+                # Model config couldn't be retrieved (likely missing API key or misconfiguration)
+                err_msg = str(e)
+                logger.warning(err_msg)
+                # Return a structured error so the caller can surface it to the user
+                return {
+                    "type": "error",
+                    "content": (
+                        f"{err_msg} — You can add the API key via the web UI (click the key icon in the header) "
+                        "or set the environment variable on the server."
+                    ),
+                    "model": self.current_model
+                }
             
             # Use LangChain agent for Gemini AND Ollama models (if agent has an LLM)
             if (self.current_model.startswith("GEMINI") or 
@@ -107,7 +124,16 @@ class AIService:
                 )
                 return {"type": "text", "content": response["output"], "model": self.current_model}
             elif self.current_model.startswith("GEMINI"):
+                # We couldn't use the LangChain agent for Gemini; provide a helpful error
                 logger.warning(f"LangChain agent not available for Gemini model: {self.current_model}")
+                return {
+                    "type": "error",
+                    "content": (
+                        "Gemini API key is missing or invalid. You can get a free API key at https://aistudio.google.com/app/apikey "
+                        "and add it in the web UI (key icon) or set it on the server."
+                    ),
+                    "model": self.current_model
+                }
             elif self.current_model.startswith("OLLAMA"):
                 logger.info(f"LangChain agent not available for Ollama, falling back to direct flow: {self.current_model}")
 
