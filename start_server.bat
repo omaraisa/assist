@@ -1,5 +1,5 @@
 @echo off
-title ArcGIS Pro Smart Assistant - FastAPI Server
+title Progent - FastAPI Server
 
 echo =========================================
 echo   Progent - FastAPI
@@ -7,8 +7,7 @@ echo =========================================
 echo.
 
 REM Get the directory of this script
-set "PROJECT_DIR=%~dp0"
-set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
+set "PROJECT_DIR=%~dp0Progent"
 
 echo [INFO] Project Directory: %PROJECT_DIR%
 
@@ -63,3 +62,4 @@ if exist "%PROJECT_DIR%\venv\Scripts\python.exe" (
 echo.
 echo [INFO] Server stopped
 pause
+

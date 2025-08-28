@@ -32,18 +32,31 @@
             "theme": "default"
         },
         {
-            "id": "chart_operator",
-            "field_name": "operator",
-            "chart_type": "bar",
-            "title": "'operator' has 7 categories, suitable for comparative analysis and ranking visualizations.",
-            "theme": "default"
-        },
-        {
-            "id": "chart_Long",
-            "field_name": "Long",
-            "chart_type": "histogram",
-            "title": "'Long' shows consistent values (range: 39.05 to 39.32), good for trend analysis.",
-            "theme": "default"
+            "type": "column",
+            "title": "Fuel Sales by Operator",
+            "categories": [
+                "Operator A",
+                "Operator B",
+                "Operator C"
+            ],
+            "series": [
+                {
+                    "name": "Fuel 91",
+                    "data": [
+                        436310.7156,
+                        436310.7156,
+                        436310.7156
+                    ]
+                },
+                {
+                    "name": "Fuel 95",
+                    "data": [
+                        463124.6632,
+                        463124.6632,
+                        463124.6632
+                    ]
+                }
+            ]
         }
     ],
     "layout": {
@@ -75,16 +88,10 @@
                 "grid_area": "chart-4"
             },
             {
-                "id": "chart_operator",
-                "chart_type": "bar",
-                "field_name": "operator",
+                "id": null,
+                "chart_type": null,
+                "field_name": null,
                 "grid_area": "chart-5"
-            },
-            {
-                "id": "chart_Long",
-                "chart_type": "histogram",
-                "field_name": "Long",
-                "grid_area": "chart-6"
             }
         ]
     },

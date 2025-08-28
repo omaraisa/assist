@@ -1,6 +1,6 @@
 @echo off
 setlocal
-:: Usage: & ".\git-acp.bat" "CommitMessage"
+:: Usage: & ".\Progent\git-acp.bat" "CommitMessage"
 :: This script stages, commits, and pushes changes to the current git branch.
 :: Check if commit message was provided
 if "%~1"=="" (

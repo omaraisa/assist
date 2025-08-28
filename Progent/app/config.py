@@ -68,15 +68,15 @@ class Settings(BaseSettings):
         #     "temperature": 0.7,
         #     "api_key_env": "ANTHROPIC_API_KEY"        },
         # Ollama Models (Local LLMs)
-        # "OLLAMA_GEMMA": {
-        #         "name": "Gemma 2B (Local)",
-        #         "model": "",
-        #         "provider": "ollama",
-        #         "endpoint": "http://localhost:11434",
-        #         "max_tokens": 8192,
-        #         "temperature": 0.7,
-        #         "local": True
-        #     },
+        "OLLAMA_GEMMA": {
+                "name": "Gemma 2B (Local)",
+                "model": "gemma:7b",
+                "provider": "ollama",
+                "endpoint": "http://localhost:11434",
+                "max_tokens": 8192,
+                "temperature": 0.7,
+                "local": True
+            },
             # "OLLAMA_LLAMA31": {
             #     "name": "Llama 3.2 3B (Local)",
             #     "model": "llama3.2:3b",
@@ -115,7 +115,7 @@ class Settings(BaseSettings):
     # - For OpenAI models: Set OPENAI_API_KEY 
     # - For Claude: Set ANTHROPIC_API_KEY
     # - For Ollama: No API key needed (local)
-    GEMINI_API_KEY: str = "AIzaSyBAoskVoMjjlNksl9saVz4LeEazkYIz2Q4"
+    GEMINI_API_KEY: str = "AIzaSyCQudVBnsKYf3Y-Epx_MNhuFdgMQIlHzN8"
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
     

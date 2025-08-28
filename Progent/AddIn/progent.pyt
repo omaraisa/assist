@@ -1023,46 +1023,196 @@ class RunPythonCode(object):
     def idw_interpolation(self, params):
         in_point_features = params.get("in_point_features")
         z_field = params.get("z_field")
-        output_name = f"{in_point_features.replace(' ', '_')}_idw"
-        aprx = arcpy.mp.ArcGISProject("CURRENT")
-        out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
-        out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.Idw(in_point_features, z_field).save(out_raster)
-        self._add_to_map(out_raster)
-        return {"success": True, "output_raster": out_raster}
+        out_raster = params.get("out_raster")
+        try:
+            # Check if Spatial Analyst extension is available
+            if arcpy.CheckExtension("Spatial") == "Available":
+                arcpy.CheckOutExtension("Spatial")
+            else:
+                return {"success": False, "error": "Spatial Analyst extension is not available"}
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+
+            # Convert inputs to raw strings to handle spaces properly
+            if in_point_features:
+                in_point_features = r"{}".format(in_point_features)
+            if z_field:
+                z_field = r"{}".format(z_field)
+
+            # Handle output path - if provided use it, otherwise create default name
+            if out_raster and (os.path.isabs(out_raster) or os.path.sep in out_raster):
+                out_path = r"{}".format(out_raster)
+            else:
+                # Build a reasonable default name
+                if in_point_features:
+                    safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_point_features))
+                    output_name = f"{safe_name}_idw"
+                else:
+                    output_name = "idw_interpolation"
+                
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
+                out_path = arcpy.CreateUniqueName(out_path)
+
+            # Perform IDW interpolation
+            from arcpy.sa import Idw
+            result_raster = Idw(in_point_features, z_field)
+            result_raster.save(out_path)
+
+            try:
+                self._add_to_map(out_path)
+            except Exception:
+                pass
+
+            return {"success": True, "output_raster": out_path, "message": f"IDW interpolation completed successfully. Output saved to {out_path}"}
+        except Exception as e:
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
+        finally:
+            try:
+                arcpy.CheckInExtension("Spatial")
+            except:
+                pass
 
     def kriging_interpolation(self, params):
         in_point_features = params.get("in_point_features")
         z_field = params.get("z_field")
-        output_name = f"{in_point_features.replace(' ', '_')}_kriging"
-        aprx = arcpy.mp.ArcGISProject("CURRENT")
-        out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
-        out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.Kriging(in_point_features, z_field).save(out_raster)
-        self._add_to_map(out_raster)
-        return {"success": True, "output_raster": out_raster}
+        out_raster = params.get("out_raster")
+        try:
+            # Check if Spatial Analyst extension is available
+            if arcpy.CheckExtension("Spatial") == "Available":
+                arcpy.CheckOutExtension("Spatial")
+            else:
+                return {"success": False, "error": "Spatial Analyst extension is not available"}
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+
+            # Handle output path - if provided use it, otherwise create default name
+            if out_raster and (os.path.isabs(out_raster) or os.path.sep in out_raster):
+                out_path = out_raster
+            else:
+                # Build a reasonable default name
+                if in_point_features:
+                    safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_point_features))
+                    output_name = f"{safe_name}_kriging"
+                else:
+                    output_name = "kriging_interpolation"
+                
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
+                out_path = arcpy.CreateUniqueName(out_path)
+
+            # Perform Kriging interpolation
+            from arcpy.sa import Kriging
+            result_raster = Kriging(in_point_features, z_field)
+            result_raster.save(out_path)
+
+            try:
+                self._add_to_map(out_path)
+            except Exception:
+                pass
+
+            return {"success": True, "output_raster": out_path, "message": f"Kriging interpolation completed successfully. Output saved to {out_path}"}
+        except Exception as e:
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
+        finally:
+            try:
+                arcpy.CheckInExtension("Spatial")
+            except:
+                pass
 
     def spline_interpolation(self, params):
         in_point_features = params.get("in_point_features")
         z_field = params.get("z_field")
-        output_name = f"{in_point_features.replace(' ', '_')}_spline"
-        aprx = arcpy.mp.ArcGISProject("CURRENT")
-        out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
-        out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.Spline(in_point_features, z_field).save(out_raster)
-        self._add_to_map(out_raster)
-        return {"success": True, "output_raster": out_raster}
+        out_raster = params.get("out_raster")
+        try:
+            # Check if Spatial Analyst extension is available
+            if arcpy.CheckExtension("Spatial") == "Available":
+                arcpy.CheckOutExtension("Spatial")
+            else:
+                return {"success": False, "error": "Spatial Analyst extension is not available"}
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+
+            # Handle output path - if provided use it, otherwise create default name
+            if out_raster and (os.path.isabs(out_raster) or os.path.sep in out_raster):
+                out_path = out_raster
+            else:
+                # Build a reasonable default name
+                if in_point_features:
+                    safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_point_features))
+                    output_name = f"{safe_name}_spline"
+                else:
+                    output_name = "spline_interpolation"
+                
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
+                out_path = arcpy.CreateUniqueName(out_path)
+
+            # Perform Spline interpolation
+            from arcpy.sa import Spline
+            result_raster = Spline(in_point_features, z_field)
+            result_raster.save(out_path)
+
+            try:
+                self._add_to_map(out_path)
+            except Exception:
+                pass
+
+            return {"success": True, "output_raster": out_path, "message": f"Spline interpolation completed successfully. Output saved to {out_path}"}
+        except Exception as e:
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
+        finally:
+            try:
+                arcpy.CheckInExtension("Spatial")
+            except:
+                pass
 
     def natural_neighbor(self, params):
         in_point_features = params.get("in_point_features")
         z_field = params.get("z_field")
-        output_name = f"{in_point_features.replace(' ', '_')}_natural_neighbor"
-        aprx = arcpy.mp.ArcGISProject("CURRENT")
-        out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
-        out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.NaturalNeighbor(in_point_features, z_field).save(out_raster)
-        self._add_to_map(out_raster)
-        return {"success": True, "output_raster": out_raster}
+        out_raster = params.get("out_raster")
+        try:
+            # Check if Spatial Analyst extension is available
+            if arcpy.CheckExtension("Spatial") == "Available":
+                arcpy.CheckOutExtension("Spatial")
+            else:
+                return {"success": False, "error": "Spatial Analyst extension is not available"}
+
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+
+            # Handle output path - if provided use it, otherwise create default name
+            if out_raster and (os.path.isabs(out_raster) or os.path.sep in out_raster):
+                out_path = out_raster
+            else:
+                # Build a reasonable default name
+                if in_point_features:
+                    safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_point_features))
+                    output_name = f"{safe_name}_natural_neighbor"
+                else:
+                    output_name = "natural_neighbor_interpolation"
+                
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
+                out_path = arcpy.CreateUniqueName(out_path)
+
+            # Perform Natural Neighbor interpolation
+            from arcpy.sa import NaturalNeighbor
+            result_raster = NaturalNeighbor(in_point_features, z_field)
+            result_raster.save(out_path)
+
+            try:
+                self._add_to_map(out_path)
+            except Exception:
+                pass
+
+            return {"success": True, "output_raster": out_path, "message": f"Natural Neighbor interpolation completed successfully. Output saved to {out_path}"}
+        except Exception as e:
+            tb = traceback.format_exc()
+            return {"success": False, "error": str(e), "traceback": tb}
+        finally:
+            try:
+                arcpy.CheckInExtension("Spatial")
+            except:
+                pass
 
     def euclidean_distance(self, params):
         in_source_data = params.get("in_source_data")

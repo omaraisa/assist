@@ -1,15 +1,14 @@
 @echo off
-title SmartAssistant - Environment Setup
+title Progent - Environment Setup
 setlocal enabledelayedexpansion
 
 echo =========================================
-echo   SmartAssistant Environment Setup
+echo   Progent Environment Setup
 echo =========================================
 echo.
 
 REM Get the directory of this script
-set "PROJECT_DIR=%~dp0"
-set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
+set "PROJECT_DIR=%~dp0Progent"
 
 echo [INFO] Project Directory: %PROJECT_DIR%
 echo.
@@ -267,29 +266,31 @@ echo [INFO] Creating enhanced activation script...
 
 (
 echo @echo off
-echo REM SmartAssistant Environment Activation Script
+echo REM Progent Environment Activation Script
 echo REM This script ensures the project uses its own Python environment
 echo.
 echo set "PROJECT_DIR=%PROJECT_DIR%"
 echo set "OLD_PATH=%%PATH%%"
 echo set "OLD_PYTHONPATH=%%PYTHONPATH%%"
 echo.
-echo REM Set environment variables for this project
+
+REM Set environment variables for this project
 echo set "PATH=%%PROJECT_DIR%%\venv\Scripts;%%PROJECT_DIR%%\venv;%%PATH%%"
 echo set "PYTHONPATH=%%PROJECT_DIR%%;%%PROJECT_DIR%%\app;%%PYTHONPATH%%"
 echo set "VIRTUAL_ENV=%%PROJECT_DIR%%\venv"
-echo set "VIRTUAL_ENV_PROMPT=^(SmartAssistant^) "
+echo set "VIRTUAL_ENV_PROMPT=^(Progent^) "
 echo.
-echo REM Update command prompt
+
+REM Update command prompt
 echo if not defined PROMPT set PROMPT=$P$G
 echo if defined _OLD_VIRTUAL_PROMPT set PROMPT=%%_OLD_VIRTUAL_PROMPT%%
 echo set "_OLD_VIRTUAL_PROMPT=%%PROMPT%%"
-echo set "PROMPT=^(SmartAssistant^) %%PROMPT%%"
+echo set "PROMPT=^(Progent^) %%PROMPT%%"
 echo.
-echo echo SmartAssistant Environment Activated
+echo echo Progent Environment Activated
 echo echo Project Directory: %%PROJECT_DIR%%
 echo echo Python: %%PROJECT_DIR%%\venv\Scripts\python.exe
-echo echo.
+echo.
 ) > "%PROJECT_DIR%\activate_environment.bat"
 
 echo [SUCCESS] Enhanced activation script created: activate_environment.bat
@@ -300,38 +301,45 @@ echo [INFO] Creating server startup script...
 
 (
 echo @echo off
-echo title SmartAssistant - FastAPI Server
+echo title Progent - FastAPI Server
 echo.
+
 echo echo =========================================
-echo echo   SmartAssistant - FastAPI Server
-echo echo =========================================
+echo echo   Progent - FastAPI Server
+echo =========================================
 echo echo.
+
 echo.
-echo REM Get project directory
+REM Get project directory
 echo set "PROJECT_DIR=%%~dp0"
 echo set "PROJECT_DIR=%%PROJECT_DIR:~0,-1%%"
 echo.
-echo echo [INFO] Activating SmartAssistant environment...
-echo call "%%PROJECT_DIR%%\activate_environment.bat"
-echo.
-echo if not exist "%%PROJECT_DIR%%\venv\Scripts\python.exe" ^(
-echo     echo [ERROR] Virtual environment not found!
-echo     echo [INFO] Please run setup_environment.bat first
-echo     pause
-echo     exit /b 1
-echo ^)
-echo.
-echo echo [INFO] Starting FastAPI server...
-echo echo [INFO] Server will be available at: http://localhost:8000
-echo echo [INFO] Press Ctrl+C to stop the server
-echo echo.
-echo.
-echo "%%PROJECT_DIR%%\venv\Scripts\python.exe" "%%PROJECT_DIR%%\run.py"
-echo.
-echo pause
-) > "%PROJECT_DIR%\start_smartassistant.bat"
 
-echo [SUCCESS] Server startup script created: start_smartassistant.bat
+echo [INFO] Activating Progent environment...
+call "%%PROJECT_DIR%%\activate_environment.bat"
+
+if not exist "%%PROJECT_DIR%%\venv\Scripts\python.exe" ^(
+    echo [ERROR] Virtual environment not found!
+    echo [INFO] Please run setup_environment.bat first
+    pause
+    exit /b 1
+)
+
+echo.
+
+echo [INFO] Starting FastAPI server...
+echo [INFO] Server will be available at: http://localhost:8000
+echo [INFO] Press Ctrl+C to stop the server
+echo.
+
+echo.
+
+"%%PROJECT_DIR%%\venv\Scripts\python.exe" "%%PROJECT_DIR%%\run.py"
+
+pause
+) > "%PROJECT_DIR%\start_progent.bat"
+
+echo [SUCCESS] Server startup script created: start_progent.bat
 echo.
 
 REM Create ArcGIS connector launcher
@@ -339,36 +347,42 @@ echo [INFO] Creating ArcGIS Pro connector launcher...
 
 (
 echo @echo off
-echo title SmartAssistant - ArcGIS Pro Connector
+echo title Progent - ArcGIS Pro Connector
 echo.
+
 echo echo =========================================
-echo echo   SmartAssistant - ArcGIS Pro Connector  
-echo echo =========================================
+echo echo   Progent - ArcGIS Pro Connector  
+echo =========================================
 echo echo.
+
 echo.
-echo REM Get project directory
+REM Get project directory
 echo set "PROJECT_DIR=%%~dp0"  
 echo set "PROJECT_DIR=%%PROJECT_DIR:~0,-1%%"
 echo.
-echo echo [INFO] This script should be run from within ArcGIS Pro
-echo echo [INFO] Copy and paste this command in ArcGIS Pro Python console:
+
+echo [INFO] This script should be run from within ArcGIS Pro
+echo [INFO] Copy and paste this command in ArcGIS Pro Python console:
 echo echo.
+
 echo echo exec^(open^(r"%%PROJECT_DIR%%\arcgis_connector.py"^).read^(^)^)
 echo echo.
-echo echo [INFO] Or run this file directly from ArcGIS Pro Python environment
+
+echo [INFO] Or run this file directly from ArcGIS Pro Python environment
 echo echo.
-echo.
-echo REM Check if we're in ArcGIS Pro environment
+
+REM Check if we're in ArcGIS Pro environment
 echo python -c "import arcpy; print('ArcGIS Pro environment detected')" 2^>nul
 echo if not errorlevel 1 ^(
-echo     echo [INFO] Running connector...
-echo     python "%%PROJECT_DIR%%\arcgis_connector.py"
+    echo     echo [INFO] Running connector...
+    echo     python "%%PROJECT_DIR%%\arcgis_connector.py"
 echo ^) else ^(
-echo     echo [WARNING] Not in ArcGIS Pro environment
-echo     echo [INFO] Please run from ArcGIS Pro Python console or as a script tool
+    echo     echo [WARNING] Not in ArcGIS Pro environment
+    echo     echo [INFO] Please run from ArcGIS Pro Python console or as a script tool
 echo ^)
-echo.
-echo pause
+echo echo.
+
+pause
 ) > "%PROJECT_DIR%\connect_arcgis.bat"
 
 echo [SUCCESS] ArcGIS Pro connector launcher created: connect_arcgis.bat
@@ -378,23 +392,25 @@ REM Create project information file
 echo [INFO] Creating project information file...
 
 (
-echo # SmartAssistant Environment Information
+echo # Progent Environment Information
 echo # Generated on %date% %time%
 echo.
+
 echo PROJECT_DIR=%PROJECT_DIR%
 echo PYTHON_VERSION=%PYTHON_VERSION%
 echo VIRTUAL_ENV=%PROJECT_DIR%\venv
 echo.
-echo # To activate this environment:
-echo # call activate_environment.bat
-echo.
-echo # To start the server:
-echo # call start_smartassistant.bat  
-echo.
-echo # To connect ArcGIS Pro:
-echo # call connect_arcgis.bat
-echo.
-echo # This environment is now independent of ArcGIS Pro Python installation
+
+REM To activate this environment:
+REM call activate_environment.bat
+
+REM To start the server:
+REM call start_progent.bat  
+
+REM To connect ArcGIS Pro:
+REM call connect_arcgis.bat
+
+REM This environment is now independent of ArcGIS Pro Python installation
 ) > "%PROJECT_DIR%\environment_info.txt"
 
 echo [SUCCESS] Project information saved to: environment_info.txt
@@ -477,18 +493,23 @@ if errorlevel 1 (
 )
 
 echo.
+
 echo =========================================
 echo   Setup Complete!
 echo =========================================
 echo.
-echo [SUCCESS] SmartAssistant environment is now self-contained
+
+echo [SUCCESS] Progent environment is now self-contained
 echo.
+
 echo Next steps:
 echo 1. To start the server: call start_progent.bat
 echo 2. To connect ArcGIS Pro: call connect_arcgis.bat  
 echo 3. To manually activate environment: call activate_environment.bat
 echo.
+
 echo The project is now independent of external Python installations
 echo and can be copied to other machines with the same setup.
 echo.
 pause
+

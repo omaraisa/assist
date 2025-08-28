@@ -451,18 +451,7 @@ class FunctionDeclaration:
             },
             "required": ["layer_name", "new_field_name", "field_value"]
         },
-        
-        "generate_smart_dashboard_layout": {
-            "name": "generate_smart_dashboard_layout",
-            "description": "[DEPRECATED] Use mission_generate_dashboard instead. Generates sophisticated dashboard layouts with optimized chart recommendations, detailed configurations, and positioning",
-            "parameters": {
-                "layer_name": {
-                    "type": "string",
-                    "description": "The name of the layer to generate smart dashboard layout for"
-                }
-            },
-            "required": ["layer_name"]
-        },
+     
         "get_current_dashboard_layout": {
             "name": "get_current_dashboard_layout",
             "description": "[DEPRECATED] Use mission_get_layout instead. Get the current dashboard layout from the smart_dashboard.json file.",
