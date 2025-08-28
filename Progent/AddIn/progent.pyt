@@ -90,7 +90,7 @@ class RunPythonCode(object):
         output_fc = arcpy.CreateUniqueName(output_fc)
         unit_mapping = {"meters": "METERS", "kilometers": "KILOMETERS", "feet": "FEET", "miles": "MILES"}
         arcpy_units = unit_mapping.get(units.lower(), "METERS")
-        arcpy.analysis.Buffer(layer_name, output_fc, f"{distance} {arcpy_units}")
+        arcpy.analysis.Buffer(r"{}".format(layer_name), output_fc, f"{distance} {arcpy_units}")
         self._add_to_map(output_fc)
         return {"success": True, "output_layer": output_name, "output_path": output_fc}
 
@@ -104,8 +104,8 @@ class RunPythonCode(object):
         try:
             # Use ArcPy to switch/invert the selection on the provided layer
             # If the layer is a layer object or name, SelectLayerByAttribute_management accepts it.
-            arcpy.SelectLayerByAttribute_management(layer_name, "SWITCH_SELECTION")
-            selected_count = int(arcpy.GetCount_management(layer_name)[0])
+            arcpy.SelectLayerByAttribute_management(r"{}".format(layer_name), "SWITCH_SELECTION")
+            selected_count = int(arcpy.GetCount_management(r"{}".format(layer_name))[0])
             return {"success": True, "selected_features": selected_count}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -114,23 +114,23 @@ class RunPythonCode(object):
         layer_name = params.get("layer_name")
         where_clause = params.get("where_clause")
         selection_type = params.get("selection_type", "NEW_SELECTION")
-        arcpy.SelectLayerByAttribute_management(layer_name, selection_type, where_clause)
-        selected_count = int(arcpy.GetCount_management(layer_name)[0])
+        arcpy.SelectLayerByAttribute_management(r"{}".format(layer_name), selection_type, where_clause)
+        selected_count = int(arcpy.GetCount_management(r"{}".format(layer_name))[0])
         return {"success": True, "selected_features": selected_count}
 
     def select_by_location(self, params):
         input_layer = params.get("input_layer")
         select_layer = params.get("select_layer")
         relationship = params.get("relationship", "INTERSECT")
-        arcpy.SelectLayerByLocation_management(input_layer, relationship, select_layer)
-        selected_count = int(arcpy.GetCount_management(input_layer)[0])
+        arcpy.SelectLayerByLocation_management(r"{}".format(input_layer), relationship, r"{}".format(select_layer))
+        selected_count = int(arcpy.GetCount_management(r"{}".format(input_layer))[0])
         return {"success": True, "selected_features": selected_count}
 
     def get_layer_summary(self, params):
         layer_name = params.get("layer_name")
-        desc = arcpy.Describe(layer_name)
-        feature_count = int(arcpy.GetCount_management(layer_name)[0])
-        field_names = [f.name for f in arcpy.ListFields(layer_name)]
+        desc = arcpy.Describe(r"{}".format(layer_name))
+        feature_count = int(arcpy.GetCount_management(r"{}".format(layer_name))[0])
+        field_names = [f.name for f in arcpy.ListFields(r"{}".format(layer_name))]
         return {
             "success": True,
             "summary": {
@@ -146,7 +146,7 @@ class RunPythonCode(object):
         layer_name = params.get("layer_name")
         units = params.get("units", "square_meters")
         areas = []
-        for row in arcpy.da.SearchCursor(layer_name, ["SHAPE@AREA"]):
+        for row in arcpy.da.SearchCursor(r"{}".format(layer_name), ["SHAPE@AREA"]):
             if row[0] is not None:
                 area = row[0]
                 if units == "square_kilometers": area /= 1000000
@@ -159,7 +159,7 @@ class RunPythonCode(object):
         layer_name = params.get("layer_name")
         units = params.get("units", "meters")
         lengths = []
-        for row in arcpy.da.SearchCursor(layer_name, ["SHAPE@LENGTH"]):
+        for row in arcpy.da.SearchCursor(r"{}".format(layer_name), ["SHAPE@LENGTH"]):
             if row[0] is not None:
                 length = row[0]
                 if units == "kilometers": length /= 1000
@@ -171,7 +171,7 @@ class RunPythonCode(object):
     def get_centroid(self, params):
         layer_name = params.get("layer_name")
         centroids = []
-        for row in arcpy.da.SearchCursor(layer_name, ["OID@", "SHAPE@"]):
+        for row in arcpy.da.SearchCursor(r"{}".format(layer_name), ["OID@", "SHAPE@"]):
             if row[1]:
                 centroid = row[1].centroid
                 centroids.append({"id": row[0], "x": centroid.X, "y": centroid.Y})
@@ -184,7 +184,7 @@ class RunPythonCode(object):
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         output_path = os.path.join(aprx.defaultGeodatabase, output_name)
         output_path = arcpy.CreateUniqueName(output_path)
-        arcpy.analysis.SpatialJoin(target_layer, join_layer, output_path)
+        arcpy.analysis.SpatialJoin(r"{}".format(target_layer), r"{}".format(join_layer), output_path)
         self._add_to_map(output_path)
         return {"success": True, "output_layer": output_name, "output_path": output_path}
 
@@ -195,7 +195,7 @@ class RunPythonCode(object):
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         output_path = os.path.join(aprx.defaultGeodatabase, output_name)
         output_path = arcpy.CreateUniqueName(output_path)
-        arcpy.analysis.Clip(input_layer, clip_layer, output_path)
+        arcpy.analysis.Clip(r"{}".format(input_layer), r"{}".format(clip_layer), output_path)
         self._add_to_map(output_path)
         return {"success": True, "output_layer": output_name, "output_path": output_path}
 
@@ -206,7 +206,7 @@ class RunPythonCode(object):
         where_clause = params.get("where_clause")
         try:
             values = []
-            for row in arcpy.da.SearchCursor(layer_name, [field_name], where_clause):
+            for row in arcpy.da.SearchCursor(r"{}".format(layer_name), [field_name], where_clause):
                 v = row[0]
                 if v is None:
                     continue
@@ -278,7 +278,7 @@ class RunPythonCode(object):
     def get_field_definitions(self, params):
         layer_name = params.get("layer_name")
         try:
-            fields = arcpy.ListFields(layer_name)
+            fields = arcpy.ListFields(r"{}".format(layer_name))
             info = [{"name": f.name, "type": f.type, "length": getattr(f, 'length', None), "alias": getattr(f, 'aliasName', None)} for f in fields]
             return {"success": True, "fields": info}
         except Exception as e:
@@ -287,7 +287,7 @@ class RunPythonCode(object):
     def get_layer_type(self, params):
         layer_name = params.get("layer_name")
         try:
-            desc = arcpy.Describe(layer_name)
+            desc = arcpy.Describe(r"{}".format(layer_name))
             dtype = getattr(desc, 'dataType', None)
             shape = getattr(desc, 'shapeType', None)
             return {"success": True, "data_type": dtype, "shape_type": shape}
@@ -300,7 +300,7 @@ class RunPythonCode(object):
     def get_data_source_info(self, params):
         layer_name = params.get("layer_name")
         try:
-            desc = arcpy.Describe(layer_name)
+            desc = arcpy.Describe(r"{}".format(layer_name))
             return {"success": True, "data_source": getattr(desc, 'catalogPath', None)}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -396,7 +396,7 @@ class RunPythonCode(object):
         field_name = params.get("field_name")
         try:
             vals = set()
-            for row in arcpy.da.SearchCursor(layer_name, [field_name]):
+            for row in arcpy.da.SearchCursor(r"{}".format(layer_name), [field_name]):
                 vals.add(row[0])
             return {"success": True, "unique_count": len(vals)}
         except Exception as e:
@@ -408,7 +408,7 @@ class RunPythonCode(object):
         try:
             empty = 0
             total = 0
-            for row in arcpy.da.SearchCursor(layer_name, [field_name]):
+            for row in arcpy.da.SearchCursor(r"{}".format(layer_name), [field_name]):
                 total += 1
                 if row[0] is None:
                     empty += 1
@@ -439,7 +439,7 @@ class RunPythonCode(object):
         field_name = params.get("field_name")
         try:
             freq = {}
-            for row in arcpy.da.SearchCursor(layer_name, [field_name]):
+            for row in arcpy.da.SearchCursor(r"{}".format(layer_name), [field_name]):
                 k = row[0]
                 freq[k] = freq.get(k, 0) + 1
             return {"success": True, "frequency": freq}
@@ -459,7 +459,7 @@ class RunPythonCode(object):
     def get_coordinate_system(self, params):
         layer_name = params.get("layer_name")
         try:
-            desc = arcpy.Describe(layer_name)
+            desc = arcpy.Describe(r"{}".format(layer_name))
             sr = getattr(desc, 'spatialReference', None)
             if sr:
                 return {"success": True, "name": sr.name, "wkid": getattr(sr, 'factoryCode', None)}
@@ -471,7 +471,7 @@ class RunPythonCode(object):
         """Clears the current selection for a given layer."""
         layer_name = params.get("layer_name")
         try:
-            arcpy.SelectLayerByAttribute_management(layer_name, "CLEAR_SELECTION")
+            arcpy.SelectLayerByAttribute_management(r"{}".format(layer_name), "CLEAR_SELECTION")
             return {"success": True, "message": f"Selection cleared for layer: {layer_name}"}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -480,7 +480,7 @@ class RunPythonCode(object):
         workspace = params.get("workspace")
         field_domain = params.get("field_domain")
         try:
-            domains = arcpy.da.ListDomains(workspace)
+            domains = arcpy.da.ListDomains(r"{}".format(workspace))
             for d in domains:
                 if d.name == field_domain and hasattr(d, 'codedValues'):
                     return {"success": True, "domain": d.name, "codedValues": d.codedValues}
@@ -494,9 +494,9 @@ class RunPythonCode(object):
         field_type = params.get("field_type", "DOUBLE")
         expression = params.get("expression")
         try:
-            arcpy.AddField_management(layer, field_name, field_type)
+            arcpy.AddField_management(r"{}".format(layer), field_name, field_type)
             if expression:
-                arcpy.CalculateField_management(layer, field_name, expression, "PYTHON3")
+                arcpy.CalculateField_management(r"{}".format(layer), field_name, expression, "PYTHON3")
             return {"success": True, "field_added": field_name}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -515,15 +515,15 @@ class RunPythonCode(object):
                 return {"success": False, "error": f"Layer '{layer_name}' is not a feature layer"}
 
             # Get total feature count
-            total_count = int(arcpy.GetCount_management(target_layer)[0])
+            total_count = int(arcpy.GetCount_management(r"{}".format(layer_name))[0])
             if total_count == 0:
                 return {"success": False, "error": f"Layer '{layer_name}' has no features"}
 
-            fields = arcpy.ListFields(target_layer)
+            fields = arcpy.ListFields(r"{}".format(layer_name))
             field_analysis = {}
 
             # Cursor for checking uniqueness without loading all values into memory at once
-            with arcpy.da.SearchCursor(target_layer, [f.name for f in fields]) as cursor:
+            with arcpy.da.SearchCursor(r"{}".format(layer_name), [f.name for f in fields]) as cursor:
                 rows = list(cursor)  # safe since we have total_count from above
 
             # Build a name->index map once
@@ -649,7 +649,8 @@ class RunPythonCode(object):
 
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                output_name = f"{in_raster.replace(' ', '_')}_reclassified"
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
                 out_path = arcpy.CreateUniqueName(out_path)
             else:
                 out_path = out_raster
@@ -661,7 +662,7 @@ class RunPythonCode(object):
             remap_obj = eval(remap_str)
 
             # Perform the reclassification
-            result_raster = arcpy.sa.Reclassify(in_raster, reclass_field, remap_obj, "DATA")
+            result_raster = arcpy.sa.Reclassify(r"{}".format(in_raster), reclass_field, remap_obj, "DATA")
             result_raster.save(out_path)
 
             self._add_to_map(out_path)
@@ -687,7 +688,8 @@ class RunPythonCode(object):
 
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             if not os.path.isabs(out_table) and not os.path.sep in out_table:
-                out_path = os.path.join(aprx.defaultGeodatabase, out_table)
+                output_name = f"{in_zone_data.replace(' ', '_')}_zonal_stats"
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
                 out_path = arcpy.CreateUniqueName(out_path)
             else:
                 out_path = out_table
@@ -695,7 +697,7 @@ class RunPythonCode(object):
             from arcpy.sa import ZonalStatisticsAsTable
 
             # Perform the zonal statistics
-            ZonalStatisticsAsTable(in_zone_data, zone_field, in_value_raster, out_path, "DATA", statistics_type)
+            ZonalStatisticsAsTable(r"{}".format(in_zone_data), zone_field, r"{}".format(in_value_raster), out_path, "DATA", statistics_type)
 
             # Add the resulting table to the map
             self._add_to_map(out_path)
@@ -719,7 +721,8 @@ class RunPythonCode(object):
 
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                output_name = f"{in_raster.replace(' ', '_')}_slope"
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
                 out_path = arcpy.CreateUniqueName(out_path)
             else:
                 out_path = out_raster
@@ -727,7 +730,7 @@ class RunPythonCode(object):
             from arcpy.sa import Slope
 
             # Perform the slope analysis
-            result_raster = Slope(in_raster, output_measurement)
+            result_raster = Slope(r"{}".format(in_raster), output_measurement)
             result_raster.save(out_path)
 
             self._add_to_map(out_path)
@@ -750,7 +753,8 @@ class RunPythonCode(object):
 
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                output_name = f"{in_raster.replace(' ', '_')}_aspect"
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
                 out_path = arcpy.CreateUniqueName(out_path)
             else:
                 out_path = out_raster
@@ -758,7 +762,7 @@ class RunPythonCode(object):
             from arcpy.sa import Aspect
 
             # Perform the aspect analysis
-            result_raster = Aspect(in_raster)
+            result_raster = Aspect(r"{}".format(in_raster))
             result_raster.save(out_path)
 
             self._add_to_map(out_path)
@@ -783,7 +787,8 @@ class RunPythonCode(object):
 
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                output_name = f"{in_raster.replace(' ', '_')}_hillshade"
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
                 out_path = arcpy.CreateUniqueName(out_path)
             else:
                 out_path = out_raster
@@ -791,7 +796,7 @@ class RunPythonCode(object):
             from arcpy.sa import Hillshade
 
             # Perform the hillshade analysis
-            result_raster = Hillshade(in_raster, azimuth, altitude)
+            result_raster = Hillshade(r"{}".format(in_raster), azimuth, altitude)
             result_raster.save(out_path)
 
             self._add_to_map(out_path)
@@ -812,17 +817,18 @@ class RunPythonCode(object):
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                output_name = f"{in_raster.replace(' ', '_')}_clipped"
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
                 out_path = arcpy.CreateUniqueName(out_path)
             else:
                 out_path = out_raster
 
             # Perform the clip analysis
             arcpy.management.Clip(
-                in_raster,
+                r"{}".format(in_raster),
                 "#", # rectangle
                 out_path,
-                in_template_dataset,
+                r"{}".format(in_template_dataset),
                 "#", # nodata_value
                 clipping_geometry,
                 "MAINTAIN_EXTENT" # maintain_clipping_extent
@@ -843,13 +849,14 @@ class RunPythonCode(object):
         try:
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                out_path = os.path.join(aprx.defaultGeodatabase, out_raster)
+                output_name = f"{in_raster.replace(' ', '_')}_resampled"
+                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
                 out_path = arcpy.CreateUniqueName(out_path)
             else:
                 out_path = out_raster
 
             # Perform the resample
-            arcpy.management.Resample(in_raster, out_path, cell_size, resampling_type)
+            arcpy.management.Resample(r"{}".format(in_raster), out_path, cell_size, resampling_type)
 
             self._add_to_map(out_path)
 
@@ -862,7 +869,7 @@ class RunPythonCode(object):
         raster = params.get("raster")
         try:
             props = {}
-            ras = arcpy.Describe(raster)
+            ras = arcpy.Describe(r"{}".format(raster))
             props['pixelType'] = getattr(ras, 'pixelType', None)
             props['width'] = getattr(ras, 'width', None)
             props['height'] = getattr(ras, 'height', None)
@@ -901,7 +908,7 @@ class RunPythonCode(object):
 
             # Perform extract by mask using Spatial Analyst
             from arcpy.sa import ExtractByMask
-            result_ras = ExtractByMask(in_raster, in_mask_data)
+            result_ras = ExtractByMask(r"{}".format(in_raster), r"{}".format(in_mask_data))
             result_ras.save(out_path)
 
             try:
@@ -920,7 +927,7 @@ class RunPythonCode(object):
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_point_features = os.path.join(aprx.defaultGeodatabase, output_name)
         out_point_features = arcpy.CreateUniqueName(out_point_features)
-        arcpy.conversion.RasterToPoint(in_raster, out_point_features)
+        arcpy.conversion.RasterToPoint(r"{}".format(in_raster), out_point_features)
         self._add_to_map(out_point_features)
         return {"success": True, "output_layer": out_point_features}
 
@@ -930,7 +937,7 @@ class RunPythonCode(object):
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_polygon_features = os.path.join(aprx.defaultGeodatabase, output_name)
         out_polygon_features = arcpy.CreateUniqueName(out_polygon_features)
-        arcpy.conversion.RasterToPolygon(in_raster, out_polygon_features)
+        arcpy.conversion.RasterToPolygon(r"{}".format(in_raster), out_polygon_features)
         self._add_to_map(out_polygon_features)
         return {"success": True, "output_layer": out_polygon_features}
 
@@ -940,7 +947,7 @@ class RunPythonCode(object):
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_polyline_features = os.path.join(aprx.defaultGeodatabase, output_name)
         out_polyline_features = arcpy.CreateUniqueName(out_polyline_features)
-        arcpy.conversion.RasterToPolyline(in_raster, out_polyline_features)
+        arcpy.conversion.RasterToPolyline(r"{}".format(in_raster), out_polyline_features)
         self._add_to_map(out_polyline_features)
         return {"success": True, "output_layer": out_polyline_features}
 
@@ -959,7 +966,7 @@ class RunPythonCode(object):
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
             out_raster = arcpy.CreateUniqueName(out_raster)
-            arcpy.conversion.FeatureToRaster(in_features, field, out_raster)
+            arcpy.conversion.FeatureToRaster(r"{}".format(in_features), field, out_raster)
             self._add_to_map(out_raster)
             return {"success": True, "output_raster": out_raster}
         except Exception as e:
@@ -990,9 +997,9 @@ class RunPythonCode(object):
             
             # Execute conversion with optional cell size
             if cell_size:
-                arcpy.conversion.PolygonToRaster(in_features, value_field, out_raster, cell_assignment="CELL_CENTER", priority_field=None, cellsize=cell_size)
+                arcpy.conversion.PolygonToRaster(r"{}".format(in_features), value_field, out_raster, cell_assignment="CELL_CENTER", priority_field=None, cellsize=cell_size)
             else:
-                arcpy.conversion.PolygonToRaster(in_features, value_field, out_raster)
+                arcpy.conversion.PolygonToRaster(r"{}".format(in_features), value_field, out_raster)
             
             self._add_to_map(out_raster)
             return {"success": True, "output_raster": out_raster}
@@ -1014,7 +1021,7 @@ class RunPythonCode(object):
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
             out_raster = arcpy.CreateUniqueName(out_raster)
-            arcpy.conversion.PointToRaster(in_features, value_field, out_raster)
+            arcpy.conversion.PointToRaster(r"{}".format(in_features), value_field, out_raster)
             self._add_to_map(out_raster)
             return {"success": True, "output_raster": out_raster}
         except Exception as e:
@@ -1102,7 +1109,7 @@ class RunPythonCode(object):
 
             # Perform Kriging interpolation
             from arcpy.sa import Kriging
-            result_raster = Kriging(in_point_features, z_field)
+            result_raster = Kriging(r"{}".format(in_point_features), z_field)
             result_raster.save(out_path)
 
             try:
@@ -1149,7 +1156,7 @@ class RunPythonCode(object):
 
             # Perform Spline interpolation
             from arcpy.sa import Spline
-            result_raster = Spline(in_point_features, z_field)
+            result_raster = Spline(r"{}".format(in_point_features), z_field)
             result_raster.save(out_path)
 
             try:
@@ -1196,7 +1203,7 @@ class RunPythonCode(object):
 
             # Perform Natural Neighbor interpolation
             from arcpy.sa import NaturalNeighbor
-            result_raster = NaturalNeighbor(in_point_features, z_field)
+            result_raster = NaturalNeighbor(r"{}".format(in_point_features), z_field)
             result_raster.save(out_path)
 
             try:
@@ -1216,53 +1223,53 @@ class RunPythonCode(object):
 
     def euclidean_distance(self, params):
         in_source_data = params.get("in_source_data")
-        output_name = f"euclidean_dist"
+        output_name = f"{in_source_data.replace(' ', '_')}_euclidean_dist"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.EucDistance(in_source_data).save(out_raster)
+        arcpy.sa.EucDistance(r"{}".format(in_source_data)).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
     def euclidean_allocation(self, params):
         in_source_data = params.get("in_source_data")
-        output_name = f"euclidean_alloc"
+        output_name = f"{in_source_data.replace(' ', '_')}_euclidean_alloc"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.EucAllocation(in_source_data).save(out_raster)
+        arcpy.sa.EucAllocation(r"{}".format(in_source_data)).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
     def euclidean_direction(self, params):
         in_source_data = params.get("in_source_data")
-        output_name = f"euclidean_dir"
+        output_name = f"{in_source_data.replace(' ', '_')}_euclidean_dir"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.EucDirection(in_source_data).save(out_raster)
+        arcpy.sa.EucDirection(r"{}".format(in_source_data)).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
     def cost_distance(self, params):
         in_source_data = params.get("in_source_data")
         in_cost_raster = params.get("in_cost_raster")
-        output_name = f"cost_dist"
+        output_name = f"{in_source_data.replace(' ', '_')}_cost_dist"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.CostDistance(in_source_data, in_cost_raster).save(out_raster)
+        arcpy.sa.CostDistance(r"{}".format(in_source_data), r"{}".format(in_cost_raster)).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
     def cost_allocation(self, params):
         in_source_data = params.get("in_source_data")
         in_cost_raster = params.get("in_cost_raster")
-        output_name = f"cost_alloc"
+        output_name = f"{in_source_data.replace(' ', '_')}_cost_alloc"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.CostAllocation(in_source_data, in_cost_raster).save(out_raster)
+        arcpy.sa.CostAllocation(r"{}".format(in_source_data), r"{}".format(in_cost_raster)).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
@@ -1270,11 +1277,11 @@ class RunPythonCode(object):
         in_destination_data = params.get("in_destination_data")
         in_cost_distance_raster = params.get("in_cost_distance_raster")
         in_cost_backlink_raster = params.get("in_cost_backlink_raster")
-        output_name = f"cost_path"
+        output_name = f"{in_destination_data.replace(' ', '_')}_cost_path"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.CostPath(in_destination_data, in_cost_distance_raster, in_cost_backlink_raster).save(out_raster)
+        arcpy.sa.CostPath(r"{}".format(in_destination_data), r"{}".format(in_cost_distance_raster), r"{}".format(in_cost_backlink_raster)).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
@@ -1301,11 +1308,11 @@ class RunPythonCode(object):
     def extract_by_attribute(self, params):
         in_raster = params.get("in_raster")
         where_clause = params.get("where_clause")
-        output_name = f"extract_by_attr"
+        output_name = f"{in_raster.replace(' ', '_')}_extract_by_attr"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.ExtractByAttributes(in_raster, where_clause).save(out_raster)
+        arcpy.sa.ExtractByAttributes(r"{}".format(in_raster), where_clause).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
@@ -1315,7 +1322,11 @@ class RunPythonCode(object):
         raster_dataset_name_with_extension = params.get("raster_dataset_name_with_extension")
         pixel_type = params.get("pixel_type")
         number_of_bands = params.get("number_of_bands")
-        arcpy.management.MosaicToNewRaster(input_rasters, output_location, raster_dataset_name_with_extension,
+
+        # Handle spaces in input raster paths
+        input_rasters_list = [fr"{r.strip()}" for r in input_rasters.split(';') if r.strip()]
+
+        arcpy.management.MosaicToNewRaster(input_rasters_list, r"{}".format(output_location), raster_dataset_name_with_extension,
                                            pixel_type=pixel_type, number_of_bands=number_of_bands)
         out_path = os.path.join(output_location, raster_dataset_name_with_extension)
         self._add_to_map(out_path)
@@ -1323,11 +1334,18 @@ class RunPythonCode(object):
 
     def combine_rasters(self, params):
         in_rasters = params.get("in_rasters")
-        output_name = f"combined_raster"
+
+        # Handle spaces in input raster paths and create a list
+        in_rasters_list = [fr"{r.strip()}" for r in in_rasters.split(';') if r.strip()]
+
+        if not in_rasters_list:
+            return {"success": False, "error": "No input rasters provided for combine."}
+
+        output_name = f"{os.path.basename(in_rasters_list[0]).replace(' ', '_')}_combined"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.Combine(in_rasters).save(out_raster)
+        arcpy.sa.Combine(in_rasters_list).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
