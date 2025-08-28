@@ -623,6 +623,9 @@ class RunPythonCode(object):
             # from the AI to be trusted. The function declaration explicitly states that the
             # expression will contain `Raster` objects.
 
+            # Import necessary arcpy.sa functions for eval context
+            from arcpy.sa import Raster
+
             # Execute the map algebra expression
             result_raster = eval(expression)
             result_raster.save(out_path)

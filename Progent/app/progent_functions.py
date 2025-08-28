@@ -1,9 +1,3 @@
-import json
-import os
-import uuid
-import random
-from datetime import datetime
-from typing import Dict, List, Any
 from .ai.function_declarations import FunctionDeclaration
 
 # Build AVAILABLE_FUNCTIONS dynamically from the authoritative declarations
@@ -84,13 +78,9 @@ AVAILABLE_FUNCTIONS = {
     77: "mission_update_layout",
 }
 
-# This dynamic update is kept for other functions, but we are manually managing
-# the dashboard functions for now.
 try:
 	decls = FunctionDeclaration.functions_declarations
-	# This loop will re-assign all function IDs based on the full list in FunctionDeclaration
-	# For simplicity in this refactoring, we will keep the manual list above
-	# and avoid running this loop for now.
+
 	pass
 except Exception:
 	AVAILABLE_FUNCTIONS = {}
@@ -100,7 +90,3 @@ def format_available_functions() -> str:
 	parts = [f"{k}: {v}" for k, v in sorted(AVAILABLE_FUNCTIONS.items())]
 	return ", ".join(parts)
 
-# All dashboard-related functions have been moved to app/dashboard_api.py
-# This file now only contains non-dashboard GIS functions.
-# The 'format_available_functions' and the AVAILABLE_FUNCTIONS dictionary
-# remain here as the central registry for the agent.
