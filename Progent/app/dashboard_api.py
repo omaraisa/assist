@@ -1,9 +1,13 @@
 import json
 import os
+import math
 from datetime import datetime
 from typing import Dict, List, Any
+from pathlib import Path
 
-DASHBOARD_FILE = "progent_dashboard.json"
+# Get the directory of this file (Progent directory)
+BASE_DIR = Path(__file__).parent.parent
+DASHBOARD_FILE = BASE_DIR / "progent_dashboard.json"
 
 # Private helper functions
 
@@ -49,31 +53,60 @@ def _save_dashboard(data: Dict) -> bool:
         return False
 
 def _fetch_layer_fields(layer_name: str) -> List[Dict]:
-    """Placeholder function to simulate fetching fields from a GIS layer."""
+    """Enhanced placeholder function to simulate fetching fields from a GIS layer with more diverse data."""
     print(f"Simulating fetch for layer: {layer_name}")
     return [
-        {"field_name": "Acres", "type": "numeric", "sample_values": [10.2, 5.5, 23.1]},
-        {"field_name": "LandUse", "type": "categorical", "sample_values": ["Residential", "Commercial", "Residential"]},
-        {"field_name": "Owner", "type": "categorical", "sample_values": ["Corp", "Smith", "Corp"]},
-        {"field_name": "LastUpdate", "type": "date", "sample_values": ["2023-01-15", "2022-08-20", "2023-02-10"]},
-        {"field_name": "Value", "type": "numeric", "sample_values": [150000, 320000, 120000]},
-        {"field_name": "TaxRate", "type": "numeric", "sample_values": [0.015, 0.02, 0.015]},
+        {
+            "field_name": "Acres",
+            "type": "numeric",
+            "sample_values": [10.2, 5.5, 23.1, 15.8, 8.9, 12.4, 9.7, 18.3, 7.2, 14.6, 11.1, 16.9, 13.5, 6.8, 19.2]
+        },
+        {
+            "field_name": "LandUse",
+            "type": "categorical",
+            "sample_values": ["Residential", "Commercial", "Residential", "Industrial", "Agricultural", "Residential", "Commercial", "Residential", "Agricultural", "Residential", "Commercial", "Residential", "Industrial", "Residential", "Agricultural"]
+        },
+        {
+            "field_name": "Owner",
+            "type": "categorical",
+            "sample_values": ["Smith Corp", "Johnson LLC", "Smith Corp", "Davis Enterprises", "Wilson Farms", "Smith Corp", "Johnson LLC", "Brown Properties", "Wilson Farms", "Smith Corp", "Johnson LLC", "Anderson Group", "Davis Enterprises", "Smith Corp", "Wilson Farms"]
+        },
+        {
+            "field_name": "LastUpdate",
+            "type": "date",
+            "sample_values": ["2023-01-15", "2022-08-20", "2023-02-10", "2022-11-05", "2023-03-22", "2022-09-18", "2023-01-08", "2022-12-14", "2023-04-03", "2022-10-27", "2023-02-19", "2022-07-11", "2023-03-15", "2022-11-30", "2023-01-25"]
+        },
+        {
+            "field_name": "Value",
+            "type": "numeric",
+            "sample_values": [150000, 320000, 120000, 450000, 85000, 180000, 275000, 195000, 95000, 165000, 310000, 140000, 380000, 110000, 225000]
+        },
+        {
+            "field_name": "TaxRate",
+            "type": "numeric",
+            "sample_values": [0.015, 0.02, 0.015, 0.025, 0.012, 0.018, 0.02, 0.016, 0.013, 0.017, 0.021, 0.014, 0.023, 0.015, 0.019]
+        },
+        {
+            "field_name": "ZoneCode",
+            "type": "categorical",
+            "sample_values": ["R1", "C2", "R1", "I1", "AG", "R1", "C2", "R2", "AG", "R1", "C1", "R1", "I2", "R1", "AG"]
+        }
     ]
 
 def _prepare_field_insights_from_layer(fields: List[Dict]) -> Dict:
-    """Minimalist adapter to create field_insights from raw field metadata."""
+    """Enhanced adapter to create field_insights using AI-powered analysis."""
     insights = {}
-    for i, field in enumerate(fields):
+    for field in fields:
         field_name = field.get("field_name")
-        insights[field_name] = {
-            "field_name": field_name,
-            "data_category": "numeric" if field.get("type") == "numeric" else "categorical",
-            "visualization_priority": 10 - i if field.get("type") == "numeric" else 5 - i,
-            "chart_suitability": {"bar": 0.8, "pie": 0.5} if field.get("type") == "categorical" else {"histogram": 0.9, "bar": 0.6},
-            "data_story": f"Analysis of {field_name}",
-            "visualization_potential": "high" if field.get("type") == "numeric" else "medium",
-            "sample_values": field.get("sample_values", [])
-        }
+
+        # Analyze field data to get detailed statistics
+        field_analysis = _analyze_field_data(field)
+
+        # Generate AI insights using the powerful analysis function
+        ai_insights = _generate_ai_insights(field_analysis, field_name)
+
+        insights[field_name] = ai_insights
+
     return insights
 
 def _create_chart_from_field(field_info: Dict, theme: str) -> Dict:
@@ -109,6 +142,212 @@ def _rebuild_layout(charts: List[Dict]) -> Dict:
             "grid_area": f"chart-{i+1}"
         })
     return {"grid_template_columns": grid_cols, "gap": "20px", "items": layout_items}
+
+def _analyze_field_data(field: Dict) -> Dict:
+    """Analyze field data to extract detailed statistics for AI insights generation."""
+    field_name = field.get("field_name", "")
+    field_type = field.get("type", "unknown")
+    sample_values = field.get("sample_values", [])
+
+    if not sample_values:
+        return {
+            "data_category": "unknown",
+            "unique_count": 0,
+            "total_records": 0,
+            "null_percentage": 100.0
+        }
+
+    total_records = len(sample_values)
+    unique_values = list(set(sample_values))
+    unique_count = len(unique_values)
+    null_count = sum(1 for v in sample_values if v is None or str(v).lower() in ['null', 'none', ''])
+    null_percentage = (null_count / total_records) * 100 if total_records > 0 else 0
+
+    analysis = {
+        "data_category": "unknown",
+        "unique_count": unique_count,
+        "total_records": total_records,
+        "null_percentage": null_percentage,
+        "sample_values": sample_values[:5]  # Keep first 5 samples
+    }
+
+    if field_type == "numeric":
+        try:
+            numeric_values = [float(v) for v in sample_values if v is not None and str(v).lower() not in ['null', 'none', '']]
+            if numeric_values:
+                analysis["data_category"] = "continuous_numeric"
+                analysis["min_value"] = min(numeric_values)
+                analysis["max_value"] = max(numeric_values)
+                analysis["average_value"] = sum(numeric_values) / len(numeric_values)
+
+                # Check if it's actually categorical numeric (few unique values)
+                if unique_count <= 10:
+                    analysis["data_category"] = "categorical_numeric"
+        except (ValueError, TypeError):
+            analysis["data_category"] = "categorical_text"
+
+    elif field_type == "categorical":
+        analysis["data_category"] = "categorical_text"
+
+    elif field_type == "date":
+        analysis["data_category"] = "date"
+        try:
+            from datetime import datetime
+            date_values = []
+            for v in sample_values:
+                if v and str(v).lower() not in ['null', 'none', '']:
+                    try:
+                        if isinstance(v, str):
+                            date_values.append(datetime.fromisoformat(v.replace('Z', '+00:00')))
+                        else:
+                            date_values.append(v)
+                    except:
+                        continue
+
+            if date_values:
+                analysis["min_date"] = str(min(date_values))
+                analysis["max_date"] = str(max(date_values))
+        except:
+            pass
+
+    return analysis
+
+def _generate_ai_insights(field_info: Dict, field_name: str) -> Dict:
+    """
+    Step 2 Enhancement: Generate AI-ready insights for better chart selection
+    Provides rich, descriptive analysis that enables intelligent chart recommendations
+    """
+    try:
+        data_category = field_info.get("data_category", "unknown")
+        unique_count = field_info.get("unique_count", 0)
+        total_records = field_info.get("total_records", 1)
+        null_percentage = field_info.get("null_percentage", 0)
+
+        ai_insights = {
+            "field_name": field_name,
+            "data_category": data_category,
+            "data_story": "",
+            "visualization_potential": "low",
+            "chart_suitability": {},
+            "data_patterns": {},
+            "analytical_value": "medium",
+            "distribution_characteristics": "",
+            "visualization_priority": 5,  # 1-10 scale
+            "sample_values": field_info.get("sample_values", [])
+        }
+
+        # Generate data story based on field characteristics
+        if data_category == "categorical_text":
+            diversity_ratio = unique_count / total_records if total_records > 0 else 0
+
+            if unique_count <= 5:
+                ai_insights["data_story"] = f"'{field_name}' contains {unique_count} distinct categories with clear groupings, ideal for showing proportional relationships."
+                ai_insights["visualization_potential"] = "high"
+                ai_insights["visualization_priority"] = 9
+                ai_insights["chart_suitability"] = {
+                    "pie": 0.95, "donut": 0.90, "bar": 0.85, "column": 0.80
+                }
+            elif unique_count <= 15:
+                ai_insights["data_story"] = f"'{field_name}' has {unique_count} categories, suitable for comparative analysis and ranking visualizations."
+                ai_insights["visualization_potential"] = "high"
+                ai_insights["visualization_priority"] = 8
+                ai_insights["chart_suitability"] = {
+                    "bar": 0.90, "column": 0.85, "horizontal_bar": 0.80, "pie": 0.70
+                }
+            elif unique_count <= 30:
+                ai_insights["data_story"] = f"'{field_name}' contains {unique_count} categories, best visualized with scrollable or grouped displays."
+                ai_insights["visualization_potential"] = "medium"
+                ai_insights["visualization_priority"] = 6
+                ai_insights["chart_suitability"] = {
+                    "bar": 0.75, "treemap": 0.70, "grouped_bar": 0.65
+                }
+            else:
+                ai_insights["data_story"] = f"'{field_name}' has high cardinality ({unique_count} categories), requiring aggregation or filtering for effective visualization."
+                ai_insights["visualization_potential"] = "low"
+                ai_insights["visualization_priority"] = 3
+                ai_insights["chart_suitability"] = {
+                    "word_cloud": 0.60, "top_n_bar": 0.55
+                }
+
+        elif data_category == "continuous_numeric":
+            value_range = field_info.get("max_value", 0) - field_info.get("min_value", 0)
+            avg_value = field_info.get("average_value", 0)
+            min_val = field_info.get("min_value", 0)
+            max_val = field_info.get("max_value", 0)
+
+            # Analyze distribution characteristics
+            if value_range > 0:
+                cv = (value_range / 4) / avg_value if avg_value != 0 else 0  # Approximate coefficient of variation
+
+                if cv < 0.3:
+                    ai_insights["distribution_characteristics"] = "Low variability - values clustered around the mean"
+                    ai_insights["data_story"] = f"'{field_name}' shows consistent values (range: {min_val:.2f} to {max_val:.2f}), good for trend analysis."
+                elif cv < 1.0:
+                    ai_insights["distribution_characteristics"] = "Moderate variability - normal distribution likely"
+                    ai_insights["data_story"] = f"'{field_name}' displays moderate variation (range: {min_val:.2f} to {max_val:.2f}), suitable for distribution analysis."
+                else:
+                    ai_insights["distribution_characteristics"] = "High variability - potential outliers present"
+                    ai_insights["data_story"] = f"'{field_name}' shows high variation (range: {min_val:.2f} to {max_val:.2f}), may contain outliers worth investigating."
+            else:
+                ai_insights["data_story"] = f"'{field_name}' contains constant or near-constant values, limited visualization value."
+
+            ai_insights["visualization_potential"] = "high" if value_range > 0 else "low"
+            ai_insights["visualization_priority"] = 8 if value_range > 0 else 2
+            ai_insights["chart_suitability"] = {
+                "histogram": 0.90, "box_plot": 0.85, "density_plot": 0.80, "violin_plot": 0.75
+            } if value_range > 0 else {"summary_stats": 0.30}
+
+        elif data_category == "categorical_numeric":
+            ai_insights["data_story"] = f"'{field_name}' represents discrete numeric categories ({unique_count} values), ideal for count-based visualizations."
+            ai_insights["visualization_potential"] = "high"
+            ai_insights["visualization_priority"] = 7
+            ai_insights["chart_suitability"] = {
+                "bar": 0.85, "column": 0.80, "pie": 0.75 if unique_count <= 8 else 0.50
+            }
+
+        elif data_category == "free_text":
+            ai_insights["data_story"] = f"'{field_name}' contains free-form text with {unique_count} unique entries, suitable for text analysis."
+            ai_insights["visualization_potential"] = "low"
+            ai_insights["visualization_priority"] = 2
+            ai_insights["chart_suitability"] = {
+                "word_cloud": 0.60, "text_length_histogram": 0.40
+            }
+
+        elif data_category == "date":
+            ai_insights["data_story"] = f"'{field_name}' contains temporal data spanning from {field_info.get('min_date', 'unknown')} to {field_info.get('max_date', 'unknown')}."
+            ai_insights["visualization_potential"] = "high"
+            ai_insights["visualization_priority"] = 8
+            ai_insights["chart_suitability"] = {
+                "timeline": 0.90, "line_chart": 0.85, "date_histogram": 0.80
+            }
+
+        # Add data quality insights
+        if null_percentage > 50:
+            ai_insights["data_story"] += f" Data quality concern: {null_percentage:.1f}% missing values."
+            ai_insights["visualization_priority"] = max(1, ai_insights["visualization_priority"] - 3)
+        elif null_percentage > 20:
+            ai_insights["data_story"] += f" Note: {null_percentage:.1f}% missing values present."
+            ai_insights["visualization_priority"] = max(1, ai_insights["visualization_priority"] - 1)
+
+        # Determine analytical value
+        if ai_insights["visualization_priority"] >= 8:
+            ai_insights["analytical_value"] = "high"
+        elif ai_insights["visualization_priority"] >= 5:
+            ai_insights["analytical_value"] = "medium"
+
+        return ai_insights
+
+    except Exception as e:
+        return {
+            "field_name": field_name,
+            "data_category": "unknown",
+            "data_story": f"Analysis of {field_name}",
+            "visualization_potential": "low",
+            "chart_suitability": {"bar": 0.5},
+            "analytical_value": "low",
+            "visualization_priority": 1,
+            "error": str(e)
+        }
 
 # Canonical dashboard generator
 def generate_smart_dashboard_layout(layer_name: str, field_insights: Dict, theme: str = "default") -> Dict:
