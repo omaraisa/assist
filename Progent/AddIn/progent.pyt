@@ -1952,6 +1952,92 @@ class RunPythonCode(object):
             
         return layout
 
+    def generate_smart_dashboard_layout(self, params):
+        """
+        Generate a smart dashboard layout based on field insights.
+        This is the main function called from the AI agent.
+        """
+        try:
+            layer_name = params.get("layer_name") or params.get("layer")
+            field_insights = params.get("field_insights", {})
+            theme = params.get("theme", "default")
+            analysis_type = params.get("analysis_type", "overview")
+            
+            if not layer_name:
+                return {"success": False, "error": "layer_name parameter is required"}
+            
+            if not field_insights:
+                return {"success": False, "error": "field_insights parameter is required"}
+            
+            # Sort fields by visualization priority
+            prioritized_fields = sorted(
+                field_insights.values(),
+                key=lambda x: x.get("visualization_priority", 0),
+                reverse=True
+            )
+            
+            # Select top 6 fields for dashboard
+            top_fields = prioritized_fields[:6]
+            
+            charts = []
+            for field_info in top_fields:
+                chart_config = self._create_chart_from_field(field_info, theme)
+                if chart_config:
+                    charts.append(chart_config)
+            
+            # Create layout
+            layout = self._arrange_charts_in_layout(charts)
+            
+            # Build complete dashboard structure
+            dashboard_data = {
+                "layer_name": layer_name,
+                "dashboard_title": f"{analysis_type.title()} Dashboard for {layer_name}",
+                "theme": theme,
+                "charts": charts,
+                "layout": layout,
+                "field_insights": field_insights,
+                "generation_timestamp": self._get_timestamp()
+            }
+            
+            return {
+                "success": True,
+                "is_dashboard_update": True,
+                "message": f"Dashboard generated for '{layer_name}' with {len(charts)} charts",
+                "data": dashboard_data,
+                "chart_count": len(charts)
+            }
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def mission_generate_dashboard(self, params):
+        """
+        Generate a new dashboard for a layer.
+        This function runs in ArcGIS Pro and has access to real layer data.
+        """
+        try:
+            layer_name = params.get("layer_name") or params.get("layer")
+            if not layer_name:
+                return {"success": False, "error": "layer_name parameter is required"}
+            
+            # First analyze the layer fields to get real data
+            analysis_result = self.analyze_layer_fields({"layer": layer_name})
+            if not analysis_result.get("success"):
+                return analysis_result
+            
+            # Generate dashboard using the field insights
+            dashboard_params = {
+                "layer_name": layer_name,
+                "field_insights": analysis_result.get("field_insights", {}),
+                "theme": params.get("theme", "default"),
+                "analysis_type": params.get("analysis_type", "overview")
+            }
+            
+            return self.generate_smart_dashboard_layout(dashboard_params)
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
 class Toolbox(object):
     def __init__(self):
         self.label = "Progent Toolbox"

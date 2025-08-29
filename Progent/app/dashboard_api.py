@@ -1,6 +1,5 @@
 import json
 import os
-import math
 from datetime import datetime
 from typing import Dict, List, Any
 from pathlib import Path
@@ -9,8 +8,6 @@ from pathlib import Path
 BASE_DIR = Path(__file__).parent.parent
 DASHBOARD_FILE = BASE_DIR / "progent_dashboard.json"
 
-# Private helper functions
-
 def _get_timestamp() -> str:
     """Get current timestamp in ISO format"""
     return datetime.now().isoformat()
@@ -18,28 +15,32 @@ def _get_timestamp() -> str:
 def _load_dashboard() -> Dict:
     """
     Safely loads the dashboard file.
-    Returns dashboard data or a default skeleton if the file doesn't exist or is empty.
+    Returns dashboard data or empty structure if file doesn't exist.
     """
-    if not os.path.exists(DASHBOARD_FILE) or os.path.getsize(DASHBOARD_FILE) == 0:
+    if not os.path.exists(DASHBOARD_FILE):
         return {
-            "success": True,
-            "is_dashboard_update": False,
             "layer_name": None,
-            "dashboard_title": "New Dashboard",
+            "dashboard_title": "No Dashboard",
             "theme": "default",
-            "layout": {"grid_template_columns": "1fr", "gap": "20px", "items": []},
             "charts": [],
+            "layout": {"grid_template_columns": "1fr", "gap": "20px", "items": []},
             "field_insights": {},
             "generation_timestamp": _get_timestamp()
         }
+    
     try:
         with open(DASHBOARD_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
     except (json.JSONDecodeError, IOError) as e:
         print(f"Error loading dashboard file: {e}")
         return {
-            "success": False, "error": str(e), "charts": [], "field_insights": {},
-            "layout": {"grid_template_columns": "1fr", "gap": "20px", "items": []}
+            "layer_name": None,
+            "dashboard_title": "Error Loading Dashboard",
+            "theme": "default", 
+            "charts": [],
+            "layout": {"grid_template_columns": "1fr", "gap": "20px", "items": []},
+            "field_insights": {},
+            "error": str(e)
         }
 
 def _save_dashboard(data: Dict) -> bool:
@@ -53,45 +54,44 @@ def _save_dashboard(data: Dict) -> bool:
         return False
 
 def _fetch_layer_fields(layer_name: str) -> List[Dict]:
-    """Enhanced placeholder function to simulate fetching fields from a GIS layer with more diverse data."""
-    print(f"Simulating fetch for layer: {layer_name}")
-    return [
-        {
-            "field_name": "Acres",
-            "type": "numeric",
-            "sample_values": [10.2, 5.5, 23.1, 15.8, 8.9, 12.4, 9.7, 18.3, 7.2, 14.6, 11.1, 16.9, 13.5, 6.8, 19.2]
-        },
-        {
-            "field_name": "LandUse",
-            "type": "categorical",
-            "sample_values": ["Residential", "Commercial", "Residential", "Industrial", "Agricultural", "Residential", "Commercial", "Residential", "Agricultural", "Residential", "Commercial", "Residential", "Industrial", "Residential", "Agricultural"]
-        },
-        {
-            "field_name": "Owner",
-            "type": "categorical",
-            "sample_values": ["Smith Corp", "Johnson LLC", "Smith Corp", "Davis Enterprises", "Wilson Farms", "Smith Corp", "Johnson LLC", "Brown Properties", "Wilson Farms", "Smith Corp", "Johnson LLC", "Anderson Group", "Davis Enterprises", "Smith Corp", "Wilson Farms"]
-        },
-        {
-            "field_name": "LastUpdate",
-            "type": "date",
-            "sample_values": ["2023-01-15", "2022-08-20", "2023-02-10", "2022-11-05", "2023-03-22", "2022-09-18", "2023-01-08", "2022-12-14", "2023-04-03", "2022-10-27", "2023-02-19", "2022-07-11", "2023-03-15", "2022-11-30", "2023-01-25"]
-        },
-        {
-            "field_name": "Value",
-            "type": "numeric",
-            "sample_values": [150000, 320000, 120000, 450000, 85000, 180000, 275000, 195000, 95000, 165000, 310000, 140000, 380000, 110000, 225000]
-        },
-        {
-            "field_name": "TaxRate",
-            "type": "numeric",
-            "sample_values": [0.015, 0.02, 0.015, 0.025, 0.012, 0.018, 0.02, 0.016, 0.013, 0.017, 0.021, 0.014, 0.023, 0.015, 0.019]
-        },
-        {
-            "field_name": "ZoneCode",
-            "type": "categorical",
-            "sample_values": ["R1", "C2", "R1", "I1", "AG", "R1", "C2", "R2", "AG", "R1", "C1", "R1", "I2", "R1", "AG"]
-        }
-    ]
+    """
+    Fetch fields from a GIS layer.
+    Gets real data from the dashboard JSON (sent from ArcGIS Pro).
+    Returns empty list if no data is available for the specified layer.
+    """
+    # Try to get real field data from dashboard JSON first
+    dashboard_data = _load_dashboard()
+    current_layer = dashboard_data.get("layer_name")
+    
+    # Check if we have data for the requested layer
+    if dashboard_data.get("field_insights") and current_layer == layer_name:
+        fields = []
+        for field_name, insights in dashboard_data["field_insights"].items():
+            # Reconstruct field info from insights
+            data_category = insights.get("data_category", "unknown")
+            if data_category in ["continuous_numeric", "categorical_numeric"]:
+                field_type = "numeric"
+            elif data_category in ["categorical_text", "categorical_codes", "name_field"]:
+                field_type = "categorical"
+            elif data_category == "date":
+                field_type = "date"
+            else:
+                field_type = "categorical"  # default
+
+            field_info = {
+                "field_name": field_name,
+                "type": field_type,
+                "sample_values": insights.get("sample_values", [])
+            }
+            fields.append(field_info)
+
+        if fields:
+            print(f"Using real field data from dashboard JSON for layer: {layer_name}")
+            return fields
+    
+    # No data available for this layer
+    print(f"No field data available for layer: {layer_name} (current data is for: {current_layer})")
+    return []
 
 def _prepare_field_insights_from_layer(fields: List[Dict]) -> Dict:
     """Enhanced adapter to create field_insights using AI-powered analysis."""
@@ -168,7 +168,7 @@ def _analyze_field_data(field: Dict) -> Dict:
         "unique_count": unique_count,
         "total_records": total_records,
         "null_percentage": null_percentage,
-        "sample_values": sample_values[:5]  # Keep first 5 samples
+        "sample_values": sample_values  # Keep all samples from ArcGIS Pro
     }
 
     if field_type == "numeric":
@@ -386,9 +386,13 @@ def mission_generate_dashboard(layer_name: str, source: str = None, field_insigh
         if not final_insights:
             if source == "layer":
                 fields = _fetch_layer_fields(layer_name)
+                if not fields:
+                    return {"success": False, "message": f"No field data available for layer '{layer_name}'. Please ensure ArcGIS Pro has analyzed this layer and sent the data to the server."}
                 final_insights = _prepare_field_insights_from_layer(fields)
             else: # source == "dashboard"
                 final_insights = dashboard_data.get("field_insights")
+                if not final_insights:
+                    return {"success": False, "message": "No field insights available in current dashboard. Please generate a new dashboard from layer data first."}
 
         if not final_insights:
             return {"success": False, "message": "Could not get field insights to generate dashboard."}

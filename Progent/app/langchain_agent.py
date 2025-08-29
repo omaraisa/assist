@@ -106,11 +106,19 @@ class ExecuteSpatialFunctionTool(BaseTool):
     def _run(self, tool_input_str: str) -> Dict[str, Any]:
         function_name = "[unknown]"
         try:
-            temp_input = ast.literal_eval(tool_input_str)
-            if isinstance(temp_input, str):
-                tool_input = ast.literal_eval(temp_input)
-            else:
-                tool_input = temp_input
+            # Try to parse as JSON first
+            try:
+                tool_input = json.loads(tool_input_str)
+            except json.JSONDecodeError:
+                # If JSON parsing fails, try ast.literal_eval as fallback
+                try:
+                    temp_input = ast.literal_eval(tool_input_str)
+                    if isinstance(temp_input, str):
+                        tool_input = json.loads(temp_input)
+                    else:
+                        tool_input = temp_input
+                except (ValueError, SyntaxError):
+                    return {"error": f"Failed to parse input as JSON or Python literal: {tool_input_str}"}
 
             if not isinstance(tool_input, dict):
                 return {"error": f"Parsed input is not a dictionary. Got type: {type(tool_input)}"}

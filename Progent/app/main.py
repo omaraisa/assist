@@ -187,6 +187,11 @@ async def handle_websocket_message(client_id: str, message: Dict):
                         json.dump(dashboard_data, f, indent=4)
                     logger.info("progent_dashboard.json has been updated.")
                     
+                    # Store layer field data for future dashboard generation
+                    if "field_insights" in dashboard_data:
+                        # The field_insights contain real data from ArcGIS Pro
+                        logger.info(f"Stored real field insights for layer: {dashboard_data.get('layer_name', 'Unknown')}")
+                    
                     # Notify all chatbot clients about the update
                     await websocket_manager.broadcast_to_type("chatbot", {
                         "type": "dashboard_update",
@@ -358,6 +363,18 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
                 function_ids_param = func_call.get("parameters", {}).get("function_ids", "unknown")
                 logger.info(f"Handling get_functions_declaration locally with IDs: {function_ids_param}")
                 await handle_local_function_declaration(client_id, func_call, original_response, is_function_chain)
+                continue
+                
+            # Handle server-side dashboard mission functions locally
+            server_side_functions = [
+                "mission_get_layout", "mission_get_charts", "mission_get_field_info",
+                "mission_update_charts", "mission_add_charts", "mission_delete_charts", 
+                "mission_update_layout"
+            ]
+            # Note: mission_generate_dashboard goes to ArcGIS Pro because it needs layer data access
+            if func_call["name"] in server_side_functions:
+                logger.info(f"Handling server-side dashboard function locally: {func_call['name']}")
+                await handle_local_dashboard_function(client_id, func_call, original_response, is_function_chain)
                 continue
             # Create function execution request
             function_request = {
@@ -583,6 +600,77 @@ async def handle_local_function_declaration(client_id: str, func_call: Dict, ori
         await websocket_manager.send_to_client(client_id, {
             "type": "error",
             "message": f"Error processing function declaration request: {str(e)}"
+        })
+
+async def handle_local_dashboard_function(client_id: str, func_call: Dict, original_response: Dict, is_function_chain: bool):
+    """Handle server-side dashboard functions locally without sending to ArcGIS Pro"""
+    try:
+        function_name = func_call["name"]
+        parameters = func_call.get("parameters", {})
+        
+        logger.info(f"Executing local dashboard function: {function_name}")
+        
+        # Import dashboard API functions
+        from dashboard_api import (
+            mission_get_layout, mission_get_charts, mission_get_field_info,
+            mission_update_charts, mission_add_charts, mission_delete_charts,
+            mission_update_layout
+        )
+        
+        # Route to appropriate function
+        if function_name == "mission_get_layout":
+            function_result = mission_get_layout()
+        elif function_name == "mission_get_charts":
+            function_result = mission_get_charts()
+        elif function_name == "mission_get_field_info":
+            field_name = parameters.get("field_name")
+            function_result = mission_get_field_info(field_name)
+        elif function_name == "mission_update_charts":
+            charts_data = parameters.get("charts_data", [])
+            function_result = mission_update_charts(charts_data)
+        elif function_name == "mission_add_charts":
+            new_charts = parameters.get("new_charts", [])
+            index = parameters.get("index")
+            function_result = mission_add_charts(new_charts, index)
+        elif function_name == "mission_delete_charts":
+            indices = parameters.get("indices", [])
+            function_result = mission_delete_charts(indices)
+        elif function_name == "mission_update_layout":
+            layout_updates = parameters.get("layout_updates", {})
+            function_result = mission_update_layout(layout_updates)
+        else:
+            function_result = {"success": False, "error": f"Unknown dashboard function: {function_name}"}
+        
+        logger.info(f"Dashboard function {function_name} result: {function_result.get('success', 'unknown')}")
+        
+        # Handle function chain vs single function result
+        if is_function_chain:
+            # This is part of a function chain - add to chain context
+            chain_context = websocket_manager.get_chain_context(client_id)
+            if chain_context:
+                chain_context["completed_functions"] += 1
+                chain_context["function_results"].append(function_result)
+                
+                logger.info(f"Dashboard function chain progress: {chain_context['completed_functions']}/{chain_context['total_functions']}")
+                
+                # Check if all functions in the chain are complete
+                if chain_context["completed_functions"] >= chain_context["total_functions"]:
+                    logger.info("All functions in dashboard chain completed. Sending batch results to LLM.")
+                    await handle_chain_completion(client_id, chain_context)                
+                else:
+                    logger.info(f"Waiting for {chain_context['total_functions'] - chain_context['completed_functions']} more functions to complete.")
+            else:
+                logger.error("Chain context not found - falling back to single function handling")
+                await handle_single_function_result_with_retry(client_id, function_result, original_response)
+        else:
+            # Single function call - handle immediately  
+            await handle_single_function_result_with_retry(client_id, function_result, original_response)
+            
+    except Exception as e:
+        logger.error(f"Error handling local dashboard function: {str(e)}")
+        await websocket_manager.send_to_client(client_id, {
+            "type": "error",
+            "message": f"Error processing dashboard function request: {str(e)}"
         })
 
 async def execute_investigation_command(client_id: str, session_id: str, command: str):
