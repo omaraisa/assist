@@ -611,7 +611,7 @@ async def handle_local_dashboard_function(client_id: str, func_call: Dict, origi
         logger.info(f"Executing local dashboard function: {function_name}")
         
         # Import dashboard API functions
-        from dashboard_api import (
+        from progent_functions import (
             mission_get_layout, mission_get_charts, mission_get_field_info,
             mission_update_charts, mission_add_charts, mission_delete_charts,
             mission_update_layout

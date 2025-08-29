@@ -106,19 +106,11 @@ class ExecuteSpatialFunctionTool(BaseTool):
     def _run(self, tool_input_str: str) -> Dict[str, Any]:
         function_name = "[unknown]"
         try:
-            # Try to parse as JSON first
-            try:
-                tool_input = json.loads(tool_input_str)
-            except json.JSONDecodeError:
-                # If JSON parsing fails, try ast.literal_eval as fallback
-                try:
-                    temp_input = ast.literal_eval(tool_input_str)
-                    if isinstance(temp_input, str):
-                        tool_input = json.loads(temp_input)
-                    else:
-                        tool_input = temp_input
-                except (ValueError, SyntaxError):
-                    return {"error": f"Failed to parse input as JSON or Python literal: {tool_input_str}"}
+            temp_input = ast.literal_eval(tool_input_str)
+            if isinstance(temp_input, str):
+                tool_input = ast.literal_eval(temp_input)
+            else:
+                tool_input = temp_input
 
             if not isinstance(tool_input, dict):
                 return {"error": f"Parsed input is not a dictionary. Got type: {type(tool_input)}"}
@@ -132,14 +124,11 @@ class ExecuteSpatialFunctionTool(BaseTool):
 
             # Handle dashboard functions locally (server-side)
             dashboard_functions = [
-                "mission_generate_dashboard",
-                "mission_get_layout",
-                "mission_get_charts",
-                "mission_get_field_info",
-                "mission_update_charts",
-                "mission_add_charts",
-                "mission_delete_charts",
-                "mission_update_layout"
+                "generate_smart_dashboard_layout",
+                "get_current_dashboard_layout", 
+                "get_current_dashboard_charts",
+                "get_field_stories_and_samples",
+                "update_dashboard_charts"
             ]
             
             if function_name in dashboard_functions:
@@ -185,67 +174,67 @@ class ExecuteSpatialFunctionTool(BaseTool):
             return {"error": f"An unexpected error occurred while executing '{function_name}': {e}"}
 
     def _execute_dashboard_function(self, function_name: str, parameters: dict) -> dict:
-        """Execute dashboard functions locally on the server side using the new API."""
-        result = {}
+        """Execute dashboard functions locally on the server side"""
         try:
-            # The agent sometimes wraps parameters in an 'arguments' dict. Unwrap it.
-            if isinstance(parameters, dict) and "arguments" in parameters and isinstance(parameters["arguments"], dict):
-                parameters = parameters["arguments"]
-
-            # Special handling for mission_generate_dashboard to fetch insights if needed
-            if function_name == "mission_generate_dashboard" and parameters.get("source") == "layer":
-                arcgis_client = self.websocket_manager.get_arcgis_client()
-                if not arcgis_client:
-                    return {"success": False, "message": "ArcGIS Pro client not connected for field analysis."}
+            if function_name == "generate_smart_dashboard_layout":
+                # For generate_smart_dashboard_layout, we need to get field insights first
+                layer_name = parameters.get("layer_name")
+                analysis_type = parameters.get("analysis_type", "overview")
+                theme = parameters.get("theme", "default")
+                field_insights = parameters.get("field_insights")
                 
-                session_id = str(uuid.uuid4())
-                analysis_payload = {
-                    "type": "execute_function", "function_name": "analyze_layer_fields",
-                    "parameters": {"layer": parameters.get("layer_name")}, "session_id": session_id,
-                    "source_client": self.client_id
-                }
-                asyncio.run(self.websocket_manager.send_to_client(arcgis_client, analysis_payload))
-
-                max_wait_time = 120
-                check_interval = 0.2
-                elapsed_time = 0
-                field_insights = None
-                while elapsed_time < max_wait_time:
-                    if self.websocket_manager.has_function_result(session_id):
-                        insight_result = self.websocket_manager.get_function_result(session_id)
-                        if insight_result and insight_result.get("data", {}).get("success"):
-                            field_insights = insight_result.get("data", {}).get("field_insights")
-                            break
-                    import time
-                    time.sleep(check_interval)
-                    elapsed_time += check_interval
-
                 if not field_insights:
-                    return {"success": False, "message": "Failed to get field insights from ArcGIS Pro."}
+                    # Get field insights from ArcGIS Pro first
+                    arcgis_client = self.websocket_manager.get_arcgis_client()
+                    if not arcgis_client:
+                        return {"error": "ArcGIS Pro client not connected for field analysis."}
+                    
+                    analysis_payload = {
+                        "type": "execute_function",
+                        "function_name": "analyze_layer_fields",
+                        "parameters": {"layer": layer_name},
+                        "session_id": str(uuid.uuid4()),
+                        "source_client": self.client_id
+                    }
+                    asyncio.run(self.websocket_manager.send_to_client(arcgis_client, analysis_payload))
 
-                parameters["field_insights"] = field_insights
+                    max_wait_time = 120
+                    check_interval = 0.2
+                    elapsed_time = 0
 
-            # Dynamically call the correct mission function
-            mission_functions = {
-                "mission_generate_dashboard": mission_generate_dashboard,
-                "mission_get_layout": mission_get_layout,
-                "mission_get_charts": mission_get_charts,
-                "mission_get_field_info": mission_get_field_info,
-                "mission_update_charts": mission_update_charts,
-                "mission_add_charts": mission_add_charts,
-                "mission_delete_charts": mission_delete_charts,
-                "mission_update_layout": mission_update_layout,
-            }
-
-            if function_name in mission_functions:
-                result = mission_functions[function_name](**parameters)
+                    while elapsed_time < max_wait_time:
+                        if self.websocket_manager.has_function_result(analysis_payload['session_id']):
+                            result = self.websocket_manager.get_function_result(analysis_payload['session_id'])
+                            if result and result.get("data", {}).get("success"):
+                                field_insights = result.get("data", {}).get("field_insights")
+                                break
+                        import time
+                        time.sleep(check_interval)
+                        elapsed_time += check_interval
+                    
+                    if not field_insights:
+                        return {"error": "Failed to get field insights from analyze_layer_fields"}
+                
+                return generate_smart_dashboard_layout(layer_name, analysis_type, theme, field_insights)
+                
+            elif function_name == "get_current_dashboard_layout":
+                return get_current_dashboard_layout()
+                
+            elif function_name == "get_current_dashboard_charts":
+                return get_current_dashboard_charts()
+                
+            elif function_name == "get_field_stories_and_samples":
+                return get_field_stories_and_samples()
+                
+            elif function_name == "update_dashboard_charts":
+                charts_data = parameters.get("charts_data", [])
+                return update_dashboard_charts(charts_data)
+                
             else:
-                return {"success": False, "message": f"Unknown or unsupported dashboard function: {function_name}"}
-
-            return result
+                return {"error": f"Unknown dashboard function: {function_name}"}
                 
         except Exception as e:
-            return {"success": False, "message": f"Error executing dashboard function '{function_name}': {str(e)}"}
+            return {"error": f"Error executing dashboard function '{function_name}': {str(e)}"}
 
 try:
     from langchain_core.messages import AIMessage, HumanMessage
@@ -259,7 +248,7 @@ except Exception:
         def __init__(self, content: str):
             self.content = content
 
-from .progent_functions import AVAILABLE_FUNCTIONS
+from .progent_functions import AVAILABLE_FUNCTIONS, generate_smart_dashboard_layout, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts
 from .config import settings
 from .ai.function_declarations import FunctionDeclaration
 
@@ -377,19 +366,13 @@ class LangChainAgent:
                 logger.warning(f"Could not import langchain_google_genai: {ie}. Gemini agent will not be available.")
                 self.llm = None
             else:
-                # Only instantiate the LLM if an API key is provided.
-                # This prevents crashes when the user hasn't set up their key yet.
-                if model_config.get("api_key"):
-                    self.llm = ChatGoogleGenerativeAI(
-                        model=model_config["model"],
-                        google_api_key=model_config.get("api_key"),
-                        temperature=model_config["temperature"],
-                        max_output_tokens=model_config["max_tokens"],
-                    )
-                    logger.info("LangChain agent LLM set to Google Gemini")
-                else:
-                    self.llm = None
-                    logger.warning("Google Gemini model selected, but no API key found. The agent will not be functional until a key is provided.")
+                self.llm = ChatGoogleGenerativeAI(
+                    model=model_config["model"],
+                    google_api_key=model_config.get("api_key", None),
+                    temperature=model_config["temperature"],
+                    max_output_tokens=model_config["max_tokens"],
+                )
+                logger.info("LangChain agent LLM set to Google Gemini")
         else:
             # For non-Gemini models, try to provide a LangChain-compatible
             # adapter for Ollama so the same agent/tools can be reused.
@@ -399,7 +382,7 @@ class LangChainAgent:
                     from langchain_ollama import ChatOllama
                     
                     self.llm = ChatOllama(
-                        model=model_config.get("model", "llama3.2:3b"),
+                        model=model_config.get("model", "gemma:2b"),
                         base_url=model_config.get("endpoint", "http://localhost:11434"),
                         temperature=model_config.get("temperature", 0.7),
                         num_predict=model_config.get("max_tokens", 1024),
@@ -519,3 +502,4 @@ class LangChainAgent:
                 return {
                     "output": f"Error: {e}",
                 }
+
