@@ -160,7 +160,7 @@ def generate_dashboard_for_target_layer(layer_name: str, analysis_type: str = "o
         }
         
         # Save to progent_dashboard.json
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "../progent_dashboard.json"
         with open(dashboard_path, 'w', encoding='utf-8') as f:
             json.dump(result, f, indent=4, ensure_ascii=False)
         
@@ -261,7 +261,7 @@ def _get_timestamp() -> str:
 def get_current_dashboard_layout() -> Dict:
     """Get current dashboard layout from progent_dashboard.json"""
     try:
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "../progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -281,7 +281,7 @@ def get_current_dashboard_layout() -> Dict:
 def get_current_dashboard_charts() -> Dict:
     """Get current dashboard charts from progent_dashboard.json"""
     try:
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "../progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -309,7 +309,7 @@ def get_current_dashboard_charts() -> Dict:
 def get_field_stories_and_samples() -> Dict:
     """Get field stories and samples from progent_dashboard.json"""
     try:
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "../progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -338,7 +338,7 @@ def get_field_stories_and_samples() -> Dict:
 def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
     """Update specific dashboard charts by index in progent_dashboard.json"""
     try:
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "../progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -411,7 +411,7 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
 def delete_charts_from_dashboard(indices: list) -> dict:
     """Delete charts from dashboard by their indices"""
     try:
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "../progent_dashboard.json"
         
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
@@ -464,7 +464,7 @@ def delete_charts_from_dashboard(indices: list) -> dict:
 def add_charts_to_dashboard(new_charts: list, index: int = None) -> dict:
     """Add new charts to the dashboard"""
     try:
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "../progent_dashboard.json"
         
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
@@ -522,7 +522,7 @@ def add_charts_to_dashboard(new_charts: list, index: int = None) -> dict:
 def update_dashboard_layout(layout_updates: dict) -> dict:
     """Update dashboard layout configuration"""
     try:
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "../progent_dashboard.json"
 
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
