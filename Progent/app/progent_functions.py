@@ -402,3 +402,156 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
     except Exception as e:
         return {"success": False, "error": str(e)}
 
+
+def delete_charts_from_dashboard(indices: list) -> dict:
+    """Delete charts from dashboard by their indices"""
+    try:
+        dashboard_path = "Progent/progent_dashboard.json"
+        
+        if not os.path.exists(dashboard_path):
+            return {"success": False, "error": "Dashboard file not found"}
+            
+        with open(dashboard_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        if "charts" not in data:
+            return {"success": False, "error": "No charts found in dashboard"}
+        
+        # Sort indices in descending order to delete from end first
+        # This prevents index shifting issues
+        sorted_indices = sorted(indices, reverse=True)
+        
+        deleted_count = 0
+        original_count = len(data["charts"])
+        
+        for index in sorted_indices:
+            if 0 <= index < len(data["charts"]):
+                del data["charts"][index]
+                deleted_count += 1
+            else:
+                return {"success": False, "error": f"Index {index} is out of range (0-{original_count-1})"}
+        
+        # Update layout items if they exist
+        if "layout" in data and "items" in data["layout"]:
+            # Remove corresponding layout items
+            sorted_indices = sorted(indices, reverse=True)
+            for index in sorted_indices:
+                if 0 <= index < len(data["layout"]["items"]):
+                    del data["layout"]["items"][index]
+        
+        # Update timestamp
+        data["generation_timestamp"] = _get_timestamp()
+        
+        # Save updated data
+        with open(dashboard_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        
+        return {
+            "success": True,
+            "message": f"Deleted {deleted_count} charts from dashboard",
+            "remaining_charts": len(data["charts"])
+        }
+        
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def add_charts_to_dashboard(new_charts: list, index: int = None) -> dict:
+    """Add new charts to the dashboard"""
+    try:
+        dashboard_path = "Progent/progent_dashboard.json"
+        
+        if not os.path.exists(dashboard_path):
+            return {"success": False, "error": "Dashboard file not found"}
+            
+        with open(dashboard_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        if "charts" not in data:
+            data["charts"] = []
+        
+        # Process each new chart
+        charts_to_add = []
+        for chart_def in new_charts:
+            if "fields" not in chart_def:
+                return {"success": False, "error": "Each chart must have 'fields' specified"}
+            
+            chart_config = {
+                "fields": chart_def["fields"],
+                "chart_type": chart_def.get("chart_type", "bar"),
+                "title": chart_def.get("title", f"Chart for {', '.join(chart_def['fields'])}"),
+                "theme": data.get("theme", "default")
+            }
+            
+            if "category_field" in chart_def:
+                chart_config["category_field"] = chart_def["category_field"]
+            if "primary_field" in chart_def:
+                chart_config["primary_field"] = chart_def["primary_field"]
+                
+            charts_to_add.append(chart_config)
+        
+        # Add charts at specified index or append to end
+        if index is not None:
+            for i, chart in enumerate(charts_to_add):
+                data["charts"].insert(index + i, chart)
+        else:
+            data["charts"].extend(charts_to_add)
+        
+        # Update timestamp
+        data["generation_timestamp"] = _get_timestamp()
+        
+        # Save updated data
+        with open(dashboard_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        
+        return {
+            "success": True,
+            "message": f"Added {len(charts_to_add)} charts to dashboard",
+            "total_charts": len(data["charts"])
+        }
+        
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def update_dashboard_layout(layout_updates: dict) -> dict:
+    """Update dashboard layout configuration"""
+    try:
+        dashboard_path = "Progent/progent_dashboard.json"
+        
+        if not os.path.exists(dashboard_path):
+            return {"success": False, "error": "Dashboard file not found"}
+            
+        with open(dashboard_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        if "layout" not in data:
+            data["layout"] = {"grid_template_columns": "1fr 1fr 1fr", "gap": "20px", "items": []}
+        
+        # Update grid template columns if provided
+        if "grid_template_columns" in layout_updates:
+            data["layout"]["grid_template_columns"] = layout_updates["grid_template_columns"]
+        
+        # Update specific chart items if provided
+        if "items" in layout_updates:
+            for item_update in layout_updates["items"]:
+                index = item_update.get("index")
+                if index is not None and 0 <= index < len(data["layout"]["items"]):
+                    if "grid_area" in item_update:
+                        data["layout"]["items"][index]["grid_area"] = item_update["grid_area"]
+        
+        # Update timestamp
+        data["generation_timestamp"] = _get_timestamp()
+        
+        # Save updated data
+        with open(dashboard_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        
+        return {
+            "success": True,
+            "message": "Dashboard layout updated successfully"
+        }
+        
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+

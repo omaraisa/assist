@@ -244,14 +244,15 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 charts_data = parameters.get("charts_data", [])
                 result = update_dashboard_charts(charts_data)
             elif function_name == "add_dashboard_charts":
-                # This function doesn't exist yet, return error
-                result = {"success": False, "message": "add_dashboard_charts not implemented yet"}
+                new_charts = parameters.get("new_charts", [])
+                index = parameters.get("index")
+                result = add_charts_to_dashboard(new_charts, index)
             elif function_name == "delete_charts_from_dashboard":
-                # This function doesn't exist yet, return error
-                result = {"success": False, "message": "delete_charts_from_dashboard not implemented yet"}
+                indices = parameters.get("indices", [])
+                result = delete_charts_from_dashboard(indices)
             elif function_name == "update_dashboard_layout":
-                # This function doesn't exist yet, return error
-                result = {"success": False, "message": "update_dashboard_layout not implemented yet"}
+                layout_updates = parameters.get("layout_updates", {})
+                result = update_dashboard_layout(layout_updates)
             else:
                 return {"success": False, "message": f"Unknown dashboard function: {function_name}"}
 
@@ -272,7 +273,7 @@ except Exception:
         def __init__(self, content: str):
             self.content = content
 
-from .progent_functions import AVAILABLE_FUNCTIONS, generate_dashboard_for_target_layer, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts
+from .progent_functions import AVAILABLE_FUNCTIONS, generate_dashboard_for_target_layer, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts, add_charts_to_dashboard, delete_charts_from_dashboard, update_dashboard_layout
 from .config import settings
 from .ai.function_declarations import FunctionDeclaration
 
