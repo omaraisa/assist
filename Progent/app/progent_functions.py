@@ -160,7 +160,7 @@ def generate_dashboard_for_target_layer(layer_name: str, analysis_type: str = "o
         }
         
         # Save to progent_dashboard.json
-        dashboard_path = "Progent/progent_dashboard.json"
+        dashboard_path = "progent_dashboard.json"
         with open(dashboard_path, 'w', encoding='utf-8') as f:
             json.dump(result, f, indent=4, ensure_ascii=False)
         
@@ -261,7 +261,7 @@ def _get_timestamp() -> str:
 def get_current_dashboard_layout() -> Dict:
     """Get current dashboard layout from progent_dashboard.json"""
     try:
-        dashboard_path = "Progent/progent_dashboard.json"
+        dashboard_path = "progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -281,7 +281,7 @@ def get_current_dashboard_layout() -> Dict:
 def get_current_dashboard_charts() -> Dict:
     """Get current dashboard charts from progent_dashboard.json"""
     try:
-        dashboard_path = "Progent/progent_dashboard.json"
+        dashboard_path = "progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -309,7 +309,7 @@ def get_current_dashboard_charts() -> Dict:
 def get_field_stories_and_samples() -> Dict:
     """Get field stories and samples from progent_dashboard.json"""
     try:
-        dashboard_path = "Progent/progent_dashboard.json"
+        dashboard_path = "progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -338,7 +338,7 @@ def get_field_stories_and_samples() -> Dict:
 def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
     """Update specific dashboard charts by index in progent_dashboard.json"""
     try:
-        dashboard_path = "Progent/progent_dashboard.json"
+        dashboard_path = "progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -411,7 +411,7 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
 def delete_charts_from_dashboard(indices: list) -> dict:
     """Delete charts from dashboard by their indices"""
     try:
-        dashboard_path = "Progent/progent_dashboard.json"
+        dashboard_path = "progent_dashboard.json"
         
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
@@ -464,7 +464,7 @@ def delete_charts_from_dashboard(indices: list) -> dict:
 def add_charts_to_dashboard(new_charts: list, index: int = None) -> dict:
     """Add new charts to the dashboard"""
     try:
-        dashboard_path = "Progent/progent_dashboard.json"
+        dashboard_path = "progent_dashboard.json"
         
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
@@ -522,41 +522,60 @@ def add_charts_to_dashboard(new_charts: list, index: int = None) -> dict:
 def update_dashboard_layout(layout_updates: dict) -> dict:
     """Update dashboard layout configuration"""
     try:
-        dashboard_path = "Progent/progent_dashboard.json"
-        
+        dashboard_path = "progent_dashboard.json"
+
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
-            
+
         with open(dashboard_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        
+
         if "layout" not in data:
             data["layout"] = {"grid_template_columns": "1fr 1fr 1fr", "gap": "20px", "items": []}
-        
+
         # Update grid template columns if provided
         if "grid_template_columns" in layout_updates:
             data["layout"]["grid_template_columns"] = layout_updates["grid_template_columns"]
-        
+
         # Update specific chart items if provided
         if "items" in layout_updates:
-            for item_update in layout_updates["items"]:
-                index = item_update.get("index")
-                if index is not None and 0 <= index < len(data["layout"]["items"]):
+            # Create a mapping of current items by ID for easy lookup
+            current_items = {item["id"]: item for item in data["layout"]["items"]}
+            current_charts = {chart["id"]: chart for chart in data.get("charts", [])}
+
+            # Update items based on the new order provided
+            updated_items = []
+            updated_charts = []
+            for i, item_update in enumerate(layout_updates["items"]):
+                item_id = item_update.get("id")
+                if item_id and item_id in current_items:
+                    # Copy the existing item and update its grid_area
+                    updated_item = current_items[item_id].copy()
                     if "grid_area" in item_update:
-                        data["layout"]["items"][index]["grid_area"] = item_update["grid_area"]
-        
+                        updated_item["grid_area"] = item_update["grid_area"]
+                    updated_items.append(updated_item)
+
+                    # Also reorder the corresponding chart
+                    if item_id in current_charts:
+                        updated_charts.append(current_charts[item_id])
+
+            # Replace the layout items and charts with the updated order
+            if updated_items:
+                data["layout"]["items"] = updated_items
+                data["charts"] = updated_charts
+
         # Update timestamp
         data["generation_timestamp"] = _get_timestamp()
-        
+
         # Save updated data
         with open(dashboard_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
-        
+
         return {
             "success": True,
             "message": "Dashboard layout updated successfully"
         }
-        
+
     except Exception as e:
         return {"success": False, "error": str(e)}
 

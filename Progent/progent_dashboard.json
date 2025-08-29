@@ -9,41 +9,26 @@
         "gap": "20px",
         "items": [
             {
-                "id": "chart_DistrictID",
-                "chart_type": "histogram",
-                "field_name": "DistrictID",
-                "grid_area": "chart-2"
-            },
-            {
                 "id": "chart_operator",
                 "chart_type": "bar",
                 "field_name": "operator",
-                "grid_area": "chart-3"
+                "grid_area": "chart-1"
             },
             {
                 "id": "chart_Long",
                 "chart_type": "histogram",
                 "field_name": "Long",
-                "grid_area": "chart-4"
+                "grid_area": "chart-2"
+            },
+            {
+                "id": "chart_DistrictID",
+                "chart_type": "histogram",
+                "field_name": "DistrictID",
+                "grid_area": "chart-3"
             }
         ]
     },
     "charts": [
-        {
-            "id": "chart_DistrictID",
-            "field_name": "DistrictID",
-            "chart_type": "histogram",
-            "data_category": "continuous_numeric",
-            "title": "'DistrictID' displays moderate variation (range: 1.00 to 181.00), suitable for distribution analysis.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "histogram": 0.9,
-                "box_plot": 0.85,
-                "density_plot": 0.8,
-                "violin_plot": 0.75
-            },
-            "theme": "default"
-        },
         {
             "id": "chart_operator",
             "field_name": "operator",
@@ -65,6 +50,21 @@
             "chart_type": "histogram",
             "data_category": "continuous_numeric",
             "title": "'Long' shows consistent values (range: 39.05 to 39.32), good for trend analysis.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "histogram": 0.9,
+                "box_plot": 0.85,
+                "density_plot": 0.8,
+                "violin_plot": 0.75
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_DistrictID",
+            "field_name": "DistrictID",
+            "chart_type": "histogram",
+            "data_category": "continuous_numeric",
+            "title": "'DistrictID' displays moderate variation (range: 1.00 to 181.00), suitable for distribution analysis.",
             "visualization_potential": "high",
             "chart_suitability": {
                 "histogram": 0.9,
@@ -946,5 +946,5 @@
             "visualization_priority": 8
         }
     },
-    "generation_timestamp": "2025-08-29T23:05:09.233618"
+    "generation_timestamp": "2025-08-30T00:01:53.225192"
 }
