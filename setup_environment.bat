@@ -2,6 +2,29 @@
 title Progent - Environment Setup
 setlocal enabledelayedexpansion
 
+set "TOTAL_STEPS=10"
+set "CURRENT_STEP=0"
+
+goto :main
+
+:ProgressBar
+cls
+echo =========================================
+echo   Progent Environment Setup
+echo =========================================
+echo.
+set "progress_bar="
+set /a "filled_blocks=(%~1*50)/100"
+set /a "empty_blocks=50-filled_blocks"
+for /l %%i in (1,1,!filled_blocks!) do set "progress_bar=!progress_bar!█"
+for /l %%i in (1,1,!empty_blocks!) do set "progress_bar=!progress_bar!░"
+
+echo Progress: [!progress_bar!] %~1%%
+echo.
+echo Current step: %~2
+goto :eof
+
+:main
 echo =========================================
 echo   Progent Environment Setup
 echo =========================================
@@ -12,6 +35,10 @@ set "PROJECT_DIR=%~dp0Progent"
 
 echo [INFO] Project Directory: %PROJECT_DIR%
 echo.
+
+set /a "CURRENT_STEP+=1"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Checking Python environment..."
 
 REM Check if Python is available
 python --version >nul 2>&1
@@ -58,7 +85,9 @@ if exist "%PROJECT_DIR%\venv" (
 )
 
 REM Create new virtual environment with system Python
-echo [INFO] Creating new virtual environment with system Python...
+set /a "CURRENT_STEP+=1"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Creating Python virtual environment..."
 python -m venv "%PROJECT_DIR%\venv"
 
 if errorlevel 1 (
@@ -86,11 +115,15 @@ echo [INFO] Virtual environment activated
 echo.
 
 REM Upgrade pip
-echo [INFO] Upgrading pip...
+set /a "CURRENT_STEP+=1"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Upgrading pip package manager..."
 python -m pip install --upgrade pip
 
 REM Install requirements
-echo [INFO] Installing project requirements...
+set /a "CURRENT_STEP+=1"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Installing required Python packages..."
 set "INSTALL_SUCCESS=0"
 
 if exist "%PROJECT_DIR%\requirements.txt" (
@@ -169,7 +202,9 @@ if "%INSTALL_SUCCESS%"=="0" (
 )
 
 REM Verify critical packages are available
-echo [INFO] Verifying package installation...
+set /a "CURRENT_STEP+=1"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Verifying core package installations..."
 python -c "import fastapi; print('FastAPI: OK')" 2>nul
 if errorlevel 1 (
     echo [ERROR] FastAPI not available after installation
@@ -219,7 +254,9 @@ if errorlevel 1 (
 echo.
 
 REM Try to install arcpy if available
-echo [INFO] Attempting to install ArcPy support...
+set /a "CURRENT_STEP+=1"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Attempting to install ArcPy support..."
 echo [INFO] Note: ArcPy requires ArcGIS Pro to be installed on the system
 
 REM Check if ArcGIS Pro is installed by looking for common installation paths
@@ -262,7 +299,9 @@ if defined ARCGIS_PRO_PATH (
 echo.
 
 REM Create/update environment activation script
-echo [INFO] Creating enhanced activation script...
+set /a "CURRENT_STEP+=1"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Creating activation script..."
 
 (
 echo @echo off
@@ -297,7 +336,9 @@ echo [SUCCESS] Enhanced activation script created: activate_environment.bat
 echo.
 
 REM Create a startup script for the server
-echo [INFO] Creating server startup script...
+set /a "CURRENT_STEP+=1"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Creating server startup script..."
 
 (
 echo @echo off
@@ -343,7 +384,9 @@ echo [SUCCESS] Server startup script created: start_progent.bat
 echo.
 
 REM Create ArcGIS connector launcher
-echo [INFO] Creating ArcGIS Pro connector launcher...
+set /a "CURRENT_STEP+=1"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Creating ArcGIS connector launcher..."
 
 (
 echo @echo off
@@ -417,7 +460,9 @@ echo [SUCCESS] Project information saved to: environment_info.txt
 echo.
 
 REM Test the installation
-echo [INFO] Testing the installation...
+set /a "CURRENT_STEP+=1"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Finalizing and testing installation..."
 echo.
 
 python -c "
@@ -494,22 +539,18 @@ if errorlevel 1 (
 
 echo.
 
+echo   ██████╗ ██████╗  ██████╗  ██████╗ ███████╗███╗   ██╗████████╗
+echo   ██╔══██╗██╔══██╗██╔═══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝
+echo   ██████╔╝██████╔╝██║   ██║██║  ███╗█████╗  ██╔██╗ ██║   ██║
+echo   ██╔═══╝ ██╔══██╗██║   ██║██║   ██║██╔══╝  ██║╚██╗██║   ██║
+echo   ██║     ██║  ██║╚██████╔╝╚██████╔╝███████╗██║ ╚████║   ██║
+echo   ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝
+echo.
 echo =========================================
-echo   Setup Complete!
+echo   Installation Complete!
 echo =========================================
 echo.
-
-echo [SUCCESS] Progent environment is now self-contained
-echo.
-
-echo Next steps:
-echo 1. To start the server: call start_progent.bat
-echo 2. To connect ArcGIS Pro: call connect_arcgis.bat  
-echo 3. To manually activate environment: call activate_environment.bat
-echo.
-
-echo The project is now independent of external Python installations
-echo and can be copied to other machines with the same setup.
+echo You can now run the server using the start_server.bat script.
 echo.
 pause
 
