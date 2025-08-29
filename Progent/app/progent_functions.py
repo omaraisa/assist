@@ -336,7 +336,7 @@ def get_field_stories_and_samples() -> Dict:
 
 
 def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
-    """Update dashboard charts in progent_dashboard.json"""
+    """Update specific dashboard charts by index in progent_dashboard.json"""
     try:
         dashboard_path = "Progent/progent_dashboard.json"
         if not os.path.exists(dashboard_path):
@@ -345,18 +345,36 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
         with open(dashboard_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
-        # Update charts
-        updated_charts = []
-        layout_items = []
+        if "charts" not in data:
+            data["charts"] = []
+        if "layout" not in data:
+            data["layout"] = {"grid_template_columns": "1fr 1fr", "gap": "20px", "items": []}
+        if "items" not in data["layout"]:
+            data["layout"]["items"] = []
         
-        for i, chart_data in enumerate(charts_data):
-            fields = chart_data.get("fields", [])
-            chart_type = chart_data.get("chart_type", "bar")
+        updated_count = 0
+        
+        # Update specific charts by index
+        for chart_update in charts_data:
+            index = chart_update.get("index")
+            chart = chart_update.get("chart")
+            
+            if index is None or chart is None:
+                continue
+                
+            # Validate index
+            if not isinstance(index, int) or index < 0 or index >= len(data["charts"]):
+                continue
+            
+            # Update the chart at the specified index
+            fields = chart.get("fields", [])
+            chart_type = chart.get("chart_type", "bar")
             
             if fields:
                 field_name = fields[0]  # Use first field
                 
-                chart_config = {
+                # Update the chart
+                data["charts"][index] = {
                     "id": f"chart_{field_name}",
                     "field_name": field_name,
                     "chart_type": chart_type,
@@ -364,30 +382,17 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
                     "theme": data.get("theme", "default")
                 }
                 
-                updated_charts.append(chart_config)
+                # Update corresponding layout item
+                if index < len(data["layout"]["items"]):
+                    data["layout"]["items"][index] = {
+                        "id": f"chart_{field_name}",
+                        "chart_type": chart_type,
+                        "field_name": field_name,
+                        "grid_area": f"chart-{index+1}"
+                    }
                 
-                layout_items.append({
-                    "id": chart_config["id"],
-                    "chart_type": chart_type,
-                    "field_name": field_name,
-                    "grid_area": f"chart-{i+1}"
-                })
+                updated_count += 1
         
-        # Update layout
-        num_charts = len(updated_charts)
-        if num_charts <= 2:
-            grid_cols = "1fr 1fr"
-        elif num_charts <= 4:
-            grid_cols = "1fr 1fr"
-        else:
-            grid_cols = "1fr 1fr 1fr"
-        
-        data["charts"] = updated_charts
-        data["layout"] = {
-            "grid_template_columns": grid_cols,
-            "gap": "20px",
-            "items": layout_items
-        }
         data["generation_timestamp"] = _get_timestamp()
         
         # Save updated data
@@ -396,7 +401,7 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
         
         return {
             "success": True,
-            "message": f"Updated {len(updated_charts)} charts in dashboard"
+            "message": f"Updated {updated_count} charts in dashboard"
         }
         
     except Exception as e:

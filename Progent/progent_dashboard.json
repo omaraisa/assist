@@ -5,11 +5,76 @@
     "dashboard_title": "Overview Dashboard for Fuel Stations",
     "theme": "default",
     "layout": {
-        "grid_template_columns": "1fr 1fr",
+        "grid_template_columns": "repeat(4, 1fr)",
         "gap": "20px",
-        "items": []
+        "items": [
+            {
+                "id": "chart_DistrictID",
+                "chart_type": "histogram",
+                "field_name": "DistrictID",
+                "grid_area": "chart-2"
+            },
+            {
+                "id": "chart_operator",
+                "chart_type": "bar",
+                "field_name": "operator",
+                "grid_area": "chart-3"
+            },
+            {
+                "id": "chart_Long",
+                "chart_type": "histogram",
+                "field_name": "Long",
+                "grid_area": "chart-4"
+            }
+        ]
     },
-    "charts": [],
+    "charts": [
+        {
+            "id": "chart_DistrictID",
+            "field_name": "DistrictID",
+            "chart_type": "histogram",
+            "data_category": "continuous_numeric",
+            "title": "'DistrictID' displays moderate variation (range: 1.00 to 181.00), suitable for distribution analysis.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "histogram": 0.9,
+                "box_plot": 0.85,
+                "density_plot": 0.8,
+                "violin_plot": 0.75
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_operator",
+            "field_name": "operator",
+            "chart_type": "bar",
+            "data_category": "categorical_text",
+            "title": "'operator' has 7 categories, suitable for comparative analysis and ranking visualizations.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "bar": 0.9,
+                "column": 0.85,
+                "horizontal_bar": 0.8,
+                "pie": 0.7
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_Long",
+            "field_name": "Long",
+            "chart_type": "histogram",
+            "data_category": "continuous_numeric",
+            "title": "'Long' shows consistent values (range: 39.05 to 39.32), good for trend analysis.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "histogram": 0.9,
+                "box_plot": 0.85,
+                "density_plot": 0.8,
+                "violin_plot": 0.75
+            },
+            "theme": "default"
+        }
+    ],
     "field_insights": {
         "DistrictID": {
             "field_name": "DistrictID",
@@ -881,5 +946,5 @@
             "visualization_priority": 8
         }
     },
-    "generation_timestamp": "2025-08-29T21:12:12.203509"
+    "generation_timestamp": "2025-08-29T23:05:09.233618"
 }
