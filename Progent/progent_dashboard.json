@@ -9,41 +9,26 @@
         "gap": "20px",
         "items": [
             {
-                "id": "chart_operator",
-                "chart_type": "bar",
-                "field_name": "operator",
-                "grid_area": "chart-1"
-            },
-            {
                 "id": "chart_Long",
                 "chart_type": "histogram",
                 "field_name": "Long",
-                "grid_area": "chart-2"
+                "grid_area": "chart-1"
             },
             {
                 "id": "chart_DistrictID",
                 "chart_type": "histogram",
                 "field_name": "DistrictID",
+                "grid_area": "chart-2"
+            },
+            {
+                "id": "chart_operator",
+                "chart_type": "bar",
+                "field_name": "operator",
                 "grid_area": "chart-3"
             }
         ]
     },
     "charts": [
-        {
-            "id": "chart_operator",
-            "field_name": "operator",
-            "chart_type": "bar",
-            "data_category": "categorical_text",
-            "title": "'operator' has 7 categories, suitable for comparative analysis and ranking visualizations.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "bar": 0.9,
-                "column": 0.85,
-                "horizontal_bar": 0.8,
-                "pie": 0.7
-            },
-            "theme": "default"
-        },
         {
             "id": "chart_Long",
             "field_name": "Long",
@@ -71,6 +56,21 @@
                 "box_plot": 0.85,
                 "density_plot": 0.8,
                 "violin_plot": 0.75
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_operator",
+            "field_name": "operator",
+            "chart_type": "bar",
+            "data_category": "categorical_text",
+            "title": "'operator' has 7 categories, suitable for comparative analysis and ranking visualizations.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "bar": 0.9,
+                "column": 0.85,
+                "horizontal_bar": 0.8,
+                "pie": 0.7
             },
             "theme": "default"
         }
@@ -946,5 +946,5 @@
             "visualization_priority": 8
         }
     },
-    "generation_timestamp": "2025-08-30T00:01:53.225192"
+    "generation_timestamp": "2025-08-30T00:11:28.522565"
 }
