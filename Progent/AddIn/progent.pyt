@@ -1952,7 +1952,7 @@ class RunPythonCode(object):
             
         return layout
 
-    def generate_smart_dashboard_layout(self, params):
+    def generate_dashboard_for_target_layer(self, params):
         """
         Generate a smart dashboard layout based on field insights.
         This is the main function called from the AI agent.
@@ -2033,7 +2033,7 @@ class RunPythonCode(object):
                 "analysis_type": params.get("analysis_type", "overview")
             }
             
-            return self.generate_smart_dashboard_layout(dashboard_params)
+            return self.generate_dashboard_for_target_layer(dashboard_params)
             
         except Exception as e:
             return {"success": False, "error": str(e)}

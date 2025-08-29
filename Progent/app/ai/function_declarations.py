@@ -454,7 +454,7 @@ class FunctionDeclaration:
      
         "get_current_dashboard_layout": {
             "name": "get_current_dashboard_layout",
-            "description": "[DEPRECATED] Use mission_get_layout instead. Get the current dashboard layout from the smart_dashboard.json file.",
+            "description": "[DEPRECATED] Use get_current_dashboard_layout instead. Get the current dashboard layout from the smart_dashboard.json file.",
             "parameters": {},
             "returns": {
                 "widgets": "List of minimal widget info (id, x, y, w, h, fields)",
@@ -463,7 +463,7 @@ class FunctionDeclaration:
         },
         "get_dashboard_fields_info": {
             "name": "get_dashboard_fields_info",
-            "description": "[DEPRECATED] Use mission_get_field_info instead. Returns a summary for each field from smart_dashboard.json",
+            "description": "[DEPRECATED] Use get_field_stories_and_samples instead. Returns a summary for each field from smart_dashboard.json",
             "parameters": {},
             "returns": {
                 "fields": "List of dicts with field_name, data_story, and sample_values",
@@ -472,7 +472,7 @@ class FunctionDeclaration:
         },
         "get_current_dashboard_charts": {
             "name": "get_current_dashboard_charts",
-            "description": "[DEPRECATED] Use mission_get_charts instead. Get the current charts from the dashboard layout in smart_dashboard.json.",
+            "description": "[DEPRECATED] Use get_current_dashboard_charts instead. Get the current charts from the dashboard layout in smart_dashboard.json.",
             "parameters": {},
             "returns": {
                 "charts": "List of dicts with fields and chart_type",
@@ -481,7 +481,7 @@ class FunctionDeclaration:
         },
         "update_dashboard_charts": {
             "name": "update_dashboard_charts",
-            "description": "[DEPRECATED] Use mission_update_charts instead. Takes a list of {fields, chart_type} dicts and updates widgets in the dashboard.",
+            "description": "[DEPRECATED] Use update_dashboard_charts instead. Takes a list of {fields, chart_type} dicts and updates widgets in the dashboard.",
             "parameters": {
                 "charts": {
                     "type": "array",
@@ -503,39 +503,40 @@ class FunctionDeclaration:
             }
         },
 
-        # New Mission-Oriented Dashboard API
-        "mission_generate_dashboard": {
-            "name": "mission_generate_dashboard",
-            "description": "Generates or regenerates a dashboard. If the dashboard is empty, it will automatically use the 'layer' as the source to build a new one. If a dashboard already exists, it uses the cached 'dashboard' data by default.",
+        # New Dashboard API
+        "generate_dashboard_for_target_layer": {
+            "name": "generate_dashboard_for_target_layer",
+            "description": "Creates a complete new dashboard from scratch for a GIS layer. Use this function when user asks to 'create dashboard', 'generate dashboard', or 'build dashboard'. This analyzes the layer data automatically and creates a comprehensive dashboard with multiple charts and insights. Field insights are automatically fetched from ArcGIS Pro if not provided.",
             "parameters": {
                 "layer_name": {"type": "string", "description": "The name of the layer for the dashboard."},
-                "source": {"type": "string", "description": "Optional. Specify 'layer' to force regeneration from live data, or 'dashboard' to use cached data.", "enum": ["layer", "dashboard"], "default": None},
-                "field_insights": {"type": "object", "description": "Optional. Pre-computed field insights to use for generation.", "default": None}
+                "analysis_type": {"type": "string", "description": "Type of analysis to perform.", "enum": ["overview", "detailed", "statistical"], "default": "overview"},
+                "theme": {"type": "string", "description": "Visual theme for the dashboard.", "enum": ["default", "dark", "light"], "default": "default"},
+                "field_insights": {"type": "object", "description": "Optional. Pre-computed field insights. If not provided, will be automatically fetched from the layer in ArcGIS Pro.", "default": None}
             },
             "required": ["layer_name"]
         },
-        "mission_get_layout": {
-            "name": "mission_get_layout",
+        "get_current_dashboard_layout": {
+            "name": "get_current_dashboard_layout",
             "description": "Retrieves the layout of the current dashboard.",
             "parameters": {},
             "required": []
         },
-        "mission_get_charts": {
-            "name": "mission_get_charts",
+        "get_current_dashboard_charts": {
+            "name": "get_current_dashboard_charts",
             "description": "Retrieves the list of chart configurations from the current dashboard.",
             "parameters": {},
             "required": []
         },
-        "mission_get_field_info": {
-            "name": "mission_get_field_info",
+        "get_field_stories_and_samples": {
+            "name": "get_field_stories_and_samples",
             "description": "Retrieves metadata and insights for fields stored in the current dashboard.",
             "parameters": {
                 "field_name": {"type": "string", "description": "Optional. The name of a specific field to get information for.", "default": None}
             },
             "required": []
         },
-        "mission_update_charts": {
-            "name": "mission_update_charts",
+        "update_dashboard_charts": {
+            "name": "update_dashboard_charts",
             "description": "Updates one or more charts by replacing them entirely. To perform complex updates (e.g., with new data), first get the chart data, modify it, then use this function to replace the old chart at the specified index.",
             "parameters": {
                 "charts_data": {
@@ -553,32 +554,8 @@ class FunctionDeclaration:
             },
             "required": ["charts_data"]
         },
-        "mission_add_charts": {
-            "name": "mission_add_charts",
-            "description": "Adds one or more new charts to the current dashboard. If an 'index' is provided, charts are inserted at that position; otherwise, they are appended to the end.",
-            "parameters": {
-                "new_charts": {
-                    "type": "array",
-                    "description": "A list of chart configuration objects to add.",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "fields": {"type": "array", "items": {"type": "string"}},
-                            "chart_type": {"type": "string"}
-                        },
-                        "required": ["fields", "chart_type"]
-                    }
-                },
-                "index": {
-                    "type": "integer",
-                    "description": "Optional. The zero-based index at which to insert the new charts.",
-                    "default": None
-                }
-            },
-            "required": ["new_charts"]
-        },
-        "mission_delete_charts": {
-            "name": "mission_delete_charts",
+        "delete_charts_from_dashboard": {
+            "name": "delete_charts_from_dashboard",
             "description": "Deletes one or more charts from the dashboard using their indices.",
             "parameters": {
                 "indices": {
@@ -589,8 +566,8 @@ class FunctionDeclaration:
             },
             "required": ["indices"]
         },
-        "mission_update_layout": {
-            "name": "mission_update_layout",
+        "update_dashboard_layout": {
+            "name": "update_dashboard_layout",
             "description": "Updates the overall dashboard layout, such as changing the number of columns, or updates the layout of specific chart items, such as their grid area to make them span multiple columns/rows.",
             "parameters": {
                 "layout_updates": {
@@ -1048,7 +1025,7 @@ class FunctionDeclaration:
         
         "add_dashboard_charts": {
             "name": "add_dashboard_charts",
-            "description": "Append new charts to the current dashboard. Use this function to add charts to a dashboard that already exists. Each chart definition should include 'fields' (required) and optional 'chart_type', 'title', 'category_field', or 'primary_field'.",
+            "description": "Adds new charts to an EXISTING dashboard. Only use this when a dashboard already exists and user wants to add more charts to it. For creating a new dashboard from scratch, use generate_dashboard_for_target_layer instead.",
             "parameters": {
                 "new_charts": {
                     "type": "array",

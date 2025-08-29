@@ -124,7 +124,7 @@ class ExecuteSpatialFunctionTool(BaseTool):
 
             # Handle dashboard functions locally (server-side)
             dashboard_functions = [
-                "generate_smart_dashboard_layout",
+                "generate_dashboard_for_target_layer",
                 "get_current_dashboard_layout", 
                 "get_current_dashboard_charts",
                 "get_field_stories_and_samples",
@@ -176,8 +176,8 @@ class ExecuteSpatialFunctionTool(BaseTool):
     def _execute_dashboard_function(self, function_name: str, parameters: dict) -> dict:
         """Execute dashboard functions locally on the server side"""
         try:
-            if function_name == "generate_smart_dashboard_layout":
-                # For generate_smart_dashboard_layout, we need to get field insights first
+            if function_name == "generate_dashboard_for_target_layer":
+                # For generate_dashboard_for_target_layer, we need to get field insights first
                 layer_name = parameters.get("layer_name")
                 analysis_type = parameters.get("analysis_type", "overview")
                 theme = parameters.get("theme", "default")
@@ -215,7 +215,7 @@ class ExecuteSpatialFunctionTool(BaseTool):
                     if not field_insights:
                         return {"error": "Failed to get field insights from analyze_layer_fields"}
                 
-                return generate_smart_dashboard_layout(layer_name, analysis_type, theme, field_insights)
+                return generate_dashboard_for_target_layer(layer_name, analysis_type, theme, field_insights)
                 
             elif function_name == "get_current_dashboard_layout":
                 return get_current_dashboard_layout()
@@ -248,7 +248,7 @@ except Exception:
         def __init__(self, content: str):
             self.content = content
 
-from .progent_functions import AVAILABLE_FUNCTIONS, generate_smart_dashboard_layout, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts
+from .progent_functions import AVAILABLE_FUNCTIONS, generate_dashboard_for_target_layer, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts
 from .config import settings
 from .ai.function_declarations import FunctionDeclaration
 

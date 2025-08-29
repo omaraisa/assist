@@ -1,3 +1,7 @@
+import json
+import os
+from datetime import datetime
+from typing import Dict, List
 from .ai.function_declarations import FunctionDeclaration
 
 # Build AVAILABLE_FUNCTIONS dynamically from the authoritative declarations
@@ -67,16 +71,9 @@ AVAILABLE_FUNCTIONS = {
     67: "combine_rasters",
     68: "invert_selection",
 
-    # New Mission-Oriented Dashboard Functions
-    70: "mission_generate_dashboard",
-    71: "mission_get_layout",
-    72: "mission_get_charts",
-    73: "mission_get_field_info",
-    74: "mission_update_charts",
-    75: "mission_add_charts",
-    76: "mission_delete_charts",
-    77: "mission_update_layout",
 }
+
+# Let the dynamic loading below handle all function assignments
 
 try:
 	decls = FunctionDeclaration.functions_declarations
@@ -109,7 +106,7 @@ def format_available_functions() -> str:
 
 
 # Dashboard manipulation functions (server-side)
-def generate_smart_dashboard_layout(layer_name: str, analysis_type: str = "overview", theme: str = "default", field_insights: Dict = None) -> Dict:
+def generate_dashboard_for_target_layer(layer_name: str, analysis_type: str = "overview", theme: str = "default", field_insights: Dict = None) -> Dict:
     """Generate smart dashboard layout using field insights"""
     try:
         if not field_insights:
@@ -163,7 +160,7 @@ def generate_smart_dashboard_layout(layer_name: str, analysis_type: str = "overv
         }
         
         # Save to progent_dashboard.json
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "Progent/progent_dashboard.json"
         with open(dashboard_path, 'w', encoding='utf-8') as f:
             json.dump(result, f, indent=4, ensure_ascii=False)
         
@@ -264,7 +261,7 @@ def _get_timestamp() -> str:
 def get_current_dashboard_layout() -> Dict:
     """Get current dashboard layout from progent_dashboard.json"""
     try:
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "Progent/progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -284,7 +281,7 @@ def get_current_dashboard_layout() -> Dict:
 def get_current_dashboard_charts() -> Dict:
     """Get current dashboard charts from progent_dashboard.json"""
     try:
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "Progent/progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -312,7 +309,7 @@ def get_current_dashboard_charts() -> Dict:
 def get_field_stories_and_samples() -> Dict:
     """Get field stories and samples from progent_dashboard.json"""
     try:
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "Progent/progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -341,7 +338,7 @@ def get_field_stories_and_samples() -> Dict:
 def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
     """Update dashboard charts in progent_dashboard.json"""
     try:
-        dashboard_path = "progent_dashboard.json"
+        dashboard_path = "Progent/progent_dashboard.json"
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
