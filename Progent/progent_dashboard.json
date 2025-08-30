@@ -5,57 +5,41 @@
     "dashboard_title": "Overview Dashboard for Fuel Stations",
     "theme": "default",
     "layout": {
-        "grid_template_columns": "repeat(4, 1fr)",
+        "grid_template_columns": "1fr 1fr 1fr",
         "gap": "20px",
         "items": [
             {
-                "id": "chart_Long",
-                "chart_type": "histogram",
-                "field_name": "Long",
+                "id": "chart_has_ev_charging",
+                "chart_type": "pie",
+                "field_name": "has_ev_charging",
                 "grid_area": "chart-1"
-            },
-            {
-                "id": "chart_DistrictID",
-                "chart_type": "histogram",
-                "field_name": "DistrictID",
-                "grid_area": "chart-2"
             },
             {
                 "id": "chart_operator",
                 "chart_type": "bar",
                 "field_name": "operator",
-                "grid_area": "chart-3"
+                "grid_area": "chart-2",
+                "fields": [
+                    "operator",
+                    "fuel_sales_91",
+                    "fuel_sales_95"
+                ]
             }
         ]
     },
     "charts": [
         {
-            "id": "chart_Long",
-            "field_name": "Long",
-            "chart_type": "histogram",
-            "data_category": "continuous_numeric",
-            "title": "'Long' shows consistent values (range: 39.05 to 39.32), good for trend analysis.",
+            "id": "chart_has_ev_charging",
+            "field_name": "has_ev_charging",
+            "chart_type": "pie",
+            "data_category": "categorical_text",
+            "title": "'has_ev_charging' contains 2 distinct categories with clear groupings, ideal for showing proportional relationships.",
             "visualization_potential": "high",
             "chart_suitability": {
-                "histogram": 0.9,
-                "box_plot": 0.85,
-                "density_plot": 0.8,
-                "violin_plot": 0.75
-            },
-            "theme": "default"
-        },
-        {
-            "id": "chart_DistrictID",
-            "field_name": "DistrictID",
-            "chart_type": "histogram",
-            "data_category": "continuous_numeric",
-            "title": "'DistrictID' displays moderate variation (range: 1.00 to 181.00), suitable for distribution analysis.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "histogram": 0.9,
-                "box_plot": 0.85,
-                "density_plot": 0.8,
-                "violin_plot": 0.75
+                "pie": 0.95,
+                "donut": 0.9,
+                "bar": 0.85,
+                "column": 0.8
             },
             "theme": "default"
         },
@@ -63,16 +47,24 @@
             "id": "chart_operator",
             "field_name": "operator",
             "chart_type": "bar",
-            "data_category": "categorical_text",
-            "title": "'operator' has 7 categories, suitable for comparative analysis and ranking visualizations.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "bar": 0.9,
-                "column": 0.85,
-                "horizontal_bar": 0.8,
-                "pie": 0.7
-            },
-            "theme": "default"
+            "title": "Analysis of operator",
+            "theme": "default",
+            "category_field": "operator",
+            "series": [
+                {
+                    "field": "fuel_sales_91",
+                    "name": "fuel_sales_91"
+                },
+                {
+                    "field": "fuel_sales_95",
+                    "name": "fuel_sales_95"
+                }
+            ],
+            "fields": [
+                "operator",
+                "fuel_sales_91",
+                "fuel_sales_95"
+            ]
         }
     ],
     "field_insights": {
@@ -946,5 +938,5 @@
             "visualization_priority": 8
         }
     },
-    "generation_timestamp": "2025-08-30T00:11:28.522565"
+    "generation_timestamp": "2025-08-30T17:02:32.365209"
 }

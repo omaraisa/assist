@@ -2,9 +2,21 @@
 title Progent - Environment Setup
 setlocal enabledelayedexpansion
 
-echo =========================================
+set "TOTAL_STEPS=20"
+set "CURRENT_STEP=0"
+
+goto :main
+
+:ProgressBar
+set "PERCENT=%~1"
+set "STEP=%~2"
+powershell.exe -Command "& { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $percent = [int]$env:PERCENT; $step = $env:STEP; Clear-Host; $fullBlocks = [math]::Floor($percent / 2); $hasPartial = $percent %% 2; $partialChar = if ($hasPartial) { '▌' } else { '' }; $empty = 50 - $fullBlocks - $hasPartial; $bar = ('█' * $fullBlocks) + $partialChar + ('░' * $empty); Write-Host '  ██████╗ ██████╗  ██████╗  ██████╗ ███████╗███╗   ██╗████████╗' -ForegroundColor Cyan; Write-Host '  ██╔══██╗██╔══██╗██╔═══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝' -ForegroundColor Cyan; Write-Host '  ██████╔╝██████╔╝██║   ██║██║  ███╗█████╗  ██╔██╗ ██║   ██║' -ForegroundColor Cyan; Write-Host '  ██╔═══╝ ██╔══██╗██║   ██║██║   ██║██╔══╝  ██║╚██╗██║   ██║' -ForegroundColor Cyan; Write-Host '  ██║     ██║  ██║╚██████╔╝╚██████╔╝███████╗██║ ╚████║   ██║' -ForegroundColor Cyan; Write-Host '  ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝' -ForegroundColor Cyan; Write-Host ''; Write-Host '==========================================' -ForegroundColor Cyan; Write-Host '  Environment Setup' -ForegroundColor Cyan; Write-Host '==========================================' -ForegroundColor Cyan; Write-Host ''; Write-Host \"Progress: [$bar] $percent%%\" -ForegroundColor Green; Write-Host ''; Write-Host \"Current step: $step\" -ForegroundColor Yellow; }"
+goto :eof
+
+:main
+echo ==========================================
 echo   Progent Environment Setup
-echo =========================================
+echo ==========================================
 echo.
 
 REM Get the directory of this script
@@ -12,6 +24,10 @@ set "PROJECT_DIR=%~dp0Progent"
 
 echo [INFO] Project Directory: %PROJECT_DIR%
 echo.
+
+set /a "CURRENT_STEP+=3"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Checking Python environment..."
 
 REM Check if Python is available
 python --version >nul 2>&1
@@ -58,7 +74,9 @@ if exist "%PROJECT_DIR%\venv" (
 )
 
 REM Create new virtual environment with system Python
-echo [INFO] Creating new virtual environment with system Python...
+set /a "CURRENT_STEP+=2"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Creating Python virtual environment..."
 python -m venv "%PROJECT_DIR%\venv"
 
 if errorlevel 1 (
@@ -86,11 +104,15 @@ echo [INFO] Virtual environment activated
 echo.
 
 REM Upgrade pip
-echo [INFO] Upgrading pip...
+set /a "CURRENT_STEP+=2"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Upgrading pip package manager..."
 python -m pip install --upgrade pip
 
 REM Install requirements
-echo [INFO] Installing project requirements...
+set /a "CURRENT_STEP+=3"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Installing required Python packages..."
 set "INSTALL_SUCCESS=0"
 
 if exist "%PROJECT_DIR%\requirements.txt" (
@@ -143,7 +165,9 @@ if "%INSTALL_SUCCESS%"=="0" (
         echo [ERROR] Failed to install Uvicorn
         pause
         exit /b 1
-    )      echo [INFO] Installing additional packages...
+    )
+    
+    echo [INFO] Installing additional packages...
     echo [INFO] Trying to install packages with pre-compiled binaries...
     pip install python-multipart jinja2 aiofiles pydantic-settings --only-binary=:all: --no-cache-dir
     
@@ -169,7 +193,9 @@ if "%INSTALL_SUCCESS%"=="0" (
 )
 
 REM Verify critical packages are available
-echo [INFO] Verifying package installation...
+set /a "CURRENT_STEP+=3"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Verifying core package installations..."
 python -c "import fastapi; print('FastAPI: OK')" 2>nul
 if errorlevel 1 (
     echo [ERROR] FastAPI not available after installation
@@ -218,51 +244,12 @@ if errorlevel 1 (
 
 echo.
 
-REM Try to install arcpy if available
-echo [INFO] Attempting to install ArcPy support...
-echo [INFO] Note: ArcPy requires ArcGIS Pro to be installed on the system
-
-REM Check if ArcGIS Pro is installed by looking for common installation paths
-set "ARCGIS_PRO_PATH="
-if exist "C:\Program Files\ArcGIS\Pro\bin\Python\Scripts\propy.bat" (
-    set "ARCGIS_PRO_PATH=C:\Program Files\ArcGIS\Pro"
-) else if exist "C:\ArcGIS\Pro\bin\Python\Scripts\propy.bat" (
-    set "ARCGIS_PRO_PATH=C:\ArcGIS\Pro"
-)
-
-if defined ARCGIS_PRO_PATH (
-    echo [INFO] Found ArcGIS Pro installation at: %ARCGIS_PRO_PATH%
-    echo [INFO] Installing ArcPy package...
-    
-    REM Try different methods to install arcpy
-    pip install arcpy 2>nul
-    if errorlevel 1 (
-        echo [INFO] Standard arcpy installation failed, trying alternative method...
-        REM Try to install from ArcGIS Pro conda environment
-        if exist "%ARCGIS_PRO_PATH%\bin\Python\Scripts\conda.exe" (
-            "%ARCGIS_PRO_PATH%\bin\Python\Scripts\conda.exe" install -c esri arcpy -y 2>nul
-        )
-    )
-    
-    REM Test if arcpy is available
-    python -c "import arcpy; print('ArcPy successfully installed')" 2>nul
-    if not errorlevel 1 (
-        echo [SUCCESS] ArcPy is available in the environment
-    ) else (
-        echo [WARNING] ArcPy installation may have issues
-        echo [INFO] The project will still work, but spatial functions may be limited
-        echo [INFO] To use full GIS functionality, run the connector from within ArcGIS Pro
-    )
-) else (
-    echo [WARNING] ArcGIS Pro not found in standard locations
-    echo [INFO] The project will work without ArcPy, but spatial functions will be limited
-    echo [INFO] To use full GIS functionality, run the connector from within ArcGIS Pro
-)
-
 echo.
 
 REM Create/update environment activation script
-echo [INFO] Creating enhanced activation script...
+set /a "CURRENT_STEP+=2"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Creating activation script..."
 
 (
 echo @echo off
@@ -297,95 +284,44 @@ echo [SUCCESS] Enhanced activation script created: activate_environment.bat
 echo.
 
 REM Create a startup script for the server
-echo [INFO] Creating server startup script...
+set /a "CURRENT_STEP+=2"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Creating server startup script..."
 
 (
 echo @echo off
 echo title Progent - FastAPI Server
 echo.
-
-echo echo =========================================
+echo echo ==========================================
 echo echo   Progent - FastAPI Server
-echo =========================================
+echo echo ==========================================
 echo echo.
-
 echo.
-REM Get project directory
+echo REM Get project directory
 echo set "PROJECT_DIR=%%~dp0"
 echo set "PROJECT_DIR=%%PROJECT_DIR:~0,-1%%"
 echo.
-
-echo [INFO] Activating Progent environment...
-call "%%PROJECT_DIR%%\activate_environment.bat"
-
-if not exist "%%PROJECT_DIR%%\venv\Scripts\python.exe" ^(
-    echo [ERROR] Virtual environment not found!
-    echo [INFO] Please run setup_environment.bat first
-    pause
-    exit /b 1
-)
-
+echo echo [INFO] Activating Progent environment...
+echo call "%%PROJECT_DIR%%\activate_environment.bat"
 echo.
-
-echo [INFO] Starting FastAPI server...
-echo [INFO] Server will be available at: http://localhost:8000
-echo [INFO] Press Ctrl+C to stop the server
+echo if not exist "%%PROJECT_DIR%%\venv\Scripts\python.exe" ^(
+echo     echo [ERROR] Virtual environment not found!
+echo     echo [INFO] Please run setup_environment.bat first
+echo     pause
+echo     exit /b 1
+echo ^)
 echo.
-
+echo echo [INFO] Starting FastAPI server...
+echo echo [INFO] Server will be available at: http://localhost:8000
+echo echo [INFO] Press Ctrl+C to stop the server
+echo echo.
 echo.
-
-"%%PROJECT_DIR%%\venv\Scripts\python.exe" "%%PROJECT_DIR%%\run.py"
-
-pause
+echo "%%PROJECT_DIR%%\venv\Scripts\python.exe" "%%PROJECT_DIR%%\run.py"
+echo.
+echo pause
 ) > "%PROJECT_DIR%\start_progent.bat"
 
 echo [SUCCESS] Server startup script created: start_progent.bat
-echo.
-
-REM Create ArcGIS connector launcher
-echo [INFO] Creating ArcGIS Pro connector launcher...
-
-(
-echo @echo off
-echo title Progent - ArcGIS Pro Connector
-echo.
-
-echo echo =========================================
-echo echo   Progent - ArcGIS Pro Connector  
-echo =========================================
-echo echo.
-
-echo.
-REM Get project directory
-echo set "PROJECT_DIR=%%~dp0"  
-echo set "PROJECT_DIR=%%PROJECT_DIR:~0,-1%%"
-echo.
-
-echo [INFO] This script should be run from within ArcGIS Pro
-echo [INFO] Copy and paste this command in ArcGIS Pro Python console:
-echo echo.
-
-echo echo exec^(open^(r"%%PROJECT_DIR%%\arcgis_connector.py"^).read^(^)^)
-echo echo.
-
-echo [INFO] Or run this file directly from ArcGIS Pro Python environment
-echo echo.
-
-REM Check if we're in ArcGIS Pro environment
-echo python -c "import arcpy; print('ArcGIS Pro environment detected')" 2^>nul
-echo if not errorlevel 1 ^(
-    echo     echo [INFO] Running connector...
-    echo     python "%%PROJECT_DIR%%\arcgis_connector.py"
-echo ^) else ^(
-    echo     echo [WARNING] Not in ArcGIS Pro environment
-    echo     echo [INFO] Please run from ArcGIS Pro Python console or as a script tool
-echo ^)
-echo echo.
-
-pause
-) > "%PROJECT_DIR%\connect_arcgis.bat"
-
-echo [SUCCESS] ArcGIS Pro connector launcher created: connect_arcgis.bat
 echo.
 
 REM Create project information file
@@ -407,80 +343,31 @@ REM call activate_environment.bat
 REM To start the server:
 REM call start_progent.bat  
 
-REM To connect ArcGIS Pro:
-REM call connect_arcgis.bat
-
-REM This environment is now independent of ArcGIS Pro Python installation
+REM This environment is now independent of system Python installation
 ) > "%PROJECT_DIR%\environment_info.txt"
 
 echo [SUCCESS] Project information saved to: environment_info.txt
 echo.
 
 REM Test the installation
-echo [INFO] Testing the installation...
+set /a "CURRENT_STEP+=3"
+set /a "PERCENTAGE=(CURRENT_STEP*100)/TOTAL_STEPS"
+call :ProgressBar !PERCENTAGE! "Finalizing and testing installation..."
 echo.
 
-python -c "
-import sys
-print('Python executable:', sys.executable)
-print('Python version:', sys.version)
-print('Virtual environment:', hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix))
+python -c "import sys; print('Python executable:', sys.executable)"
+python -c "import sys; print('Python version:', sys.version)"
 
-try:
-    import fastapi
-    print('FastAPI: Available -', fastapi.__version__)
-except ImportError:
-    print('FastAPI: NOT AVAILABLE - Installation failed!')
+python -c "import fastapi; print('FastAPI: Available -', fastapi.__version__)" 2>nul || echo FastAPI: NOT AVAILABLE - Installation failed!
 
-try:
-    import uvicorn  
-    print('Uvicorn: Available -', uvicorn.__version__)
-except ImportError:
-    print('Uvicorn: NOT AVAILABLE - Installation failed!')
+python -c "import uvicorn; print('Uvicorn: Available -', uvicorn.__version__)" 2>nul || echo Uvicorn: NOT AVAILABLE - Installation failed!
 
-try:
-    import aiohttp
-    print('aiohttp: Available -', aiohttp.__version__)
-except ImportError:
-    print('aiohttp: NOT AVAILABLE - Some features may be limited')
+python -c "import aiohttp; print('aiohttp: Available -', aiohttp.__version__)" 2>nul || echo aiohttp: NOT AVAILABLE - Some features may be limited
 
-try:
-    import pydantic_settings
-    print('pydantic-settings: Available -', pydantic_settings.__version__)
-except ImportError:
-    print('pydantic-settings: NOT AVAILABLE - Configuration features may be limited')
-
-try:
-    import arcpy
-    print('ArcPy: Available')
-except ImportError:
-    print('ArcPy: Not available (will work with limited functionality)')
-"
+python -c "import pydantic_settings; print('pydantic-settings: Available -', pydantic_settings.__version__)" 2>nul || echo pydantic-settings: NOT AVAILABLE - Configuration features may be limited
 
 REM Check if core packages are missing and provide guidance
-python -c "
-import sys
-missing = []
-try:
-    import fastapi
-except ImportError:
-    missing.append('fastapi')
-try:
-    import uvicorn
-except ImportError:
-    missing.append('uvicorn')
-
-if missing:
-    print()
-    print('ERROR: Critical packages missing:', ', '.join(missing))
-    print('Manual installation command:')
-    print('pip install ' + ' '.join(missing))
-    sys.exit(1)
-else:
-    print()
-    print('SUCCESS: All critical packages are available')
-"
-
+python -c "import fastapi, uvicorn; print('\nSUCCESS: All critical packages are available')" 2>nul
 if errorlevel 1 (
     echo.
     echo [ERROR] Critical packages are missing!
@@ -491,25 +378,27 @@ if errorlevel 1 (
     pause
     exit /b 1
 )
+    echo [INFO] pip install fastapi uvicorn[standard] python-multipart
+    echo.
+    pause
+    exit /b 1
+)
 
 echo.
 
+echo   ██████╗ ██████╗  ██████╗  ██████╗ ███████╗███╗   ██╗████████╗
+echo   ██╔══██╗██╔══██╗██╔═══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝
+echo   ██████╔╝██████╔╝██║   ██║██║  ███╗█████╗  ██╔██╗ ██║   ██║
+echo   ██╔═══╝ ██╔══██╗██║   ██║██║   ██║██╔══╝  ██║╚██╗██║   ██║
+echo   ██║     ██║  ██║╚██████╔╝╚██████╔╝███████╗██║ ╚████║   ██║
+echo   ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝
+echo.
 echo =========================================
-echo   Setup Complete!
+echo   Installation Complete!
 echo =========================================
 echo.
-
-echo [SUCCESS] Progent environment is now self-contained
+echo You can now run the server using the start_server.bat script.
 echo.
-
-echo Next steps:
-echo 1. To start the server: call start_progent.bat
-echo 2. To connect ArcGIS Pro: call connect_arcgis.bat  
-echo 3. To manually activate environment: call activate_environment.bat
-echo.
-
-echo The project is now independent of external Python installations
-echo and can be copied to other machines with the same setup.
-echo.
-pause
+echo Press any key to exit...
+pause >nul
 

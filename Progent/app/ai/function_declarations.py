@@ -537,16 +537,16 @@ class FunctionDeclaration:
         },
         "update_dashboard_charts": {
             "name": "update_dashboard_charts",
-            "description": "Updates one or more charts by replacing them entirely. To perform complex updates (e.g., with new data), first get the chart data, modify it, then use this function to replace the old chart at the specified index.",
+            "description": "Updates the configuration of existing dashboard charts (chart type, title, theme) at specified indices. Does NOT change the fields or regenerate chart data. For changing fields or creating new charts with different data, use generate_dashboard_for_target_layer instead.",
             "parameters": {
                 "charts_data": {
                     "type": "array",
-                    "description": "A list of objects, each specifying a chart to update. Must contain 'index' and the new 'chart' object.",
+                    "description": "A list of objects, each specifying a chart to update. Must contain 'index' and the new 'chart' object with configuration only.",
                     "items": {
                         "type": "object",
                         "properties": {
                             "index": {"type": "integer", "description": "The zero-based index of the chart to replace."},
-                            "chart": {"type": "object", "description": "The full new chart object."}
+                            "chart": {"type": "object", "description": "The new chart configuration object (type, title, theme only - fields are preserved)."}
                         },
                         "required": ["index", "chart"]
                     }

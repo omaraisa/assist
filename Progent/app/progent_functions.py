@@ -371,10 +371,12 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
             chart_type = chart.get("chart_type", "bar")
             
             if fields:
-                field_name = fields[0]  # Use first field
+                field_name = fields[0]  # Use first field as primary
+                category_field = fields[0] if len(fields) > 1 else None
+                series_fields = fields[1:] if len(fields) > 1 else []
                 
                 # Update the chart
-                data["charts"][index] = {
+                chart_config = {
                     "id": f"chart_{field_name}",
                     "field_name": field_name,
                     "chart_type": chart_type,
@@ -382,14 +384,30 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
                     "theme": data.get("theme", "default")
                 }
                 
+                # Add multi-field support for grouped charts
+                if len(fields) > 1 and chart_type in ["grouped_bar", "bar", "column"]:
+                    chart_config["category_field"] = category_field
+                    chart_config["series"] = [
+                        {"field": field, "name": field} for field in series_fields
+                    ]
+                    chart_config["fields"] = fields  # Store all fields
+                
+                data["charts"][index] = chart_config
+                
                 # Update corresponding layout item
                 if index < len(data["layout"]["items"]):
-                    data["layout"]["items"][index] = {
+                    layout_item = {
                         "id": f"chart_{field_name}",
                         "chart_type": chart_type,
                         "field_name": field_name,
                         "grid_area": f"chart-{index+1}"
                     }
+                    
+                    # Add fields to layout item for multi-field charts
+                    if len(fields) > 1:
+                        layout_item["fields"] = fields
+                    
+                    data["layout"]["items"][index] = layout_item
                 
                 updated_count += 1
         
