@@ -3,6 +3,9 @@ import os
 from datetime import datetime
 from typing import Dict, List
 from .ai.function_declarations import FunctionDeclaration
+import asyncio
+from .main import websocket_manager
+
 
 # Build AVAILABLE_FUNCTIONS dynamically from the authoritative declarations
 # The numeric IDs are assigned deterministically based on the declaration order.
@@ -479,64 +482,6 @@ def delete_charts_from_dashboard(indices: list) -> dict:
         return {"success": False, "error": str(e)}
 
 
-def add_charts_to_dashboard(new_charts: list, index: int = None) -> dict:
-    """Add new charts to the dashboard"""
-    try:
-        dashboard_path = "./Progent/progent_dashboard.json"
-        
-        if not os.path.exists(dashboard_path):
-            return {"success": False, "error": "Dashboard file not found"}
-            
-        with open(dashboard_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        if "charts" not in data:
-            data["charts"] = []
-        
-        # Process each new chart
-        charts_to_add = []
-        for chart_def in new_charts:
-            if "fields" not in chart_def:
-                return {"success": False, "error": "Each chart must have 'fields' specified"}
-            
-            chart_config = {
-                "fields": chart_def["fields"],
-                "chart_type": chart_def.get("chart_type", "bar"),
-                "title": chart_def.get("title", f"Chart for {', '.join(chart_def['fields'])}"),
-                "theme": data.get("theme", "default")
-            }
-            
-            if "category_field" in chart_def:
-                chart_config["category_field"] = chart_def["category_field"]
-            if "primary_field" in chart_def:
-                chart_config["primary_field"] = chart_def["primary_field"]
-                
-            charts_to_add.append(chart_config)
-        
-        # Add charts at specified index or append to end
-        if index is not None:
-            for i, chart in enumerate(charts_to_add):
-                data["charts"].insert(index + i, chart)
-        else:
-            data["charts"].extend(charts_to_add)
-        
-        # Update timestamp
-        data["generation_timestamp"] = _get_timestamp()
-        
-        # Save updated data
-        with open(dashboard_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
-        
-        return {
-            "success": True,
-            "message": f"Added {len(charts_to_add)} charts to dashboard",
-            "total_charts": len(data["charts"])
-        }
-        
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-
 def update_dashboard_layout(layout_updates: dict) -> dict:
     """Update dashboard layout configuration"""
     try:
@@ -597,3 +542,148 @@ def update_dashboard_layout(layout_updates: dict) -> dict:
     except Exception as e:
         return {"success": False, "error": str(e)}
 
+async def add_chart_with_data(
+    layer_name: str,
+    chart_type: str,
+    title: str,
+    value_field: str,
+    category_field: str,
+    aggregation_method: str = "SUM"
+) -> Dict:
+    """
+    Adds a new chart to the dashboard by first calculating the data in ArcGIS Pro.
+    """
+    def _arrange_charts_in_layout(charts: List[Dict]) -> Dict:
+        """Arrange charts in a responsive grid layout"""
+        try:
+            num_charts = len(charts)
+            if num_charts == 0:
+                return {
+                    "grid_template_columns": "1fr",
+                    "gap": "20px",
+                    "items": []
+                }
+
+            # Determine grid layout based on number of charts
+            if num_charts <= 2:
+                grid_cols = "1fr 1fr"
+            elif num_charts <= 4:
+                grid_cols = "1fr 1fr"
+            else:
+                grid_cols = "1fr 1fr 1fr"
+
+            layout_items = []
+            for i, chart in enumerate(charts):
+                layout_items.append({
+                    "id": chart.get("id", f"chart_{i}"),
+                    "chart_type": chart.get("chart_type", "bar"),
+                    "field_name": chart.get("field_name", f"field_{i}"),
+                    "grid_area": f"chart-{i+1}"
+                })
+
+            return {
+                "grid_template_columns": grid_cols,
+                "gap": "20px",
+                "items": layout_items
+            }
+
+        except Exception as e:
+            print(f"Error arranging charts in layout: {e}")
+            return {
+                "grid_template_columns": "1fr",
+                "gap": "20px",
+                "items": []
+            }
+
+    def _get_timestamp() -> str:
+        """Get current timestamp in ISO format"""
+        return datetime.now().isoformat()
+
+    try:
+        # Step 1: Request data calculation from ArcGIS Pro
+        chart_data_payload = {
+            "function_name": "calculate_chart_data",
+            "parameters": {
+                "layer_name": layer_name,
+                "chart_type": chart_type,
+                "value_field": value_field,
+                "category_field": category_field,
+                "aggregation_method": aggregation_method,
+            },
+        }
+
+        session_id = f"chart_data_{asyncio.get_event_loop().time()}"
+        arcgis_clients = websocket_manager.get_clients_by_type("arcgis_pro")
+        if not arcgis_clients:
+            return {"success": False, "error": "ArcGIS Pro is not connected."}
+
+        await websocket_manager.send_to_client(
+            arcgis_clients[0],
+            {
+                "type": "execute_function",
+                "session_id": session_id,
+                "function_name": "calculate_chart_data",
+                "parameters": chart_data_payload["parameters"],
+            },
+        )
+
+        # Wait for the result from ArcGIS Pro
+        chart_data_result = await websocket_manager.wait_for_function_result(session_id)
+
+        if not chart_data_result.get("success"):
+            return {"success": False, "error": f"Failed to calculate chart data: {chart_data_result.get('error')}"}
+
+        # Step 2: Add the new chart to the dashboard JSON
+        dashboard_path = "./Progent/progent_dashboard.json"
+        if not os.path.exists(dashboard_path):
+            # If no dashboard exists, create a new one
+            dashboard_data = {
+                "layer_name": layer_name,
+                "dashboard_title": f"Dashboard for {layer_name}",
+                "theme": "default",
+                "charts": [],
+                "layout": {
+                    "grid_template_columns": "1fr 1fr",
+                    "gap": "20px",
+                    "items": []
+                },
+                "field_insights": {},
+            }
+        else:
+            with open(dashboard_path, "r", encoding="utf-8") as f:
+                dashboard_data = json.load(f)
+
+        if "charts" not in dashboard_data:
+            dashboard_data["charts"] = []
+        if "field_insights" not in dashboard_data:
+            dashboard_data["field_insights"] = {}
+
+        new_chart = {
+            "id": f"chart_{value_field}_{category_field}_{len(dashboard_data['charts'])}",
+            "title": title,
+            "chart_type": chart_type,
+            "value_field": value_field,
+            "category_field": category_field,
+            "data": chart_data_result["data"],
+        }
+
+        dashboard_data["charts"].append(new_chart)
+
+        # Add a minimal entry to field_insights
+        if value_field not in dashboard_data["field_insights"]:
+            dashboard_data["field_insights"][value_field] = {"field_name": value_field}
+        if category_field not in dashboard_data["field_insights"]:
+            dashboard_data["field_insights"][category_field] = {"field_name": category_field}
+
+        # Step 3: Update the layout
+        dashboard_data["layout"] = _arrange_charts_in_layout(dashboard_data["charts"])
+
+        dashboard_data["generation_timestamp"] = _get_timestamp()
+
+        with open(dashboard_path, "w", encoding="utf-8") as f:
+            json.dump(dashboard_data, f, indent=4, ensure_ascii=False)
+
+        return {"success": True, "message": f"Successfully added new chart '{title}' to the dashboard."}
+
+    except Exception as e:
+        return {"success": False, "error": str(e)}

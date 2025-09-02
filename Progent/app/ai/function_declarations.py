@@ -1023,9 +1023,44 @@ class FunctionDeclaration:
             "required": ["layer_name"]
         },
         
+        "add_chart_with_data": {
+            "name": "add_chart_with_data",
+            "description": "Adds a new chart to the dashboard by first calculating the data in ArcGIS Pro. Use this when the user wants to add a new chart that requires data aggregation (e.g., sum of a field grouped by another field).",
+            "parameters": {
+                "layer_name": {
+                    "type": "string",
+                    "description": "The name of the layer to calculate data from."
+                },
+                "chart_type": {
+                    "type": "string",
+                    "description": "The type of chart to create.",
+                    "enum": ["bar", "pie", "histogram"]
+                },
+                "title": {
+                    "type": "string",
+                    "description": "The title of the new chart."
+                },
+                "value_field": {
+                    "type": "string",
+                    "description": "The numeric field to aggregate."
+                },
+                "category_field": {
+                    "type": "string",
+                    "description": "The field to group the data by."
+                },
+                "aggregation_method": {
+                    "type": "string",
+                    "description": "The aggregation method to use.",
+                    "enum": ["SUM", "AVERAGE", "COUNT"],
+                    "default": "SUM"
+                }
+            },
+            "required": ["layer_name", "chart_type", "title", "value_field", "category_field"]
+        },
+
         "add_dashboard_charts": {
             "name": "add_dashboard_charts",
-            "description": "Adds new charts to an EXISTING dashboard. Only use this when a dashboard already exists and user wants to add more charts to it. For creating a new dashboard from scratch, use generate_dashboard_for_target_layer instead.",
+            "description": "[DEPRECATED] Adds new chart configurations to an EXISTING dashboard. This function does NOT generate new data from ArcGIS Pro. Use add_chart_with_data to create a new chart with aggregated data.",
             "parameters": {
                 "new_charts": {
                     "type": "array",

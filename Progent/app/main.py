@@ -368,8 +368,8 @@ async def execute_function_calls(client_id: str, function_calls: List[Dict], ori
             # Handle server-side dashboard mission functions locally
             server_side_functions = [
                 "mission_get_layout", "mission_get_charts", "mission_get_field_info",
-                "mission_update_charts", "mission_add_charts", "mission_delete_charts", 
-                "mission_update_layout"
+                "mission_update_charts", "mission_delete_charts",
+                "mission_update_layout", "add_chart_with_data"
             ]
             # Note: mission_generate_dashboard goes to ArcGIS Pro because it needs layer data access
             if func_call["name"] in server_side_functions:
@@ -614,7 +614,7 @@ async def handle_local_dashboard_function(client_id: str, func_call: Dict, origi
         from progent_functions import (
             mission_get_layout, mission_get_charts, mission_get_field_info,
             mission_update_charts, mission_add_charts, mission_delete_charts,
-            mission_update_layout
+            mission_update_layout, add_chart_with_data
         )
         
         # Route to appropriate function
@@ -628,16 +628,14 @@ async def handle_local_dashboard_function(client_id: str, func_call: Dict, origi
         elif function_name == "mission_update_charts":
             charts_data = parameters.get("charts_data", [])
             function_result = mission_update_charts(charts_data)
-        elif function_name == "mission_add_charts":
-            new_charts = parameters.get("new_charts", [])
-            index = parameters.get("index")
-            function_result = mission_add_charts(new_charts, index)
         elif function_name == "mission_delete_charts":
             indices = parameters.get("indices", [])
             function_result = mission_delete_charts(indices)
         elif function_name == "mission_update_layout":
             layout_updates = parameters.get("layout_updates", {})
             function_result = mission_update_layout(layout_updates)
+        elif function_name == "add_chart_with_data":
+            function_result = await add_chart_with_data(**parameters)
         else:
             function_result = {"success": False, "error": f"Unknown dashboard function: {function_name}"}
         
@@ -1456,6 +1454,10 @@ def _build_dashboard_metadata(dashboard_data, layout_template, chart_count):
 def prepare_chart_data_from_insights(chart_config, dashboard_data):
     """Prepare chart data from field insights"""
     try:
+        # If the chart config already has data, use it directly.
+        if "data" in chart_config and chart_config["data"]:
+            return chart_config["data"]
+
         field_insights = dashboard_data.get("field_insights", {})
         chart_type = chart_config.get("chart_type", chart_config.get("type", "bar"))
         primary_field = chart_config.get("primary_field", chart_config.get("x_field", ""))
@@ -1465,7 +1467,7 @@ def prepare_chart_data_from_insights(chart_config, dashboard_data):
         if not field_insights:
             return _create_error_data("Field analysis data missing: Dashboard layout was created but field analysis was not performed. The dashboard generation function should analyze fields as part of its process.")
         
-        if primary_field not in field_insights:
+        if primary_field and primary_field not in field_insights:
             return _create_error_data(f"Field '{primary_field}' analysis missing: This field exists in the dashboard layout but wasn't analyzed during dashboard generation.")
         
         # Generate chart data based on chart type

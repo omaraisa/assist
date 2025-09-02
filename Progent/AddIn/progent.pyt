@@ -501,6 +501,68 @@ class RunPythonCode(object):
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+    def calculate_chart_data(self, params):
+        """
+        Calculates aggregated data for a chart based on specified parameters.
+        This function is designed to be called from the server to get data for a new chart.
+        """
+        try:
+            layer_name = params.get("layer_name")
+            chart_type = params.get("chart_type")
+            value_field = params.get("value_field")
+            category_field = params.get("category_field")
+            aggregation_method = params.get("aggregation_method", "SUM") # SUM, AVERAGE, COUNT
+
+            if not all([layer_name, chart_type, value_field, category_field]):
+                return {"success": False, "error": "Missing required parameters: layer_name, chart_type, value_field, category_field"}
+
+            data = {}
+            if chart_type in ["bar", "pie"]:
+                # For bar and pie charts, we group by a category field and aggregate a value field.
+                # Example: SUM of population by city name.
+                stats = {}
+                with arcpy.da.SearchCursor(r"{}".format(layer_name), [category_field, value_field]) as cursor:
+                    for row in cursor:
+                        category = row[0]
+                        value = row[1]
+                        if category is None or value is None:
+                            continue
+
+                        if category not in stats:
+                            stats[category] = []
+                        stats[category].append(float(value))
+
+                labels = []
+                values = []
+                for category, numbers in stats.items():
+                    labels.append(category)
+                    if aggregation_method.upper() == "AVERAGE":
+                        values.append(statistics.mean(numbers))
+                    elif aggregation_method.upper() == "COUNT":
+                        values.append(len(numbers))
+                    else:
+                        # Default to SUM
+                        values.append(sum(numbers))
+
+                data = {"labels": labels, "values": values}
+
+            elif chart_type == "histogram":
+                # For a histogram, we just need the values of a single numeric field.
+                values = []
+                with arcpy.da.SearchCursor(r"{}".format(layer_name), [value_field]) as cursor:
+                    for row in cursor:
+                        if row[0] is not None:
+                            values.append(float(row[0]))
+                data = {"values": values}
+
+            else:
+                return {"success": False, "error": f"Chart type '{chart_type}' is not supported for data calculation."}
+
+            return {"success": True, "data": data}
+
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
     def analyze_layer_fields(self, params):
         layer_name = params.get("layer")
         try:
