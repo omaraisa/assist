@@ -183,6 +183,30 @@ async def handle_websocket_message(client_id: str, message: Dict):
             dashboard_data = message.get("data")
             if dashboard_data:
                 try:
+                    if dashboard_data.get("is_chart_addition"):
+                        # Load existing dashboard
+                        existing_dashboard = {}
+                        if os.path.exists(BASE_DIR / "progent_dashboard.json"):
+                            with open(BASE_DIR / "progent_dashboard.json", "r", encoding="utf-8") as f:
+                                existing_dashboard = json.load(f)
+                        
+                        # Append new chart
+                        if "new_chart" in dashboard_data:
+                            if "charts" not in existing_dashboard:
+                                existing_dashboard["charts"] = []
+                            existing_dashboard["charts"].append(dashboard_data["new_chart"])
+                        
+                        # Append layout item
+                        if "layout_item" in dashboard_data:
+                            if "layout" not in existing_dashboard:
+                                existing_dashboard["layout"] = {"items": []}
+                            if "items" not in existing_dashboard["layout"]:
+                                existing_dashboard["layout"]["items"] = []
+                            existing_dashboard["layout"]["items"].append(dashboard_data["layout_item"])
+                        
+                        # Update dashboard_data to the full updated dashboard
+                        dashboard_data = existing_dashboard
+                    
                     with open(BASE_DIR / "progent_dashboard.json", "w", encoding="utf-8") as f:
                         json.dump(dashboard_data, f, indent=4)
                     logger.info("progent_dashboard.json has been updated.")

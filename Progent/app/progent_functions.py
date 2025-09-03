@@ -70,6 +70,7 @@ AVAILABLE_FUNCTIONS = {
     66: "mosaic_to_new_raster",
     67: "combine_rasters",
     68: "invert_selection",
+    69: "add_chart_to_dashboard",
 
 }
 

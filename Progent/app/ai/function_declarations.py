@@ -588,8 +588,57 @@ class FunctionDeclaration:
                         }
                     }
                 }
+        },
+        },
+      
+        "add_chart_to_dashboard": {
+            "name": "add_chart_to_dashboard",
+            "description": "Adds a new chart to the existing dashboard with fresh data generation. Use this for complex charts requiring aggregations or calculations in ArcGIS Pro. The function computes data on the fly and appends the chart to the current dashboard without replacing it.",
+            "parameters": {
+                "layer_name": {
+                    "type": "string",
+                    "description": "The name of the layer to generate chart data from."
+                },
+                "chart_type": {
+                    "type": "string",
+                    "description": "The type of chart to create.",
+                    "enum": ["bar", "column", "pie", "line", "scatter", "histogram"],
+                    "default": "bar"
+                },
+                "fields": {
+                    "type": "array",
+                    "description": "List of field names to include in the chart. For aggregated charts, this can include numeric fields to aggregate.",
+                    "items": {"type": "string"}
+                },
+                "category_field": {
+                    "type": "string",
+                    "description": "Optional field to categorize/group the data by (e.g., for bar charts showing sums per category).",
+                    "default": None
+                },
+                "aggregation": {
+                    "type": "string",
+                    "description": "Aggregation method for numeric fields when grouped by category_field.",
+                    "enum": ["sum", "mean", "count", "min", "max"],
+                    "default": "sum"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "Optional title for the chart.",
+                    "default": None
+                },
+                "theme": {
+                    "type": "string",
+                    "description": "Visual theme for the chart.",
+                    "enum": ["default", "dark", "light"],
+                    "default": "default"
+                },
+                "where_clause": {
+                    "type": "string",
+                    "description": "Optional SQL WHERE clause to filter data before generating the chart.",
+                    "default": None
+                }
             },
-            "required": ["layout_updates"]
+            "required": ["layer_name", "chart_type", "fields"]
         },
       
         "raster_calculator": {
@@ -1004,16 +1053,6 @@ class FunctionDeclaration:
             },
             "required": ["in_rasters", "out_raster"]
         },
-        "extract_by_mask": {
-            "name": "extract_by_mask",
-            "description": "Extracts the cells of a raster that correspond to the areas defined by a mask.",
-            "parameters": {
-                "in_raster": {"type": "string", "description": "The input raster to be extracted."},
-                "in_mask_data": {"type": "string", "description": "The dataset to be used as a mask."},
-                "out_raster": {"type": "string", "description": "The output raster."}
-            },
-            "required": ["in_raster", "in_mask_data", "out_raster"]
-        },
         "invert_selection": {
             "name": "invert_selection",
             "description": "Invert the current selection on a layer.",
@@ -1063,3 +1102,4 @@ class FunctionDeclaration:
             "required": ["new_charts"]
         }
     }
+    

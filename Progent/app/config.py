@@ -115,7 +115,7 @@ class Settings(BaseSettings):
     # - For OpenAI models: Set OPENAI_API_KEY 
     # - For Claude: Set ANTHROPIC_API_KEY
     # - For Ollama: No API key needed (local)
-    GEMINI_API_KEY: str = "AIzaSyCd-sdQInmKN3spQqNjN4e1O2pQRsBV05Q"
+    GEMINI_API_KEY: str = "AIzaSyCQudVBnsKYf3Y-Epx_MNhuFdgMQIlHzN8"
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
     
