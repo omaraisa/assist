@@ -26,10 +26,10 @@
                 ]
             },
             {
-                "id": "chart_20250903235508",
+                "id": "chart_20250903235959",
                 "chart_type": "bar",
                 "field_name": "gallons_sold_july_91",
-                "grid_area": "chart-chart_20250903235508"
+                "grid_area": "chart-chart_20250903235959"
             }
         ]
     },
@@ -84,7 +84,7 @@
             "category_field": "operator"
         },
         {
-            "id": "chart_20250903235508",
+            "id": "chart_20250903235959",
             "title": "Fuel 91 and 95 Sales by Operator",
             "type": "bar",
             "category_field": "operator",
@@ -102,6 +102,43 @@
                 "gallons_sold_july_91",
                 "gallons_sold_july_95"
             ],
+            "data": {
+                "labels": [
+                    "Petromin",
+                    "Naft",
+                    "Aldrees",
+                    "Sas",
+                    "Shell",
+                    "Tas'helat",
+                    "Wafi"
+                ],
+                "datasets": [
+                    {
+                        "label": "gallons_sold_july_91",
+                        "data": [
+                            29419850.700000003,
+                            24916118.9,
+                            72228002.09999996,
+                            59410423.40000002,
+                            9933104.5,
+                            8638909.999999998,
+                            10749022.8
+                        ]
+                    },
+                    {
+                        "label": "gallons_sold_july_95",
+                        "data": [
+                            33704152.0,
+                            23728681.7,
+                            79710991.99999999,
+                            57403743.99999998,
+                            11418311.9,
+                            11148619.700000001,
+                            10281424.0
+                        ]
+                    }
+                ]
+            },
             "theme": "default"
         }
     ],

@@ -1626,6 +1626,19 @@ def _generate_categorical_bar_data(field_data, total_records):
 
 def _generate_multi_series_bar_data(field_insights, category_field, series, chart_config):
     """Generate multi-series bar chart data for grouped charts"""
+    # First check if we have actual chart data from ArcGIS Pro
+    chart_data = chart_config.get("chart_data", {})
+    if chart_data and "data" in chart_data:
+        actual_data = chart_data["data"]
+        if "labels" in actual_data and "datasets" in actual_data:
+            # Use the actual aggregated data from ArcGIS Pro
+            return {
+                "labels": actual_data["labels"],
+                "values": actual_data["datasets"][0]["data"] if actual_data["datasets"] else [],
+                "datasets": actual_data["datasets"]
+            }
+    
+    # Fallback to field insights if no actual data
     if category_field not in field_insights:
         return _create_error_data(f"Category field '{category_field}' not found in field insights")
     

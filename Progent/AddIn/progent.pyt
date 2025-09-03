@@ -2085,36 +2085,44 @@ class RunPythonCode(object):
                     chart_data = {"labels": [], "values": []}
                     for category, field_data in data.items():
                         chart_data["labels"].append(category)
-                        values = field_data[numeric_fields[0]]
-                        if aggregation == "sum":
-                            chart_data["values"].append(sum(values))
-                        elif aggregation == "mean":
-                            chart_data["values"].append(statistics.mean(values))
-                        elif aggregation == "count":
-                            chart_data["values"].append(len(values))
-                        elif aggregation == "min":
-                            chart_data["values"].append(min(values))
-                        elif aggregation == "max":
-                            chart_data["values"].append(max(values))
+                        values = field_data.get(numeric_fields[0], [])
+                        if values:  # Only proceed if we have values
+                            if aggregation == "sum":
+                                chart_data["values"].append(sum(values))
+                            elif aggregation == "mean":
+                                chart_data["values"].append(statistics.mean(values))
+                            elif aggregation == "count":
+                                chart_data["values"].append(len(values))
+                            elif aggregation == "min":
+                                chart_data["values"].append(min(values))
+                            elif aggregation == "max":
+                                chart_data["values"].append(max(values))
+                        else:
+                            chart_data["values"].append(0)  # Default to 0 if no values
                 else:
                     # Multiple series
                     chart_data = {"labels": [], "datasets": []}
-                    for category in data.keys():
-                        chart_data["labels"].append(category)
+                    # Get all categories
+                    categories = list(data.keys())
+                    chart_data["labels"] = categories
+                    
                     for field in numeric_fields:
                         dataset = {"label": field, "data": []}
-                        for category in chart_data["labels"]:
-                            values = data[category][field]
-                            if aggregation == "sum":
-                                dataset["data"].append(sum(values))
-                            elif aggregation == "mean":
-                                dataset["data"].append(statistics.mean(values))
-                            elif aggregation == "count":
-                                dataset["data"].append(len(values))
-                            elif aggregation == "min":
-                                dataset["data"].append(min(values))
-                            elif aggregation == "max":
-                                dataset["data"].append(max(values))
+                        for category in categories:
+                            values = data.get(category, {}).get(field, [])
+                            if values:  # Only proceed if we have values
+                                if aggregation == "sum":
+                                    dataset["data"].append(sum(values))
+                                elif aggregation == "mean":
+                                    dataset["data"].append(statistics.mean(values))
+                                elif aggregation == "count":
+                                    dataset["data"].append(len(values))
+                                elif aggregation == "min":
+                                    dataset["data"].append(min(values))
+                                elif aggregation == "max":
+                                    dataset["data"].append(max(values))
+                            else:
+                                dataset["data"].append(0)  # Default to 0 if no values
                         chart_data["datasets"].append(dataset)
             else:
                 # No aggregation, just use field values directly
@@ -2145,6 +2153,7 @@ class RunPythonCode(object):
                     "category_field": category_field,
                     "series": series,
                     "fields": fields,
+                    "data": chart_data,
                     "theme": theme,
                 }
 
