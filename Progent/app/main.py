@@ -1077,25 +1077,46 @@ async def complete_investigation_session(client_id: str, session_id: str):
 async def check_and_update_dashboard(client_id: str, function_result: Dict):
     """Check if function result should trigger dashboard update and save to progent_dashboard.json"""
     try:
-        # Check if this function result contains dashboard data
         result_data = function_result.get("result", {})
         
-        # Look for the dashboard update flag
         if result_data.get("is_dashboard_update"):
             logger.info(f"Dashboard update detected from function: {function_result.get('name')}")
             
-            # Save dashboard data to progent_dashboard.json
             dashboard_file = BASE_DIR / "progent_dashboard.json"
             
+            if result_data.get("is_chart_addition"):
+                # Append new chart to existing dashboard
+                existing_dashboard = {}
+                if dashboard_file.exists():
+                    with open(dashboard_file, "r", encoding="utf-8") as f:
+                        existing_dashboard = json.load(f)
+
+                if "new_chart" in result_data:
+                    if "charts" not in existing_dashboard:
+                        existing_dashboard["charts"] = []
+                    existing_dashboard["charts"].append(result_data["new_chart"])
+
+                if "layout_item" in result_data:
+                    if "layout" not in existing_dashboard:
+                        existing_dashboard["layout"] = {"items": []}
+                    if "items" not in existing_dashboard["layout"]:
+                        existing_dashboard["layout"]["items"] = []
+                    existing_dashboard["layout"]["items"].append(result_data["layout_item"])
+
+                # Use the modified dashboard as the data to be saved and broadcast
+                dashboard_to_save = existing_dashboard
+            else:
+                # Overwrite dashboard for functions like generate_dashboard
+                dashboard_to_save = result_data
+
             with open(dashboard_file, "w", encoding="utf-8") as f:
-                json.dump(result_data, f, indent=4)
+                json.dump(dashboard_to_save, f, indent=4)
             
             logger.info(f"Dashboard data saved to {dashboard_file}")
             
-            # Notify all chatbot clients about the dashboard update
             await websocket_manager.broadcast_to_type("chatbot", {
                 "type": "dashboard_update",
-                "data": result_data
+                "data": dashboard_to_save
             })
             
             logger.info("Dashboard update broadcast to all chatbot clients")

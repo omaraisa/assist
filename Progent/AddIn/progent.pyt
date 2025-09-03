@@ -5,6 +5,7 @@ import math
 import statistics
 import re
 import traceback
+from datetime import datetime
 from typing import Dict, Tuple, List
 from copy import deepcopy
 
@@ -2037,6 +2038,95 @@ class RunPythonCode(object):
             
         except Exception as e:
             return {"success": False, "error": str(e)}
+
+    def add_chart_to_dashboard(self, params: Dict) -> Dict:
+        """
+        Adds a new chart to the existing dashboard.
+        This function computes data on the fly and returns a structure
+        that the server can use to append to the dashboard JSON.
+        """
+        try:
+            layer_name = params.get("layer_name")
+            chart_type = params.get("chart_type", "bar")
+            fields = params.get("fields", [])
+            category_field = params.get("category_field")
+            aggregation = params.get("aggregation", "sum")
+            title = params.get("title")
+            theme = params.get("theme", "default")
+            where_clause = params.get("where_clause")
+
+            if not layer_name or not fields:
+                return {"success": False, "error": "layer_name and fields are required"}
+
+            # --- Data Aggregation using ArcPy ---
+            chart_data = {"labels": [], "values": []}
+            if category_field:
+                # Grouped aggregation
+                data = {}
+                numeric_field = fields[0]
+                cursor_fields = [category_field, numeric_field]
+                with arcpy.da.SearchCursor(layer_name, cursor_fields, where_clause) as cursor:
+                    for row in cursor:
+                        category = row[0]
+                        value = row[1]
+                        if category not in data:
+                            data[category] = []
+                        if value is not None:
+                            data[category].append(value)
+
+                for category, values in data.items():
+                    chart_data["labels"].append(category)
+                    if aggregation == "sum":
+                        chart_data["values"].append(sum(values))
+                    elif aggregation == "mean":
+                        chart_data["values"].append(statistics.mean(values))
+                    elif aggregation == "count":
+                        chart_data["values"].append(len(values))
+                    elif aggregation == "min":
+                        chart_data["values"].append(min(values))
+                    elif aggregation == "max":
+                        chart_data["values"].append(max(values))
+            else:
+                # No aggregation, just use field values directly
+                with arcpy.da.SearchCursor(layer_name, fields, where_clause) as cursor:
+                    for row in cursor:
+                        chart_data["labels"].append(str(row[0])) # Assuming first field is label
+                        chart_data["values"].append(row[1] if len(row) > 1 else 1)
+
+
+            # --- Chart Configuration ---
+            chart_id = f"chart_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            new_chart = {
+                "id": chart_id,
+                "title": title or f"{aggregation.title()} of {fields[0]} by {category_field}",
+                "type": chart_type,
+                "field": fields[0],
+                "category_field": category_field,
+                "data": chart_data,
+                "theme": theme,
+            }
+
+            # --- Layout Item Configuration ---
+            layout_item = {
+                "id": chart_id,
+                "chart_type": chart_type,
+                "field_name": fields[0],
+                # Default position, server might need to recalculate
+                "grid_area": f"chart-{chart_id}"
+            }
+
+            return {
+                "success": True,
+                "is_dashboard_update": True,
+                "is_chart_addition": True,
+                "new_chart": new_chart,
+                "layout_item": layout_item,
+                "message": f"Chart '{title}' prepared for addition to the dashboard."
+            }
+
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
 
 class Toolbox(object):
     def __init__(self):
