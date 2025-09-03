@@ -1459,12 +1459,26 @@ def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
     for i, chart in enumerate(chart_configs):
         chart_data = prepare_chart_data_from_insights(chart, dashboard_data)
         
+        # Determine y_field based on chart type and data
+        y_field = chart.get("group_by_field", chart.get("y_field", ""))
+        
+        # For multi-series bar charts with aggregated data, provide meaningful y-axis label
+        if not y_field and chart.get("chart_type") == "bar" and chart.get("series"):
+            # Check if this is a fuel sales chart by looking at series field names
+            series_fields = [s.get("field", "") for s in chart.get("series", [])]
+            if any("fuel_sales" in field or "gallons" in field.lower() for field in series_fields):
+                y_field = "Gallons Sold"
+            elif any("sales" in field.lower() for field in series_fields):
+                y_field = "Sales Amount"
+            else:
+                y_field = "Sum"
+        
         frontend_chart = {
             "title": chart.get("title", f"Chart {i+1}"),
             "type": chart.get("chart_type", chart.get("type", "bar")),
             "description": chart.get("description", chart.get("reasoning", "")),
             "x_field": chart.get("category_field") or chart.get("primary_field", chart.get("x_field", "")),
-            "y_field": chart.get("group_by_field", chart.get("y_field", "")),
+            "y_field": y_field,
             "data": chart_data,
             "layout": {
                 "size": chart.get("recommended_size", chart.get("size", DEFAULT_CHART_SIZE)),

@@ -442,7 +442,15 @@ class RunPythonCode(object):
             freq = {}
             for row in arcpy.da.SearchCursor(r"{}".format(layer_name), [field_name]):
                 k = row[0]
-                freq[k] = freq.get(k, 0) + 1
+                # Handle None values and ensure proper string conversion for Unicode support
+                if k is not None:
+                    # Convert to string to handle any data type and preserve Unicode
+                    k = str(k)
+                    freq[k] = freq.get(k, 0) + 1
+                else:
+                    # Handle null values
+                    null_key = "Null/Empty"
+                    freq[null_key] = freq.get(null_key, 0) + 1
             return {"success": True, "frequency": freq}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -2044,6 +2052,7 @@ class RunPythonCode(object):
         Adds a new chart to the existing dashboard.
         This function computes data on the fly and returns a structure
         that the server can use to append to the dashboard JSON.
+        Supports any layer type and handles Unicode text (Arabic, English, etc.)
         """
         try:
             layer_name = params.get("layer_name")
@@ -2058,6 +2067,14 @@ class RunPythonCode(object):
             if not layer_name or not fields:
                 return {"success": False, "error": "layer_name and fields are required"}
 
+            # Validate layer exists and is accessible
+            try:
+                desc = arcpy.Describe(layer_name)
+                if not desc:
+                    return {"success": False, "error": f"Layer '{layer_name}' not found or not accessible"}
+            except Exception as e:
+                return {"success": False, "error": f"Cannot access layer '{layer_name}': {str(e)}"}
+
             # --- Data Aggregation using ArcPy ---
             if category_field:
                 if category_field in fields:
@@ -2068,15 +2085,25 @@ class RunPythonCode(object):
                     numeric_fields = fields
                 cursor_fields = [category_field] + numeric_fields
                 data = {}
+
+                # Use proper encoding for Unicode support (Arabic, etc.)
                 with arcpy.da.SearchCursor(layer_name, cursor_fields, where_clause) as cursor:
                     for row in cursor:
+                        # Handle category field - ensure it's properly encoded
                         category = row[0]
+                        if category is not None:
+                            category = str(category)  # Convert to string to handle any data type
+                        else:
+                            category = "Null/Empty"
+
                         if category not in data:
                             data[category] = {}
+
                         for i, field in enumerate(numeric_fields):
                             value = row[i + 1]
                             if field not in data[category]:
                                 data[category][field] = []
+                            # Only add numeric values, skip nulls and non-numeric
                             if value is not None and isinstance(value, (int, float)):
                                 data[category][field].append(value)
 
@@ -2105,7 +2132,7 @@ class RunPythonCode(object):
                     # Get all categories
                     categories = list(data.keys())
                     chart_data["labels"] = categories
-                    
+
                     for field in numeric_fields:
                         dataset = {"label": field, "data": []}
                         for category in categories:
@@ -2126,11 +2153,22 @@ class RunPythonCode(object):
                         chart_data["datasets"].append(dataset)
             else:
                 # No aggregation, just use field values directly
+                chart_data = {"labels": [], "values": []}
                 with arcpy.da.SearchCursor(layer_name, fields, where_clause) as cursor:
                     for row in cursor:
-                        chart_data["labels"].append(str(row[0])) # Assuming first field is label
-                        chart_data["values"].append(row[1] if len(row) > 1 else 1)
+                        # Handle potential None values and ensure proper string conversion
+                        label = row[0]
+                        if label is not None:
+                            label = str(label)  # Convert to string for Unicode support
+                        else:
+                            label = "Null/Empty"
 
+                        chart_data["labels"].append(label)
+                        # Use second field if available, otherwise use count
+                        if len(row) > 1 and row[1] is not None and isinstance(row[1], (int, float)):
+                            chart_data["values"].append(row[1])
+                        else:
+                            chart_data["values"].append(1)
 
             # --- Chart Configuration ---
             chart_id = f"chart_{datetime.now().strftime('%Y%m%d%H%M%S')}"
@@ -2161,7 +2199,7 @@ class RunPythonCode(object):
             layout_item = {
                 "id": chart_id,
                 "chart_type": chart_type,
-                "field_name": numeric_fields[0],
+                "field_name": numeric_fields[0] if 'numeric_fields' in locals() and numeric_fields else fields[0],
                 # Default position, server might need to recalculate
                 "grid_area": f"chart-{chart_id}"
             }
@@ -2172,7 +2210,7 @@ class RunPythonCode(object):
                 "is_chart_addition": True,
                 "new_chart": new_chart,
                 "layout_item": layout_item,
-                "message": f"Chart '{title}' prepared for addition to the dashboard."
+                "message": f"Chart '{title or 'New Chart'}' prepared for addition to the dashboard."
             }
 
         except Exception as e:
