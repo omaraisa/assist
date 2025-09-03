@@ -137,7 +137,6 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 "get_current_dashboard_charts",
                 "get_field_stories_and_samples",
                 "update_dashboard_charts",
-                "add_dashboard_charts",
                 "delete_charts_from_dashboard",
                 "update_dashboard_layout"
             ]
@@ -243,10 +242,6 @@ class ExecuteSpatialFunctionTool(BaseTool):
             elif function_name == "update_dashboard_charts":
                 charts_data = parameters.get("charts_data", [])
                 result = update_dashboard_charts(charts_data)
-            elif function_name == "add_dashboard_charts":
-                new_charts = parameters.get("new_charts", [])
-                index = parameters.get("index")
-                result = add_charts_to_dashboard(new_charts, index)
             elif function_name == "delete_charts_from_dashboard":
                 indices = parameters.get("indices", [])
                 result = delete_charts_from_dashboard(indices)
@@ -273,7 +268,7 @@ except Exception:
         def __init__(self, content: str):
             self.content = content
 
-from .progent_functions import AVAILABLE_FUNCTIONS, generate_dashboard_for_target_layer, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts, add_charts_to_dashboard, delete_charts_from_dashboard, update_dashboard_layout
+from .progent_functions import AVAILABLE_FUNCTIONS, generate_dashboard_for_target_layer, get_current_dashboard_layout, get_current_dashboard_charts, get_field_stories_and_samples, update_dashboard_charts, delete_charts_from_dashboard, update_dashboard_layout
 from .config import settings
 from .ai.function_declarations import FunctionDeclaration
 

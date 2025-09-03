@@ -451,57 +451,6 @@ class FunctionDeclaration:
             },
             "required": ["layer_name", "new_field_name", "field_value"]
         },
-     
-        "get_current_dashboard_layout": {
-            "name": "get_current_dashboard_layout",
-            "description": "[DEPRECATED] Use get_current_dashboard_layout instead. Get the current dashboard layout from the smart_dashboard.json file.",
-            "parameters": {},
-            "returns": {
-                "widgets": "List of minimal widget info (id, x, y, w, h, fields)",
-                "success": "True if loaded, False if error"
-            }
-        },
-        "get_dashboard_fields_info": {
-            "name": "get_dashboard_fields_info",
-            "description": "[DEPRECATED] Use get_field_stories_and_samples instead. Returns a summary for each field from smart_dashboard.json",
-            "parameters": {},
-            "returns": {
-                "fields": "List of dicts with field_name, data_story, and sample_values",
-                "success": "True if loaded, False if error"
-            }
-        },
-        "get_current_dashboard_charts": {
-            "name": "get_current_dashboard_charts",
-            "description": "[DEPRECATED] Use get_current_dashboard_charts instead. Get the current charts from the dashboard layout in smart_dashboard.json.",
-            "parameters": {},
-            "returns": {
-                "charts": "List of dicts with fields and chart_type",
-                "success": "True if loaded, False if error"
-            }
-        },
-        "update_dashboard_charts": {
-            "name": "update_dashboard_charts",
-            "description": "[DEPRECATED] Use update_dashboard_charts instead. Takes a list of {fields, chart_type} dicts and updates widgets in the dashboard.",
-            "parameters": {
-                "charts": {
-                    "type": "array",
-                    "description": "List of dicts with fields (array of strings) and chart_type (string)",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "fields": {"type": "array", "items": {"type": "string"}},
-                            "chart_type": {"type": "string"}
-                        },
-                        "required": ["fields", "chart_type"]
-                    }
-                }
-            },
-            "required": ["charts"],
-            "returns": {
-                "updated_count": "Number of widgets updated",
-                "success": "True if updated, False if error"
-            }
-        },
 
         # New Dashboard API
         "generate_dashboard_for_target_layer": {
@@ -1060,46 +1009,6 @@ class FunctionDeclaration:
                 "layer_name": {"type": "string", "description": "The name of the layer."}
             },
             "required": ["layer_name"]
-        },
-        
-        "add_dashboard_charts": {
-            "name": "add_dashboard_charts",
-            "description": "Adds new charts to an EXISTING dashboard. Only use this when a dashboard already exists and user wants to add more charts to it. For creating a new dashboard from scratch, use generate_dashboard_for_target_layer instead.",
-            "parameters": {
-                "new_charts": {
-                    "type": "array",
-                    "description": "Array of chart definitions to append to the dashboard",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "fields": {
-                                "type": "array",
-                                "items": {"type": "string"},
-                                "description": "Array of field names for the chart (required)"
-                            },
-                            "chart_type": {
-                                "type": "string", 
-                                "description": "Type of chart (bar, pie, histogram, etc.)",
-                                "default": "bar"
-                            },
-                            "title": {
-                                "type": "string",
-                                "description": "Custom title for the chart"
-                            },
-                            "category_field": {
-                                "type": "string",
-                                "description": "Field to use as category axis (for grouped charts)"
-                            },
-                            "primary_field": {
-                                "type": "string", 
-                                "description": "Field to use as primary value field"
-                            }
-                        },
-                        "required": ["fields"]
-                    }
-                }
-            },
-            "required": ["new_charts"]
         }
     }
     

@@ -7,72 +7,7 @@ from .ai.function_declarations import FunctionDeclaration
 # Build AVAILABLE_FUNCTIONS dynamically from the authoritative declarations
 # The numeric IDs are assigned deterministically based on the declaration order.
 
-AVAILABLE_FUNCTIONS = {
-    1: "select_by_attribute",
-    2: "select_by_location",
-    3: "get_field_statistics",
-    4: "get_layer_summary",
-    5: "calculate_area",
-    6: "calculate_length",
-    7: "get_centroid",
-    8: "create_buffer",
-    9: "spatial_join",
-    10: "clip_layer",
-    11: "calculate_distance",
-    12: "get_current_project_path",
-    13: "get_default_db_path",
-    14: "get_field_definitions",
-    15: "get_layer_type",
-    16: "get_list_of_layer_fields",
-    17: "get_data_source_info",
-    18: "create_nearest_neighbor_layer",
-    19: "get_unique_values_count",
-    20: "calculate_empty_values",
-    21: "get_map_layers_info",
-    22: "get_map_tables_info",
-    23: "get_values_frequency",
-    24: "get_value_frequency",
-    25: "get_coordinate_system",
-    26: "clear_selection",
-    27: "get_field_domain_values",
-    28: "calculate_new_field",
-    # Old dashboard functions are removed.
-    # New mission functions are added below.
-    37: "raster_calculator",
-    38: "reclassify",
-    39: "zonal_statistics_as_table",
-    40: "slope",
-    41: "aspect",
-    42: "hillshade",
-    43: "extract_by_mask",
-    44: "clip_raster",
-    45: "resample",
-    46: "get_raster_properties",
-    47: "raster_to_point",
-    48: "raster_to_polygon",
-    49: "raster_to_polyline",
-    50: "feature_to_raster",
-    51: "polygon_to_raster",
-    52: "point_to_raster",
-    53: "idw_interpolation",
-    54: "kriging_interpolation",
-    55: "spline_interpolation",
-    56: "natural_neighbor",
-    57: "euclidean_distance",
-    58: "euclidean_allocation",
-    59: "euclidean_direction",
-    60: "cost_distance",
-    61: "cost_allocation",
-    62: "cost_path",
-    63: "weighted_overlay",
-    64: "weighted_sum",
-    65: "extract_by_attribute",
-    66: "mosaic_to_new_raster",
-    67: "combine_rasters",
-    68: "invert_selection",
-    69: "add_chart_to_dashboard",
-
-}
+AVAILABLE_FUNCTIONS = {}
 
 # Let the dynamic loading below handle all function assignments
 
@@ -474,64 +409,6 @@ def delete_charts_from_dashboard(indices: list) -> dict:
             "success": True,
             "message": f"Deleted {deleted_count} charts from dashboard",
             "remaining_charts": len(data["charts"])
-        }
-        
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-
-def add_charts_to_dashboard(new_charts: list, index: int = None) -> dict:
-    """Add new charts to the dashboard"""
-    try:
-        dashboard_path = "./Progent/progent_dashboard.json"
-        
-        if not os.path.exists(dashboard_path):
-            return {"success": False, "error": "Dashboard file not found"}
-            
-        with open(dashboard_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        if "charts" not in data:
-            data["charts"] = []
-        
-        # Process each new chart
-        charts_to_add = []
-        for chart_def in new_charts:
-            if "fields" not in chart_def:
-                return {"success": False, "error": "Each chart must have 'fields' specified"}
-            
-            chart_config = {
-                "fields": chart_def["fields"],
-                "chart_type": chart_def.get("chart_type", "bar"),
-                "title": chart_def.get("title", f"Chart for {', '.join(chart_def['fields'])}"),
-                "theme": data.get("theme", "default")
-            }
-            
-            if "category_field" in chart_def:
-                chart_config["category_field"] = chart_def["category_field"]
-            if "primary_field" in chart_def:
-                chart_config["primary_field"] = chart_def["primary_field"]
-                
-            charts_to_add.append(chart_config)
-        
-        # Add charts at specified index or append to end
-        if index is not None:
-            for i, chart in enumerate(charts_to_add):
-                data["charts"].insert(index + i, chart)
-        else:
-            data["charts"].extend(charts_to_add)
-        
-        # Update timestamp
-        data["generation_timestamp"] = _get_timestamp()
-        
-        # Save updated data
-        with open(dashboard_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
-        
-        return {
-            "success": True,
-            "message": f"Added {len(charts_to_add)} charts to dashboard",
-            "total_charts": len(data["charts"])
         }
         
     except Exception as e:
