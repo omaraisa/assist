@@ -130,6 +130,10 @@ class ExecuteSpatialFunctionTool(BaseTool):
             # Extract parameters (remaining tool_input after removing function_name)
             parameters = tool_input
 
+            # Default aggregation to sum for add_chart_to_dashboard if not specified
+            if function_name == "add_chart_to_dashboard" and "aggregation" not in parameters:
+                parameters["aggregation"] = "sum"
+
             # Handle dashboard functions locally (server-side)
             dashboard_functions = [
                 "generate_dashboard_for_target_layer",

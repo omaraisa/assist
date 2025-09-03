@@ -2059,33 +2059,63 @@ class RunPythonCode(object):
                 return {"success": False, "error": "layer_name and fields are required"}
 
             # --- Data Aggregation using ArcPy ---
-            chart_data = {"labels": [], "values": []}
             if category_field:
-                # Grouped aggregation
+                if category_field in fields:
+                    numeric_fields = [f for f in fields if f != category_field]
+                    if not numeric_fields:
+                        return {"success": False, "error": "No numeric fields provided besides category_field"}
+                else:
+                    numeric_fields = fields
+                cursor_fields = [category_field] + numeric_fields
                 data = {}
-                numeric_field = fields[0]
-                cursor_fields = [category_field, numeric_field]
                 with arcpy.da.SearchCursor(layer_name, cursor_fields, where_clause) as cursor:
                     for row in cursor:
                         category = row[0]
-                        value = row[1]
                         if category not in data:
-                            data[category] = []
-                        if value is not None:
-                            data[category].append(value)
+                            data[category] = {}
+                        for i, field in enumerate(numeric_fields):
+                            value = row[i + 1]
+                            if field not in data[category]:
+                                data[category][field] = []
+                            if value is not None and isinstance(value, (int, float)):
+                                data[category][field].append(value)
 
-                for category, values in data.items():
-                    chart_data["labels"].append(category)
-                    if aggregation == "sum":
-                        chart_data["values"].append(sum(values))
-                    elif aggregation == "mean":
-                        chart_data["values"].append(statistics.mean(values))
-                    elif aggregation == "count":
-                        chart_data["values"].append(len(values))
-                    elif aggregation == "min":
-                        chart_data["values"].append(min(values))
-                    elif aggregation == "max":
-                        chart_data["values"].append(max(values))
+                if len(numeric_fields) == 1:
+                    # Single series
+                    chart_data = {"labels": [], "values": []}
+                    for category, field_data in data.items():
+                        chart_data["labels"].append(category)
+                        values = field_data[numeric_fields[0]]
+                        if aggregation == "sum":
+                            chart_data["values"].append(sum(values))
+                        elif aggregation == "mean":
+                            chart_data["values"].append(statistics.mean(values))
+                        elif aggregation == "count":
+                            chart_data["values"].append(len(values))
+                        elif aggregation == "min":
+                            chart_data["values"].append(min(values))
+                        elif aggregation == "max":
+                            chart_data["values"].append(max(values))
+                else:
+                    # Multiple series
+                    chart_data = {"labels": [], "datasets": []}
+                    for category in data.keys():
+                        chart_data["labels"].append(category)
+                    for field in numeric_fields:
+                        dataset = {"label": field, "data": []}
+                        for category in chart_data["labels"]:
+                            values = data[category][field]
+                            if aggregation == "sum":
+                                dataset["data"].append(sum(values))
+                            elif aggregation == "mean":
+                                dataset["data"].append(statistics.mean(values))
+                            elif aggregation == "count":
+                                dataset["data"].append(len(values))
+                            elif aggregation == "min":
+                                dataset["data"].append(min(values))
+                            elif aggregation == "max":
+                                dataset["data"].append(max(values))
+                        chart_data["datasets"].append(dataset)
             else:
                 # No aggregation, just use field values directly
                 with arcpy.da.SearchCursor(layer_name, fields, where_clause) as cursor:
@@ -2096,21 +2126,33 @@ class RunPythonCode(object):
 
             # --- Chart Configuration ---
             chart_id = f"chart_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-            new_chart = {
-                "id": chart_id,
-                "title": title or f"{aggregation.title()} of {fields[0]} by {category_field}",
-                "type": chart_type,
-                "field": fields[0],
-                "category_field": category_field,
-                "data": chart_data,
-                "theme": theme,
-            }
+            if len(numeric_fields) == 1:
+                new_chart = {
+                    "id": chart_id,
+                    "title": title or f"{aggregation.title()} of {numeric_fields[0]} by {category_field}",
+                    "type": chart_type,
+                    "field": numeric_fields[0],
+                    "category_field": category_field,
+                    "data": chart_data,
+                    "theme": theme,
+                }
+            else:
+                series = [{"field": f, "name": f} for f in numeric_fields]
+                new_chart = {
+                    "id": chart_id,
+                    "title": title or f"{aggregation.title()} of {', '.join(numeric_fields)} by {category_field}",
+                    "type": chart_type,
+                    "category_field": category_field,
+                    "series": series,
+                    "fields": fields,
+                    "theme": theme,
+                }
 
             # --- Layout Item Configuration ---
             layout_item = {
                 "id": chart_id,
                 "chart_type": chart_type,
-                "field_name": fields[0],
+                "field_name": numeric_fields[0],
                 # Default position, server might need to recalculate
                 "grid_area": f"chart-{chart_id}"
             }

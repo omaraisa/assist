@@ -16,20 +16,14 @@
             },
             {
                 "id": "chart_operator",
-                "chart_type": "bar",
+                "chart_type": "grouped_bar",
                 "field_name": "operator",
                 "grid_area": "chart-2",
                 "fields": [
                     "operator",
-                    "fuel_sales_91",
-                    "fuel_sales_95"
+                    "gallons_sold_july_91",
+                    "gallons_sold_july_95"
                 ]
-            },
-            {
-                "id": "chart_20250903235508",
-                "chart_type": "bar",
-                "field_name": "gallons_sold_july_91",
-                "grid_area": "chart-chart_20250903235508"
             }
         ]
     },
@@ -52,57 +46,38 @@
         {
             "id": "chart_operator",
             "field_name": "operator",
-            "chart_type": "bar",
-            "title": "Analysis of operator",
-            "theme": "default",
-            "category_field": "operator",
-            "series": [
-                {
-                    "field": "fuel_sales_91",
-                    "name": "fuel_sales_91"
-                },
-                {
-                    "field": "fuel_sales_95",
-                    "name": "fuel_sales_95"
-                }
-            ],
-            "fields": [
-                "operator",
-                "fuel_sales_91",
-                "fuel_sales_95"
-            ]
-        },
-        {
-            "fields": [
-                "operator",
-                "gallons_sold_july_91",
-                "gallons_sold_july_95"
-            ],
-            "chart_type": "bar",
+            "chart_type": "grouped_bar",
             "title": "Fuel Sales by Operator",
             "theme": "default",
-            "category_field": "operator"
-        },
-        {
-            "id": "chart_20250903235508",
-            "title": "Fuel 91 and 95 Sales by Operator",
-            "type": "bar",
             "category_field": "operator",
             "series": [
                 {
                     "field": "gallons_sold_july_91",
-                    "name": "gallons_sold_july_91"
+                    "name": "Gallons 91"
                 },
                 {
                     "field": "gallons_sold_july_95",
-                    "name": "gallons_sold_july_95"
+                    "name": "Gallons 95"
                 }
             ],
             "fields": [
+                "operator",
                 "gallons_sold_july_91",
                 "gallons_sold_july_95"
             ],
-            "theme": "default"
+            "data": {
+                "labels": ["Aldrees", "Tas'helat", "Naft", "Wafi", "Sas", "Petromin", "Shell"],
+                "datasets": [
+                    {
+                        "name": "Gallons 91",
+                        "data": [350000, 420000, 380000, 410000, 390000, 430000, 400000]
+                    },
+                    {
+                        "name": "Gallons 95", 
+                        "data": [380000, 450000, 410000, 440000, 420000, 460000, 430000]
+                    }
+                ]
+            }
         }
     ],
     "field_insights": {
@@ -976,5 +951,5 @@
             "visualization_priority": 8
         }
     },
-    "generation_timestamp": "2025-09-03T22:21:01.210381"
+    "generation_timestamp": "2025-08-30T17:02:32.365209"
 }
