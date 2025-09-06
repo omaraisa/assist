@@ -887,7 +887,7 @@ class DashboardRenderer {
                     return {
                         labels: data.labels || [],
                         datasets: data.datasets.map((dataset, index) => ({
-                            label: dataset.name || `Series ${index + 1}`,
+                            label: dataset.label || dataset.name || `Series ${index + 1}`,
                             data: dataset.data || [],
                             backgroundColor: colors[index],
                             borderColor: colors[index].replace('0.8', '1'),
