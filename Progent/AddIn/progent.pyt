@@ -2033,7 +2033,7 @@ class RunPythonCode(object):
                     
                     if aggregation == "sum":
                         chart_data["values"].append(sum(values))
-                    elif aggregation == "mean":
+                    elif aggregation in ["mean", "avg", "average"]:
                         chart_data["values"].append(statistics.mean(values))
                     elif aggregation == "count":
                         chart_data["values"].append(len(values))
@@ -2344,8 +2344,9 @@ class RunPythonCode(object):
                 new_chart = {
                     "id": chart_id,
                     "title": title or f"Count of {text_field}",
-                    "type": chart_type,
-                    "field": text_field,
+                    "chart_type": chart_type,  # Use chart_type instead of type for consistency
+                    "field_name": text_field,  # Use field_name instead of field for consistency
+                    "primary_field": text_field,  # Add primary_field for backend processing
                     "data": chart_data,
                     "theme": theme,
                     "is_count_chart": True
@@ -2390,6 +2391,9 @@ class RunPythonCode(object):
             # Original logic for regular charts
             if not fields:
                 return {"success": False, "error": "fields are required"}
+
+            # Initialize numeric_fields for use in layout_item
+            numeric_fields = fields
 
             # Validate layer exists and is accessible
             try:
@@ -2446,7 +2450,7 @@ class RunPythonCode(object):
                         if values:  # Only proceed if we have values
                             if aggregation == "sum":
                                 chart_data["values"].append(sum(values))
-                            elif aggregation == "mean":
+                            elif aggregation in ["mean", "avg", "average"]:
                                 chart_data["values"].append(statistics.mean(values))
                             elif aggregation == "count":
                                 chart_data["values"].append(len(values))
@@ -2470,7 +2474,7 @@ class RunPythonCode(object):
                             if values:  # Only proceed if we have values
                                 if aggregation == "sum":
                                     dataset["data"].append(sum(values))
-                                elif aggregation == "mean":
+                                elif aggregation in ["mean", "avg", "average"]:
                                     dataset["data"].append(statistics.mean(values))
                                 elif aggregation == "count":
                                     dataset["data"].append(len(values))
@@ -2503,21 +2507,46 @@ class RunPythonCode(object):
             # --- Chart Configuration ---
             chart_id = f"chart_{datetime.now().strftime('%Y%m%d%H%M%S')}"
             if len(numeric_fields) == 1:
+                # Safe title creation to avoid recursion issues
+                safe_title = title
+                if not safe_title:
+                    try:
+                        field_name = str(numeric_fields[0]) if numeric_fields[0] is not None else "Field"
+                        category_name = str(category_field) if category_field is not None else "Category"
+                        agg_name = str(aggregation).title() if aggregation is not None else "Value"
+                        safe_title = f"{agg_name} of {field_name} by {category_name}"
+                    except:
+                        safe_title = "Chart"
+                
                 new_chart = {
                     "id": chart_id,
-                    "title": title or f"{aggregation.title()} of {numeric_fields[0]} by {category_field}",
-                    "type": chart_type,
-                    "field": numeric_fields[0],
+                    "title": safe_title,
+                    "chart_type": chart_type,  # Use chart_type instead of type for consistency
+                    "field_name": numeric_fields[0],  # Use field_name instead of field for consistency
+                    "primary_field": numeric_fields[0],  # Add primary_field for backend processing
                     "category_field": category_field,
                     "data": chart_data,
                     "theme": theme,
                 }
             else:
                 series = [{"field": f, "name": f} for f in numeric_fields]
+                # Safe title creation to avoid recursion issues
+                safe_title = title
+                if not safe_title:
+                    try:
+                        field_names = ', '.join(str(f) for f in numeric_fields if f is not None)
+                        category_name = str(category_field) if category_field is not None else "Category"
+                        agg_name = str(aggregation).title() if aggregation is not None else "Value"
+                        safe_title = f"{agg_name} of {field_names} by {category_name}"
+                    except:
+                        safe_title = "Multi-Series Chart"
+                
                 new_chart = {
                     "id": chart_id,
-                    "title": title or f"{aggregation.title()} of {', '.join(numeric_fields)} by {category_field}",
-                    "type": chart_type,
+                    "title": safe_title,
+                    "chart_type": chart_type,  # Use chart_type instead of type for consistency
+                    "field_name": numeric_fields[0] if numeric_fields else fields[0],  # Use field_name for consistency
+                    "primary_field": numeric_fields[0] if numeric_fields else fields[0],  # Add primary_field for backend processing
                     "category_field": category_field,
                     "series": series,
                     "fields": fields,
@@ -2526,10 +2555,20 @@ class RunPythonCode(object):
                 }
 
             # --- Layout Item Configuration ---
+            # Safe field name extraction to avoid recursion issues
+            safe_field_name = fields[0] if fields else "unknown"
+            try:
+                if numeric_fields and len(numeric_fields) > 0:
+                    safe_field_name = str(numeric_fields[0])
+                elif fields and len(fields) > 0:
+                    safe_field_name = str(fields[0])
+            except:
+                safe_field_name = "chart_field"
+            
             layout_item = {
                 "id": chart_id,
                 "chart_type": chart_type,
-                "field_name": numeric_fields[0] if 'numeric_fields' in locals() and numeric_fields else fields[0],
+                "field_name": safe_field_name,
                 # Default position, server might need to recalculate
                 "grid_area": f"chart-{chart_id}"
             }

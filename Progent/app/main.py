@@ -1453,7 +1453,10 @@ def _parse_layout_charts_format(dashboard_data):
             "fields": chart_data.get("fields", []),
             "recommended_size": DEFAULT_CHART_SIZE,
             "priority": 1,
-            "chart_data": chart_data  # Include full chart data for insights
+            # Keep full original payload for legacy checks, but expose the inner data (labels/values)
+            "chart_data": chart_data,
+            "provided_data": chart_data,
+            "data": (chart_data.get("data") if isinstance(chart_data, dict) and "data" in chart_data else chart_data)
         }
         chart_configs.append(chart_config)
     
@@ -1483,7 +1486,10 @@ def _parse_aggregation_charts_format(dashboard_data):
             "aggregation_info": chart_data.get("aggregation_info", {}),
             "recommended_size": DEFAULT_CHART_SIZE,
             "priority": 1,
-            "chart_data": chart_data  # Include full chart data for aggregation
+            # Keep full original payload for legacy checks, but expose the inner data (labels/values)
+            "chart_data": chart_data,
+            "provided_data": chart_data,
+            "data": (chart_data.get("data") if isinstance(chart_data, dict) and "data" in chart_data else chart_data)
         }
         chart_configs.append(chart_config)
 
@@ -1495,9 +1501,13 @@ def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
     for i, chart in enumerate(chart_configs):
         chart_data = prepare_chart_data_from_insights(chart, dashboard_data)
         
-        # Determine y_field based on chart type and data
+        # Determine y_field based on chart type and data (handle both field formats)
         y_field = chart.get("group_by_field", chart.get("y_field", ""))
-        x_field = chart.get("category_field") or chart.get("primary_field", chart.get("x_field", ""))
+        x_field = (chart.get("category_field") or 
+                  chart.get("primary_field") or 
+                  chart.get("field_name") or 
+                  chart.get("field") or 
+                  chart.get("x_field", ""))
 
         # For aggregation charts, set proper field names
         if chart.get("data_category") == "aggregation":
@@ -1505,6 +1515,18 @@ def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
             y_field = aggregation_info.get("numeric_field", "")
             x_field = aggregation_info.get("category_field", chart.get("primary_field", ""))
 
+        # For charts with real aggregated data, provide meaningful y-axis label
+        if not y_field and chart.get("data") and isinstance(chart.get("data"), dict):
+            if "values" in chart.get("data", {}):
+                # This is an aggregated chart, use the field being aggregated
+                aggregated_field = (chart.get("field_name") or 
+                                  chart.get("field") or 
+                                  chart.get("primary_field"))
+                if aggregated_field:
+                    y_field = aggregated_field
+                else:
+                    y_field = "Value"
+        
         # For multi-series bar charts with aggregated data, provide meaningful y-axis label
         if not y_field and chart.get("chart_type") == "bar" and chart.get("series"):
             y_field = "Value"
@@ -1551,13 +1573,33 @@ def _build_dashboard_metadata(dashboard_data, layout_template, chart_count):
 def prepare_chart_data_from_insights(chart_config, dashboard_data):
     """Prepare chart data from field insights"""
     try:
-        # NEW: Check if this is an aggregation chart first
+        # NEW: Check for any provided real data payload from add_chart_to_dashboard or aggregation
+        provided = None
+        # priority: explicit data field, provided_data wrapper, chart_data payload
+        if isinstance(chart_config.get("data"), dict):
+            provided = chart_config.get("data")
+        elif isinstance(chart_config.get("provided_data"), dict):
+            provided = chart_config.get("provided_data")
+        elif isinstance(chart_config.get("chart_data"), dict) and "data" in chart_config.get("chart_data"):
+            provided = chart_config.get("chart_data").get("data")
+
+        if provided:
+            real_data = provided
+            if "labels" in real_data and ("values" in real_data or "datasets" in real_data):
+                # Chart has real aggregated data, use it directly
+                return real_data
+
+        # Check if this is an aggregation chart
         if chart_config.get("data_category") == "aggregation":
             return prepare_chart_data_from_aggregation(chart_config)
 
         field_insights = dashboard_data.get("field_insights", {})
         chart_type = chart_config.get("chart_type", chart_config.get("type", "bar"))
-        primary_field = chart_config.get("primary_field", chart_config.get("x_field", ""))
+        # For aggregated charts, the primary field might be in various field name formats
+        primary_field = (chart_config.get("primary_field") or 
+                        chart_config.get("field_name") or 
+                        chart_config.get("field") or 
+                        chart_config.get("x_field", ""))
         group_by_field = chart_config.get("group_by_field", chart_config.get("y_field", ""))
 
         # Validate field insights availability
@@ -1705,15 +1747,26 @@ def _generate_categorical_bar_data(field_data, total_records):
 def _generate_multi_series_bar_data(field_insights, category_field, series, chart_config):
     """Generate multi-series bar chart data for grouped charts"""
     # First check if we have actual chart data from ArcGIS Pro
-    chart_data = chart_config.get("chart_data", {})
-    if chart_data and "data" in chart_data:
-        actual_data = chart_data["data"]
+    # Look for actual provided payload under several keys
+    chart_data = chart_config.get("chart_data", {}) or {}
+    provided = chart_config.get("provided_data") or chart_config.get("data")
+    actual_data = None
+    if isinstance(chart_data, dict) and "data" in chart_data:
+        actual_data = chart_data.get("data")
+    elif isinstance(provided, dict):
+        # provided may be the same shape as chart_data or already the inner data
+        if "labels" in provided and ("values" in provided or "datasets" in provided):
+            actual_data = provided
+        elif "data" in provided and isinstance(provided.get("data"), dict):
+            actual_data = provided.get("data")
+
+    if actual_data:
         if "labels" in actual_data and "datasets" in actual_data:
             # Use the actual aggregated data from ArcGIS Pro
             return {
-                "labels": actual_data["labels"],
-                "values": actual_data["datasets"][0]["data"] if actual_data["datasets"] else [],
-                "datasets": actual_data["datasets"]
+                "labels": actual_data.get("labels", []),
+                "values": actual_data.get("datasets", [])[0].get("data") if actual_data.get("datasets") else [],
+                "datasets": actual_data.get("datasets", [])
             }
     
     # No actual data available - return error instead of mock data

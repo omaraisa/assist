@@ -592,7 +592,7 @@ class FunctionDeclaration:
                 "aggregation": {
                     "type": "string",
                     "description": "Aggregation method for numeric fields when grouped by category_field.",
-                    "enum": ["sum", "mean", "count", "min", "max"],
+                    "enum": ["sum", "mean", "avg", "count", "min", "max"],
                     "default": "sum"
                 },
                 "title": {
