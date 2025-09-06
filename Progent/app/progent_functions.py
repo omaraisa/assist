@@ -43,40 +43,80 @@ def format_available_functions() -> str:
 
 # Dashboard manipulation functions (server-side)
 def generate_dashboard_for_target_layer(layer_name: str, analysis_type: str = "overview", theme: str = "default", field_insights: Dict = None) -> Dict:
-    """Generate smart dashboard layout using field insights"""
+    """Generate smart dashboard layout using field insights with enhanced filtering"""
     try:
         if not field_insights:
             return {"success": False, "error": "Field insights are required for dashboard generation"}
         
-        # Step 2: Prioritize fields based on AI insights
-        print(f"DEBUG: Field insights keys: {list(field_insights.keys())}")
-        print(f"DEBUG: Total fields for prioritization: {len(field_insights)}")
-        
-        prioritized_fields = sorted(
-            field_insights.values(),
-            key=lambda x: x.get("visualization_priority", 0),
-            reverse=True
-        )
-        
-        print(f"DEBUG: Prioritized fields count: {len(prioritized_fields)}")
-        for i, field in enumerate(prioritized_fields[:3]):  # Show top 3
-            print(f"DEBUG: Field {i+1}: {field.get('field_name', 'unknown')} priority: {field.get('visualization_priority', 0)}")
-        
-        # Step 3: Select top fields for the dashboard (e.g., top 6)
-        top_fields = prioritized_fields[:6]
+        # Enhanced field categorization and filtering
+        textual_fields = []
+        numerical_fields = []
+        excluded_fields = []
+
+        for field_name, field_info in field_insights.items():
+            data_category = field_info.get("data_category", "")
+            unique_count = field_info.get("unique_count", 0)
+            total_records = field_info.get("total_records", 1)
+            field_name_lower = field_name.lower()
+
+            # Skip system fields and problematic fields
+            if any(skip_field in field_name_lower for skip_field in [
+                'objectid', 'shape', 'globalid', 'fid', 'oid', 'geometry'
+            ]):
+                excluded_fields.append(field_info)
+                continue
+
+            # Skip coordinate-like fields and ID-like fields
+            if data_category in ["continuous_numeric", "categorical_numeric"]:
+                uniqueness_ratio = unique_count / total_records if total_records > 0 else 0
+                field_type = field_info.get("field_type", "").lower()
+                is_constant = unique_count == 1
+                is_all_unique = unique_count == total_records
+                is_high_unique = uniqueness_ratio > 0.9
+                is_coordinate_name = any(coord in field_name_lower for coord in ['lat', 'lon', 'x', 'y', 'coord', 'longitude', 'latitude'])
+                if is_constant or is_all_unique or is_high_unique or is_coordinate_name:
+                    excluded_fields.append(field_info)
+                    continue
+                else:
+                    numerical_fields.append(field_info)
+
+            # Include good textual fields
+            elif data_category in ["categorical_text", "text", "name_field"]:
+                uniqueness_ratio = unique_count / total_records if total_records > 0 else 0
+                is_all_unique = unique_count == total_records
+                is_high_unique = uniqueness_ratio > 0.9
+                if is_all_unique or is_high_unique:
+                    excluded_fields.append(field_info)
+                    continue
+                else:
+                    textual_fields.append(field_info)
+
+        # Sort fields by quality (unique count for textual, visualization priority for numerical)
+        textual_fields.sort(key=lambda x: x.get("unique_count", 0), reverse=True)
+        numerical_fields.sort(key=lambda x: x.get("visualization_priority", 0), reverse=True)
+
+        # Combine good fields for dashboard
+        good_fields = textual_fields + numerical_fields
+        print(f"DEBUG: Found {len(textual_fields)} textual fields, {len(numerical_fields)} numerical fields")
+        print(f"DEBUG: Excluded {len(excluded_fields)} unsuitable fields")
+        print(f"DEBUG: Total good fields for dashboard: {len(good_fields)}")
+
+        # Select top fields for the dashboard (limit to 6)
+        top_fields = good_fields[:6]
         print(f"DEBUG: Selected top {len(top_fields)} fields for dashboard")
         
-        # Step 4: Generate chart configurations for each selected field
+        # Generate chart configurations for each selected field
         charts = []
-        print(f"DEBUG: Processing {len(top_fields)} top fields for charts")
+        print(f"DEBUG: Processing {len(top_fields)} fields for charts")
         for i, field_info in enumerate(top_fields):
-            print(f"DEBUG: Processing field {i+1}: {field_info.get('field_name', 'unknown')}")
+            field_name = field_info.get('field_name', 'unknown')
+            print(f"DEBUG: Processing field {i+1}: {field_name}")
             chart_config = _create_chart_from_field(field_info, theme)
             if chart_config:
                 charts.append(chart_config)
-                print(f"DEBUG: Added chart config for field {field_info.get('field_name', 'unknown')}")
+                print(f"DEBUG: Added chart config for field {field_name}")
             else:
-                print(f"DEBUG: No chart config created for field {field_info.get('field_name', 'unknown')}")
+                print(f"DEBUG: No chart config created for field {field_name}")
         
         print(f"DEBUG: Total charts created: {len(charts)}")
         
@@ -95,8 +135,8 @@ def generate_dashboard_for_target_layer(layer_name: str, analysis_type: str = "o
             "generation_timestamp": _get_timestamp()
         }
         
-        # Save to progent_dashboard.json
-        dashboard_path = "./Progent/progent_dashboard.json"
+        # Save to progent_dashboard.json (adjacent to this module)
+        dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
         with open(dashboard_path, 'w', encoding='utf-8') as f:
             json.dump(result, f, indent=4, ensure_ascii=False)
         
@@ -197,7 +237,7 @@ def _get_timestamp() -> str:
 def get_current_dashboard_layout() -> Dict:
     """Get current dashboard layout from progent_dashboard.json"""
     try:
-        dashboard_path = "./Progent/progent_dashboard.json"
+        dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -217,7 +257,7 @@ def get_current_dashboard_layout() -> Dict:
 def get_current_dashboard_charts() -> Dict:
     """Get current dashboard charts from progent_dashboard.json"""
     try:
-        dashboard_path = "./Progent/progent_dashboard.json"
+        dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -245,7 +285,7 @@ def get_current_dashboard_charts() -> Dict:
 def get_field_stories_and_samples() -> Dict:
     """Get field stories and samples from progent_dashboard.json"""
     try:
-        dashboard_path = "./Progent/progent_dashboard.json"
+        dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -274,7 +314,7 @@ def get_field_stories_and_samples() -> Dict:
 def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
     """Update specific dashboard charts by index in progent_dashboard.json"""
     try:
-        dashboard_path = "./Progent/progent_dashboard.json"
+        dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
         
@@ -305,43 +345,55 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
             # Update the chart at the specified index
             fields = chart.get("fields", [])
             chart_type = chart.get("chart_type", "bar")
+            category_field = chart.get("category_field")
+            series = chart.get("series", [])
+            title = chart.get("title")
+            theme = chart.get("theme", data.get("theme", "default"))
             
             if fields:
-                field_name = fields[0]  # Use first field as primary
-                category_field = fields[0] if len(fields) > 1 else None
-                series_fields = fields[1:] if len(fields) > 1 else []
+                # If category_field is not specified, use the first field as category
+                if not category_field:
+                    category_field = fields[0]
+                    series_fields = fields[1:] if len(fields) > 1 else []
+                else:
+                    # If category_field is specified, remove it from series_fields if it's in fields
+                    series_fields = [f for f in fields if f != category_field]
+                
+                # If series is provided, use it instead of deriving from fields
+                if series:
+                    series_fields = [s.get("field") for s in series]
                 
                 # Update the chart
                 chart_config = {
-                    "id": f"chart_{field_name}",
-                    "field_name": field_name,
+                    "id": f"chart_{category_field}_{'_'.join(series_fields) if series_fields else ''}",
+                    "field_name": category_field,
                     "chart_type": chart_type,
-                    "title": f"Analysis of {field_name}",
-                    "theme": data.get("theme", "default")
+                    "title": title or f"Analysis of {category_field}",
+                    "theme": theme
                 }
                 
                 # Add multi-field support for grouped charts
-                if len(fields) > 1 and chart_type in ["grouped_bar", "bar", "column"]:
+                if series_fields and chart_type in ["grouped_bar", "bar", "column"]:
                     chart_config["category_field"] = category_field
                     chart_config["series"] = [
                         {"field": field, "name": field} for field in series_fields
                     ]
-                    chart_config["fields"] = fields  # Store all fields
+                    chart_config["fields"] = [category_field] + series_fields  # Store all fields with category first
                 
                 data["charts"][index] = chart_config
                 
                 # Update corresponding layout item
                 if index < len(data["layout"]["items"]):
                     layout_item = {
-                        "id": f"chart_{field_name}",
+                        "id": chart_config["id"],
                         "chart_type": chart_type,
-                        "field_name": field_name,
+                        "field_name": category_field,
                         "grid_area": f"chart-{index+1}"
                     }
                     
                     # Add fields to layout item for multi-field charts
-                    if len(fields) > 1:
-                        layout_item["fields"] = fields
+                    if series_fields:
+                        layout_item["fields"] = [category_field] + series_fields
                     
                     data["layout"]["items"][index] = layout_item
                 

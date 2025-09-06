@@ -1883,39 +1883,33 @@ class RunPythonCode(object):
 
     def _create_chart_from_field(self, field_info: Dict, theme: str) -> Dict:
         """
-        Creates a chart configuration dictionary based on field analysis insights.
+        Creates a histogram chart configuration for numerical fields.
+        This creates metadata only - the frontend will handle data visualization.
         """
         try:
             field_name = field_info.get("field_name", "unknown")
-            print(f"DEBUG: Creating chart for field: {field_name}")
+            data_category = field_info.get("data_category", "")
             
-            ai_insights = field_info.get("ai_insights", {})
-            print(f"DEBUG: AI insights present: {bool(ai_insights)}")
+            print(f"DEBUG: Creating histogram chart for field: {field_name}")
             
-            chart_suitability = ai_insights.get("chart_suitability", {})
-            print(f"DEBUG: Chart suitability: {chart_suitability}")
-            
-            if not chart_suitability:
-                print(f"DEBUG: No chart suitability for field {field_name}, returning None")
+            # For numerical fields, create histogram charts
+            if data_category in ["continuous_numeric", "categorical_numeric"]:
+                chart_config = {
+                    "id": f"chart_{field_name}",
+                    "field_name": field_name,
+                    "chart_type": "histogram",
+                    "data_category": data_category,
+                    "title": field_info.get("data_story", f"Distribution of {field_name}"),
+                    "visualization_potential": field_info.get("visualization_potential", "high"),
+                    "chart_suitability": field_info.get("chart_suitability", {"histogram": 0.9}),
+                    "theme": theme
+                }
+                
+                print(f"DEBUG: Created histogram chart config for {field_name}")
+                return chart_config
+            else:
+                print(f"DEBUG: Field {field_name} is not numerical, skipping")
                 return None
-            
-            # Select the best chart type based on suitability score
-            best_chart_type = max(chart_suitability, key=chart_suitability.get)
-            print(f"DEBUG: Best chart type for {field_name}: {best_chart_type}")
-            
-            chart_config = {
-                "id": f"chart_{field_info['field_name']}",
-                "title": f"Analysis of {field_info['field_name']}",
-                "type": best_chart_type,
-                "field": field_info['field_name'],
-                "data_category": field_info['data_category'],
-                "description": ai_insights.get("data_story", ""),
-                "theme": theme,
-                "options": self._get_chart_options(best_chart_type, theme)
-            }
-            
-            print(f"DEBUG: Created chart config for {field_name}: {chart_config}")
-            return chart_config
             
         except Exception as e:
             print(f"DEBUG: Exception in _create_chart_from_field: {str(e)}")
@@ -1948,7 +1942,7 @@ class RunPythonCode(object):
         Arranges charts into a grid-based layout.
         """
         layout = {
-            "grid_template_columns": "1fr 1fr",
+            "grid_template_columns": "1fr 1fr 1fr",
             "gap": "20px",
             "items": []
         }
@@ -1956,8 +1950,9 @@ class RunPythonCode(object):
         for i, chart in enumerate(charts):
             layout["items"].append({
                 "id": chart["id"],
-                "row": (i // 2) + 1,
-                "col": (i % 2) + 1
+                "chart_type": chart.get("chart_type", "bar"),
+                "field_name": chart.get("field_name", ""),
+                "grid_area": f"chart-{i+1}"
             })
             
         return layout
@@ -1965,81 +1960,123 @@ class RunPythonCode(object):
     def _create_count_chart_from_text_field(self, field_info: Dict, chart_type: str, theme: str) -> Dict:
         """
         Creates a count-based chart from a textual field.
+        This creates metadata only - the frontend will handle data visualization.
         """
         try:
             field_name = field_info.get("field_name", "unknown")
             unique_count = field_info.get("unique_count", 0)
+            data_category = field_info.get("data_category", "categorical_text")
 
-            # Create sample data structure for count chart
-            chart_data = {
-                "labels": [],  # Will be populated with actual unique values
-                "values": []   # Will be populated with counts
-            }
-
-            # For now, create a placeholder structure - actual data will be populated by add_chart_to_dashboard
-            # This is just the configuration, the actual data aggregation happens later
+            # Create chart configuration matching the expected dashboard format
             chart_config = {
-                "id": f"chart_{field_name}_count",
-                "title": f"Count of {field_name}",
-                "type": chart_type,
-                "field": field_name,
-                "data_category": "text_count",
-                "description": f"Distribution of values in {field_name} ({unique_count} unique values)",
-                "theme": theme,
-                "is_count_chart": True,
-                "data": chart_data,
-                "options": self._get_chart_options(chart_type, theme)
+                "id": f"chart_{field_name}",
+                "field_name": field_name,
+                "chart_type": chart_type,
+                "data_category": data_category,
+                "title": field_info.get("data_story", f"Distribution of {field_name}"),
+                "visualization_potential": field_info.get("visualization_potential", "high"),
+                "chart_suitability": field_info.get("chart_suitability", {chart_type: 0.9}),
+                "theme": theme
             }
 
+            print(f"DEBUG: Created {chart_type} chart config for textual field {field_name}")
             return chart_config
 
         except Exception as e:
             print(f"DEBUG: Exception in _create_count_chart_from_text_field: {str(e)}")
             return None
 
-    def _create_aggregation_chart(self, num_field_info: Dict, text_field_info: Dict, theme: str) -> Dict:
+    def _create_aggregation_chart_from_data(self, layer_name: str, num_field_info: Dict, category_field_info: Dict, theme: str) -> Dict:
         """
-        Creates an aggregation chart combining a numerical field with a textual field.
+        Creates an aggregation chart by combining a numerical field with a textual category field.
+        Uses the working aggregation logic from add_chart_to_dashboard.
         """
+        print(f"DEBUG: _create_aggregation_chart_from_data called for {num_field_info.get('field_name')} by {category_field_info.get('field_name')}")
         try:
             num_field_name = num_field_info.get("field_name", "unknown")
-            text_field_name = text_field_info.get("field_name", "unknown")
-
-            # Determine aggregation type based on numerical field characteristics
+            category_field_name = category_field_info.get("field_name", "unknown")
             data_category = num_field_info.get("data_category", "")
+            
+            # Determine aggregation type based on numerical field characteristics
             if data_category == "continuous_numeric":
-                aggregation = "sum"  # Sum for continuous values
+                aggregation = "mean"  # Mean for continuous values
             else:
-                aggregation = "mean"  # Mean for categorical numeric
-
-            # Create sample data structure for aggregation chart
-            chart_data = {
-                "labels": [],  # Will be populated with textual field values
-                "datasets": [{
-                    "label": f"{aggregation.title()} of {num_field_name}",
-                    "data": []  # Will be populated with aggregated numerical values
-                }]
-            }
-
+                aggregation = "sum"  # Sum for categorical numeric
+            
+            # Use ArcPy to get aggregated data
+            data = {}
+            cursor_fields = [category_field_name, num_field_name]
+            
+            with arcpy.da.SearchCursor(layer_name, cursor_fields) as cursor:
+                for row in cursor:
+                    category = row[0]
+                    value = row[1]
+                    
+                    if category is not None:
+                        category = str(category)
+                    else:
+                        category = "Null/Empty"
+                    
+                    if category not in data:
+                        data[category] = []
+                    
+                    # Only add numeric values, skip nulls and non-numeric
+                    if value is not None and isinstance(value, (int, float)):
+                        data[category].append(value)
+            
+            # Create chart data
+            chart_data = {"labels": [], "values": []}
+            
+            for category, values in data.items():
+                if values:  # Only proceed if we have values
+                    chart_data["labels"].append(category)
+                    
+                    if aggregation == "sum":
+                        chart_data["values"].append(sum(values))
+                    elif aggregation == "mean":
+                        chart_data["values"].append(statistics.mean(values))
+                    elif aggregation == "count":
+                        chart_data["values"].append(len(values))
+                    elif aggregation == "min":
+                        chart_data["values"].append(min(values))
+                    elif aggregation == "max":
+                        chart_data["values"].append(max(values))
+                else:
+                    chart_data["labels"].append(category)
+                    chart_data["values"].append(0)
+            
+            # Create chart configuration matching dashboard format
             chart_config = {
-                "id": f"chart_{num_field_name}_by_{text_field_name}",
-                "title": f"{aggregation.title()} of {num_field_name} by {text_field_name}",
-                "type": "bar",  # Default to bar chart for aggregations
-                "field": num_field_name,
-                "category_field": text_field_name,
-                "aggregation": aggregation,
+                "id": f"chart_{num_field_name}_by_{category_field_name}",
+                "field_name": num_field_name,
+                "chart_type": "bar",
                 "data_category": "aggregation",
-                "description": f"Aggregated {num_field_name} values grouped by {text_field_name}",
+                "title": f"{aggregation.title()} of {num_field_name} by {category_field_name}",
+                "visualization_potential": "high",
+                "chart_suitability": {"bar": 0.95, "column": 0.90},
                 "theme": theme,
-                "is_aggregation_chart": True,
-                "data": chart_data,
-                "options": self._get_chart_options("bar", theme)
+                "category_field": category_field_name,
+                "series": [
+                    {
+                        "field": num_field_name,
+                        "name": num_field_name
+                    }
+                ],
+                "fields": [
+                    category_field_name,
+                    num_field_name
+                ],
+                "aggregation_info": {
+                    "numeric_field": num_field_name,
+                    "category_field": category_field_name,
+                    "aggregation_type": aggregation,
+                    "data": chart_data
+                }
             }
-
+            
             return chart_config
-
+            
         except Exception as e:
-            print(f"DEBUG: Exception in _create_aggregation_chart: {str(e)}")
             return None
 
     def generate_dashboard_for_target_layer(self, params):
@@ -2048,6 +2085,7 @@ class RunPythonCode(object):
         Enhanced to prioritize textual fields for count-based charts and
         create aggregation charts combining numerical and textual fields.
         """
+        print("DEBUG: generate_dashboard_for_target_layer called with enhanced aggregation logic")
         try:
             layer_name = params.get("layer_name") or params.get("layer")
             field_insights = params.get("field_insights", {})
@@ -2078,23 +2116,21 @@ class RunPythonCode(object):
                     excluded_fields.append(field_info)
                     continue
 
-                # Skip coordinate-like fields (very unique numerical values)
+                # Skip coordinate-like fields and basic system fields
                 if data_category in ["continuous_numeric", "categorical_numeric"]:
-                    uniqueness_ratio = unique_count / total_records if total_records > 0 else 0
-                    # Skip if very unique (>80% unique) or coordinate-like names
-                    if (uniqueness_ratio > 0.8 or
-                        any(coord in field_name_lower for coord in ['lat', 'lon', 'x', 'y', 'coord', 'longitude', 'latitude'])):
+                    field_name_lower = field_name.lower()
+                    is_coordinate_name = any(coord in field_name_lower for coord in ['lat', 'lon', 'x', 'y', 'coord', 'longitude', 'latitude'])
+                    
+                    # Only exclude coordinate fields and constant values
+                    if is_coordinate_name or unique_count == 1:
                         excluded_fields.append(field_info)
                         continue
                     else:
                         numerical_fields.append(field_info)
 
-                # Include good textual fields
-                elif data_category in ["categorical_text", "text"]:
-                    uniqueness_ratio = unique_count / total_records if total_records > 0 else 0
-                    # Skip if too many unique values (likely free text)
-                    if uniqueness_ratio < 0.8:  # Less than 80% unique
-                        textual_fields.append(field_info)
+                # Include textual fields (keep it simple)
+                elif data_category in ["categorical_text", "text", "name_field"]:
+                    textual_fields.append(field_info)
 
             # Sort fields by quality (unique count for textual, visualization priority for numerical)
             textual_fields.sort(key=lambda x: x.get("unique_count", 0), reverse=True)
@@ -2104,52 +2140,94 @@ class RunPythonCode(object):
             used_textual_fields = []
             used_numerical_fields = []
 
-            # Phase 1: Create count-based charts for textual fields
-            for field_info in textual_fields[:4]:  # Limit to top 4 textual fields
+            # Find suitable category fields first (textual fields with 2-8 unique values)
+            suitable_category_fields = []
+            for field_info in textual_fields:
                 unique_count = field_info.get("unique_count", 0)
+                field_name = field_info.get("field_name", "unknown")
+                if unique_count > 1 and unique_count < 9:  # Between 2 and 8 unique values
+                    suitable_category_fields.append(field_info)
+                    print(f"DEBUG: Found suitable category field: {field_name} ({unique_count} unique values)")
+            
+            print(f"DEBUG: Total suitable category fields found: {len(suitable_category_fields)}")
+            print(f"DEBUG: Available numerical fields: {len(numerical_fields)}")
 
-                # Determine chart type based on unique count
-                if 2 <= unique_count <= 4:
-                    chart_type = "pie"
-                elif 5 <= unique_count <= 8:
-                    chart_type = "bar"  # Will be randomly horizontal/vertical
-                else:
-                    continue  # Skip if not in ideal range
-
-                chart_config = self._create_count_chart_from_text_field(field_info, chart_type, theme)
-                if chart_config:
-                    charts.append(chart_config)
-                    used_textual_fields.append(field_info)
-
-            # Phase 2: Create aggregation charts (numerical + textual)
-            import random
-            available_textual = [f for f in textual_fields if f not in used_textual_fields]
-            available_numerical = [f for f in numerical_fields if f not in used_numerical_fields]
-
-            # Create up to 3 aggregation charts
-            for i in range(min(3, len(available_numerical))):
-                if not available_textual:
-                    break
-
-                # Randomly select a numerical field
-                num_field = available_numerical.pop(0)
-                used_numerical_fields.append(num_field)
-
-                # Randomly select a textual field for aggregation
-                text_field = random.choice(available_textual)
-
-                chart_config = self._create_aggregation_chart(num_field, text_field, theme)
-                if chart_config:
-                    charts.append(chart_config)
-
-            # Phase 3: Fallback to single numerical field charts if needed
-            if len(charts) < 3 and available_numerical:
-                for field_info in available_numerical[:3]:
-                    chart_config = self._create_chart_from_field(field_info, theme)
+            # Phase 1: Prioritize aggregation charts if suitable category fields exist
+            if suitable_category_fields and numerical_fields:
+                print("DEBUG: Creating aggregation charts as priority")
+                
+                # Create aggregation charts for numerical fields using category fields
+                charts_created = 0
+                for num_field_info in numerical_fields:
+                    if charts_created >= 4:  # Limit aggregation charts to make room for others
+                        break
+                        
+                    num_field_name = num_field_info.get("field_name", "unknown")
+                    print(f"DEBUG: Creating aggregation chart for numerical field '{num_field_name}'")
+                    
+                    # Select the best category field (prefer fields with more unique values for better distribution)
+                    category_field_info = max(suitable_category_fields, key=lambda x: x.get("unique_count", 0))
+                    category_field_name = category_field_info.get("field_name", "unknown")
+                    
+                    print(f"DEBUG: Using '{category_field_name}' as category field ({category_field_info.get('unique_count', 0)} unique values)")
+                    
+                    # Create aggregation chart using real data
+                    chart_config = self._create_aggregation_chart_from_data(
+                        layer_name, num_field_info, category_field_info, theme
+                    )
+                    
                     if chart_config:
                         charts.append(chart_config)
-                        if len(charts) >= 6:  # Limit to 6 total charts
+                        used_numerical_fields.append(num_field_info)
+                        charts_created += 1
+                        print(f"DEBUG: Successfully created aggregation chart: {chart_config.get('title', 'Unknown')}")
+                    else:
+                        print(f"DEBUG: Failed to create aggregation chart for {num_field_name}")
+                
+                # Mark category fields as used
+                used_textual_fields.extend(suitable_category_fields)
+
+            # Phase 2: Fill remaining slots with individual field charts
+            remaining_slots = 6 - len(charts)
+            print(f"DEBUG: Phase 2 - filling {remaining_slots} remaining slots with individual charts")
+            
+            if remaining_slots > 0:
+                # First, add textual field charts for fields not used as categories
+                unused_textual = [f for f in textual_fields if f not in used_textual_fields]
+                for field_info in unused_textual:
+                    if len(charts) >= 6:
+                        break
+                        
+                    field_name = field_info.get("field_name", "unknown")
+                    unique_count = field_info.get("unique_count", 0)
+                    
+                    # Determine chart type based on unique count
+                    if unique_count <= 4:
+                        chart_type = "pie"
+                    elif unique_count <= 20:  # Allow bar charts for fields with up to 20 unique values
+                        chart_type = "bar"
+                    else:
+                        continue  # Skip fields with too many unique values (>20)
+                    
+                    chart_config = self._create_count_chart_from_text_field(field_info, chart_type, theme)
+                    if chart_config:
+                        charts.append(chart_config)
+                        used_textual_fields.append(field_info)
+                
+                # Then add numerical field histograms if no suitable category fields exist
+                if not suitable_category_fields or len(charts) < 6:
+                    unused_numerical = [f for f in numerical_fields if f not in used_numerical_fields]
+                    for field_info in unused_numerical:
+                        if len(charts) >= 6:
                             break
+                            
+                        # Create histogram chart for numerical field
+                        chart_config = self._create_chart_from_field(field_info, theme)
+                        if chart_config:
+                            charts.append(chart_config)
+                            used_numerical_fields.append(field_info)
+            
+            print(f"DEBUG: Final chart count: {len(charts)}")
 
             # Limit to 6 charts maximum
             charts = charts[:6]
@@ -2226,7 +2304,7 @@ class RunPythonCode(object):
             chart_type = params.get("chart_type", "bar")
             fields = params.get("fields", [])
             category_field = params.get("category_field")
-            aggregation = params.get("aggregation", "sum")
+            aggregation = params.get("aggregation", "SUM")
             title = params.get("title")
             theme = params.get("theme", "default")
             where_clause = params.get("where_clause")

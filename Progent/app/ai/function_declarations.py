@@ -486,16 +486,41 @@ class FunctionDeclaration:
         },
         "update_dashboard_charts": {
             "name": "update_dashboard_charts",
-            "description": "Updates the configuration of existing dashboard charts (chart type, title, theme) at specified indices. Does NOT change the fields or regenerate chart data. For changing fields or creating new charts with different data, use generate_dashboard_for_target_layer instead.",
+            "description": "Updates the configuration of existing dashboard charts including chart type, title, theme, fields, category_field, and series_fields at specified indices. Can change field configurations and regenerate chart data based on new settings. For the fields array, ensure the category field is listed first to be used as the category field.",
             "parameters": {
                 "charts_data": {
                     "type": "array",
-                    "description": "A list of objects, each specifying a chart to update. Must contain 'index' and the new 'chart' object with configuration only.",
+                    "description": "A list of objects, each specifying a chart to update. Must contain 'index' and the new 'chart' object with configuration.",
                     "items": {
                         "type": "object",
                         "properties": {
-                            "index": {"type": "integer", "description": "The zero-based index of the chart to replace."},
-                            "chart": {"type": "object", "description": "The new chart configuration object (type, title, theme only - fields are preserved)."}
+                            "index": {"type": "integer", "description": "The zero-based index of the chart to update."},
+                            "chart": {
+                                "type": "object",
+                                "description": "The new chart configuration object.",
+                                "properties": {
+                                    "chart_type": {"type": "string", "description": "The type of chart (e.g., bar, column, pie)."},
+                                    "title": {"type": "string", "description": "The title of the chart."},
+                                    "theme": {"type": "string", "description": "The visual theme of the chart."},
+                                    "fields": {
+                                        "type": "array",
+                                        "description": "List of field names. The first field will be used as the category field if category_field is not specified.",
+                                        "items": {"type": "string"}
+                                    },
+                                    "category_field": {"type": "string", "description": "The field to use as the category field. If not specified, the first field in 'fields' will be used."},
+                                    "series": {
+                                        "type": "array",
+                                        "description": "List of series fields for multi-series charts.",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "field": {"type": "string", "description": "The field name for the series."},
+                                                "name": {"type": "string", "description": "The display name for the series."}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         },
                         "required": ["index", "chart"]
                     }

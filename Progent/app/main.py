@@ -1106,8 +1106,11 @@ async def check_and_update_dashboard(client_id: str, function_result: Dict):
                 # Use the modified dashboard as the data to be saved and broadcast
                 dashboard_to_save = existing_dashboard
             else:
-                # Overwrite dashboard for functions like generate_dashboard
-                dashboard_to_save = result_data
+                # For generate_dashboard, the data is in result_data["data"] if present
+                if "data" in result_data:
+                    dashboard_to_save = result_data["data"]
+                else:
+                    dashboard_to_save = result_data
 
             with open(dashboard_file, "w", encoding="utf-8") as f:
                 json.dump(dashboard_to_save, f, indent=4)
@@ -1370,6 +1373,9 @@ def _parse_dashboard_data(dashboard_data):
     elif "layout" in dashboard_data and "charts" in dashboard_data:
         # Current format with layout + charts array
         return _parse_layout_charts_format(dashboard_data)
+    elif "charts" in dashboard_data and any(chart.get("data_category") == "aggregation" for chart in dashboard_data["charts"]):
+        # NEW: Handle aggregation-first architecture charts
+        return _parse_aggregation_charts_format(dashboard_data)
     elif "chart_recommendations" in dashboard_data:
         # Legacy format with only chart recommendations
         return dashboard_data.get("chart_recommendations", []), "auto"
@@ -1453,6 +1459,36 @@ def _parse_layout_charts_format(dashboard_data):
     
     return chart_configs, "grid"
 
+def _parse_aggregation_charts_format(dashboard_data):
+    """Parse aggregation-first architecture charts format"""
+    charts = dashboard_data.get("charts", [])
+    layout_items = dashboard_data.get("layout", {}).get("items", [])
+
+    chart_configs = []
+
+    # Create a mapping of chart IDs to chart data
+    chart_data_map = {chart.get("id", ""): chart for chart in charts}
+
+    # Use layout items as the primary source, enriched with chart data
+    for i, item in enumerate(layout_items):
+        chart_id = item.get("id", f"chart_{i}")
+        chart_data = chart_data_map.get(chart_id, {})
+
+        chart_config = {
+            "chart_id": chart_id,
+            "chart_type": item.get("chart_type", chart_data.get("chart_type", "bar")),
+            "title": chart_data.get("title", item.get("field_name", f"Chart {i + 1}")),
+            "primary_field": item.get("field_name", chart_data.get("field_name", "")),
+            "data_category": chart_data.get("data_category", "unknown"),
+            "aggregation_info": chart_data.get("aggregation_info", {}),
+            "recommended_size": DEFAULT_CHART_SIZE,
+            "priority": 1,
+            "chart_data": chart_data  # Include full chart data for aggregation
+        }
+        chart_configs.append(chart_config)
+
+    return chart_configs, "grid"
+
 def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
     """Build frontend chart objects from configurations"""
     charts = []
@@ -1461,7 +1497,14 @@ def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
         
         # Determine y_field based on chart type and data
         y_field = chart.get("group_by_field", chart.get("y_field", ""))
-        
+        x_field = chart.get("category_field") or chart.get("primary_field", chart.get("x_field", ""))
+
+        # For aggregation charts, set proper field names
+        if chart.get("data_category") == "aggregation":
+            aggregation_info = chart.get("aggregation_info", {})
+            y_field = aggregation_info.get("numeric_field", "")
+            x_field = aggregation_info.get("category_field", chart.get("primary_field", ""))
+
         # For multi-series bar charts with aggregated data, provide meaningful y-axis label
         if not y_field and chart.get("chart_type") == "bar" and chart.get("series"):
             # Check if this is a fuel sales chart by looking at series field names
@@ -1472,12 +1515,12 @@ def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
                 y_field = "Sales Amount"
             else:
                 y_field = "Sum"
-        
+
         frontend_chart = {
             "title": chart.get("title", f"Chart {i+1}"),
             "type": chart.get("chart_type", chart.get("type", "bar")),
             "description": chart.get("description", chart.get("reasoning", "")),
-            "x_field": chart.get("category_field") or chart.get("primary_field", chart.get("x_field", "")),
+            "x_field": x_field,
             "y_field": y_field,
             "data": chart_data,
             "layout": {
@@ -1485,7 +1528,7 @@ def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
                 "template": layout_template
             }
         }
-        
+
         _add_position_layout(frontend_chart, chart, layout_template)
         charts.append(frontend_chart)
     
@@ -1515,18 +1558,22 @@ def _build_dashboard_metadata(dashboard_data, layout_template, chart_count):
 def prepare_chart_data_from_insights(chart_config, dashboard_data):
     """Prepare chart data from field insights"""
     try:
+        # NEW: Check if this is an aggregation chart first
+        if chart_config.get("data_category") == "aggregation":
+            return prepare_chart_data_from_aggregation(chart_config)
+
         field_insights = dashboard_data.get("field_insights", {})
         chart_type = chart_config.get("chart_type", chart_config.get("type", "bar"))
         primary_field = chart_config.get("primary_field", chart_config.get("x_field", ""))
         group_by_field = chart_config.get("group_by_field", chart_config.get("y_field", ""))
-        
+
         # Validate field insights availability
         if not field_insights:
             return _create_error_data("Field analysis data missing: Dashboard layout was created but field analysis was not performed. The dashboard generation function should analyze fields as part of its process.")
-        
+
         if primary_field not in field_insights:
             return _create_error_data(f"Field '{primary_field}' analysis missing: This field exists in the dashboard layout but wasn't analyzed during dashboard generation.")
-        
+
         # Generate chart data based on chart type
         chart_data_generators = {
             "pie": _generate_pie_chart_data,
@@ -1537,17 +1584,41 @@ def prepare_chart_data_from_insights(chart_config, dashboard_data):
             "scatter": _generate_scatter_data,
             "box_plot": _generate_box_plot_data
         }
-        
+
         generator = chart_data_generators.get(chart_type)
         if generator:
             return generator(field_insights, primary_field, group_by_field, chart_config)
-        
+
         # Fallback for unknown chart types
         return _create_error_data(f"Unsupported chart type: {chart_type}")
-        
+
     except Exception as e:
         logger.error(f"Error preparing chart data: {str(e)}")
         return _create_error_data(f"Chart data generation failed: {str(e)}")
+
+def prepare_chart_data_from_aggregation(chart_config):
+    """Extract real aggregated data from aggregation_info instead of generating fake data"""
+    try:
+        aggregation_info = chart_config.get("aggregation_info", {})
+
+        if not aggregation_info:
+            return _create_error_data("Aggregation info missing from chart configuration")
+
+        # Extract real data from ArcGIS Pro aggregation
+        if "data" in aggregation_info:
+            real_data = aggregation_info["data"]
+            if "labels" in real_data and "values" in real_data:
+                return {
+                    "labels": real_data["labels"],
+                    "values": real_data["values"]
+                }
+
+        # Fallback if data structure is different
+        return _create_error_data("Real aggregated data not found in aggregation_info")
+
+    except Exception as e:
+        logger.error(f"Error extracting aggregation data: {str(e)}")
+        return _create_error_data(f"Failed to extract aggregation data: {str(e)}")
 
 def _create_error_data(error_message):
     """Create standardized error data structure"""
