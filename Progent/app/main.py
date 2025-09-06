@@ -1507,14 +1507,7 @@ def _build_frontend_charts(chart_configs, dashboard_data, layout_template):
 
         # For multi-series bar charts with aggregated data, provide meaningful y-axis label
         if not y_field and chart.get("chart_type") == "bar" and chart.get("series"):
-            # Check if this is a fuel sales chart by looking at series field names
-            series_fields = [s.get("field", "") for s in chart.get("series", [])]
-            if any("fuel_sales" in field or "gallons" in field.lower() for field in series_fields):
-                y_field = "Gallons Sold"
-            elif any("sales" in field.lower() for field in series_fields):
-                y_field = "Sales Amount"
-            else:
-                y_field = "Sum"
+            y_field = "Value"
 
         frontend_chart = {
             "title": chart.get("title", f"Chart {i+1}"),
@@ -1723,42 +1716,8 @@ def _generate_multi_series_bar_data(field_insights, category_field, series, char
                 "datasets": actual_data["datasets"]
             }
     
-    # Fallback to field insights if no actual data
-    if category_field not in field_insights:
-        return _create_error_data(f"Category field '{category_field}' not found in field insights")
-    
-    category_data = field_insights[category_field]
-    sample_values = category_data.get("sample_values", [])[:MAX_BAR_CATEGORIES]
-    
-    if not sample_values:
-        return _create_error_data(f"No sample values available for category field '{category_field}'")
-    
-    # Create labels from category field values
-    labels = [str(val) for val in sample_values]
-    
-    # For multi-series, create a dataset structure that frontend can handle
-    # Each series will be a separate dataset
-    datasets = []
-    for i, series_config in enumerate(series):
-        field_name = series_config.get("field", "")
-        series_name = series_config.get("name", field_name)
-        
-        # Generate sample values for this series across categories
-        base_value = 100 + (i * 50)  # Different base for each series
-        values = [base_value + (j * 20) - (j * j * 2) for j in range(len(labels))]
-        
-        datasets.append({
-            "name": series_name,
-            "data": values
-        })
-    
-    # Return in a format that can handle multiple series
-    # Frontend should check for 'datasets' property for multi-series charts
-    return {
-        "labels": labels,
-        "values": datasets[0]["data"] if datasets else [],  # Primary series for backward compatibility
-        "datasets": datasets  # Full multi-series data
-    }
+    # No actual data available - return error instead of mock data
+    return _create_error_data("Real chart data not available from ArcGIS Pro. Please ensure the chart has been properly generated with actual data.")
 
 def _generate_numeric_range_data(field_data, total_records, bins=8):
     """Generate range-based data for high cardinality numeric fields"""

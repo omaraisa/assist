@@ -376,9 +376,10 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
                 if series_fields and chart_type in ["grouped_bar", "bar", "column"]:
                     chart_config["category_field"] = category_field
                     chart_config["series"] = [
-                        {"field": field, "name": field} for field in series_fields
+                        {"field": field, "name": field, "aggregation": "sum"} for field in series_fields
                     ]
                     chart_config["fields"] = [category_field] + series_fields  # Store all fields with category first
+                    chart_config["aggregation"] = "sum"  # Specify aggregation type
                 
                 data["charts"][index] = chart_config
                 

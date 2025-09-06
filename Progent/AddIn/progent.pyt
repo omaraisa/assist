@@ -2304,7 +2304,7 @@ class RunPythonCode(object):
             chart_type = params.get("chart_type", "bar")
             fields = params.get("fields", [])
             category_field = params.get("category_field")
-            aggregation = params.get("aggregation", "SUM")
+            aggregation = params.get("aggregation", "SUM").lower()  # Convert to lowercase for consistent comparison
             title = params.get("title")
             theme = params.get("theme", "default")
             where_clause = params.get("where_clause")
@@ -2428,8 +2428,14 @@ class RunPythonCode(object):
                             if field not in data[category]:
                                 data[category][field] = []
                             # Only add numeric values, skip nulls and non-numeric
-                            if value is not None and isinstance(value, (int, float)):
-                                data[category][field].append(value)
+                            if value is not None:
+                                try:
+                                    # Try to convert to float to handle various numeric types
+                                    numeric_value = float(value)
+                                    data[category][field].append(numeric_value)
+                                except (ValueError, TypeError):
+                                    # Skip non-numeric values
+                                    pass
 
                 if len(numeric_fields) == 1:
                     # Single series
