@@ -476,8 +476,8 @@ class FunctionDeclaration:
             "parameters": {},
             "required": []
         },
-        "get_field_stories_and_samples": {
-            "name": "get_field_stories_and_samples",
+        "get_dashboard_field_detailed_description": {
+            "name": "get_dashboard_field_detailed_description",
             "description": "Retrieves metadata and insights for fields stored in the current dashboard.",
             "parameters": {
                 "field_name": {"type": "string", "description": "Optional. The name of a specific field to get information for.", "default": None}

@@ -282,7 +282,7 @@ def get_current_dashboard_charts() -> Dict:
         return {"success": False, "error": str(e)}
 
 
-def get_field_stories_and_samples() -> Dict:
+def get_dashboard_field_detailed_description() -> Dict:
     """Get field stories and samples from progent_dashboard.json"""
     try:
         dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
