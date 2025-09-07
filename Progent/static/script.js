@@ -598,10 +598,20 @@ class SmartAssistantClient {
     handleDashboardUpdate(dashboardData) {
         console.log('Dashboard update received:', dashboardData);
         if (dashboardData && this.dashboard) {
+            // Store current dashboard visibility state
+            const wasVisible = this.elements.dashboardPanel.classList.contains('active');
+            
             this.dashboard.render(dashboardData);
-            this.showViewDashboardButton();
-            // Always show dashboard panel and button when new data is available
-            this.showDashboard();
+            
+            if (wasVisible) {
+                // If dashboard was already visible, just refresh it
+                this.showDashboard();
+            } else {
+                // If dashboard was hidden, show the view button
+                this.showViewDashboardButton();
+                this.showDashboard();
+            }
+            
             this.elements.viewDashboardBtn.style.display = 'inline-block';
         }
     }

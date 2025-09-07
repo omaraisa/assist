@@ -255,6 +255,33 @@ class ExecuteSpatialFunctionTool(BaseTool):
             else:
                 return {"success": False, "message": f"Unknown dashboard function: {function_name}"}
 
+            # Broadcast dashboard update to frontend clients if this was a dashboard modification
+            if result.get("success") and result.get("is_dashboard_update"):
+                try:
+                    # Load the updated dashboard and broadcast it
+                    import os
+                    dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
+                    if os.path.exists(dashboard_path):
+                        import json
+                        with open(dashboard_path, 'r', encoding='utf-8') as f:
+                            dashboard_data = json.load(f)
+                        
+                        # Transform for frontend and broadcast
+                        from .main import transform_dashboard_for_frontend
+                        frontend_payload = transform_dashboard_for_frontend(dashboard_data)
+                        
+                        # Broadcast the transformed payload if successful, otherwise broadcast raw data
+                        payload_to_broadcast = frontend_payload if isinstance(frontend_payload, dict) and "error" not in frontend_payload else dashboard_data
+                        
+                        asyncio.run(self.websocket_manager.broadcast_to_type("chatbot", {
+                            "type": "dashboard_update",
+                            "data": payload_to_broadcast
+                        }))
+                        
+                except Exception as broadcast_error:
+                    # Log but don't fail the function call
+                    print(f"Warning: Failed to broadcast dashboard update: {broadcast_error}")
+
             return result
                 
         except Exception as e:

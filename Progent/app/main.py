@@ -1116,13 +1116,29 @@ async def check_and_update_dashboard(client_id: str, function_result: Dict):
                 json.dump(dashboard_to_save, f, indent=4)
             
             logger.info(f"Dashboard data saved to {dashboard_file}")
-            
+
+            # Transform dashboard for frontend before broadcasting so clients receive
+            # a ready-to-render payload (Chart.js compatible). If transformation
+            # fails or returns an error, fall back to broadcasting the raw saved
+            # dashboard JSON as a best-effort attempt.
+            try:
+                frontend_payload = transform_dashboard_for_frontend(dashboard_to_save)
+                # If transform_dashboard_for_frontend returns an error dict, fallback
+                if isinstance(frontend_payload, dict) and "error" in frontend_payload:
+                    logger.error(f"Transform returned error: {frontend_payload.get('error')}")
+                    payload_to_send = dashboard_to_save
+                else:
+                    payload_to_send = frontend_payload
+            except Exception as e:
+                logger.error(f"Error transforming dashboard for broadcast: {str(e)}")
+                payload_to_send = dashboard_to_save
+
             await websocket_manager.broadcast_to_type("chatbot", {
                 "type": "dashboard_update",
-                "data": dashboard_to_save
+                "data": payload_to_send
             })
-            
-            logger.info("Dashboard update broadcast to all chatbot clients")
+
+            logger.info("Dashboard update broadcast to all chatbot clients (transformed for frontend)")
             
     except Exception as e:
         logger.error(f"Error in check_and_update_dashboard: {str(e)}")

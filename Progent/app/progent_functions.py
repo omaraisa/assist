@@ -408,7 +408,8 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
         
         return {
             "success": True,
-            "message": f"Updated {updated_count} charts in dashboard"
+            "message": f"Updated {updated_count} charts in dashboard",
+            "is_dashboard_update": True
         }
         
     except Exception as e:
@@ -461,7 +462,8 @@ def delete_charts_from_dashboard(indices: list) -> dict:
         return {
             "success": True,
             "message": f"Deleted {deleted_count} charts from dashboard",
-            "remaining_charts": len(data["charts"])
+            "remaining_charts": len(data["charts"]),
+            "is_dashboard_update": True
         }
         
     except Exception as e:
@@ -522,7 +524,8 @@ def update_dashboard_layout(layout_updates: dict) -> dict:
 
         return {
             "success": True,
-            "message": "Dashboard layout updated successfully"
+            "message": "Dashboard layout updated successfully",
+            "is_dashboard_update": True
         }
 
     except Exception as e:
