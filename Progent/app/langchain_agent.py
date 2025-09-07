@@ -174,7 +174,61 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 if self.websocket_manager.has_function_result(session_id):
                     result = self.websocket_manager.get_function_result(session_id)
                     if result:
-                        return result.get("data", result)
+                        result_data = result.get("data", result)
+                        
+                        # Handle dashboard update broadcasting for any function that returns is_dashboard_update
+                        if (isinstance(result_data, dict) and 
+                            result_data.get("success") and 
+                            result_data.get("is_dashboard_update")):
+                            try:
+                                # Load the current dashboard
+                                import os
+                                dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
+                                if os.path.exists(dashboard_path):
+                                    import json
+                                    with open(dashboard_path, 'r', encoding='utf-8') as f:
+                                        dashboard_data = json.load(f)
+                                    
+                                    # Special handling for add_chart_to_dashboard results
+                                    if (result_data.get("is_chart_addition") and 
+                                        result_data.get("new_chart") and 
+                                        result_data.get("layout_item")):
+                                        # Add the new chart to the existing dashboard
+                                        if "charts" not in dashboard_data:
+                                            dashboard_data["charts"] = []
+                                        dashboard_data["charts"].append(result_data["new_chart"])
+                                        
+                                        # Add the layout item to the existing layout
+                                        if "layout" not in dashboard_data:
+                                            dashboard_data["layout"] = {"items": []}
+                                        if "items" not in dashboard_data["layout"]:
+                                            dashboard_data["layout"]["items"] = []
+                                        dashboard_data["layout"]["items"].append(result_data["layout_item"])
+                                        
+                                        # Save the updated dashboard back to the file
+                                        with open(dashboard_path, 'w', encoding='utf-8') as f:
+                                            json.dump(dashboard_data, f, indent=2, ensure_ascii=False)
+                                    
+                                    # Transform for frontend and broadcast
+                                    from .main import transform_dashboard_for_frontend
+                                    frontend_payload = transform_dashboard_for_frontend(dashboard_data)
+                                    
+                                    # Broadcast the transformed payload if successful, otherwise broadcast raw data
+                                    payload_to_broadcast = frontend_payload if isinstance(frontend_payload, dict) and "error" not in frontend_payload else dashboard_data
+                                    
+                                    asyncio.run(self.websocket_manager.broadcast_to_type("chatbot", {
+                                        "type": "dashboard_update",
+                                        "data": payload_to_broadcast
+                                    }))
+                                    
+                                    # Mark that dashboard update has been handled by agent
+                                    result_data["_dashboard_update_handled"] = True
+                                    
+                            except Exception as broadcast_error:
+                                # Log but don't fail the function call
+                                print(f"Warning: Failed to broadcast dashboard update: {broadcast_error}")
+                        
+                        return result_data
                 
                 import time
                 time.sleep(check_interval)
@@ -266,6 +320,24 @@ class ExecuteSpatialFunctionTool(BaseTool):
                         with open(dashboard_path, 'r', encoding='utf-8') as f:
                             dashboard_data = json.load(f)
                         
+                        # Special handling for add_chart_to_dashboard results
+                        if result.get("is_chart_addition") and result.get("new_chart") and result.get("layout_item"):
+                            # Add the new chart to the existing dashboard
+                            if "charts" not in dashboard_data:
+                                dashboard_data["charts"] = []
+                            dashboard_data["charts"].append(result["new_chart"])
+                            
+                            # Add the layout item to the existing layout
+                            if "layout" not in dashboard_data:
+                                dashboard_data["layout"] = {"items": []}
+                            if "items" not in dashboard_data["layout"]:
+                                dashboard_data["layout"]["items"] = []
+                            dashboard_data["layout"]["items"].append(result["layout_item"])
+                            
+                            # Save the updated dashboard back to the file
+                            with open(dashboard_path, 'w', encoding='utf-8') as f:
+                                json.dump(dashboard_data, f, indent=2, ensure_ascii=False)
+                        
                         # Transform for frontend and broadcast
                         from .main import transform_dashboard_for_frontend
                         frontend_payload = transform_dashboard_for_frontend(dashboard_data)
@@ -277,6 +349,9 @@ class ExecuteSpatialFunctionTool(BaseTool):
                             "type": "dashboard_update",
                             "data": payload_to_broadcast
                         }))
+                        
+                        # Mark that dashboard update has been handled by agent
+                        result["_dashboard_update_handled"] = True
                         
                 except Exception as broadcast_error:
                     # Log but don't fail the function call
