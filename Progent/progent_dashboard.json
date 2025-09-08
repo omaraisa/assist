@@ -21,16 +21,22 @@
                 "grid_area": "chart-2"
             },
             {
-                "id": "chart_DistrictID",
-                "chart_type": "histogram",
-                "field_name": "DistrictID",
-                "grid_area": "chart-3"
+                "id": "chart_20250907235928",
+                "chart_type": "column",
+                "field_name": "gallons_sold_july_91",
+                "grid_area": "chart-chart_20250907235928"
             },
             {
-                "id": "chart_20250907233842",
+                "id": "chart_20250908000123",
+                "chart_type": "column",
+                "field_name": "customer_satisfaction_score",
+                "grid_area": "chart-chart_20250908000123"
+            },
+            {
+                "id": "chart_20250908134856",
                 "chart_type": "bar",
-                "field_name": "gallons_sold_july_91",
-                "grid_area": "chart-chart_20250907233842"
+                "field_name": "OBJECTID",
+                "grid_area": "chart-chart_20250908134856"
             }
         ]
     },
@@ -66,24 +72,9 @@
             "theme": "default"
         },
         {
-            "id": "chart_DistrictID",
-            "field_name": "DistrictID",
-            "chart_type": "histogram",
-            "data_category": "continuous_numeric",
-            "title": "'DistrictID' displays moderate variation (range: 1.00 to 181.00), suitable for distribution analysis.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "histogram": 0.9,
-                "box_plot": 0.85,
-                "density_plot": 0.8,
-                "violin_plot": 0.75
-            },
-            "theme": "default"
-        },
-        {
-            "id": "chart_20250907233842",
-            "title": "Fuel 91 & 95 Sales by Operator",
-            "chart_type": "bar",
+            "id": "chart_20250907235928",
+            "title": "Fuel Sales 91 & 95 by Operator",
+            "chart_type": "column",
             "field_name": "gallons_sold_july_91",
             "primary_field": "gallons_sold_july_91",
             "category_field": "operator",
@@ -98,6 +89,7 @@
                 }
             ],
             "fields": [
+                "operator",
                 "gallons_sold_july_91",
                 "gallons_sold_july_95"
             ],
@@ -136,6 +128,64 @@
                             10281424.0
                         ]
                     }
+                ]
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_20250908000123",
+            "title": "Average Customer Satisfaction by Operator",
+            "chart_type": "column",
+            "field_name": "customer_satisfaction_score",
+            "primary_field": "customer_satisfaction_score",
+            "category_field": "operator",
+            "data": {
+                "labels": [
+                    "Petromin",
+                    "Naft",
+                    "Aldrees",
+                    "Sas",
+                    "Shell",
+                    "Tas'helat",
+                    "Wafi"
+                ],
+                "values": [
+                    3.7053333333333334,
+                    3.794,
+                    3.797142857142857,
+                    3.7456,
+                    3.716,
+                    3.624,
+                    3.824
+                ]
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_20250908134856",
+            "title": "Operator Count",
+            "chart_type": "bar",
+            "field_name": "OBJECTID",
+            "primary_field": "OBJECTID",
+            "category_field": "operator",
+            "data": {
+                "labels": [
+                    "Petromin",
+                    "Naft",
+                    "Aldrees",
+                    "Sas",
+                    "Shell",
+                    "Tas'helat",
+                    "Wafi"
+                ],
+                "values": [
+                    75,
+                    50,
+                    175,
+                    125,
+                    25,
+                    25,
+                    25
                 ]
             },
             "theme": "default"
@@ -193,16 +243,16 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
-                "Sas Thomas Stravenue",
-                "Naft Olivia Heights",
-                "Aldrees Shelley Point",
-                "Aldrees Wilson Fields",
-                "Petromin Kelley Prairie",
-                "Wafi Roberts Heights",
-                "Tas'helat Taylor Via",
-                "Naft Leonard Centers",
-                "Aldrees Briana Tunnel",
-                "Petromin Farmer Field"
+                "Naft Valdez View",
+                "Petromin Perry Springs",
+                "Petromin Wilson Dam",
+                "Sas William Orchard",
+                "Aldrees Jones Green",
+                "Sas John Summit",
+                "Aldrees Craig Views",
+                "Petromin Joshua Shoals",
+                "Aldrees Tammy Landing",
+                "Aldrees Baird Roads"
             ],
             "avg_length": 19.3,
             "min_length": 13,
@@ -234,13 +284,13 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
-                "Wafi",
                 "Tas'helat",
-                "Shell",
-                "Aldrees",
-                "Petromin",
+                "Wafi",
+                "Naft",
                 "Sas",
-                "Naft"
+                "Aldrees",
+                "Shell",
+                "Petromin"
             ],
             "avg_length": 5.7,
             "min_length": 3,
@@ -427,16 +477,16 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
-                "car wash, coffee shop, tire repair",
-                "coffee shop, tire repair, mosque",
-                "mosque, atm, coffee shop, tire repair, store",
-                "car wash, coffee shop, mosque",
-                "coffee shop, tire repair",
-                "coffee shop, mosque, car wash, tire repair, store, atm",
-                "atm, car wash",
-                "atm, mosque, store, coffee shop, tire repair",
-                "car wash, store, mosque, tire repair, coffee shop, atm",
-                "mosque, atm, tire repair"
+                "tire repair, atm, car wash, mosque, coffee shop",
+                "store, mosque, car wash, coffee shop, tire repair",
+                "coffee shop, atm, tire repair, store, car wash",
+                "car wash, coffee shop, store, tire repair, atm, mosque",
+                "store, coffee shop, atm, car wash, tire repair",
+                "car wash, atm, store, tire repair",
+                "mosque, tire repair, car wash",
+                "coffee shop, store, tire repair, atm, car wash",
+                "atm, tire repair",
+                "coffee shop, atm, mosque, tire repair, car wash, store"
             ],
             "avg_length": 30.5,
             "min_length": 3,
@@ -907,8 +957,8 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
-                "TRUE",
-                "FALSE"
+                "FALSE",
+                "TRUE"
             ],
             "avg_length": 4.7,
             "min_length": 4,
@@ -1090,5 +1140,5 @@
             "visualization_priority": 8
         }
     },
-    "generation_timestamp": "2025-09-07T23:38:14.554126"
+    "generation_timestamp": "2025-09-08T00:00:15.411943"
 }
