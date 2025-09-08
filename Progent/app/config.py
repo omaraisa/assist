@@ -115,7 +115,7 @@ class Settings(BaseSettings):
     # - For OpenAI models: Set OPENAI_API_KEY 
     # - For Claude: Set ANTHROPIC_API_KEY
     # - For Ollama: No API key needed (local)
-    GEMINI_API_KEY: str = "AIzaSyCd-sdQInmKN3spQqNjN4e1O2pQRsBV05Q"
+    GEMINI_API_KEY: str = "AIzaSyDU3OlsVqaP9MHgU2GkaNRO6Yz93pNfpzk"
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
     
@@ -196,7 +196,8 @@ def get_api_key(model_key: str) -> str:
         raise ValueError(f"Model {model_key} missing api_key_env configuration")
         
     env_var = model_config["api_key_env"]
-    api_key = getattr(settings, env_var, "")
+    # Check environment variable first (for dynamic updates), then fall back to settings
+    api_key = os.environ.get(env_var) or getattr(settings, env_var, "")
     
     if not api_key:
         model_name = model_config["name"]
