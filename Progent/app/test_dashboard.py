@@ -1,13 +1,14 @@
-import sys
-import os
-sys.path.append(os.path.dirname(__file__))
+# import sys
+# import os
+# sys.path.append(os.path.dirname(__file__))
 
-from main import transform_dashboard_for_frontend
+from .main import transform_dashboard_for_frontend
 import json
 from pathlib import Path
 
 # Load and test the dashboard transformation
-dashboard_file = Path('../progent_dashboard.json')
+# The path is relative to the Progent directory, where the test is run from.
+dashboard_file = Path('progent_dashboard.json')
 with open(dashboard_file, 'r', encoding='utf-8') as f:
     dashboard_data = json.load(f)
 
