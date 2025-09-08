@@ -50,15 +50,15 @@ class RunPythonCode(object):
             result = self.execute_spatial_function(function_name, params, messages)
 
             if result:
-                messages.addMessage(json.dumps({"status": "success", "data": result}))
+                messages.addMessage(json.dumps({"status": "success", "data": result}, ensure_ascii=False))
             else:
-                messages.addMessage(json.dumps({"status": "error", "message": f"Function {function_name} not implemented or failed"}))
+                messages.addMessage(json.dumps({"status": "error", "message": f"Function {function_name} not implemented or failed"}, ensure_ascii=False))
         except Exception as e:
             import traceback
             tb = traceback.format_exc()
             messages.addMessage(f"Top-level error: {str(e)}")
             messages.addMessage(f"Traceback: {tb}")
-            messages.addMessage(json.dumps({"status": "error", "message": str(e), "trace": tb}))
+            messages.addMessage(json.dumps({"status": "error", "message": str(e), "trace": tb}, ensure_ascii=False))
 
     def execute_spatial_function(self, function_name, params, messages):
         try:
