@@ -12,7 +12,7 @@ class ProductionSettings(BaseSettings):
     # Production server settings
     DEBUG: bool = False
     HOST: str = "0.0.0.0"
-    PORT: int = 8000
+    PORT: int = 60060
     
     # Security settings
     CORS_ORIGINS: list = ["http://localhost:3000", "https://yourdomain.com"]

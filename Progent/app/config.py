@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     
     # Server Configuration
     HOST: str = "0.0.0.0"
-    PORT: int = 8000
+    PORT: int = 60060
     DEBUG: bool = True
     
     # AI Models Configuration
