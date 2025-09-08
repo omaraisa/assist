@@ -171,6 +171,9 @@ class ExecuteSpatialFunctionTool(BaseTool):
             elapsed_time = 0
             
             while elapsed_time < max_wait_time:
+                if self.websocket_manager.is_cancelled(self.client_id):
+                    return {"error": "Function execution cancelled by user."}
+
                 if self.websocket_manager.has_function_result(session_id):
                     result = self.websocket_manager.get_function_result(session_id)
                     if result:

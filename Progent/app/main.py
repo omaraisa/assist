@@ -177,6 +177,10 @@ async def handle_websocket_message(client_id: str, message: Dict):
                     "type": "error",
                     "message": "Model key is required for model change"
                 })
+
+        elif message_type == "cancel_request":
+            # Handle cancel request from client
+            await handle_cancel_request(client_id)
                 
         elif message_type == "dashboard_update":
             # Handle dashboard update from ArcGIS Pro
