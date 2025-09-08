@@ -104,6 +104,7 @@ class ExecuteSpatialFunctionTool(BaseTool):
     client_id: str
 
     def _run(self, tool_input_str: str) -> Dict[str, Any]:
+        import json
         function_name = "[unknown]"
         try:
             # Try to parse as JSON first
@@ -185,7 +186,6 @@ class ExecuteSpatialFunctionTool(BaseTool):
                                 import os
                                 dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
                                 if os.path.exists(dashboard_path):
-                                    import json
                                     with open(dashboard_path, 'r', encoding='utf-8') as f:
                                         dashboard_data = json.load(f)
                                     
@@ -243,6 +243,7 @@ class ExecuteSpatialFunctionTool(BaseTool):
 
     def _execute_dashboard_function(self, function_name: str, parameters: dict) -> dict:
         """Execute dashboard functions locally on the server side using the new API."""
+        import json
         result = {}
         try:
             # The agent sometimes wraps parameters in an 'arguments' dict. Unwrap it.
@@ -316,7 +317,6 @@ class ExecuteSpatialFunctionTool(BaseTool):
                     import os
                     dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
                     if os.path.exists(dashboard_path):
-                        import json
                         with open(dashboard_path, 'r', encoding='utf-8') as f:
                             dashboard_data = json.load(f)
                         
