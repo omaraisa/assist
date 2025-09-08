@@ -216,10 +216,25 @@ async def handle_websocket_message(client_id: str, message: Dict):
                         # The field_insights contain real data from ArcGIS Pro
                         logger.info(f"Stored real field insights for layer: {dashboard_data.get('layer_name', 'Unknown')}")
                     
-                    # Notify all chatbot clients about the update
+                    # Transform dashboard for frontend before broadcasting so clients receive
+                    # a ready-to-render payload (Chart.js compatible). If transformation
+                    # fails or returns an error, fall back to broadcasting the raw saved
+                    # dashboard JSON as a best-effort attempt.
+                    try:
+                        frontend_payload = transform_dashboard_for_frontend(dashboard_data)
+                        # If transform_dashboard_for_frontend returns an error dict, fallback
+                        if isinstance(frontend_payload, dict) and "error" in frontend_payload:
+                            logger.error(f"Transform returned error: {frontend_payload.get('error')}")
+                            payload_to_send = dashboard_data
+                        else:
+                            payload_to_send = frontend_payload
+                    except Exception as e:
+                        logger.error(f"Error transforming dashboard for broadcast: {str(e)}")
+                        payload_to_send = dashboard_data
+
                     await websocket_manager.broadcast_to_type("chatbot", {
                         "type": "dashboard_update",
-                        "data": dashboard_data
+                        "data": payload_to_send
                     })
                 except Exception as e:
                     logger.error(f"Error writing dashboard data: {str(e)}")
