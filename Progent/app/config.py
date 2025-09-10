@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     
     # Server Configuration
     HOST: str = "0.0.0.0"
-    PORT: int = 60060
+    PORT: int = 6060
     DEBUG: bool = True
     
     # AI Models Configuration
@@ -69,8 +69,8 @@ class Settings(BaseSettings):
         #     "api_key_env": "ANTHROPIC_API_KEY"        },
         # Ollama Models (Local LLMs)
         "OLLAMA_GEMMA": {
-                "name": "Gemma 2B (Local)",
-                "model": "gemma:7b",
+                "name": "llama3 8B (Local)",
+                "model": "llama3:8b",
                 "provider": "ollama",
                 "endpoint": "http://localhost:11434",
                 "max_tokens": 8192,
@@ -115,7 +115,7 @@ class Settings(BaseSettings):
     # - For OpenAI models: Set OPENAI_API_KEY 
     # - For Claude: Set ANTHROPIC_API_KEY
     # - For Ollama: No API key needed (local)
-    GEMINI_API_KEY: str = "AIzaSyDU3OlsVqaP9MHgU2GkaNRO6Yz93pNfpzk"
+    GEMINI_API_KEY: str = "AIzaSyCd-sdQInmKN3spQqNjN4e1O2pQRsBV05Q"
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
     

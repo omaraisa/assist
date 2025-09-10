@@ -105,8 +105,29 @@ class ExecuteSpatialFunctionTool(BaseTool):
 
     def _run(self, tool_input_str: str) -> Dict[str, Any]:
         import json
+        import re
         function_name = "[unknown]"
         try:
+            # Enhanced parsing to handle Ollama's extra conversational text
+            cleaned_input = tool_input_str.strip()
+
+            # Try to extract JSON from the input using regex
+            # Look for JSON-like patterns: {...} or {...}
+            json_patterns = [
+                r'\{.*\}',  # Match JSON objects
+            ]
+
+            json_match = None
+            for pattern in json_patterns:
+                match = re.search(pattern, cleaned_input, re.DOTALL)
+                if match:
+                    json_match = match.group(0)
+                    break
+
+            if json_match:
+                # Use the extracted JSON
+                tool_input_str = json_match
+
             # Try to parse as JSON first
             try:
                 tool_input = json.loads(tool_input_str)
@@ -384,46 +405,64 @@ def _get_declarations_stateless(function_ids_str: str) -> str:
     """
     A stateless helper to get function declarations.
     It imports and accesses the necessary data directly to avoid state issues.
+    Enhanced to handle Ollama's tendency to add extra conversational text.
     """
     try:
         # Access the class variables directly without creating an instance
         functions_declaration = FunctionDeclaration.functions_declarations
-        
-        # Parse the input - handle multiple formats: single int, single string, array of ints, array of strings
+
+        # Parse the input - handle multiple formats and extra text from Ollama
         function_ids = []
-        
+
         if isinstance(function_ids_str, str):
-            cleaned_input = function_ids_str.strip().strip('"').strip("'")
-            
-            # Try to parse as JSON array first (e.g., "[4]", '["4"]', "[4,5]")
-            try:
-                parsed = ast.literal_eval(cleaned_input)
-                if isinstance(parsed, list):
-                    # Convert all elements to integers
-                    function_ids = [int(x) for x in parsed]
+            # Clean the input by removing extra conversational text that Ollama might add
+            import re
+
+            # Look for patterns like [10], [1,2,3], 10, "10", etc.
+            # Remove common Ollama additions like "Please let me know what you'd like to do next!"
+            cleaned_input = function_ids_str.strip()
+
+            # Extract just the function ID part using regex
+            # Look for patterns: [digits], digits, "digits", 'digits'
+            patterns = [
+                r'\[(\d+(?:\s*,\s*\d+)*)\]',  # [10] or [1,2,3]
+                r'"(\d+(?:\s*,\s*\d+)*)"',     # "10" or "1,2,3"
+                r"'(\d+(?:\s*,\s*\d+)*)'",     # '10' or '1,2,3'
+                r'^(\d+(?:\s*,\s*\d+)*)$',     # 10 or 1,2,3 (at start of string)
+            ]
+
+            extracted_ids = None
+            for pattern in patterns:
+                match = re.search(pattern, cleaned_input)
+                if match:
+                    extracted_ids = match.group(1)
+                    break
+
+            if extracted_ids:
+                # Split by comma and convert to integers
+                id_strings = [id.strip() for id in extracted_ids.split(',')]
+                function_ids = [int(id_str) for id_str in id_strings if id_str.isdigit()]
+            else:
+                # Fallback: try to extract any digits from the input
+                digits = re.findall(r'\d+', cleaned_input)
+                if digits:
+                    function_ids = [int(d) for d in digits[:5]]  # Limit to first 5 digits to avoid false matches
                 else:
-                    # Single value
-                    function_ids = [int(parsed)]
-            except (ValueError, SyntaxError):
-                # If JSON parsing fails, try as single value
-                try:
-                    function_ids = [int(cleaned_input)]
-                except ValueError:
-                    return f"Error: Could not parse function IDs from input: {function_ids_str}"
+                    return f"Error: Could not extract function IDs from input: {function_ids_str}"
         else:
             # Direct input (shouldn't happen, but handle it)
             if isinstance(function_ids_str, list):
                 function_ids = [int(x) for x in function_ids_str]
             else:
                 function_ids = [int(function_ids_str)]
-        
+
         result = {}
         for func_id in function_ids:
             if func_id in AVAILABLE_FUNCTIONS:
                 func_name = AVAILABLE_FUNCTIONS[func_id]
                 if func_name in functions_declaration:
                     result[func_name] = functions_declaration[func_name]
-        
+
         # Format the result into a string
         if not result:
             return "No function declarations found for the given IDs."
@@ -536,46 +575,95 @@ class LangChainAgent:
         self.prompt = self._create_prompt_template()
         logger.info(f"LangChain agent model set to: {self.model_key}")
 
+    def _simplify_arcgis_state_for_prompt(self, state: Dict) -> str:
+        """Simplify ArcGIS state for inclusion in prompt"""
+        if not state:
+            return "No ArcGIS Pro project currently open."
+        
+        layers_info = state.get("layers_info", {})
+        layer_count = len(layers_info)
+        layer_names = list(layers_info.keys())
+        
+        simplified = f"""
+Project: {state.get('project_path', 'Unknown')}
+Map: {state.get('map_name', 'Unknown')}
+Layers ({layer_count} total): {', '.join(layer_names) if layer_names else 'None'}
+Default GDB: {state.get('default_gdb', 'Unknown')}"""
+        
+        return simplified.strip()
+
     def _create_prompt_template(self) -> PromptTemplate:
-        """Creates the prompt template for the agent, now including chat history."""
-        template = """
-        You are a helpful AI assistant for ArcGIS Pro.
+        """Creates the optimized prompt template for the agent with Ollama-specific formatting rules."""
+        template = """You are a helpful AI assistant connected to ArcGIS Pro.
 
-        Conversation so far:
-        {chat_history}
+Current ArcGIS Pro State: {arcgis_state}
 
-        You have access to the following tools:
-        {tools}
+{chat_history}
 
-        Here is the current state of the ArcGIS Pro project:
-        {arcgis_state}
+You can chat normally or help with GIS tasks. For simple questions about the current state (like "how many layers"), answer directly from the ArcGIS state above. Only use tools when you need to perform actual GIS operations.
 
-        Here is a list of available functions you can use:
-        {available_functions}
+Available tools: {tools}
 
-        To use a function, you must first get its declaration using the `get_functions_declaration` tool with the function's ID.
-        The declaration will be returned as a string, describing the function, its parameters, and their types.
-        Once you have the declaration, you can execute the function using the `execute_spatial_function` tool.
+Here is a list of available functions you can use:
+{available_functions}
 
-        IMPORTANT: Do NOT use markdown formatting, code blocks, or triple backticks (```) in your responses. Provide plain text answers only.
+To use a function, you must first get its declaration using the `get_functions_declaration` tool with the function's ID.
+The declaration will be returned as a string, describing the function, its parameters, and their types.
+Once you have the declaration, you can execute the function using the `execute_spatial_function` tool.
 
-        Use the following format:
+WORKFLOW:
+1. Use get_functions_declaration with the function ID (like "[10]") to get the function details
+2. Look for the actual function name in the response (like "clip_layer")
+3. Use execute_spatial_function with ONLY that function name and parameters
 
-        Question: the input question you must answer
-        Thought: you should always think about what to do
-        Action: the action to take, should be one of [{tool_names}]
-        Action Input: the input to the action
-        Observation: the result of the action
-        ... (this Thought/Action/Action Input/Observation can repeat N times)
-        Thought: I now know the final answer
-        Final Answer: the final answer to the original input question
+CRITICAL: In execute_spatial_function, use the ACTUAL FUNCTION NAME from the declaration, NOT the ID number.
 
-        Begin!
+FORMATTING RULES - FOLLOW THESE EXACTLY:
 
-        Question: {input}
-        Thought:{agent_scratchpad}
-        """
-        return PromptTemplate(template=template, input_variables=["tools", "tool_names", "input", "agent_scratchpad", "arcgis_state", "available_functions", "chat_history"])
+For get_functions_declaration:
+- Action Input must be EXACTLY like: [10] or [1,2,3]
+- No quotes around the brackets, no extra text
+
+For execute_spatial_function:
+- Action Input must be valid JSON with function_name and parameters at the TOP LEVEL
+- Parameters go directly in the main JSON object, NOT inside a "parameters" key
+- No explanatory text, comments, or extra formatting
+
+EXAMPLES:
+- Correct: {{"function_name": "create_buffer", "layer_name": "Fuel_Stations", "distance": 1000}}
+- Wrong: {{"function_name": "create_buffer", "parameters": {{"layer_name": "Fuel_Stations", "distance": 1000}}}}
+
+STOPPING CRITERIA:
+- When you see a successful result (like {{"success": True, "output_layer": "..."}}), STOP and provide Final Answer
+- Do NOT repeat actions that have already been completed
+- Do NOT call get_functions_declaration multiple times for the same function
+
+IMPORTANT: Do NOT wrap parameters in a "parameters" object. Put them directly in the main JSON.
+IMPORTANT: Do NOT add explanatory text or comments in Action Input - provide ONLY the JSON.
+IMPORTANT: Do NOT use markdown formatting, code blocks, or triple backticks (```) in your responses.
+IMPORTANT: After seeing a successful function result, immediately provide your Final Answer - do not repeat actions.
+
+Use the following format:
+
+Question: the input question you must answer
+Thought: you should always think about what to do
+Action: the action to take, should be one of [{tool_names}]
+Action Input: the input to the action
+Observation: the result of the action
+... (this Thought/Action/Action Input/Observation can repeat N times)
+Thought: I now know the final answer
+Final Answer: the final answer to the original input question
+
+CRITICAL STOPPING RULE:
+- When you see Observation with "success": True, immediately proceed to "Thought: I now know the final answer" and "Final Answer:"
+- Do NOT repeat previous actions
+- Do NOT call the same function multiple times
+
+Begin!
+
+Question: {input}
+Thought: {agent_scratchpad}"""
+        return PromptTemplate(template=template, input_variables=["tools", "tool_names", "chat_history", "input", "agent_scratchpad", "arcgis_state", "available_functions"])
 
     async def generate_response(
         self,
@@ -584,39 +672,89 @@ class LangChainAgent:
         arcgis_state: Dict,
         client_id: str = None
     ) -> Dict[str, Any]:
-        """Generates a response using the LangChain agent, now including chat history as plain text."""
+        """Generates a response using the LangChain agent with smart message classification."""
         logger.info(f"LangChain agent generating response for: {user_message[:100]}...")
 
         try:
-            tools = self._get_tools(client_id)
             if not self.llm:
-                raise RuntimeError("LangChain LLM not instantiated. LangChain agent is only available for GEMINI models.")
-            agent = create_react_agent(self.llm, tools, self.prompt)
-            agent_executor = AgentExecutor(
-                agent=agent,
-                tools=tools,
-                verbose=True,
-                handle_parsing_errors=True,
-                callbacks=[self.callback_handler]
-            )
-
-            # Only include user and assistant (final answer) messages in history
+                raise RuntimeError("LangChain LLM not instantiated.")
+            
+            # Build chat history for classification
             chat_history_lines = []
             for msg in conversation_history:
                 if msg.get("role") == "user":
                     chat_history_lines.append(f"User: {msg.get('content','')}")
                 elif msg.get("role") == "assistant":
-                    chat_history_lines.append(f"Progent: {msg.get('content','')}")
+                    chat_history_lines.append(f"Assistant: {msg.get('content','')}")
             chat_history_str = "\n".join(chat_history_lines)
 
-            response = await agent_executor.ainvoke({
-                "input": user_message,
-                "arcgis_state": json.dumps(arcgis_state, indent=2),
-                "available_functions": json.dumps(AVAILABLE_FUNCTIONS, indent=2),
-                "chat_history": chat_history_str
-            })
+            # Phase 1: Smart Message Classification
+            classification_prompt = f"""You are an AI assistant for ArcGIS Pro. Classify the user's message:
 
-            return response
+{chat_history_str}
+User: {user_message}
+
+Does this message require GIS operations/tools, or is it conversational?
+
+Respond with exactly one word:
+- "TOOLS" if the user wants GIS analysis, data manipulation, spatial operations, or asks about layers/maps
+- "CHAT" if it's a greeting, general question about you, or casual conversation
+
+Message: {user_message}
+Classification:"""
+
+            logger.info(f"Classification prompt sent to AI: {classification_prompt[:500]}...")
+            
+            from langchain_core.messages import HumanMessage
+            classification_response = await self.llm.ainvoke([HumanMessage(content=classification_prompt)])
+            classification = classification_response.content.strip().upper()
+            
+            logger.info(f"Message classification: {classification}")
+
+            if classification == "CHAT":
+                # Handle as conversational message - no tools needed
+                conversational_prompt = f"""You are a helpful AI assistant for ArcGIS Pro software.
+
+{chat_history_str}
+
+You are directly connected to ArcGIS Pro and can help with GIS tasks when needed, but right now the user is just having a conversation with you.
+
+Respond naturally to their message. Do not use markdown, code blocks, or special formatting.
+
+User: {user_message}
+Assistant:"""
+
+                logger.info(f"Conversational prompt sent to AI: {conversational_prompt[:500]}...")
+                
+                response = await self.llm.ainvoke([HumanMessage(content=conversational_prompt)])
+                return {"output": response.content}
+            
+            else:
+                # Handle as GIS operation using tools
+                tools = self._get_tools(client_id)
+                logger.info(f"Available tools for client {client_id}: {[tool.name for tool in tools]}")
+                
+                agent = create_react_agent(self.llm, tools, self.prompt)
+                agent_executor = AgentExecutor(
+                    agent=agent,
+                    tools=tools,
+                    verbose=True,
+                    handle_parsing_errors=True,
+                    callbacks=[self.callback_handler],
+                    max_iterations=5
+                )
+
+                # Simplify ArcGIS state for the prompt
+                simplified_state = self._simplify_arcgis_state_for_prompt(arcgis_state)
+                
+                response = await agent_executor.ainvoke({
+                    "input": user_message,
+                    "chat_history": chat_history_str,
+                    "tool_names": ", ".join([tool.name for tool in tools]),
+                    "arcgis_state": simplified_state,
+                    "available_functions": json.dumps(AVAILABLE_FUNCTIONS, indent=2)
+                })
+                return response
         except Exception as e:
             logger.error(f"Error generating LangChain agent response: {e}", exc_info=True)
             

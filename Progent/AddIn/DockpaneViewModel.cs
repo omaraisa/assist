@@ -21,7 +21,7 @@ namespace Progent
 {
     internal class DockpaneViewModel : DockPane, INotifyPropertyChanged
     {
-        private string _serverUrl = "ws://localhost:60060/ws";
+        private string _serverUrl = "ws://localhost:6060/ws";
         private string _logText = "";
         private string _connectButtonText = "Connect";
         private bool _isConnected = false;
@@ -54,7 +54,7 @@ namespace Progent
                         ConnectButtonText = "Disconnect";
                         IsConnected = true;
                         Log("Connected to server.");
-                        Process.Start(new ProcessStartInfo("http://localhost:60060") { UseShellExecute = true });
+                        Process.Start(new ProcessStartInfo("http://localhost:6060") { UseShellExecute = true });
                         await _webSocketService.SendMessageAsync(JsonConvert.SerializeObject(new { type = "client_register", client_type = "arcgis_pro" }));
                     };
                     _webSocketService.OnDisconnected += () =>
