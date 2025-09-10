@@ -48,7 +48,7 @@ python --version
 echo.
 
 echo [INFO] Starting FastAPI server...
-echo [INFO] Server will be available at: http://localhost:8000
+echo [INFO] Server will be available at: http://localhost:6060
 echo [INFO] Press Ctrl+C to stop the server
 echo.
 

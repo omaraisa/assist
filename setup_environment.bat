@@ -312,7 +312,7 @@ echo     exit /b 1
 echo ^)
 echo.
 echo echo [INFO] Starting FastAPI server...
-echo echo [INFO] Server will be available at: http://localhost:8000
+echo echo [INFO] Server will be available at: http://localhost:6060
 echo echo [INFO] Press Ctrl+C to stop the server
 echo echo.
 echo.

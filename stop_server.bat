@@ -26,13 +26,13 @@ for /f "tokens=2" %%i in ('tasklist /fi "imagename eq python.exe" /fo csv ^| fin
     )
 )
 
-REM Also try to kill by port (if the process is listening on port 8000)
-echo [INFO] Checking for processes using port 8000...
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8000"') do (
-    echo [INFO] Found process using port 8000: %%a
+REM Also try to kill by port (if the process is listening on port 6060)
+echo [INFO] Checking for processes using port 6060...
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":6060"') do (
+    echo [INFO] Found process using port 6060: %%a
     taskkill /pid %%a /f >nul 2>&1
     if not errorlevel 1 (
-        echo [SUCCESS] Process on port 8000 terminated
+        echo [SUCCESS] Process on port 6060 terminated
     ) else (
         echo [WARNING] Failed to terminate process %%a
     )
