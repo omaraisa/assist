@@ -770,7 +770,7 @@ Default GDB: {state.get('default_gdb', 'Unknown')}"""
 
     def _create_prompt_template(self) -> PromptTemplate:
         """Creates the optimized prompt template for the agent with Ollama-specific formatting rules."""
-        template = """You are a helpful AI assistant connected to ArcGIS Pro.
+        template = """You are Progent, a helpful AI assistant connected to ArcGIS Pro.
 
 Current ArcGIS Pro State: {arcgis_state}
 
@@ -865,7 +865,7 @@ Thought: {agent_scratchpad}"""
             chat_history_str = "\n".join(chat_history_lines)
 
             # Phase 1: Smart Message Classification
-            classification_prompt = f"""You are an AI assistant for ArcGIS Pro. Classify the user's message:
+            classification_prompt = f"""You are Progent, an AI assistant for ArcGIS Pro. Classify the user's message:
 
 {chat_history_str}
 User: {user_message}
@@ -889,7 +889,7 @@ Classification:"""
 
             if classification == "CHAT":
                 # Handle as conversational message - no tools needed
-                conversational_prompt = f"""You are a helpful AI assistant for ArcGIS Pro software.
+                conversational_prompt = f"""You are Progent, a helpful AI assistant for ArcGIS Pro software.
 
 {chat_history_str}
 

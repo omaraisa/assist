@@ -265,7 +265,7 @@ class AIService:
         """Get a simple system prompt for function-calling GIS agent (LangChain style)"""
         simplified_state = self._simplify_arcgis_state(arcgis_state)
         return (
-            "You are a helpful GIS assistant for ArcGIS Pro. "
+            "You are Progent, a helpful GIS assistant for ArcGIS Pro. "
             "You can use available function calls to solve spatial and data analysis tasks. "
             "Use the provided tools as needed to answer user questions or perform GIS operations. "
             "IMPORTANT: Do NOT use markdown formatting, code blocks, or triple backticks (```) in your responses. Provide plain text answers only. "
