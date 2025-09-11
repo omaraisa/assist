@@ -416,11 +416,32 @@ class ExecuteSpatialFunctionTool(BaseTool):
                         
                         # Update result based on websocket call outcomes
                         if successful_additions == len(charts_to_add):
-                            result = {
-                                "success": True,
-                                "message": f"Successfully updated {successful_additions} charts in dashboard",
-                                "is_dashboard_update": True
-                            }
+                            # Step 3: Handle reindexing if needed (simple JSON manipulation)
+                            if result.get("requires_reindexing") and "original_index" in result:
+                                original_index = result["original_index"]
+                                
+                                # Call the simple reindexing function
+                                from .progent_functions import reindex_last_chart_to_position
+                                reindex_result = reindex_last_chart_to_position(original_index)
+                                
+                                if reindex_result.get("success"):
+                                    result = {
+                                        "success": True,
+                                        "message": f"Successfully updated and reindexed chart to position {original_index}",
+                                        "is_dashboard_update": True
+                                    }
+                                else:
+                                    result = {
+                                        "success": True,
+                                        "message": f"Chart updated but reindexing failed: {reindex_result.get('error')}",
+                                        "is_dashboard_update": True
+                                    }
+                            else:
+                                result = {
+                                    "success": True,
+                                    "message": f"Successfully updated {successful_additions} charts in dashboard",
+                                    "is_dashboard_update": True
+                                }
                         elif successful_additions > 0:
                             result = {
                                 "success": True,

@@ -234,8 +234,8 @@ def _get_timestamp() -> str:
     return datetime.now().isoformat()
 
 
-def move_last_chart_to_position(target_position: int) -> Dict:
-    """Move the last chart in the dashboard to the specified position"""
+def reindex_last_chart_to_position(target_position: int) -> Dict:
+    """Simple reindexing: Cut the last chart and paste it at target position"""
     try:
         dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
         if not os.path.exists(dashboard_path):
@@ -248,41 +248,46 @@ def move_last_chart_to_position(target_position: int) -> Dict:
             return {"success": False, "error": "No charts found in dashboard"}
         
         charts = data["charts"]
-        last_index = len(charts) - 1
+        layout_items = data.get("layout", {}).get("items", [])
         
         # Validate target position
         if target_position < 0 or target_position >= len(charts):
             return {"success": False, "error": f"Target position {target_position} is out of range"}
         
         # If already at target position, nothing to do
-        if target_position == last_index:
+        if target_position == len(charts) - 1:
             return {"success": True, "message": "Chart already at target position"}
         
-        # Move the last chart to target position
-        last_chart = charts.pop()  # Remove last chart
-        charts.insert(target_position, last_chart)  # Insert at target position
+        # Step 1: Cut the last chart and its layout item
+        last_chart = charts.pop()  # Remove from end
+        last_layout_item = None
+        if len(layout_items) > 0:
+            last_layout_item = layout_items.pop()  # Remove from end
         
-        # Also move the corresponding layout item if it exists
-        if "layout" in data and "items" in data["layout"] and len(data["layout"]["items"]) > last_index:
-            layout_items = data["layout"]["items"]
-            last_item = layout_items.pop()  # Remove last item
-            layout_items.insert(target_position, last_item)  # Insert at target position
+        # Step 2: Paste at target position (this shifts everything else to the right)
+        charts.insert(target_position, last_chart)
+        if last_layout_item and len(layout_items) >= target_position:
+            layout_items.insert(target_position, last_layout_item)
         
-        # Update timestamp
+        # Step 3: Update timestamp and save
         data["generation_timestamp"] = _get_timestamp()
         
-        # Save updated data
         with open(dashboard_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
         
         return {
             "success": True,
-            "message": f"Moved chart from position {last_index} to position {target_position}",
+            "message": f"Reindexed chart to position {target_position}",
             "is_dashboard_update": True
         }
         
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+
+def move_last_chart_to_position(target_position: int) -> Dict:
+    """Move the last chart in the dashboard to the specified position (legacy function)"""
+    return reindex_last_chart_to_position(target_position)
 
 
 def get_current_dashboard_layout() -> Dict:
@@ -369,7 +374,7 @@ def get_dashboard_field_detailed_description() -> Dict:
 
 def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
     """
-    Simple proxy function: Delete chart, then add new chart (goes to end).
+    Simple proxy function: Delete chart, then add new chart.
     """
     try:
         dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
@@ -410,7 +415,7 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
             "title": chart.get("title", "Updated Chart"),
             "theme": chart.get("theme", "default")
         }
-        
+
         # Handle field configuration properly
         fields = chart.get("fields", [])
         if len(fields) >= 2:
@@ -424,15 +429,19 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
             if chart.get("category_field"):
                 add_params["category_field"] = chart.get("category_field")
                 add_params["aggregation"] = chart.get("aggregation", "sum")
-        
+
         # Add optional parameters
         if chart.get("where_clause"):
-            add_params["where_clause"] = chart.get("where_clause")        # Return parameters for websocket call to add_chart_to_dashboard
+            add_params["where_clause"] = chart.get("where_clause")
+
+        # Return parameters for websocket call to add_chart_to_dashboard + reindex info
         return {
             "success": True,
-            "message": f"Chart at index {index} deleted. Ready to add new chart.",
+            "message": f"Chart at index {index} deleted. Ready to add new chart and reindex.",
             "charts_to_add": [add_params],
+            "original_index": index,  # Store the original index for reindexing
             "requires_websocket_calls": True,
+            "requires_reindexing": True,
             "is_dashboard_update": False  # Will be true after websocket calls complete
         }
 

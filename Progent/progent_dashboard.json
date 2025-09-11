@@ -9,32 +9,59 @@
         "gap": "20px",
         "items": [
             {
+                "id": "chart_Development_Stage",
+                "chart_type": "pie",
+                "field_name": "Development_Stage",
+                "grid_area": "chart-2"
+            },
+            {
                 "id": "chart_Number_of_Mosques",
                 "chart_type": "histogram",
                 "field_name": "Number_of_Mosques",
                 "grid_area": "chart-4"
             },
             {
-                "id": "chart_20250911073331",
-                "chart_type": "bar",
-                "field_name": "Population",
-                "grid_area": "chart-chart_20250911073331"
-            },
-            {
-                "id": "chart_20250911073333",
+                "id": "chart_Crime_Rate_Per_1000",
                 "chart_type": "histogram",
-                "field_name": "Population",
-                "grid_area": "chart-chart_20250911073333"
+                "field_name": "Crime_Rate_Per_1000",
+                "grid_area": "chart-5"
             },
             {
-                "id": "chart_20250911074114",
+                "id": "chart_Number_of_Hospitals",
+                "chart_type": "bar",
+                "field_name": "Number_of_Hospitals",
+                "grid_area": "chart-6"
+            },
+            {
+                "id": "chart_20250911075222",
                 "chart_type": "bar",
                 "field_name": "Population",
-                "grid_area": "chart-chart_20250911074114"
+                "grid_area": "chart-chart_20250911075222"
+            },
+            {
+                "id": "chart_20250911141619",
+                "chart_type": "bar",
+                "field_name": "Population",
+                "grid_area": "chart-chart_20250911141619"
             }
         ]
     },
     "charts": [
+        {
+            "id": "chart_Development_Stage",
+            "field_name": "Development_Stage",
+            "chart_type": "pie",
+            "data_category": "categorical_text",
+            "title": "'Development_Stage' contains 3 distinct categories with clear groupings, ideal for showing proportional relationships.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "pie": 0.95,
+                "donut": 0.9,
+                "bar": 0.85,
+                "column": 0.8
+            },
+            "theme": "default"
+        },
         {
             "id": "chart_Number_of_Mosques",
             "field_name": "Number_of_Mosques",
@@ -51,7 +78,36 @@
             "theme": "default"
         },
         {
-            "id": "chart_20250911073331",
+            "id": "chart_Crime_Rate_Per_1000",
+            "field_name": "Crime_Rate_Per_1000",
+            "chart_type": "histogram",
+            "data_category": "continuous_numeric",
+            "title": "'Crime_Rate_Per_1000' displays moderate variation (range: 0.51 to 4.98), suitable for distribution analysis.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "histogram": 0.9,
+                "box_plot": 0.85,
+                "density_plot": 0.8,
+                "violin_plot": 0.75
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_Number_of_Hospitals",
+            "field_name": "Number_of_Hospitals",
+            "chart_type": "bar",
+            "data_category": "categorical_numeric",
+            "title": "'Number_of_Hospitals' represents discrete numeric categories (6 values), ideal for count-based visualizations.",
+            "visualization_potential": "high",
+            "chart_suitability": {
+                "bar": 0.85,
+                "column": 0.8,
+                "pie": 0.75
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_20250911075222",
             "title": "Updated Chart",
             "chart_type": "bar",
             "field_name": "Population",
@@ -72,29 +128,8 @@
             "theme": "default"
         },
         {
-            "id": "chart_20250911073333",
+            "id": "chart_20250911141619",
             "title": "Updated Chart",
-            "chart_type": "histogram",
-            "field_name": "Population",
-            "primary_field": "Population",
-            "category_field": "Development_Stage",
-            "data": {
-                "labels": [
-                    "Developing",
-                    "Developed",
-                    "Undeveloped"
-                ],
-                "values": [
-                    5450205.0,
-                    3809977.0,
-                    978137.0
-                ]
-            },
-            "theme": "default"
-        },
-        {
-            "id": "chart_20250911074114",
-            "title": "Population by Development Stage",
             "chart_type": "bar",
             "field_name": "Population",
             "primary_field": "Population",
@@ -674,5 +709,5 @@
             "visualization_priority": 9
         }
     },
-    "generation_timestamp": "2025-09-11T07:41:14.715819"
+    "generation_timestamp": "2025-09-11T14:16:18.992964"
 }
