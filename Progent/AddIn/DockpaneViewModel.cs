@@ -25,12 +25,22 @@ namespace Progent
         private string _logText = "";
         private string _connectButtonText = "Connect";
         private bool _isConnected = false;
+        private bool _isBusy = false;
         public bool IsConnected
         {
             get => _isConnected;
             set
             {
                 _isConnected = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                _isBusy = value;
                 OnPropertyChanged();
             }
         }
@@ -42,37 +52,50 @@ namespace Progent
             SetThemeAwareLogo();
             ConnectCommand = new RelayCommand(async () =>
             {
-                if (IsConnected)
+                IsBusy = true;
+                try
                 {
-                    await _webSocketService.DisconnectAsync();
+                    if (IsConnected)
+                    {
+                        await _webSocketService.DisconnectAsync();
+                        IsBusy = false;
+                    }
+                    else
+                    {
+                        _webSocketService = new WebSocketService(ServerUrl);
+                        _webSocketService.OnConnected += async () =>
+                        {
+                            ConnectButtonText = "Disconnect";
+                            IsConnected = true;
+                            Log("Connected to server.");
+                            Process.Start(new ProcessStartInfo("http://localhost:6060") { UseShellExecute = true });
+                            await _webSocketService.SendMessageAsync(JsonConvert.SerializeObject(new { type = "client_register", client_type = "arcgis_pro" }));
+                            IsBusy = false;
+                        };
+                        _webSocketService.OnDisconnected += () =>
+                        {
+                            ConnectButtonText = "Connect";
+                            IsConnected = false;
+                            Log("Disconnected from server.");
+                            IsBusy = false;
+                        };
+                        _webSocketService.OnError += (error) =>
+                        {
+                            Log(error);
+                            ConnectButtonText = "Connect";
+                            IsConnected = false;
+                            IsBusy = false;
+                        };
+                        _webSocketService.OnMessageReceived += HandleMessageReceived;
+                        await _webSocketService.ConnectAsync();
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    _webSocketService = new WebSocketService(ServerUrl);
-                    _webSocketService.OnConnected += async () =>
-                    {
-                        ConnectButtonText = "Disconnect";
-                        IsConnected = true;
-                        Log("Connected to server.");
-                        Process.Start(new ProcessStartInfo("http://localhost:6060") { UseShellExecute = true });
-                        await _webSocketService.SendMessageAsync(JsonConvert.SerializeObject(new { type = "client_register", client_type = "arcgis_pro" }));
-                    };
-                    _webSocketService.OnDisconnected += () =>
-                    {
-                        ConnectButtonText = "Connect";
-                        IsConnected = false;
-                        Log("Disconnected from server.");
-                    };
-                    _webSocketService.OnError += (error) =>
-                    {
-                        Log(error);
-                        ConnectButtonText = "Connect";
-                        IsConnected = false;
-                    };
-                    _webSocketService.OnMessageReceived += HandleMessageReceived;
-                    await _webSocketService.ConnectAsync();
+                    Log($"Error in connect command: {ex.Message}");
+                    IsBusy = false;
                 }
-            });
+            }, () => !IsBusy);
         }
 
         private async void HandleMessageReceived(string message)
