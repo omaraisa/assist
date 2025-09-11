@@ -136,7 +136,7 @@ body {
 }
 
 .api-key-section {
-  display: flex;
+  display: none; /* Initially hidden, shown when key button is clicked */
   align-items: center;
   gap: 0.5rem;
   min-width: 0;

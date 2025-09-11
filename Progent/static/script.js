@@ -286,14 +286,11 @@ class SmartAssistantClient {
         const modelKey = select.value || this.currentModel;
         const model = this.availableModels ? this.availableModels[modelKey] : null;
 
-        // If model requires an API key (has api_key_env), show the input; otherwise hide
-        if (model && model.api_key_env) {
-            section.style.display = 'flex';
-            // Set placeholder to indicate which env var will be set
-            this.elements.apiKeyInput.placeholder = `Enter API key for ${model.name} (${model.api_key_env})`;
-        } else {
+        // Only hide if model doesn't require API key, don't auto-show
+        if (!model || !model.api_key_env) {
             section.style.display = 'none';
         }
+        // Don't auto-show - let the user click the key button to show it
     }
     
     sendMessage() {
