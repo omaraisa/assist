@@ -31,7 +31,10 @@ class FunctionDeclaration:
                     "default": "NEW_SELECTION"
                 }
             },
-            "required": ["layer_name", "where_clause"]
+            "required": ["layer_name", "where_clause"],
+            "action_input_examples": [
+                {"function_name": "select_by_attribute", "layer_name": "Cities", "where_clause": "POPULATION > 100000"}
+            ]
         },
         
         "select_by_location": {
@@ -55,7 +58,10 @@ class FunctionDeclaration:
                     "default": "INTERSECT"
                 }
             },
-            "required": ["input_layer", "select_layer"]
+            "required": ["input_layer", "select_layer"],
+            "action_input_examples": [
+                {"function_name": "select_by_location", "input_layer": "Parcels", "select_layer": "Flood_Zones", "relationship": "INTERSECT"}
+            ]
         },
         
         # Rest of the function declarations can be added here
@@ -78,7 +84,10 @@ class FunctionDeclaration:
                     "default": None
                 }
             },
-            "required": ["layer_name", "field_name"]
+            "required": ["layer_name", "field_name"],
+            "action_input_examples": [
+                {"function_name": "get_field_statistics", "layer_name": "Counties", "field_name": "POP2020"}
+            ]
         },
         
         "get_layer_summary": {
@@ -90,7 +99,10 @@ class FunctionDeclaration:
                     "description": "The name of the layer to summarize"
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "get_layer_summary", "layer_name": "Roads"}
+            ]
         },
         
         "calculate_area": {
@@ -108,7 +120,10 @@ class FunctionDeclaration:
                     "default": "square_meters"
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "calculate_area", "layer_name": "Parks", "units": "acres"}
+            ]
         },
         
         "calculate_length": {
@@ -126,7 +141,10 @@ class FunctionDeclaration:
                     "default": "meters"
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "calculate_length", "layer_name": "Rivers", "units": "miles"}
+            ]
         },
         
         "get_centroid": {
@@ -138,7 +156,10 @@ class FunctionDeclaration:
                     "description": "The name of the layer to get centroids from"
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "get_centroid", "layer_name": "States"}
+            ]
         },
         
         "create_buffer": {
@@ -160,7 +181,10 @@ class FunctionDeclaration:
                     "default": "meters"
                 }
             },
-            "required": ["layer_name", "distance"]
+            "required": ["layer_name", "distance"],
+            "action_input_examples": [
+                {"function_name": "create_buffer", "layer_name": "Schools", "distance": 500, "units": "meters"}
+            ]
         },
         
         "spatial_join": {
@@ -182,7 +206,10 @@ class FunctionDeclaration:
                     "default": "intersect"
                 }
             },
-            "required": ["target_layer", "join_layer"]
+            "required": ["target_layer", "join_layer"],
+            "action_input_examples": [
+                {"function_name": "spatial_join", "target_layer": "Hospitals", "join_layer": "Zip_Codes", "join_operation": "within"}
+            ]
         },
         
         "clip_layer": {
@@ -198,7 +225,10 @@ class FunctionDeclaration:
                     "description": "The layer defining the clip boundary"
                 }
             },
-            "required": ["input_layer", "clip_layer"]
+            "required": ["input_layer", "clip_layer"],
+            "action_input_examples": [
+                {"function_name": "clip_layer", "input_layer": "Roads", "clip_layer": "City_Boundary"}
+            ]
         },
         
         "calculate_distance": {
@@ -222,21 +252,30 @@ class FunctionDeclaration:
                     "default": "meters"
                 }
             },
-            "required": ["point1", "point2"]
+            "required": ["point1", "point2"],
+            "action_input_examples": [
+                {"function_name": "calculate_distance", "point1": [-74.0060, 40.7128], "point2": [-118.2437, 34.0522], "units": "kilometers"}
+            ]
         },
         
         "get_current_project_path": {
             "name": "get_current_project_path",
             "description": "Get the file path of the current ArcGIS Pro project (.aprx file).",
             "parameters": {},
-            "required": []
+            "required": [],
+            "action_input_examples": [
+                {"function_name": "get_current_project_path"}
+            ]
         },
         
         "get_default_db_path": {
             "name": "get_default_db_path", 
             "description": "Get the path to the default geodatabase for the current ArcGIS Pro project.",
             "parameters": {},
-            "required": []
+            "required": [],
+            "action_input_examples": [
+                {"function_name": "get_default_db_path"}
+            ]
         },
         
         "get_field_definitions": {
@@ -248,7 +287,10 @@ class FunctionDeclaration:
                     "description": "The name of the layer to examine"
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "get_field_definitions", "layer_name": "Buildings"}
+            ]
         },
         
         "get_layer_type": {
@@ -260,7 +302,10 @@ class FunctionDeclaration:
                     "description": "The name of the layer to examine"
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "get_layer_type", "layer_name": "Elevation"}
+            ]
         },
         
         "get_list_of_layer_fields": {
@@ -272,7 +317,10 @@ class FunctionDeclaration:
                     "description": "The name of the layer to list fields from"
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "get_list_of_layer_fields", "layer_name": "Land_Use"}
+            ]
         },
         
         "get_data_source_info": {
@@ -284,7 +332,10 @@ class FunctionDeclaration:
                     "description": "The name of the layer to examine"
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "get_data_source_info", "layer_name": "Water_Mains"}
+            ]
         },
         
         "create_nearest_neighbor_layer": {
@@ -301,7 +352,10 @@ class FunctionDeclaration:
                     "default": "OBJECTID"
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "create_nearest_neighbor_layer", "layer_name": "Fire_Stations"}
+            ]
         },
         
         "get_unique_values_count": {
@@ -317,7 +371,10 @@ class FunctionDeclaration:
                     "description": "The name of the field to analyze"
                 }
             },
-            "required": ["layer_name", "field_name"]
+            "required": ["layer_name", "field_name"],
+            "action_input_examples": [
+                {"function_name": "get_unique_values_count", "layer_name": "Parcels", "field_name": "Zoning_Class"}
+            ]
         },
         
         "calculate_empty_values": {
@@ -333,21 +390,30 @@ class FunctionDeclaration:
                     "description": "The name of the field to analyze"
                 }
             },
-            "required": ["layer_name", "field_name"]
+            "required": ["layer_name", "field_name"],
+            "action_input_examples": [
+                {"function_name": "calculate_empty_values", "layer_name": "Addresses", "field_name": "Street_Name"}
+            ]
         },
         
         "get_map_layers_info": {
             "name": "get_map_layers_info",
             "description": "Get comprehensive information about all layers in the current ArcGIS Pro map including names, types, visibility, and data sources.",
             "parameters": {},
-            "required": []
+            "required": [],
+            "action_input_examples": [
+                {"function_name": "get_map_layers_info"}
+            ]
         },
         
         "get_map_tables_info": {
             "name": "get_map_tables_info",
             "description": "Get information about all standalone tables in the current ArcGIS Pro map.",
             "parameters": {},
-            "required": []
+            "required": [],
+            "action_input_examples": [
+                {"function_name": "get_map_tables_info"}
+            ]
         },
         
         "get_values_frequency": {
@@ -363,7 +429,10 @@ class FunctionDeclaration:
                     "description": "The name of the field to analyze"
                 }
             },
-            "required": ["layer_name", "field_name"]
+            "required": ["layer_name", "field_name"],
+            "action_input_examples": [
+                {"function_name": "get_values_frequency", "layer_name": "Crime_Incidents", "field_name": "Crime_Type"}
+            ]
         },
         
         "get_value_frequency": {
@@ -383,7 +452,10 @@ class FunctionDeclaration:
                     "description": "The specific value to count"
                 }
             },
-            "required": ["layer_name", "field_name", "lookup_value"]
+            "required": ["layer_name", "field_name", "lookup_value"],
+            "action_input_examples": [
+                {"function_name": "get_value_frequency", "layer_name": "Crime_Incidents", "field_name": "Crime_Type", "lookup_value": "Burglary"}
+            ]
         },
         
         "get_coordinate_system": {
@@ -395,7 +467,10 @@ class FunctionDeclaration:
                     "description": "The name of the layer to examine"
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "get_coordinate_system", "layer_name": "World_Cities"}
+            ]
         },
         
         "clear_selection": {
@@ -407,7 +482,10 @@ class FunctionDeclaration:
                     "description": "The name of the layer to clear selection from."
                 }
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "clear_selection", "layer_name": "Cities"}
+            ]
         },
 
         "get_field_domain_values": {
@@ -423,7 +501,10 @@ class FunctionDeclaration:
                     "description": "The name of the field with domain values"
                 }
             },
-            "required": ["layer_name", "field_name"]
+            "required": ["layer_name", "field_name"],
+            "action_input_examples": [
+                {"function_name": "get_field_domain_values", "layer_name": "Pipes", "field_name": "Material"}
+            ]
         },
         
         "calculate_new_field": {
@@ -449,7 +530,10 @@ class FunctionDeclaration:
                     "default": "TEXT"
                 }
             },
-            "required": ["layer_name", "new_field_name", "field_value"]
+            "required": ["layer_name", "new_field_name", "field_value"],
+            "action_input_examples": [
+                {"function_name": "calculate_new_field", "layer_name": "Districts", "new_field_name": "Population_Density", "field_value": "!POPULATION! / !AREA_SQKM!", "field_type": "DOUBLE"}
+            ]
         },
 
         # New Dashboard API
@@ -656,7 +740,10 @@ class FunctionDeclaration:
                     "description": "The output raster file."
                 }
             },
-            "required": ["expression", "output_raster"]
+            "required": ["expression", "output_raster"],
+            "action_input_examples": [
+                {"function_name": "raster_calculator", "expression": "Raster('DEM') > 1500", "output_raster": "High_Elevation"}
+            ]
         },
         "reclassify": {
             "name": "reclassify",
@@ -679,7 +766,10 @@ class FunctionDeclaration:
                     "description": "The output reclassified raster."
                 }
             },
-            "required": ["in_raster", "reclass_field", "remap", "out_raster"]
+            "required": ["in_raster", "reclass_field", "remap", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "reclassify", "in_raster": "Land_Cover", "reclass_field": "Value", "remap": "1 1;2 1;3 2", "out_raster": "Reclassified_Land_Cover"}
+            ]
         },
         "zonal_statistics_as_table": {
             "name": "zonal_statistics_as_table",
@@ -708,7 +798,10 @@ class FunctionDeclaration:
                     "default": "MEAN"
                 }
             },
-            "required": ["in_zone_data", "zone_field", "in_value_raster", "out_table"]
+            "required": ["in_zone_data", "zone_field", "in_value_raster", "out_table"],
+            "action_input_examples": [
+                {"function_name": "zonal_statistics_as_table", "in_zone_data": "Watersheds", "zone_field": "Watershed_ID", "in_value_raster": "Precipitation", "out_table": "Precip_Stats", "statistics_type": "MEAN"}
+            ]
         },
         "slope": {
             "name": "slope",
@@ -729,7 +822,10 @@ class FunctionDeclaration:
                     "default": "DEGREE"
                 }
             },
-            "required": ["in_raster", "out_raster"]
+            "required": ["in_raster", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "slope", "in_raster": "DEM", "out_raster": "Slope_Map", "output_measurement": "PERCENT_RISE"}
+            ]
         },
         "aspect": {
             "name": "aspect",
@@ -744,7 +840,10 @@ class FunctionDeclaration:
                     "description": "The output aspect raster."
                 }
             },
-            "required": ["in_raster", "out_raster"]
+            "required": ["in_raster", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "aspect", "in_raster": "DEM", "out_raster": "Aspect_Map"}
+            ]
         },
         "hillshade": {
             "name": "hillshade",
@@ -769,7 +868,10 @@ class FunctionDeclaration:
                     "default": 45
                 }
             },
-            "required": ["in_raster", "out_raster"]
+            "required": ["in_raster", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "hillshade", "in_raster": "DEM", "out_raster": "Hillshade_Effect", "azimuth": 270, "altitude": 60}
+            ]
         },
         "extract_by_mask": {
             "name": "extract_by_mask",
@@ -788,7 +890,10 @@ class FunctionDeclaration:
                     "description": "The output raster."
                 }
             },
-            "required": ["in_raster", "in_mask_data", "out_raster"]
+            "required": ["in_raster", "in_mask_data", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "extract_by_mask", "in_raster": "Global_Population", "in_mask_data": "Country_Boundary", "out_raster": "Country_Population"}
+            ]
         },
         "clip_raster": {
             "name": "clip_raster",
@@ -813,7 +918,10 @@ class FunctionDeclaration:
                     "default": "ClippingGeometry"
                 }
             },
-            "required": ["in_raster", "out_raster", "in_template_dataset"]
+            "required": ["in_raster", "out_raster", "in_template_dataset"],
+            "action_input_examples": [
+                {"function_name": "clip_raster", "in_raster": "State_Vegetation", "out_raster": "County_Vegetation", "in_template_dataset": "County_Boundary"}
+            ]
         },
         "resample": {
             "name": "resample",
@@ -838,7 +946,10 @@ class FunctionDeclaration:
                     "default": "NEAREST"
                 }
             },
-            "required": ["in_raster", "out_raster", "cell_size"]
+            "required": ["in_raster", "out_raster", "cell_size"],
+            "action_input_examples": [
+                {"function_name": "resample", "in_raster": "High_Res_DEM", "out_raster": "Low_Res_DEM", "cell_size": "30 30", "resampling_type": "BILINEAR"}
+            ]
         },
         "get_raster_properties": {
             "name": "get_raster_properties",
@@ -849,7 +960,10 @@ class FunctionDeclaration:
                     "description": "The input raster."
                 }
             },
-            "required": ["in_raster"]
+            "required": ["in_raster"],
+            "action_input_examples": [
+                {"function_name": "get_raster_properties", "in_raster": "DEM"}
+            ]
         },
         "raster_to_point": {
             "name": "raster_to_point",
@@ -858,7 +972,10 @@ class FunctionDeclaration:
                 "in_raster": {"type": "string", "description": "The input raster."},
                 "out_point_features": {"type": "string", "description": "The output point feature class."}
             },
-            "required": ["in_raster", "out_point_features"]
+            "required": ["in_raster", "out_point_features"],
+            "action_input_examples": [
+                {"function_name": "raster_to_point", "in_raster": "Temperature_Grid", "out_point_features": "Temp_Readings"}
+            ]
         },
         "raster_to_polygon": {
             "name": "raster_to_polygon",
@@ -867,7 +984,10 @@ class FunctionDeclaration:
                 "in_raster": {"type": "string", "description": "The input raster."},
                 "out_polygon_features": {"type": "string", "description": "The output polygon feature class."}
             },
-            "required": ["in_raster", "out_polygon_features"]
+            "required": ["in_raster", "out_polygon_features"],
+            "action_input_examples": [
+                {"function_name": "raster_to_polygon", "in_raster": "Land_Use_Grid", "out_polygon_features": "Land_Use_Polygons"}
+            ]
         },
         "raster_to_polyline": {
             "name": "raster_to_polyline",
@@ -876,7 +996,10 @@ class FunctionDeclaration:
                 "in_raster": {"type": "string", "description": "The input raster."},
                 "out_polyline_features": {"type": "string", "description": "The output polyline feature class."}
             },
-            "required": ["in_raster", "out_polyline_features"]
+            "required": ["in_raster", "out_polyline_features"],
+            "action_input_examples": [
+                {"function_name": "raster_to_polyline", "in_raster": "Stream_Grid", "out_polyline_features": "Stream_Lines"}
+            ]
         },
         "feature_to_raster": {
             "name": "feature_to_raster",
@@ -886,7 +1009,10 @@ class FunctionDeclaration:
                 "field": {"type": "string", "description": "The field used to assign values to the output raster."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_features", "field", "out_raster"]
+            "required": ["in_features", "field", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "feature_to_raster", "in_features": "Weather_Stations", "field": "Temperature", "out_raster": "Temp_Raster"}
+            ]
         },
         "polygon_to_raster": {
             "name": "polygon_to_raster",
@@ -896,7 +1022,10 @@ class FunctionDeclaration:
                 "value_field": {"type": "string", "description": "The field used to assign values to the output raster."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_features", "value_field", "out_raster"]
+            "required": ["in_features", "value_field", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "polygon_to_raster", "in_features": "Soil_Types", "value_field": "Soil_Code", "out_raster": "Soil_Grid"}
+            ]
         },
         "point_to_raster": {
             "name": "point_to_raster",
@@ -906,7 +1035,10 @@ class FunctionDeclaration:
                 "value_field": {"type": "string", "description": "The field used to assign values to the output raster."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_features", "value_field", "out_raster"]
+            "required": ["in_features", "value_field", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "point_to_raster", "in_features": "Elevation_Points", "value_field": "Elevation", "out_raster": "DEM_from_points"}
+            ]
         },
         "idw_interpolation": {
             "name": "idw_interpolation",
@@ -916,7 +1048,10 @@ class FunctionDeclaration:
                 "z_field": {"type": "string", "description": "The field that holds the height or magnitude value for each point."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_point_features", "z_field", "out_raster"]
+            "required": ["in_point_features", "z_field", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "idw_interpolation", "in_point_features": "Rainfall_Gauges", "z_field": "Rainfall_mm", "out_raster": "Rainfall_Surface"}
+            ]
         },
         "kriging_interpolation": {
             "name": "kriging_interpolation",
@@ -926,7 +1061,10 @@ class FunctionDeclaration:
                 "z_field": {"type": "string", "description": "The field that holds the height or magnitude value for each point."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_point_features", "z_field", "out_raster"]
+            "required": ["in_point_features", "z_field", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "kriging_interpolation", "in_point_features": "Ozone_Monitors", "z_field": "Ozone_Level", "out_raster": "Ozone_Surface"}
+            ]
         },
         "spline_interpolation": {
             "name": "spline_interpolation",
@@ -936,7 +1074,10 @@ class FunctionDeclaration:
                 "z_field": {"type": "string", "description": "The field that holds the height or magnitude value for each point."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_point_features", "z_field", "out_raster"]
+            "required": ["in_point_features", "z_field", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "spline_interpolation", "in_point_features": "Water_Table_Wells", "z_field": "Water_Depth", "out_raster": "Water_Table_Surface"}
+            ]
         },
         "natural_neighbor": {
             "name": "natural_neighbor",
@@ -946,7 +1087,10 @@ class FunctionDeclaration:
                 "z_field": {"type": "string", "description": "The field that holds the height or magnitude value for each point."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_point_features", "z_field", "out_raster"]
+            "required": ["in_point_features", "z_field", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "natural_neighbor", "in_point_features": "Air_Quality_Sensors", "z_field": "PM2_5", "out_raster": "PM25_Surface"}
+            ]
         },
         "euclidean_distance": {
             "name": "euclidean_distance",
@@ -955,7 +1099,10 @@ class FunctionDeclaration:
                 "in_source_data": {"type": "string", "description": "The input source data."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_source_data", "out_raster"]
+            "required": ["in_source_data", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "euclidean_distance", "in_source_data": "Hospitals", "out_raster": "Distance_to_Hospitals"}
+            ]
         },
         "euclidean_allocation": {
             "name": "euclidean_allocation",
@@ -964,7 +1111,10 @@ class FunctionDeclaration:
                 "in_source_data": {"type": "string", "description": "The input source data."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_source_data", "out_raster"]
+            "required": ["in_source_data", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "euclidean_allocation", "in_source_data": "Fire_Stations", "out_raster": "Fire_Station_Zones"}
+            ]
         },
         "euclidean_direction": {
             "name": "euclidean_direction",
@@ -973,7 +1123,10 @@ class FunctionDeclaration:
                 "in_source_data": {"type": "string", "description": "The input source data."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_source_data", "out_raster"]
+            "required": ["in_source_data", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "euclidean_direction", "in_source_data": "Cell_Towers", "out_raster": "Direction_to_Towers"}
+            ]
         },
         "cost_distance": {
             "name": "cost_distance",
@@ -983,7 +1136,10 @@ class FunctionDeclaration:
                 "in_cost_raster": {"type": "string", "description": "A raster defining the impedance or cost to move planimetrically through each cell."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_source_data", "in_cost_raster", "out_raster"]
+            "required": ["in_source_data", "in_cost_raster", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "cost_distance", "in_source_data": "Trailheads", "in_cost_raster": "Slope_Cost", "out_raster": "Hiking_Cost_Distance"}
+            ]
         },
         "cost_allocation": {
             "name": "cost_allocation",
@@ -993,7 +1149,10 @@ class FunctionDeclaration:
                 "in_cost_raster": {"type": "string", "description": "A raster defining the impedance or cost to move planimetrically through each cell."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_source_data", "in_cost_raster", "out_raster"]
+            "required": ["in_source_data", "in_cost_raster", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "cost_allocation", "in_source_data": "Distribution_Centers", "in_cost_raster": "Travel_Time", "out_raster": "Delivery_Zones"}
+            ]
         },
         "cost_path": {
             "name": "cost_path",
@@ -1004,7 +1163,10 @@ class FunctionDeclaration:
                 "in_cost_backlink_raster": {"type": "string", "description": "The cost backlink raster to be used to determine the path."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_destination_data", "in_cost_distance_raster", "in_cost_backlink_raster", "out_raster"]
+            "required": ["in_destination_data", "in_cost_distance_raster", "in_cost_backlink_raster", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "cost_path", "in_destination_data": "Campsite", "in_cost_distance_raster": "Hiking_Cost_Distance", "in_cost_backlink_raster": "Hiking_Cost_Backlink", "out_raster": "Optimal_Trail"}
+            ]
         },
         "weighted_overlay": {
             "name": "weighted_overlay",
@@ -1013,7 +1175,10 @@ class FunctionDeclaration:
                 "overlay_table": {"type": "string", "description": "The weighted overlay table."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["overlay_table", "out_raster"]
+            "required": ["overlay_table", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "weighted_overlay", "overlay_table": "('Slope' 0.5; 'Aspect' 0.2; 'Land_Use' 0.3)", "out_raster": "Suitability_Map"}
+            ]
         },
         "weighted_sum": {
             "name": "weighted_sum",
@@ -1022,7 +1187,10 @@ class FunctionDeclaration:
                 "in_rasters": {"type": "string", "description": "The weighted sum table."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_rasters", "out_raster"]
+            "required": ["in_rasters", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "weighted_sum", "in_rasters": "('Slope' 'Weight_Slope'; 'Aspect' 'Weight_Aspect')", "out_raster": "Habitat_Score"}
+            ]
         },
         "extract_by_attribute": {
             "name": "extract_by_attribute",
@@ -1032,7 +1200,10 @@ class FunctionDeclaration:
                 "where_clause": {"type": "string", "description": "A logical expression to select a subset of raster cells."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_raster", "where_clause", "out_raster"]
+            "required": ["in_raster", "where_clause", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "extract_by_attribute", "in_raster": "Elevation", "where_clause": "Value > 1000", "out_raster": "High_Elevation_Areas"}
+            ]
         },
         "mosaic_to_new_raster": {
             "name": "mosaic_to_new_raster",
@@ -1044,7 +1215,10 @@ class FunctionDeclaration:
                 "pixel_type": {"type": "string", "description": "The pixel type of the output raster."},
                 "number_of_bands": {"type": "integer", "description": "The number of bands of the output raster."}
             },
-            "required": ["input_rasters", "output_location", "raster_dataset_name_with_extension", "pixel_type", "number_of_bands"]
+            "required": ["input_rasters", "output_location", "raster_dataset_name_with_extension", "pixel_type", "number_of_bands"],
+            "action_input_examples": [
+                {"function_name": "mosaic_to_new_raster", "input_rasters": ["Tile1.tif", "Tile2.tif"], "output_location": "/path/to/output", "raster_dataset_name_with_extension": "Mosaic.tif", "pixel_type": "8_BIT_UNSIGNED", "number_of_bands": 3}
+            ]
         },
         "combine_rasters": {
             "name": "combine_rasters",
@@ -1053,7 +1227,10 @@ class FunctionDeclaration:
                 "in_rasters": {"type": "array", "items": {"type": "string"}, "description": "A list of input rasters."},
                 "out_raster": {"type": "string", "description": "The output raster."}
             },
-            "required": ["in_rasters", "out_raster"]
+            "required": ["in_rasters", "out_raster"],
+            "action_input_examples": [
+                {"function_name": "combine_rasters", "in_rasters": ["Slope_Class", "Aspect_Class"], "out_raster": "Combined_Classes"}
+            ]
         },
         "invert_selection": {
             "name": "invert_selection",
@@ -1061,7 +1238,10 @@ class FunctionDeclaration:
             "parameters": {
                 "layer_name": {"type": "string", "description": "The name of the layer."}
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "invert_selection", "layer_name": "Parcels_For_Sale"}
+            ]
         }
     }
     
