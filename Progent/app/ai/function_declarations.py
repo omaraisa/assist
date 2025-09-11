@@ -462,19 +462,29 @@ class FunctionDeclaration:
                 "theme": {"type": "string", "description": "Visual theme for the dashboard.", "enum": ["default", "dark", "light"], "default": "default"},
                 "field_insights": {"type": "object", "description": "Optional. Pre-computed field insights. If not provided, will be automatically fetched from the layer in ArcGIS Pro.", "default": None}
             },
-            "required": ["layer_name"]
+            "required": ["layer_name"],
+            "action_input_examples": [
+                {"function_name": "generate_dashboard_for_target_layer", "layer_name": "Mosques", "analysis_type": "overview"},
+                {"function_name": "generate_dashboard_for_target_layer", "layer_name": "Population_Data", "analysis_type": "detailed", "theme": "dark"}
+            ]
         },
         "get_current_dashboard_layout": {
             "name": "get_current_dashboard_layout",
             "description": "Retrieves the layout of the current dashboard.",
             "parameters": {},
-            "required": []
+            "required": [],
+            "action_input_examples": [
+                {"function_name": "get_current_dashboard_layout"}
+            ]
         },
         "get_current_dashboard_charts": {
             "name": "get_current_dashboard_charts",
             "description": "Retrieves the list of chart configurations from the current dashboard.",
             "parameters": {},
-            "required": []
+            "required": [],
+            "action_input_examples": [
+                {"function_name": "get_current_dashboard_charts"}
+            ]
         },
         "get_dashboard_field_detailed_description": {
             "name": "get_dashboard_field_detailed_description",
@@ -482,7 +492,11 @@ class FunctionDeclaration:
             "parameters": {
                 "field_name": {"type": "string", "description": "Optional. The name of a specific field to get information for.", "default": None}
             },
-            "required": []
+            "required": [],
+            "action_input_examples": [
+                {"function_name": "get_dashboard_field_detailed_description"},
+                {"function_name": "get_dashboard_field_detailed_description", "field_name": "Population"}
+            ]
         },
         "update_dashboard_charts": {
             "name": "update_dashboard_charts",
@@ -526,7 +540,11 @@ class FunctionDeclaration:
                     }
                 }
             },
-            "required": ["charts_data"]
+            "required": ["charts_data"],
+            "action_input_examples": [
+                {"function_name": "update_dashboard_charts", "charts_data": [{"index": 0, "chart": {"chart_type": "bar", "title": "Population by District", "fields": ["District", "Population"]}}]},
+                {"function_name": "update_dashboard_charts", "charts_data": [{"index": 1, "chart": {"chart_type": "pie", "title": "Crime Rate Distribution", "fields": ["Crime_Rate_Per_1000"], "theme": "dark"}}]}
+            ]
         },
         "delete_charts_from_dashboard": {
             "name": "delete_charts_from_dashboard",
@@ -538,7 +556,11 @@ class FunctionDeclaration:
                     "items": {"type": "integer"}
                 }
             },
-            "required": ["indices"]
+            "required": ["indices"],
+            "action_input_examples": [
+                {"function_name": "delete_charts_from_dashboard", "indices": [0, 2]},
+                {"function_name": "delete_charts_from_dashboard", "indices": [1]}
+            ]
         },
         "update_dashboard_layout": {
             "name": "update_dashboard_layout",
@@ -563,16 +585,18 @@ class FunctionDeclaration:
                     }
                 }
         },
+            "required": ["layout_updates"],
+            "action_input_examples": [
+                {"function_name": "update_dashboard_layout", "layout_updates": {"grid_template_columns": "1fr 1fr 1fr"}},
+                {"function_name": "update_dashboard_layout", "layout_updates": {"items": [{"index": 0, "grid_area": "span 2 / span 1"}]}}
+            ]
         },
       
         "add_chart_to_dashboard": {
             "name": "add_chart_to_dashboard",
             "description": "Adds a new chart to the existing dashboard with fresh data generation. Use this for complex charts requiring aggregations or calculations in ArcGIS Pro. The function computes data on the fly and appends the chart to the current dashboard without replacing it.",
             "parameters": {
-                "layer_name": {
-                    "type": "string",
-                    "description": "The name of the layer to generate chart data from."
-                },
+                "layer_name": {"type": "string", "description": "The name of the layer to create the chart from."},
                 "chart_type": {
                     "type": "string",
                     "description": "The type of chart to create.",
@@ -602,7 +626,7 @@ class FunctionDeclaration:
                 },
                 "theme": {
                     "type": "string",
-                    "description": "Visual theme for the chart.",
+                    "description": "Visual theme for the chart, options: default, dark, light.",
                     "enum": ["default", "dark", "light"],
                     "default": "default"
                 },
@@ -612,7 +636,11 @@ class FunctionDeclaration:
                     "default": None
                 }
             },
-            "required": ["layer_name", "chart_type", "fields"]
+            "required": ["layer_name", "chart_type", "fields"],
+            "action_input_examples": [
+                {"function_name": "add_chart_to_dashboard", "layer_name": "Mosques", "chart_type": "bar", "fields": ["Development_Stage"], "title": "Mosque Development Stages"},
+                {"function_name": "add_chart_to_dashboard", "layer_name": "Population_Data", "chart_type": "pie", "fields": ["District", "Population"], "category_field": "District", "aggregation": "sum", "title": "Population by District"}
+            ]
         },
       
         "raster_calculator": {

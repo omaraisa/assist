@@ -177,6 +177,25 @@ class ExecuteSpatialFunctionTool(BaseTool):
             if isinstance(parameters, dict) and "arguments" in parameters and len(parameters) == 1 and isinstance(parameters["arguments"], dict):
                 parameters = parameters["arguments"]
 
+            # For add_chart_to_dashboard, overwrite layer_name with the one from dashboard JSON
+            if function_name == "add_chart_to_dashboard":
+                try:
+                    import os
+                    dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
+                    if os.path.exists(dashboard_path):
+                        with open(dashboard_path, 'r', encoding='utf-8') as f:
+                            dashboard_data = json.load(f)
+                        parameters["layer_name"] = dashboard_data.get("layer_name", parameters.get("layer_name", "Unknown Layer"))
+                        
+                        # Validate field names
+                        fields = parameters.get("fields", [])
+                        if fields:
+                            validation = validate_field_names(fields)
+                            if not validation["valid"]:
+                                return {"error": validation["message"]}
+                except Exception as e:
+                    logger.warning(f"Failed to load dashboard JSON for layer_name override: {e}")
+
             session_id = str(uuid.uuid4())
             payload = {
                 "type": "execute_function",
@@ -321,7 +340,98 @@ class ExecuteSpatialFunctionTool(BaseTool):
                 result = get_dashboard_field_detailed_description()
             elif function_name == "update_dashboard_charts":
                 charts_data = parameters.get("charts_data", [])
+                
+                # Validate field names in charts_data
+                all_fields = []
+                for chart_update in charts_data:
+                    chart = chart_update.get("chart", {})
+                    fields = chart.get("fields", [])
+                    all_fields.extend(fields)
+                
+                if all_fields:
+                    validation = validate_field_names(all_fields)
+                    if not validation["valid"]:
+                        return {"success": False, "error": validation["message"]}
+                
                 result = update_dashboard_charts(charts_data)
+                
+                # Handle websocket calls for chart additions if required
+                if result.get("success") and result.get("requires_websocket_calls"):
+                    charts_to_add = result.get("charts_to_add", [])
+                    successful_additions = 0
+                    addition_errors = []
+                    
+                    arcgis_client = self.websocket_manager.get_arcgis_client()
+                    if not arcgis_client:
+                        result = {"success": False, "error": "ArcGIS Pro client not connected for chart additions."}
+                    else:
+                        # Process each chart addition via websocket - simple approach
+                        for i, chart_params in enumerate(charts_to_add):
+                            try:
+                                session_id = str(uuid.uuid4())
+                                payload = {
+                                    "type": "execute_function",
+                                    "function_name": "add_chart_to_dashboard",
+                                    "parameters": chart_params,
+                                    "session_id": session_id,
+                                    "source_client": self.client_id
+                                }
+                                
+                                asyncio.run(self.websocket_manager.send_to_client(arcgis_client, payload))
+                                
+                                # Wait for response
+                                import time
+                                max_wait_time = 120
+                                check_interval = 0.2
+                                elapsed_time = 0
+                                
+                                while elapsed_time < max_wait_time:
+                                    if self.websocket_manager.has_function_result(session_id):
+                                        addition_result = self.websocket_manager.get_function_result(session_id)
+                                        if addition_result:
+                                            # Check for success in ArcGIS Pro response structure
+                                            # ArcGIS Pro returns: {"status": "success", "data": {"success": true, ...}}
+                                            response_status = addition_result.get("status")
+                                            response_data = addition_result.get("data", {})
+                                            
+                                            if response_status == "success" or response_data.get("success"):
+                                                successful_additions += 1
+                                                break
+                                            else:
+                                                # Extract error message from ArcGIS Pro response
+                                                error_msg = response_data.get("error", "Unknown error")
+                                                addition_errors.append(f"Chart {i+1}: {error_msg}")
+                                                break
+                                        else:
+                                            addition_errors.append(f"Chart {i+1}: No response received")
+                                            break
+                                    time.sleep(check_interval)
+                                    elapsed_time += check_interval
+                                
+                                if elapsed_time >= max_wait_time:
+                                    addition_errors.append(f"Chart {i+1}: Timeout waiting for response")
+                                    
+                            except Exception as e:
+                                addition_errors.append(f"Chart {i+1}: {str(e)}")
+                        
+                        # Update result based on websocket call outcomes
+                        if successful_additions == len(charts_to_add):
+                            result = {
+                                "success": True,
+                                "message": f"Successfully updated {successful_additions} charts in dashboard",
+                                "is_dashboard_update": True
+                            }
+                        elif successful_additions > 0:
+                            result = {
+                                "success": True,
+                                "message": f"Partially successful: {successful_additions}/{len(charts_to_add)} charts updated. Errors: {'; '.join(addition_errors)}",
+                                "is_dashboard_update": True
+                            }
+                        else:
+                            result = {
+                                "success": False,
+                                "error": f"Failed to add any charts. Errors: {'; '.join(addition_errors)}"
+                            }
             elif function_name == "delete_charts_from_dashboard":
                 indices = parameters.get("indices", [])
                 result = delete_charts_from_dashboard(indices)
@@ -400,6 +510,39 @@ from .config import settings
 from .ai.function_declarations import FunctionDeclaration
 
 logger = logging.getLogger(__name__)
+
+def validate_field_names(fields_list):
+    """
+    Validate field names against the dashboard JSON field_insights.
+    Returns a dict with 'valid': bool and 'message': str
+    """
+    try:
+        import os
+        dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
+        if not os.path.exists(dashboard_path):
+            return {"valid": False, "message": "Dashboard file not found"}
+        
+        with open(dashboard_path, 'r', encoding='utf-8') as f:
+            dashboard_data = json.load(f)
+        
+        field_insights = dashboard_data.get("field_insights", {})
+        valid_fields = list(field_insights.keys())
+        
+        invalid_fields = []
+        for field in fields_list:
+            if field not in valid_fields:
+                invalid_fields.append(field)
+        
+        if not invalid_fields:
+            return {"valid": True, "message": "All field names are valid"}
+        else:
+            return {
+                "valid": False, 
+                "message": f"Invalid field names: {', '.join(invalid_fields)}. Please select from: {', '.join(valid_fields)}"
+            }
+            
+    except Exception as e:
+        return {"valid": False, "message": f"Error validating fields: {str(e)}"}
 
 def _get_declarations_stateless(function_ids_str: str) -> str:
     """
@@ -482,6 +625,14 @@ def _get_declarations_stateless(function_ids_str: str) -> str:
                 is_required = "required" if param_name in required_params else "optional"
                 default_info = f", default: {param_details['default']}" if 'default' in param_details else ""
                 output.append(f"    - {param_name} ({param_type}, {is_required}{default_info}): {param_details.get('description', '')}")
+            
+            # Add action input examples if they exist
+            examples = details.get("action_input_examples", [])
+            if examples:
+                output.append("  Action Input Examples:")
+                for i, example in enumerate(examples, 1):
+                    output.append(f"    Example {i}: {json.dumps(example)}")
+        
         return "\n".join(output)
 
     except Exception as e:
@@ -741,7 +892,7 @@ Assistant:"""
                     verbose=True,
                     handle_parsing_errors=True,
                     callbacks=[self.callback_handler],
-                    max_iterations=5
+                    max_iterations=20
                 )
 
                 # Simplify ArcGIS state for the prompt

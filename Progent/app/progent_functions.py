@@ -234,6 +234,57 @@ def _get_timestamp() -> str:
     return datetime.now().isoformat()
 
 
+def move_last_chart_to_position(target_position: int) -> Dict:
+    """Move the last chart in the dashboard to the specified position"""
+    try:
+        dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
+        if not os.path.exists(dashboard_path):
+            return {"success": False, "error": "Dashboard file not found"}
+        
+        with open(dashboard_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        if "charts" not in data or len(data["charts"]) == 0:
+            return {"success": False, "error": "No charts found in dashboard"}
+        
+        charts = data["charts"]
+        last_index = len(charts) - 1
+        
+        # Validate target position
+        if target_position < 0 or target_position >= len(charts):
+            return {"success": False, "error": f"Target position {target_position} is out of range"}
+        
+        # If already at target position, nothing to do
+        if target_position == last_index:
+            return {"success": True, "message": "Chart already at target position"}
+        
+        # Move the last chart to target position
+        last_chart = charts.pop()  # Remove last chart
+        charts.insert(target_position, last_chart)  # Insert at target position
+        
+        # Also move the corresponding layout item if it exists
+        if "layout" in data and "items" in data["layout"] and len(data["layout"]["items"]) > last_index:
+            layout_items = data["layout"]["items"]
+            last_item = layout_items.pop()  # Remove last item
+            layout_items.insert(target_position, last_item)  # Insert at target position
+        
+        # Update timestamp
+        data["generation_timestamp"] = _get_timestamp()
+        
+        # Save updated data
+        with open(dashboard_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        
+        return {
+            "success": True,
+            "message": f"Moved chart from position {last_index} to position {target_position}",
+            "is_dashboard_update": True
+        }
+        
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
 def get_current_dashboard_layout() -> Dict:
     """Get current dashboard layout from progent_dashboard.json"""
     try:
@@ -244,10 +295,15 @@ def get_current_dashboard_layout() -> Dict:
         with open(dashboard_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
+        charts = data.get("charts", [])
+        chart_summary = []
+        for i, chart in enumerate(charts):
+            chart_summary.append(f"[{i}] {chart.get('title', 'Untitled')} ({chart.get('chart_type', 'unknown')})")
+        
         return {
             "success": True,
-            "layout": data.get("layout", {}),
-            "charts": data.get("charts", [])
+            "grid_columns": data.get("layout", {}).get("grid_template_columns", "1fr 1fr 1fr"),
+            "charts": chart_summary
         }
         
     except Exception as e:
@@ -312,106 +368,74 @@ def get_dashboard_field_detailed_description() -> Dict:
 
 
 def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
-    """Update specific dashboard charts by index in progent_dashboard.json"""
+    """
+    Simple proxy function: Delete chart, then add new chart (goes to end).
+    """
     try:
         dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}
-        
+
         with open(dashboard_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        
+
         if "charts" not in data:
-            data["charts"] = []
-        if "layout" not in data:
-            data["layout"] = {"grid_template_columns": "1fr 1fr", "gap": "20px", "items": []}
-        if "items" not in data["layout"]:
-            data["layout"]["items"] = []
-        
-        updated_count = 0
-        
-        # Update specific charts by index
-        for chart_update in charts_data:
-            index = chart_update.get("index")
-            chart = chart_update.get("chart")
-            
-            if index is None or chart is None:
-                continue
-                
-            # Validate index
-            if not isinstance(index, int) or index < 0 or index >= len(data["charts"]):
-                continue
-            
-            # Update the chart at the specified index
-            fields = chart.get("fields", [])
-            chart_type = chart.get("chart_type", "bar")
-            category_field = chart.get("category_field")
-            series = chart.get("series", [])
-            title = chart.get("title")
-            theme = chart.get("theme", data.get("theme", "default"))
-            
-            if fields:
-                # If category_field is not specified, use the first field as category
-                if not category_field:
-                    category_field = fields[0]
-                    series_fields = fields[1:] if len(fields) > 1 else []
-                else:
-                    # If category_field is specified, remove it from series_fields if it's in fields
-                    series_fields = [f for f in fields if f != category_field]
-                
-                # If series is provided, use it instead of deriving from fields
-                if series:
-                    series_fields = [s.get("field") for s in series]
-                
-                # Update the chart
-                chart_config = {
-                    "id": f"chart_{category_field}_{'_'.join(series_fields) if series_fields else ''}",
-                    "field_name": category_field,
-                    "chart_type": chart_type,
-                    "title": title or f"Analysis of {category_field}",
-                    "theme": theme
-                }
-                
-                # Add multi-field support for grouped charts
-                if series_fields and chart_type in ["grouped_bar", "bar", "column"]:
-                    chart_config["category_field"] = category_field
-                    chart_config["series"] = [
-                        {"field": field, "name": field, "aggregation": "sum"} for field in series_fields
-                    ]
-                    chart_config["fields"] = [category_field] + series_fields  # Store all fields with category first
-                    chart_config["aggregation"] = "sum"  # Specify aggregation type
-                
-                data["charts"][index] = chart_config
-                
-                # Update corresponding layout item
-                if index < len(data["layout"]["items"]):
-                    layout_item = {
-                        "id": chart_config["id"],
-                        "chart_type": chart_type,
-                        "field_name": category_field,
-                        "grid_area": f"chart-{index+1}"
-                    }
-                    
-                    # Add fields to layout item for multi-field charts
-                    if series_fields:
-                        layout_item["fields"] = [category_field] + series_fields
-                    
-                    data["layout"]["items"][index] = layout_item
-                
-                updated_count += 1
-        
-        data["generation_timestamp"] = _get_timestamp()
-        
-        # Save updated data
-        with open(dashboard_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
-        
-        return {
-            "success": True,
-            "message": f"Updated {updated_count} charts in dashboard",
-            "is_dashboard_update": True
+            return {"success": False, "error": "No charts found in dashboard"}
+
+        # Only handle the first chart update for simplicity
+        if not charts_data:
+            return {"success": False, "error": "No chart data provided"}
+
+        chart_update = charts_data[0]
+        index = chart_update.get("index")
+        chart = chart_update.get("chart")
+
+        if index is None or chart is None:
+            return {"success": False, "error": "Chart update missing 'index' or 'chart' field"}
+
+        # Validate index
+        if not isinstance(index, int) or index < 0 or index >= len(data["charts"]):
+            return {"success": False, "error": f"Index {index} is out of range (0-{len(data['charts'])-1})"}
+
+        # Step 1: Delete the chart at the specified index
+        delete_result = delete_charts_from_dashboard([index])
+        if not delete_result.get("success"):
+            return {"success": False, "error": f"Failed to delete chart: {delete_result.get('error')}"}
+
+        # Step 2: Prepare parameters for add_chart_to_dashboard
+        add_params = {
+            "layer_name": data.get("layer_name", "Unknown Layer"),
+            "chart_type": chart.get("chart_type", "bar"),
+            "fields": chart.get("fields", []),
+            "title": chart.get("title", "Updated Chart"),
+            "theme": chart.get("theme", "default")
         }
         
+        # Handle field configuration properly
+        fields = chart.get("fields", [])
+        if len(fields) >= 2:
+            # If multiple fields, first is category, second is value field
+            add_params["category_field"] = fields[0]
+            add_params["fields"] = [fields[1]]  # Main field for aggregation
+            add_params["aggregation"] = chart.get("aggregation", "sum")
+        elif len(fields) == 1:
+            # Single field - use as main field
+            add_params["fields"] = fields
+            if chart.get("category_field"):
+                add_params["category_field"] = chart.get("category_field")
+                add_params["aggregation"] = chart.get("aggregation", "sum")
+        
+        # Add optional parameters
+        if chart.get("where_clause"):
+            add_params["where_clause"] = chart.get("where_clause")        # Return parameters for websocket call to add_chart_to_dashboard
+        return {
+            "success": True,
+            "message": f"Chart at index {index} deleted. Ready to add new chart.",
+            "charts_to_add": [add_params],
+            "requires_websocket_calls": True,
+            "is_dashboard_update": False  # Will be true after websocket calls complete
+        }
+
     except Exception as e:
         return {"success": False, "error": str(e)}
 
@@ -419,7 +443,7 @@ def update_dashboard_charts(charts_data: List[Dict]) -> Dict:
 def delete_charts_from_dashboard(indices: list) -> dict:
     """Delete charts from dashboard by their indices"""
     try:
-        dashboard_path = "./Progent/progent_dashboard.json"
+        dashboard_path = os.path.join(os.path.dirname(__file__), '..', 'progent_dashboard.json')
         
         if not os.path.exists(dashboard_path):
             return {"success": False, "error": "Dashboard file not found"}

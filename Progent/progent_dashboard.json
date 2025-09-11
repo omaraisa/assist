@@ -9,89 +9,32 @@
         "gap": "20px",
         "items": [
             {
-                "id": "chart_Public_Transport_Availability",
-                "chart_type": "pie",
-                "field_name": "Public_Transport_Availability",
-                "grid_area": "chart-1"
-            },
-            {
-                "id": "chart_Development_Stage",
-                "chart_type": "pie",
-                "field_name": "Development_Stage",
-                "grid_area": "chart-2"
-            },
-            {
-                "id": "chart_Number_of_Schools",
-                "chart_type": "histogram",
-                "field_name": "Number_of_Schools",
-                "grid_area": "chart-3"
-            },
-            {
                 "id": "chart_Number_of_Mosques",
                 "chart_type": "histogram",
                 "field_name": "Number_of_Mosques",
                 "grid_area": "chart-4"
             },
             {
-                "id": "chart_Crime_Rate_Per_1000",
-                "chart_type": "histogram",
-                "field_name": "Crime_Rate_Per_1000",
-                "grid_area": "chart-5"
+                "id": "chart_20250911073331",
+                "chart_type": "bar",
+                "field_name": "Population",
+                "grid_area": "chart-chart_20250911073331"
             },
             {
-                "id": "chart_Number_of_Hospitals",
+                "id": "chart_20250911073333",
+                "chart_type": "histogram",
+                "field_name": "Population",
+                "grid_area": "chart-chart_20250911073333"
+            },
+            {
+                "id": "chart_20250911074114",
                 "chart_type": "bar",
-                "field_name": "Number_of_Hospitals",
-                "grid_area": "chart-6"
+                "field_name": "Population",
+                "grid_area": "chart-chart_20250911074114"
             }
         ]
     },
     "charts": [
-        {
-            "id": "chart_Public_Transport_Availability",
-            "field_name": "Public_Transport_Availability",
-            "chart_type": "pie",
-            "data_category": "categorical_text",
-            "title": "'Public_Transport_Availability' contains 3 distinct categories with clear groupings, ideal for showing proportional relationships.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "pie": 0.95,
-                "donut": 0.9,
-                "bar": 0.85,
-                "column": 0.8
-            },
-            "theme": "default"
-        },
-        {
-            "id": "chart_Development_Stage",
-            "field_name": "Development_Stage",
-            "chart_type": "pie",
-            "data_category": "categorical_text",
-            "title": "'Development_Stage' contains 3 distinct categories with clear groupings, ideal for showing proportional relationships.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "pie": 0.95,
-                "donut": 0.9,
-                "bar": 0.85,
-                "column": 0.8
-            },
-            "theme": "default"
-        },
-        {
-            "id": "chart_Number_of_Schools",
-            "field_name": "Number_of_Schools",
-            "chart_type": "histogram",
-            "data_category": "continuous_numeric",
-            "title": "'Number_of_Schools' displays moderate variation (range: 1.00 to 20.00), suitable for distribution analysis.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "histogram": 0.9,
-                "box_plot": 0.85,
-                "density_plot": 0.8,
-                "violin_plot": 0.75
-            },
-            "theme": "default"
-        },
         {
             "id": "chart_Number_of_Mosques",
             "field_name": "Number_of_Mosques",
@@ -108,31 +51,65 @@
             "theme": "default"
         },
         {
-            "id": "chart_Crime_Rate_Per_1000",
-            "field_name": "Crime_Rate_Per_1000",
-            "chart_type": "histogram",
-            "data_category": "continuous_numeric",
-            "title": "'Crime_Rate_Per_1000' displays moderate variation (range: 0.51 to 4.98), suitable for distribution analysis.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "histogram": 0.9,
-                "box_plot": 0.85,
-                "density_plot": 0.8,
-                "violin_plot": 0.75
+            "id": "chart_20250911073331",
+            "title": "Updated Chart",
+            "chart_type": "bar",
+            "field_name": "Population",
+            "primary_field": "Population",
+            "category_field": "Development_Stage",
+            "data": {
+                "labels": [
+                    "Developing",
+                    "Developed",
+                    "Undeveloped"
+                ],
+                "values": [
+                    5450205.0,
+                    3809977.0,
+                    978137.0
+                ]
             },
             "theme": "default"
         },
         {
-            "id": "chart_Number_of_Hospitals",
-            "field_name": "Number_of_Hospitals",
+            "id": "chart_20250911073333",
+            "title": "Updated Chart",
+            "chart_type": "histogram",
+            "field_name": "Population",
+            "primary_field": "Population",
+            "category_field": "Development_Stage",
+            "data": {
+                "labels": [
+                    "Developing",
+                    "Developed",
+                    "Undeveloped"
+                ],
+                "values": [
+                    5450205.0,
+                    3809977.0,
+                    978137.0
+                ]
+            },
+            "theme": "default"
+        },
+        {
+            "id": "chart_20250911074114",
+            "title": "Population by Development Stage",
             "chart_type": "bar",
-            "data_category": "categorical_numeric",
-            "title": "'Number_of_Hospitals' represents discrete numeric categories (6 values), ideal for count-based visualizations.",
-            "visualization_potential": "high",
-            "chart_suitability": {
-                "bar": 0.85,
-                "column": 0.8,
-                "pie": 0.75
+            "field_name": "Population",
+            "primary_field": "Population",
+            "category_field": "Development_Stage",
+            "data": {
+                "labels": [
+                    "Developing",
+                    "Developed",
+                    "Undeveloped"
+                ],
+                "values": [
+                    5450205.0,
+                    3809977.0,
+                    978137.0
+                ]
             },
             "theme": "default"
         }
@@ -150,16 +127,16 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
-                "النعيم",
-                "العقيق",
-                "قاعدة الملك فيصل البحرية",
-                "العمارية",
-                "مريخ",
-                "الغولاء",
-                "البغدادية الغربية",
-                "اليسر",
-                "الشاطئ",
-                "الصفوة"
+                "\u0627\u0644\u0646\u0639\u064a\u0645",
+                "\u0627\u0644\u0639\u0642\u064a\u0642",
+                "\u0642\u0627\u0639\u062f\u0629 \u0627\u0644\u0645\u0644\u0643 \u0641\u064a\u0635\u0644 \u0627\u0644\u0628\u062d\u0631\u064a\u0629",
+                "\u0627\u0644\u0639\u0645\u0627\u0631\u064a\u0629",
+                "\u0645\u0631\u064a\u062e",
+                "\u0627\u0644\u063a\u0648\u0644\u0627\u0621",
+                "\u0627\u0644\u0628\u063a\u062f\u0627\u062f\u064a\u0629 \u0627\u0644\u063a\u0631\u0628\u064a\u0629",
+                "\u0627\u0644\u064a\u0633\u0631",
+                "\u0627\u0644\u0634\u0627\u0637\u0626",
+                "\u0627\u0644\u0635\u0641\u0648\u0629"
             ],
             "avg_length": 7.4,
             "min_length": 4,
@@ -194,16 +171,16 @@
             "null_count": 0,
             "null_percentage": 0.0,
             "sample_values": [
-                "النعيم",
-                "العقيق",
-                "قاعدة الملك فيصل البحرية",
-                "العمارية",
-                "مريخ",
-                "الغولاء",
-                "البغدادية الغربية",
-                "اليسر",
-                "الشاطئ",
-                "الصفوة"
+                "\u0627\u0644\u0646\u0639\u064a\u0645",
+                "\u0627\u0644\u0639\u0642\u064a\u0642",
+                "\u0642\u0627\u0639\u062f\u0629 \u0627\u0644\u0645\u0644\u0643 \u0641\u064a\u0635\u0644 \u0627\u0644\u0628\u062d\u0631\u064a\u0629",
+                "\u0627\u0644\u0639\u0645\u0627\u0631\u064a\u0629",
+                "\u0645\u0631\u064a\u062e",
+                "\u0627\u0644\u063a\u0648\u0644\u0627\u0621",
+                "\u0627\u0644\u0628\u063a\u062f\u0627\u062f\u064a\u0629 \u0627\u0644\u063a\u0631\u0628\u064a\u0629",
+                "\u0627\u0644\u064a\u0633\u0631",
+                "\u0627\u0644\u0634\u0627\u0637\u0626",
+                "\u0627\u0644\u0635\u0641\u0648\u0629"
             ],
             "avg_length": 7.4,
             "min_length": 4,
@@ -697,5 +674,5 @@
             "visualization_priority": 9
         }
     },
-    "generation_timestamp": "2025-09-08T15:20:53.842361"
+    "generation_timestamp": "2025-09-11T07:41:14.715819"
 }
