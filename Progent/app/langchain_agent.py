@@ -689,7 +689,11 @@ class LangChainAgent:
         model_config = get_model_config(model_key)
         
         logger.info(f"LangChainAgent.set_model called with: {model_key}")
-        logger.info(f"Model config: {model_config}")
+        # Create a safe version of model_config for logging (mask API key)
+        safe_config = model_config.copy()
+        if "api_key" in safe_config and safe_config["api_key"]:
+            safe_config["api_key"] = "***masked***"
+        logger.info(f"Model config: {safe_config}")
         
         # Only instantiate the Google Gemini LLM when a Gemini model is selected.
         # Creating a ChatGoogleGenerativeAI instance for non-Gemini models causes
