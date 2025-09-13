@@ -279,7 +279,21 @@ class ExecuteSpatialFunctionTool(BaseTool):
         except (SyntaxError, ValueError) as e:
             return {"error": f"Failed to parse input string: {e}. Input was: {tool_input_str}"}
         except Exception as e:
-            return {"error": f"An unexpected error occurred while executing '{function_name}': {e}"}
+            # Enhanced error handling for spatial functions
+            if function_name in ["spatial_join", "select_by_location", "create_buffer", "clip_layer"]:
+                return {
+                    "error": f"Spatial function '{function_name}' failed: {str(e)}",
+                    "troubleshooting": [
+                        "Use get_map_layers_info to check available layers",
+                        "Use get_layer_summary to verify layer details",
+                        "Verify layer names match exactly",
+                        "Check function parameters are correct"
+                    ],
+                    "function_name": function_name,
+                    "parameters_used": parameters
+                }
+            else:
+                return {"error": f"An unexpected error occurred while executing '{function_name}': {e}"}
 
     def _execute_dashboard_function(self, function_name: str, parameters: dict) -> dict:
         """Execute dashboard functions locally on the server side using the new API."""
@@ -765,6 +779,20 @@ Project: {state.get('project_path', 'Unknown')}
 Map: {state.get('map_name', 'Unknown')}
 Layers ({layer_count} total): {', '.join(layer_names) if layer_names else 'None'}
 Default GDB: {state.get('default_gdb', 'Unknown')}"""
+        
+        # Add field information for each layer
+        if layers_info:
+            simplified += "\n\nLayer Details:"
+            for layer_name, layer_info in layers_info.items():
+                fields = layer_info.get('fields', {})
+                if fields:
+                    if isinstance(fields, dict):
+                        field_names = list(fields.keys())
+                    else:
+                        field_names = fields if isinstance(fields, list) else []
+                    simplified += f"\n- {layer_name}: {', '.join(field_names)}"
+                else:
+                    simplified += f"\n- {layer_name}: No fields available"
         
         return simplified.strip()
 

@@ -277,11 +277,19 @@ class RAGService:
             
             if "layers_info" in arcgis_state:
                 for layer_name, layer_info in arcgis_state["layers_info"].items():
+                    fields = layer_info.get('fields', {})
+                    if isinstance(fields, dict):
+                        field_list = list(fields.keys())
+                    elif isinstance(fields, list):
+                        field_list = fields
+                    else:
+                        field_list = []
+                    
                     state_content += f"""
                     ### {layer_name}
                     - Type: {layer_info.get('type', 'Unknown')}
                     - Feature Count: {layer_info.get('feature_count', 'Unknown')}
-                    - Fields: {', '.join(layer_info.get('fields', []))}
+                    - Fields: {', '.join(field_list) if field_list else 'None'}
                     """
             
             # Add to knowledge base (this could be used for context in future sessions)

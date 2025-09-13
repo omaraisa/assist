@@ -180,15 +180,119 @@ class RunPythonCode(object):
         return {"success": True, "centroids": centroids}
 
     def spatial_join(self, params):
-        target_layer = params.get("target_layer")
-        join_layer = params.get("join_layer")
-        output_name = f"{target_layer.replace(' ', '_')}_joined"
-        aprx = arcpy.mp.ArcGISProject("CURRENT")
-        output_path = os.path.join(aprx.defaultGeodatabase, output_name)
-        output_path = arcpy.CreateUniqueName(output_path)
-        arcpy.analysis.SpatialJoin(r"{}".format(target_layer), r"{}".format(join_layer), output_path)
-        self._add_to_map(output_path)
-        return {"success": True, "output_layer": output_name, "output_path": output_path}
+        """
+        Perform a spatial join between two layers.
+        Supports different join operations and provides detailed error messages.
+        """
+        try:
+            target_layer = params.get("target_layer")
+            join_layer = params.get("join_layer")
+            join_operation = params.get("join_operation", "INTERSECT")  # Default to INTERSECT
+            output_name_param = params.get("output_name")
+            match_option = params.get("match_option", "CLOSEST")  # Default match option
+
+            # Validate required parameters
+            if not target_layer:
+                return {"success": False, "error": "target_layer parameter is required"}
+            if not join_layer:
+                return {"success": False, "error": "join_layer parameter is required"}
+
+            # Validate that layers exist and are accessible
+            try:
+                target_desc = arcpy.Describe(target_layer)
+                join_desc = arcpy.Describe(join_layer)
+            except Exception as e:
+                return {"success": False, "error": f"Cannot access layers: {str(e)}. Please ensure both '{target_layer}' and '{join_layer}' exist and are loaded in the current ArcGIS Pro project."}
+
+            # Generate output name
+            if output_name_param:
+                output_name = output_name_param
+            else:
+                output_name = f"{target_layer.replace(' ', '_')}_{join_layer.replace(' ', '_')}_joined"
+
+            # Get current project and default geodatabase
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            output_path = os.path.join(aprx.defaultGeodatabase, output_name)
+            output_path = arcpy.CreateUniqueName(output_path)
+
+            # Map join_operation to ArcGIS spatial relationship
+            operation_mapping = {
+                "intersects": "INTERSECT",
+                "contains": "CONTAINS",
+                "within": "WITHIN",
+                "touches": "TOUCHES",
+                "overlaps": "OVERLAP",
+                "crosses": "CROSSES",
+                "closest": "CLOSEST"
+            }
+
+            spatial_relationship = operation_mapping.get(join_operation.lower(), "INTERSECT")
+
+            # Perform the spatial join with proper parameters
+            try:
+                if spatial_relationship == "CLOSEST":
+                    # For closest operation, we need additional parameters
+                    arcpy.analysis.SpatialJoin(
+                        target_features=r"{}".format(target_layer),
+                        join_features=r"{}".format(join_layer),
+                        out_feature_class=output_path,
+                        join_operation="JOIN_ONE_TO_ONE",
+                        join_type="KEEP_ALL",
+                        match_option=spatial_relationship,
+                        search_radius=None,
+                        distance_field_name="DISTANCE"
+                    )
+                else:
+                    # Standard spatial join for other operations
+                    arcpy.analysis.SpatialJoin(
+                        target_features=r"{}".format(target_layer),
+                        join_features=r"{}".format(join_layer),
+                        out_feature_class=output_path,
+                        join_operation="JOIN_ONE_TO_ONE",
+                        join_type="KEEP_ALL",
+                        match_option=spatial_relationship
+                    )
+
+                # Add the result to the map
+                self._add_to_map(output_path)
+
+                # Get result statistics
+                result_count = int(arcpy.GetCount_management(output_path)[0])
+
+                return {
+                    "success": True,
+                    "output_layer": output_name,
+                    "output_path": output_path,
+                    "feature_count": result_count,
+                    "spatial_relationship": spatial_relationship,
+                    "target_layer": target_layer,
+                    "join_layer": join_layer,
+                    "message": f"Spatial join completed successfully. Created layer '{output_name}' with {result_count} features using {spatial_relationship} relationship."
+                }
+
+            except arcpy.ExecuteError as e:
+                return {
+                    "success": False,
+                    "error": f"ArcGIS spatial join execution failed: {str(e)}",
+                    "details": {
+                        "target_layer": target_layer,
+                        "join_layer": join_layer,
+                        "spatial_relationship": spatial_relationship,
+                        "arcgis_error": arcpy.GetMessages(2)  # Get detailed ArcGIS error messages
+                    }
+                }
+
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Spatial join failed: {str(e)}",
+                "troubleshooting": [
+                    "Ensure both layers exist in the current ArcGIS Pro project",
+                    "Check that layers have valid geometries",
+                    "Verify coordinate systems are compatible",
+                    "Make sure you have write permissions to the default geodatabase"
+                ]
+            }
 
     def clip_layer(self, params):
         input_layer = params.get("input_layer")

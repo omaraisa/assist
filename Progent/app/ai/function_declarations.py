@@ -189,7 +189,7 @@ class FunctionDeclaration:
         
         "spatial_join": {
             "name": "spatial_join",
-            "description": "Perform spatial join between two layers based on their spatial relationship, combining attributes from both layers.",
+            "description": "Perform spatial join between two layers based on their spatial relationship, combining attributes from both layers. Supports various spatial relationships and provides detailed error messages.",
             "parameters": {
                 "target_layer": {
                     "type": "string",
@@ -202,13 +202,19 @@ class FunctionDeclaration:
                 "join_operation": {
                     "type": "string",
                     "description": "Spatial relationship for the join operation",
-                    "enum": ["intersect", "within", "contains", "closest"],
-                    "default": "intersect"
+                    "enum": ["intersects", "contains", "within", "touches", "overlaps", "crosses", "closest"],
+                    "default": "intersects"
+                },
+                "output_name": {
+                    "type": "string",
+                    "description": "Optional custom name for the output layer. If not provided, a name will be generated automatically.",
+                    "default": None
                 }
             },
             "required": ["target_layer", "join_layer"],
             "action_input_examples": [
-                {"function_name": "spatial_join", "target_layer": "Hospitals", "join_layer": "Zip_Codes", "join_operation": "within"}
+                {"function_name": "spatial_join", "target_layer": "Hospitals", "join_layer": "Zip_Codes", "join_operation": "within"},
+                {"function_name": "spatial_join", "target_layer": "Schools", "join_layer": "Districts", "join_operation": "intersects", "output_name": "Schools_in_Districts"}
             ]
         },
         
