@@ -785,7 +785,7 @@ Layers ({layer_count} total): {', '.join(layer_names) if layer_names else 'None'
                 layer_type = layer_info.get('layer_type', 'Unknown')
                 data_type = layer_info.get('data_type', 'Unknown')
                 fields = layer_info.get('fields', {})
-                
+               
                 # Build description based on layer type
                 if data_type == 'Raster':
                     simplified += f"\n- {layer_name} (Raster): Raster data - no attribute fields"
@@ -912,7 +912,15 @@ Thought: {agent_scratchpad}"""
             chat_history_str = "\n".join(chat_history_lines)
 
             # Phase 1: Smart Message Classification
-            classification_prompt = f"""You are Progent, an AI assistant for ArcGIS Pro. Classify the user's message:
+            # Simplify ArcGIS state once for both classification and tool execution (optimization to avoid redundant processing)
+            simplified_state = self._simplify_arcgis_state_for_prompt(arcgis_state)
+            
+            # Log the full ArcGIS state separately to avoid truncation
+            logger.info(f"Full ArcGIS state for classification: {simplified_state}")
+            
+            classification_prompt = f"""You are Progent, an AI assistant for ArcGIS Pro.
+
+Current ArcGIS Pro State: {simplified_state}
 
 {chat_history_str}
 User: {user_message}
@@ -950,6 +958,7 @@ Assistant:"""
                 logger.info(f"Conversational prompt sent to AI: {conversational_prompt[:500]}...")
                 
                 response = await self.llm.ainvoke([HumanMessage(content=conversational_prompt)])
+                logger.info(f"Full AI response: {response.content}")
                 return {"output": response.content}
             
             else:
@@ -967,8 +976,8 @@ Assistant:"""
                     max_iterations=20
                 )
 
-                # Simplify ArcGIS state for the prompt
-                simplified_state = self._simplify_arcgis_state_for_prompt(arcgis_state)
+                # Simplify ArcGIS state for the prompt (reuse the already simplified state)
+                # simplified_state = self._simplify_arcgis_state_for_prompt(arcgis_state)  # Already done above
                 
                 response = await agent_executor.ainvoke({
                     "input": user_message,
@@ -977,6 +986,7 @@ Assistant:"""
                     "arcgis_state": simplified_state,
                     "available_functions": json.dumps(AVAILABLE_FUNCTIONS, indent=2)
                 })
+                logger.info(f"AI response: {response.get('output', '')}")
                 return response
         except Exception as e:
             logger.error(f"Error generating LangChain agent response: {e}", exc_info=True)
