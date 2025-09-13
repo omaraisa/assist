@@ -262,12 +262,10 @@ class RunPythonCode(object):
                 return {
                     "success": True,
                     "output_layer": output_name,
-                    "output_path": output_path,
                     "feature_count": result_count,
                     "spatial_relationship": spatial_relationship,
                     "target_layer": target_layer,
-                    "join_layer": join_layer,
-                    "message": f"Spatial join completed successfully. Created layer '{output_name}' with {result_count} features using {spatial_relationship} relationship."
+                    "join_layer": join_layer
                 }
 
             except arcpy.ExecuteError as e:
