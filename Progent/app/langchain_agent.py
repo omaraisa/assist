@@ -775,10 +775,8 @@ class LangChainAgent:
         layer_names = list(layers_info.keys())
         
         simplified = f"""
-Project: {state.get('project_path', 'Unknown')}
 Map: {state.get('map_name', 'Unknown')}
-Layers ({layer_count} total): {', '.join(layer_names) if layer_names else 'None'}
-Default GDB: {state.get('default_gdb', 'Unknown')}"""
+Layers ({layer_count} total): {', '.join(layer_names) if layer_names else 'None'}"""
         
         # Add field information for each layer
         if layers_info:
