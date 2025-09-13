@@ -1,6 +1,8 @@
 import logging
 import uvicorn
 from app.main import app
+from clean_logs import clean_old_logs
+from pathlib import Path
 
 
 def _quiet_watchfiles():
@@ -18,6 +20,10 @@ def _quiet_watchfiles():
 
 
 if __name__ == "__main__":
+    # Clean old log entries before starting
+    log_file_path = Path(__file__).parent.parent / "logs" / "system.log"
+    clean_old_logs(log_file_path, days=3)
+
     # Disable the auto-reloader which uses watchfiles (causes repeated INFO logs)
     # If you need auto-reload during development, set reload=True but be aware
     # of the watchfiles INFO messages; in that case the _quiet_watchfiles() call
