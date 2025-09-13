@@ -784,15 +784,36 @@ Default GDB: {state.get('default_gdb', 'Unknown')}"""
         if layers_info:
             simplified += "\n\nLayer Details:"
             for layer_name, layer_info in layers_info.items():
+                layer_type = layer_info.get('layer_type', 'Unknown')
+                data_type = layer_info.get('data_type', 'Unknown')
                 fields = layer_info.get('fields', {})
-                if fields:
-                    if isinstance(fields, dict):
-                        field_names = list(fields.keys())
+                
+                # Build description based on layer type
+                if data_type == 'Raster':
+                    simplified += f"\n- {layer_name} (Raster): Raster data - no attribute fields"
+                elif data_type == 'Table' or layer_type == 'StandaloneTable':
+                    if fields and isinstance(fields, dict) and len(fields) > 0:
+                        field_names = [k for k in fields.keys() if k != 'error']
+                        if field_names:
+                            simplified += f"\n- {layer_name} (Table): {', '.join(field_names)}"
+                        else:
+                            simplified += f"\n- {layer_name} (Table): No fields available"
                     else:
-                        field_names = fields if isinstance(fields, list) else []
-                    simplified += f"\n- {layer_name}: {', '.join(field_names)}"
+                        simplified += f"\n- {layer_name} (Table): No fields available"
+                elif layer_type == 'FeatureLayer':
+                    geometry_type = layer_info.get('geometry_type', '')
+                    if fields and isinstance(fields, dict):
+                        field_names = [k for k in fields.keys() if k != 'error']
+                        if field_names:
+                            geom_info = f" - {geometry_type}" if geometry_type else ""
+                            simplified += f"\n- {layer_name} (Feature{geom_info}): {', '.join(field_names)}"
+                        else:
+                            simplified += f"\n- {layer_name} (Feature): No fields available"
+                    else:
+                        simplified += f"\n- {layer_name} (Feature): No fields available"
                 else:
-                    simplified += f"\n- {layer_name}: No fields available"
+                    # Other layer types
+                    simplified += f"\n- {layer_name} ({layer_type}): {data_type} layer"
         
         return simplified.strip()
 

@@ -289,22 +289,81 @@ namespace Progent
                 context["map_name"] = activeMap.Name;
 
                 var layersInfo = new JObject();
-                foreach(var layer in activeMap.GetLayersAsFlattenedList().OfType<FeatureLayer>())
+                foreach(var layer in activeMap.GetLayersAsFlattenedList())
                 {
                     var layerInfo = new JObject
                     {
-                        ["definition_query"] = layer.DefinitionQuery,
-                        ["visible"] = layer.IsVisible
+                        ["visible"] = layer.IsVisible,
+                        ["layer_type"] = layer.GetType().Name
                     };
-                    var fields = new JObject();
-                    foreach(var field in layer.GetFeatureClass().GetDefinition().GetFields())
+
+                    // Handle different layer types
+                    if (layer is ArcGIS.Desktop.Mapping.FeatureLayer featureLayer)
                     {
-                        fields[field.Name] = field.FieldType.ToString();
+                        layerInfo["definition_query"] = featureLayer.DefinitionQuery;
+                        var fields = new JObject();
+                        try
+                        {
+                            foreach(var field in featureLayer.GetFeatureClass().GetDefinition().GetFields())
+                            {
+                                fields[field.Name] = field.FieldType.ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // Some feature layers might not have accessible fields
+                            fields["error"] = $"Unable to access fields: {ex.Message}";
+                        }
+                        layerInfo["fields"] = fields;
+                        layerInfo["geometry_type"] = featureLayer.ShapeType.ToString();
                     }
-                    layerInfo["fields"] = fields;
+                    else if (layer is ArcGIS.Desktop.Mapping.RasterLayer rasterLayer)
+                    {
+                        layerInfo["data_type"] = "Raster";
+                        // Raster layers don't have traditional fields, but we can include basic info
+                        layerInfo["fields"] = new JObject(); // Empty for rasters
+                    }
+                    else
+                    {
+                        // Other layer types (group layers, etc.)
+                        layerInfo["data_type"] = "Other";
+                        layerInfo["fields"] = new JObject();
+                    }
+
                     layersInfo[layer.Name] = layerInfo;
                 }
                 context["layers_info"] = layersInfo;
+
+                // Include standalone tables in the layers_info as well for consistency
+                foreach(var table in activeMap.GetStandaloneTablesAsFlattenedList())
+                {
+                    var tableInfo = new JObject
+                    {
+                        ["visible"] = true, // Tables are typically always "visible" in the table of contents
+                        ["layer_type"] = "StandaloneTable",
+                        ["data_type"] = "Table",
+                        ["fields"] = new JObject()
+                    };
+
+                    // Try to get table fields
+                    try
+                    {
+                        var tableFields = new JObject();
+                        // For standalone tables, we need to use a different approach
+                        var tableDef = table.GetTable().GetDefinition();
+                        foreach(var field in tableDef.GetFields())
+                        {
+                            tableFields[field.Name] = field.FieldType.ToString();
+                        }
+                        tableInfo["fields"] = tableFields;
+                    }
+                    catch (Exception ex)
+                    {
+                        tableInfo["fields"] = new JObject { ["error"] = $"Unable to access fields: {ex.Message}" };
+                    }
+
+                    layersInfo[table.Name] = tableInfo;
+                }
 
                 var tablesInfo = new JObject();
                 foreach(var table in activeMap.GetStandaloneTablesAsFlattenedList())

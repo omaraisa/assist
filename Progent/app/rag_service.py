@@ -279,16 +279,29 @@ class RAGService:
                 for layer_name, layer_info in arcgis_state["layers_info"].items():
                     fields = layer_info.get('fields', {})
                     if isinstance(fields, dict):
-                        field_list = list(fields.keys())
+                        field_list = [k for k in fields.keys() if k != 'error']
                     elif isinstance(fields, list):
                         field_list = fields
                     else:
                         field_list = []
                     
+                    layer_type = layer_info.get('layer_type', 'Unknown')
+                    data_type = layer_info.get('data_type', 'Unknown')
+                    geometry_type = layer_info.get('geometry_type', '')
+                    
+                    # Build type description
+                    if data_type == 'Raster':
+                        type_desc = 'Raster Layer'
+                    elif data_type == 'Table' or layer_type == 'StandaloneTable':
+                        type_desc = 'Table'
+                    elif layer_type == 'FeatureLayer':
+                        type_desc = f'Feature Layer ({geometry_type})' if geometry_type else 'Feature Layer'
+                    else:
+                        type_desc = f'{layer_type} ({data_type})'
+                    
                     state_content += f"""
                     ### {layer_name}
-                    - Type: {layer_info.get('type', 'Unknown')}
-                    - Feature Count: {layer_info.get('feature_count', 'Unknown')}
+                    - Type: {type_desc}
                     - Fields: {', '.join(field_list) if field_list else 'None'}
                     """
             

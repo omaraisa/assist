@@ -527,12 +527,59 @@ class RunPythonCode(object):
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
             layers = []
+            
+            # Get all layers (including rasters)
             for lyr in map_obj.listLayers():
                 try:
-                    layers.append({"name": lyr.name, "is_group": lyr.isGroupLayer if hasattr(lyr, 'isGroupLayer') else False, "data_source": getattr(lyr, 'dataSource', None)})
-                except Exception:
-                    layers.append({"name": getattr(lyr, 'name', None)})
-            return {"success": True, "layers": layers}
+                    layer_info = {
+                        "name": lyr.name,
+                        "is_group": lyr.isGroupLayer if hasattr(lyr, 'isGroupLayer') else False,
+                        "data_source": getattr(lyr, 'dataSource', None),
+                        "visible": lyr.visible if hasattr(lyr, 'visible') else True
+                    }
+                    
+                    # Determine layer type
+                    if hasattr(lyr, 'isFeatureLayer') and lyr.isFeatureLayer:
+                        layer_info["type"] = "Feature Layer"
+                        try:
+                            desc = arcpy.Describe(lyr.dataSource)
+                            layer_info["geometry_type"] = getattr(desc, 'shapeType', 'Unknown')
+                        except:
+                            layer_info["geometry_type"] = "Unknown"
+                    elif hasattr(lyr, 'isRasterLayer') and lyr.isRasterLayer:
+                        layer_info["type"] = "Raster Layer"
+                    else:
+                        layer_info["type"] = "Other Layer"
+                    
+                    layers.append(layer_info)
+                except Exception as e:
+                    layers.append({
+                        "name": getattr(lyr, 'name', 'Unknown'),
+                        "error": str(e)
+                    })
+            
+            # Get standalone tables
+            tables = []
+            for table in map_obj.listTables():
+                try:
+                    tables.append({
+                        "name": table.name,
+                        "type": "Standalone Table",
+                        "data_source": getattr(table, 'dataSource', None)
+                    })
+                except Exception as e:
+                    tables.append({
+                        "name": getattr(table, 'name', 'Unknown'),
+                        "error": str(e)
+                    })
+            
+            return {
+                "success": True, 
+                "layers": layers,
+                "tables": tables,
+                "total_layers": len(layers),
+                "total_tables": len(tables)
+            }
         except Exception as e:
             return {"success": False, "error": str(e)}
 

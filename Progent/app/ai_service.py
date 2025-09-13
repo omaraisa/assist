@@ -289,10 +289,28 @@ class AIService:
         if "layers_info" in state:
             simplified["layers"] = {}
             for layer_name, layer_info in state["layers_info"].items():
-                simplified["layers"][layer_name] = {
-                    "fields": list(layer_info.get("fields", {}).keys()) if isinstance(layer_info.get("fields"), dict) else [],
-                    "definition_query": layer_info.get("definition_query", "")
+                fields = layer_info.get("fields", {})
+                if isinstance(fields, dict):
+                    field_list = [k for k in fields.keys() if k != 'error']
+                else:
+                    field_list = []
+                
+                layer_data = {
+                    "fields": field_list,
+                    "layer_type": layer_info.get("layer_type", "Unknown"),
+                    "data_type": layer_info.get("data_type", "Unknown")
                 }
+                
+                # Add type-specific information
+                if layer_info.get("data_type") == "Raster":
+                    layer_data["is_raster"] = True
+                elif layer_info.get("layer_type") == "FeatureLayer":
+                    layer_data["geometry_type"] = layer_info.get("geometry_type", "")
+                    layer_data["definition_query"] = layer_info.get("definition_query", "")
+                elif layer_info.get("layer_type") == "StandaloneTable" or layer_info.get("data_type") == "Table":
+                    layer_data["is_table"] = True
+                
+                simplified["layers"][layer_name] = layer_data
         
         # Include layer types
         if "layer_types" in state:
