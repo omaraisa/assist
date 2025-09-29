@@ -13,27 +13,27 @@ class Settings(BaseSettings):
     # AI Models Configuration
     AI_MODELS: Dict[str, Dict[str, Any]] = {
         "GEMINI_FLASH": {
-            "name": "Gemini 1.5 Flash",
-            "model": "gemini-1.5-flash-latest",
-            "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent",
+            "name": "Gemini 2.5 Flash",
+            "model": "gemini-2.5-flash",
+            "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
             "max_tokens": 8192,
-            "temperature": 0.7,
+            "temperature": 0,
             "api_key_env": "GEMINI_API_KEY"
         },
         "GEMINI_PRO": {
-            "name": "Gemini 1.5 Pro", 
-            "model": "gemini-1.5-pro-latest",
-            "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+            "name": "Gemini 2.5 Pro", 
+            "model": "gemini-2.5-pro",
+            "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent",
             "max_tokens": 32768,
-            "temperature": 0.7,
+            "temperature": 0,
             "api_key_env": "GEMINI_API_KEY"
         },
         "GEMINI_FLASH_EXP": {
-            "name": "Gemini 2.0 Flash Experimental",
-            "model": "gemini-2.0-flash-exp",
-            "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent",
+            "name": "Gemini 2.5 Flash-Lite",
+            "model": "gemini-2.5-flash-lite",
+            "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
             "max_tokens": 8192,
-            "temperature": 0.7,
+            "temperature": 0,
             "api_key_env": "GEMINI_API_KEY"
         },        # Temporarily disabled due to context length limitations with function calling
         # "GPT4": {
@@ -41,7 +41,7 @@ class Settings(BaseSettings):
         #     "model": "gpt-4",
         #     "endpoint": "https://api.openai.com/v1/chat/completions",
         #     "max_tokens": 8192,
-        #     "temperature": 0.7,
+        #     "temperature": 0,
         #     "api_key_env": "OPENAI_API_KEY"
         # },
         # "GPT4_TURBO": {
@@ -49,7 +49,7 @@ class Settings(BaseSettings):
         #     "model": "gpt-4-turbo",
         #     "endpoint": "https://api.openai.com/v1/chat/completions",
         #     "max_tokens": 4096,
-        #     "temperature": 0.7,
+        #     "temperature": 0,
         #     "api_key_env": "OPENAI_API_KEY"
         # },
         # "GPT4O": {
@@ -57,7 +57,7 @@ class Settings(BaseSettings):
         #     "model": "gpt-4o",
         #     "endpoint": "https://api.openai.com/v1/chat/completions",
         #     "max_tokens": 4096,
-        #     "temperature": 0.7,
+        #     "temperature": 0,
         #     "api_key_env": "OPENAI_API_KEY"
         # },
         # "CLAUDE": {
@@ -65,7 +65,7 @@ class Settings(BaseSettings):
         #     "model": "claude-3-5-sonnet-20241022",
         #     "endpoint": "https://api.anthropic.com/v1/messages",
         #     "max_tokens": 8192,
-        #     "temperature": 0.7,
+        #     "temperature": 0,
         #     "api_key_env": "ANTHROPIC_API_KEY"        },
         # Ollama Models (Local LLMs)
         "OLLAMA_GEMMA": {
@@ -74,7 +74,7 @@ class Settings(BaseSettings):
                 "provider": "ollama",
                 "endpoint": "http://localhost:11434",
                 "max_tokens": 8192,
-                "temperature": 0.7,
+                "temperature": 0,
                 "local": True
             },
             # "OLLAMA_LLAMA31": {
@@ -83,7 +83,7 @@ class Settings(BaseSettings):
             #     "provider": "ollama",
             #     "endpoint": "http://localhost:11434",
             #     "max_tokens": 32768,
-            #     "temperature": 0.7,
+            #     "temperature": 0,
             #     "local": True
             # },
             # "OLLAMA_CODELLAMA": {
@@ -92,7 +92,7 @@ class Settings(BaseSettings):
             #     "provider": "ollama", 
             #     "endpoint": "http://localhost:11434",
             #     "max_tokens": 32768,
-            #     "temperature": 0.7,
+            #     "temperature": 0,
             #     "local": True
             # },
             # "OLLAMA_MISTRAL": {
@@ -101,7 +101,7 @@ class Settings(BaseSettings):
             #     "provider": "ollama",
             #     "endpoint": "http://localhost:11434", 
             #     "max_tokens": 32768,
-            #     "temperature": 0.7,
+            #     "temperature": 0,
             #     "local": True
             # }
     }
@@ -115,7 +115,7 @@ class Settings(BaseSettings):
     # - For OpenAI models: Set OPENAI_API_KEY 
     # - For Claude: Set ANTHROPIC_API_KEY
     # - For Ollama: No API key needed (local)
-    GEMINI_API_KEY: str = "AIzaSyCQudVBnsKYf3Y-Epx_MNhuFdgMQIlHzN8"
+    GEMINI_API_KEY: str = ""
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
     

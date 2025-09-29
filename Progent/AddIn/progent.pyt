@@ -4,9 +4,6 @@ import json
 import math
 import statistics
 import re
-import traceback
-import random
-from datetime import datetime
 from typing import Dict, Tuple, List
 from copy import deepcopy
 
@@ -92,47 +89,31 @@ class RunPythonCode(object):
         output_fc = arcpy.CreateUniqueName(output_fc)
         unit_mapping = {"meters": "METERS", "kilometers": "KILOMETERS", "feet": "FEET", "miles": "MILES"}
         arcpy_units = unit_mapping.get(units.lower(), "METERS")
-        arcpy.analysis.Buffer(r"{}".format(layer_name), output_fc, f"{distance} {arcpy_units}")
+        arcpy.analysis.Buffer(layer_name, output_fc, f"{distance} {arcpy_units}")
         self._add_to_map(output_fc)
         return {"success": True, "output_layer": output_name, "output_path": output_fc}
-
-    def invert_selection(self, params):
-        """Invert the current selection on a layer.
-
-        params: { "layer_name": <layer name or layer object> }
-        Returns: {"success": True, "selected_features": <count>} or error
-        """
-        layer_name = params.get("layer_name")
-        try:
-            # Use ArcPy to switch/invert the selection on the provided layer
-            # If the layer is a layer object or name, SelectLayerByAttribute_management accepts it.
-            arcpy.SelectLayerByAttribute_management(r"{}".format(layer_name), "SWITCH_SELECTION")
-            selected_count = int(arcpy.GetCount_management(r"{}".format(layer_name))[0])
-            return {"success": True, "selected_features": selected_count}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
 
     def select_by_attribute(self, params):
         layer_name = params.get("layer_name")
         where_clause = params.get("where_clause")
         selection_type = params.get("selection_type", "NEW_SELECTION")
-        arcpy.SelectLayerByAttribute_management(r"{}".format(layer_name), selection_type, where_clause)
-        selected_count = int(arcpy.GetCount_management(r"{}".format(layer_name))[0])
+        arcpy.SelectLayerByAttribute_management(layer_name, selection_type, where_clause)
+        selected_count = int(arcpy.GetCount_management(layer_name)[0])
         return {"success": True, "selected_features": selected_count}
 
     def select_by_location(self, params):
         input_layer = params.get("input_layer")
         select_layer = params.get("select_layer")
         relationship = params.get("relationship", "INTERSECT")
-        arcpy.SelectLayerByLocation_management(r"{}".format(input_layer), relationship, r"{}".format(select_layer))
-        selected_count = int(arcpy.GetCount_management(r"{}".format(input_layer))[0])
+        arcpy.SelectLayerByLocation_management(input_layer, relationship, select_layer)
+        selected_count = int(arcpy.GetCount_management(input_layer)[0])
         return {"success": True, "selected_features": selected_count}
 
     def get_layer_summary(self, params):
         layer_name = params.get("layer_name")
-        desc = arcpy.Describe(r"{}".format(layer_name))
-        feature_count = int(arcpy.GetCount_management(r"{}".format(layer_name))[0])
-        field_names = [f.name for f in arcpy.ListFields(r"{}".format(layer_name))]
+        desc = arcpy.Describe(layer_name)
+        feature_count = int(arcpy.GetCount_management(layer_name)[0])
+        field_names = [f.name for f in arcpy.ListFields(layer_name)]
         return {
             "success": True,
             "summary": {
@@ -148,7 +129,7 @@ class RunPythonCode(object):
         layer_name = params.get("layer_name")
         units = params.get("units", "square_meters")
         areas = []
-        for row in arcpy.da.SearchCursor(r"{}".format(layer_name), ["SHAPE@AREA"]):
+        for row in arcpy.da.SearchCursor(layer_name, ["SHAPE@AREA"]):
             if row[0] is not None:
                 area = row[0]
                 if units == "square_kilometers": area /= 1000000
@@ -161,7 +142,7 @@ class RunPythonCode(object):
         layer_name = params.get("layer_name")
         units = params.get("units", "meters")
         lengths = []
-        for row in arcpy.da.SearchCursor(r"{}".format(layer_name), ["SHAPE@LENGTH"]):
+        for row in arcpy.da.SearchCursor(layer_name, ["SHAPE@LENGTH"]):
             if row[0] is not None:
                 length = row[0]
                 if units == "kilometers": length /= 1000
@@ -173,124 +154,22 @@ class RunPythonCode(object):
     def get_centroid(self, params):
         layer_name = params.get("layer_name")
         centroids = []
-        for row in arcpy.da.SearchCursor(r"{}".format(layer_name), ["OID@", "SHAPE@"]):
+        for row in arcpy.da.SearchCursor(layer_name, ["OID@", "SHAPE@"]):
             if row[1]:
                 centroid = row[1].centroid
                 centroids.append({"id": row[0], "x": centroid.X, "y": centroid.Y})
         return {"success": True, "centroids": centroids}
 
     def spatial_join(self, params):
-        """
-        Perform a spatial join between two layers.
-        Supports different join operations and provides detailed error messages.
-        """
-        try:
-            target_layer = params.get("target_layer")
-            join_layer = params.get("join_layer")
-            join_operation = params.get("join_operation", "INTERSECT")  # Default to INTERSECT
-            output_name_param = params.get("output_name")
-            match_option = params.get("match_option", "CLOSEST")  # Default match option
-
-            # Validate required parameters
-            if not target_layer:
-                return {"success": False, "error": "target_layer parameter is required"}
-            if not join_layer:
-                return {"success": False, "error": "join_layer parameter is required"}
-
-            # Validate that layers exist and are accessible
-            try:
-                target_desc = arcpy.Describe(target_layer)
-                join_desc = arcpy.Describe(join_layer)
-            except Exception as e:
-                return {"success": False, "error": f"Cannot access layers: {str(e)}. Please ensure both '{target_layer}' and '{join_layer}' exist and are loaded in the current ArcGIS Pro project."}
-
-            # Generate output name
-            if output_name_param:
-                output_name = output_name_param
-            else:
-                output_name = f"{target_layer.replace(' ', '_')}_{join_layer.replace(' ', '_')}_joined"
-
-            # Get current project and default geodatabase
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            output_path = os.path.join(aprx.defaultGeodatabase, output_name)
-            output_path = arcpy.CreateUniqueName(output_path)
-
-            # Map join_operation to ArcGIS spatial relationship
-            operation_mapping = {
-                "intersects": "INTERSECT",
-                "contains": "CONTAINS",
-                "within": "WITHIN",
-                "touches": "TOUCHES",
-                "overlaps": "OVERLAP",
-                "crosses": "CROSSES",
-                "closest": "CLOSEST"
-            }
-
-            spatial_relationship = operation_mapping.get(join_operation.lower(), "INTERSECT")
-
-            # Perform the spatial join with proper parameters
-            try:
-                if spatial_relationship == "CLOSEST":
-                    # For closest operation, we need additional parameters
-                    arcpy.analysis.SpatialJoin(
-                        target_features=r"{}".format(target_layer),
-                        join_features=r"{}".format(join_layer),
-                        out_feature_class=output_path,
-                        join_operation="JOIN_ONE_TO_ONE",
-                        join_type="KEEP_ALL",
-                        match_option=spatial_relationship,
-                        search_radius=None,
-                        distance_field_name="DISTANCE"
-                    )
-                else:
-                    # Standard spatial join for other operations
-                    arcpy.analysis.SpatialJoin(
-                        target_features=r"{}".format(target_layer),
-                        join_features=r"{}".format(join_layer),
-                        out_feature_class=output_path,
-                        join_operation="JOIN_ONE_TO_ONE",
-                        join_type="KEEP_ALL",
-                        match_option=spatial_relationship
-                    )
-
-                # Add the result to the map
-                self._add_to_map(output_path)
-
-                # Get result statistics
-                result_count = int(arcpy.GetCount_management(output_path)[0])
-
-                return {
-                    "success": True,
-                    "output_layer": output_name,
-                    "feature_count": result_count,
-                    "spatial_relationship": spatial_relationship,
-                    "target_layer": target_layer,
-                    "join_layer": join_layer
-                }
-
-            except arcpy.ExecuteError as e:
-                return {
-                    "success": False,
-                    "error": f"ArcGIS spatial join execution failed: {str(e)}",
-                    "details": {
-                        "target_layer": target_layer,
-                        "join_layer": join_layer,
-                        "spatial_relationship": spatial_relationship,
-                        "arcgis_error": arcpy.GetMessages(2)  # Get detailed ArcGIS error messages
-                    }
-                }
-
-        except Exception as e:
-            return {
-                "success": False,
-                "error": f"Spatial join failed: {str(e)}",
-                "troubleshooting": [
-                    "Ensure both layers exist in the current ArcGIS Pro project",
-                    "Check that layers have valid geometries",
-                    "Verify coordinate systems are compatible",
-                    "Make sure you have write permissions to the default geodatabase"
-                ]
-            }
+        target_layer = params.get("target_layer")
+        join_layer = params.get("join_layer")
+        output_name = f"{target_layer.replace(' ', '_')}_joined"
+        aprx = arcpy.mp.ArcGISProject("CURRENT")
+        output_path = os.path.join(aprx.defaultGeodatabase, output_name)
+        output_path = arcpy.CreateUniqueName(output_path)
+        arcpy.analysis.SpatialJoin(target_layer, join_layer, output_path)
+        self._add_to_map(output_path)
+        return {"success": True, "output_layer": output_name, "output_path": output_path}
 
     def clip_layer(self, params):
         input_layer = params.get("input_layer")
@@ -299,7 +178,7 @@ class RunPythonCode(object):
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         output_path = os.path.join(aprx.defaultGeodatabase, output_name)
         output_path = arcpy.CreateUniqueName(output_path)
-        arcpy.analysis.Clip(r"{}".format(input_layer), r"{}".format(clip_layer), output_path)
+        arcpy.analysis.Clip(input_layer, clip_layer, output_path)
         self._add_to_map(output_path)
         return {"success": True, "output_layer": output_name, "output_path": output_path}
 
@@ -310,7 +189,7 @@ class RunPythonCode(object):
         where_clause = params.get("where_clause")
         try:
             values = []
-            for row in arcpy.da.SearchCursor(r"{}".format(layer_name), [field_name], where_clause):
+            for row in arcpy.da.SearchCursor(layer_name, [field_name], where_clause):
                 v = row[0]
                 if v is None:
                     continue
@@ -382,7 +261,7 @@ class RunPythonCode(object):
     def get_field_definitions(self, params):
         layer_name = params.get("layer_name")
         try:
-            fields = arcpy.ListFields(r"{}".format(layer_name))
+            fields = arcpy.ListFields(layer_name)
             info = [{"name": f.name, "type": f.type, "length": getattr(f, 'length', None), "alias": getattr(f, 'aliasName', None)} for f in fields]
             return {"success": True, "fields": info}
         except Exception as e:
@@ -391,7 +270,7 @@ class RunPythonCode(object):
     def get_layer_type(self, params):
         layer_name = params.get("layer_name")
         try:
-            desc = arcpy.Describe(r"{}".format(layer_name))
+            desc = arcpy.Describe(layer_name)
             dtype = getattr(desc, 'dataType', None)
             shape = getattr(desc, 'shapeType', None)
             return {"success": True, "data_type": dtype, "shape_type": shape}
@@ -404,7 +283,7 @@ class RunPythonCode(object):
     def get_data_source_info(self, params):
         layer_name = params.get("layer_name")
         try:
-            desc = arcpy.Describe(r"{}".format(layer_name))
+            desc = arcpy.Describe(layer_name)
             return {"success": True, "data_source": getattr(desc, 'catalogPath', None)}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -500,7 +379,7 @@ class RunPythonCode(object):
         field_name = params.get("field_name")
         try:
             vals = set()
-            for row in arcpy.da.SearchCursor(r"{}".format(layer_name), [field_name]):
+            for row in arcpy.da.SearchCursor(layer_name, [field_name]):
                 vals.add(row[0])
             return {"success": True, "unique_count": len(vals)}
         except Exception as e:
@@ -512,7 +391,7 @@ class RunPythonCode(object):
         try:
             empty = 0
             total = 0
-            for row in arcpy.da.SearchCursor(r"{}".format(layer_name), [field_name]):
+            for row in arcpy.da.SearchCursor(layer_name, [field_name]):
                 total += 1
                 if row[0] is None:
                     empty += 1
@@ -525,59 +404,12 @@ class RunPythonCode(object):
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             map_obj = aprx.activeMap
             layers = []
-            
-            # Get all layers (including rasters)
             for lyr in map_obj.listLayers():
                 try:
-                    layer_info = {
-                        "name": lyr.name,
-                        "is_group": lyr.isGroupLayer if hasattr(lyr, 'isGroupLayer') else False,
-                        "data_source": getattr(lyr, 'dataSource', None),
-                        "visible": lyr.visible if hasattr(lyr, 'visible') else True
-                    }
-                    
-                    # Determine layer type
-                    if hasattr(lyr, 'isFeatureLayer') and lyr.isFeatureLayer:
-                        layer_info["type"] = "Feature Layer"
-                        try:
-                            desc = arcpy.Describe(lyr.dataSource)
-                            layer_info["geometry_type"] = getattr(desc, 'shapeType', 'Unknown')
-                        except:
-                            layer_info["geometry_type"] = "Unknown"
-                    elif hasattr(lyr, 'isRasterLayer') and lyr.isRasterLayer:
-                        layer_info["type"] = "Raster Layer"
-                    else:
-                        layer_info["type"] = "Other Layer"
-                    
-                    layers.append(layer_info)
-                except Exception as e:
-                    layers.append({
-                        "name": getattr(lyr, 'name', 'Unknown'),
-                        "error": str(e)
-                    })
-            
-            # Get standalone tables
-            tables = []
-            for table in map_obj.listTables():
-                try:
-                    tables.append({
-                        "name": table.name,
-                        "type": "Standalone Table",
-                        "data_source": getattr(table, 'dataSource', None)
-                    })
-                except Exception as e:
-                    tables.append({
-                        "name": getattr(table, 'name', 'Unknown'),
-                        "error": str(e)
-                    })
-            
-            return {
-                "success": True, 
-                "layers": layers,
-                "tables": tables,
-                "total_layers": len(layers),
-                "total_tables": len(tables)
-            }
+                    layers.append({"name": lyr.name, "is_group": lyr.isGroupLayer if hasattr(lyr, 'isGroupLayer') else False, "data_source": getattr(lyr, 'dataSource', None)})
+                except Exception:
+                    layers.append({"name": getattr(lyr, 'name', None)})
+            return {"success": True, "layers": layers}
         except Exception as e:
             return {"success": False, "error": str(e)}
 
@@ -590,17 +422,9 @@ class RunPythonCode(object):
         field_name = params.get("field_name")
         try:
             freq = {}
-            for row in arcpy.da.SearchCursor(r"{}".format(layer_name), [field_name]):
+            for row in arcpy.da.SearchCursor(layer_name, [field_name]):
                 k = row[0]
-                # Handle None values and ensure proper string conversion for Unicode support
-                if k is not None:
-                    # Convert to string to handle any data type and preserve Unicode
-                    k = str(k)
-                    freq[k] = freq.get(k, 0) + 1
-                else:
-                    # Handle null values
-                    null_key = "Null/Empty"
-                    freq[null_key] = freq.get(null_key, 0) + 1
+                freq[k] = freq.get(k, 0) + 1
             return {"success": True, "frequency": freq}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -618,7 +442,7 @@ class RunPythonCode(object):
     def get_coordinate_system(self, params):
         layer_name = params.get("layer_name")
         try:
-            desc = arcpy.Describe(r"{}".format(layer_name))
+            desc = arcpy.Describe(layer_name)
             sr = getattr(desc, 'spatialReference', None)
             if sr:
                 return {"success": True, "name": sr.name, "wkid": getattr(sr, 'factoryCode', None)}
@@ -626,12 +450,17 @@ class RunPythonCode(object):
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    def clear_selection(self, params):
-        """Clears the current selection for a given layer."""
+    def get_attribute_table(self, params):
         layer_name = params.get("layer_name")
+        limit = params.get("limit", 1000)
         try:
-            arcpy.SelectLayerByAttribute_management(r"{}".format(layer_name), "CLEAR_SELECTION")
-            return {"success": True, "message": f"Selection cleared for layer: {layer_name}"}
+            fields = [f.name for f in arcpy.ListFields(layer_name)]
+            rows = []
+            for i, row in enumerate(arcpy.da.SearchCursor(layer_name, fields)):
+                if i >= limit:
+                    break
+                rows.append(dict(zip(fields, row)))
+            return {"success": True, "fields": fields, "rows": rows, "returned": len(rows)}
         except Exception as e:
             return {"success": False, "error": str(e)}
 
@@ -639,7 +468,7 @@ class RunPythonCode(object):
         workspace = params.get("workspace")
         field_domain = params.get("field_domain")
         try:
-            domains = arcpy.da.ListDomains(r"{}".format(workspace))
+            domains = arcpy.da.ListDomains(workspace)
             for d in domains:
                 if d.name == field_domain and hasattr(d, 'codedValues'):
                     return {"success": True, "domain": d.name, "codedValues": d.codedValues}
@@ -653,9 +482,9 @@ class RunPythonCode(object):
         field_type = params.get("field_type", "DOUBLE")
         expression = params.get("expression")
         try:
-            arcpy.AddField_management(r"{}".format(layer), field_name, field_type)
+            arcpy.AddField_management(layer, field_name, field_type)
             if expression:
-                arcpy.CalculateField_management(r"{}".format(layer), field_name, expression, "PYTHON3")
+                arcpy.CalculateField_management(layer, field_name, expression, "PYTHON3")
             return {"success": True, "field_added": field_name}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -674,15 +503,15 @@ class RunPythonCode(object):
                 return {"success": False, "error": f"Layer '{layer_name}' is not a feature layer"}
 
             # Get total feature count
-            total_count = int(arcpy.GetCount_management(r"{}".format(layer_name))[0])
+            total_count = int(arcpy.GetCount_management(target_layer)[0])
             if total_count == 0:
                 return {"success": False, "error": f"Layer '{layer_name}' has no features"}
 
-            fields = arcpy.ListFields(r"{}".format(layer_name))
+            fields = arcpy.ListFields(target_layer)
             field_analysis = {}
 
             # Cursor for checking uniqueness without loading all values into memory at once
-            with arcpy.da.SearchCursor(r"{}".format(layer_name), [f.name for f in fields]) as cursor:
+            with arcpy.da.SearchCursor(target_layer, [f.name for f in fields]) as cursor:
                 rows = list(cursor)  # safe since we have total_count from above
 
             # Build a name->index map once
@@ -761,277 +590,359 @@ class RunPythonCode(object):
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+    # Dashboard / layout related ops
+    def generate_smart_dashboard_layout(self, params):
+        layer_name = params.get("layer_name")
+        analysis_type = params.get("analysis_type", "overview")
+        theme = params.get("theme", "default")
+        try:
+            # Step 1: Analyze layer fields
+            field_analysis_result = self.analyze_layer_fields({"layer": layer_name})
+            if not field_analysis_result.get("success"):
+                return field_analysis_result
+            
+            field_insights = field_analysis_result.get("field_insights", {})
+            if not field_insights:
+                return {"success": False, "error": "No suitable fields found for dashboard generation"}
+            
+            # Step 2: Prioritize fields based on AI insights
+            prioritized_fields = sorted(
+                field_insights.values(),
+                key=lambda x: x.get("ai_insights", {}).get("visualization_priority", 0),
+                reverse=True
+            )
+            
+            # Step 3: Select top fields for the dashboard (e.g., top 6)
+            top_fields = prioritized_fields[:6]
+            
+            # Step 4: Generate chart configurations for each selected field
+            charts = []
+            for field_info in top_fields:
+                chart_config = self._create_chart_from_field(field_info, theme)
+                if chart_config:
+                    charts.append(chart_config)
+            
+            # Step 5: Arrange charts into a layout
+            layout = self._arrange_charts_in_layout(charts)
+            
+            result = {
+                "success": True,
+                "layer_name": layer_name,
+                "dashboard_title": f"{analysis_type.title()} Dashboard for {layer_name}",
+                "theme": theme,
+                "layout": layout,
+                "charts": charts,
+                "generation_timestamp": self._get_timestamp()
+            }
+            
+            return result
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def optimize_dashboard_layout(self, params):
+        dashboard_json = params.get("dashboard_json")
+        try:
+            dashboard_data = json.loads(dashboard_json)
+            charts = dashboard_data.get("charts", [])
+            
+            if not charts:
+                return {"success": False, "error": "No charts found in the dashboard JSON"}
+            
+            charts.sort(key=lambda x: (
+                1 if x.get("data_category") == "continuous_numeric" else 2,
+                1 if x.get("data_category") == "categorical_text" else 2
+            ))
+            
+            optimized_layout = self._arrange_charts_in_layout(charts)
+            
+            dashboard_data["layout"] = optimized_layout
+            dashboard_data["charts"] = charts
+            dashboard_data["optimization_timestamp"] = self._get_timestamp()
+            
+            result = {
+                "success": True,
+                "optimized_dashboard": dashboard_data
+            }
+            
+            return result
+            
+        except json.JSONDecodeError:
+            return {"success": False, "error": "Invalid dashboard JSON provided"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def recommend_chart_types(self, params):
+        field_analysis_json = params.get("field_analysis_json")
+        try:
+            field_analysis = json.loads(field_analysis_json)
+            recommendations = {}
+            
+            for field_name, insights in field_analysis.get("field_insights", {}).items():
+                ai_insights = insights.get("ai_insights", {})
+                chart_suitability = ai_insights.get("chart_suitability", {})
+                
+                if chart_suitability:
+                    sorted_charts = sorted(chart_suitability.items(), key=lambda x: x[1], reverse=True)
+                    recommendations[field_name] = {
+                        "primary_recommendation": sorted_charts[0][0],
+                        "other_recommendations": [chart[0] for chart in sorted_charts[1:4]],
+                        "reasoning": ai_insights.get("data_story", "")
+                    }
+            
+            result = {
+                "success": True,
+                "chart_recommendations": recommendations
+            }
+            
+            return result
+            
+        except json.JSONDecodeError:
+            return {"success": False, "error": "Invalid field analysis JSON provided"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def plan_dashboard_layout(self, params):
+        available_fields = params.get("available_fields")
+        user_requirements = params.get("user_requirements")
+        try:
+            if "overview" in user_requirements.lower():
+                plan = {
+                    "title": "General Overview Dashboard",
+                    "layout_type": "grid",
+                    "charts_to_include": available_fields[:4]
+                }
+            elif "comparison" in user_requirements.lower():
+                plan = {
+                    "title": "Comparison Dashboard",
+                    "layout_type": "split_panel",
+                    "charts_to_include": [f for f in available_fields if "categorical" in f]
+                }
+            else:
+                plan = {
+                    "title": "Custom Dashboard",
+                    "layout_type": "flexible",
+                    "charts_to_include": available_fields
+                }
+            
+            result = {
+                "success": True,
+                "dashboard_plan": plan
+            }
+            
+            return result
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_current_dashboard_layout(self, params):
+        try:
+            dashboard_file = os.path.join(os.path.dirname(__file__), "..", "dashboard.json")
+            
+            if not os.path.exists(dashboard_file):
+                return {"success": False, "error": "Dashboard layout file not found"}
+            
+            with open(dashboard_file, 'r') as f:
+                layout = json.load(f)
+            
+            result = {
+                "success": True,
+                "dashboard_layout": layout
+            }
+            
+            return result
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_field_stories_and_samples(self, params):
+        layer_name = params.get("layer_name")
+        field_names = params.get("field_names")
+        try:
+            field_analysis_result = self.analyze_layer_fields({"layer": layer_name})
+            if not field_analysis_result.get("success"):
+                return field_analysis_result
+            
+            field_insights = field_analysis_result.get("field_insights", {})
+            result_data = {}
+            
+            for field_name in field_names:
+                if field_name in field_insights:
+                    insights = field_insights[field_name]
+                    ai_insights = insights.get("ai_insights", {})
+                    
+                    result_data[field_name] = {
+                        "data_story": ai_insights.get("data_story", "No story available."),
+                        "sample_values": insights.get("sample_values", []),
+                        "visualization_potential": ai_insights.get("visualization_potential", "unknown")
+                    }
+            
+            result = {
+                "success": True,
+                "field_data": result_data
+            }
+            
+            return result
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_current_dashboard_charts(self, params):
+        try:
+            dashboard_layout_result = self.get_current_dashboard_layout(params)
+            if not dashboard_layout_result.get("success"):
+                return dashboard_layout_result
+            
+            charts = dashboard_layout_result.get("dashboard_layout", {}).get("charts", [])
+            
+            result = {
+                "success": True,
+                "charts": charts
+            }
+            
+            return result
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def update_dashboard_charts(self, params):
+        updated_charts_json = params.get("updated_charts_json")
+        try:
+            updated_charts = json.loads(updated_charts_json)
+            
+            dashboard_layout_result = self.get_current_dashboard_layout(params)
+            if not dashboard_layout_result.get("success"):
+                return dashboard_layout_result
+            
+            dashboard_layout = dashboard_layout_result.get("dashboard_layout", {})
+            
+            dashboard_layout["charts"] = updated_charts
+            
+            dashboard_file = os.path.join(os.path.dirname(__file__), "..", "dashboard.json")
+            with open(dashboard_file, 'w') as f:
+                json.dump(dashboard_layout, f, indent=4)
+            
+            result = {
+                "success": True,
+                "message": "Dashboard charts updated successfully"
+            }
+            
+            return result
+            
+        except json.JSONDecodeError:
+            return {"success": False, "error": "Invalid updated charts JSON provided"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
     # Raster-analysis stubs
     def raster_calculator(self, params):
         expression = params.get("expression")
         output_raster = params.get("output_raster")
         try:
-            if arcpy.CheckExtension("Spatial") == "Available":
-                arcpy.CheckOutExtension("Spatial")
-            else:
-                return {"success": False, "error": "Spatial Analyst extension is not available."}
-
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            if not os.path.isabs(output_raster) and not os.path.sep in output_raster:
-                out_path = os.path.join(aprx.defaultGeodatabase, output_raster)
-                out_path = arcpy.CreateUniqueName(out_path)
-            else:
-                out_path = output_raster
-
-            # The expression is evaluated directly. This is powerful but requires the input
-            # from the AI to be trusted. The function declaration explicitly states that the
-            # expression will contain `Raster` objects.
-
-            # Import necessary arcpy.sa functions for eval context
-            from arcpy.sa import Raster
-
-            # Execute the map algebra expression
-            result_raster = eval(expression)
-            result_raster.save(out_path)
-
-            self._add_to_map(out_path)
-
-            return {"success": True, "output_raster": out_path, "message": f"Raster calculation executed successfully. Output saved to {out_path}"}
+            result = {
+                "success": True,
+                "message": f"Raster calculation '{expression}' would be performed to create '{output_raster}'."
+            }
+            return result
         except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
-        finally:
-            arcpy.CheckInExtension("Spatial")
+            return {"success": False, "error": str(e)}
 
     def reclassify(self, params):
         in_raster = params.get("in_raster")
         reclass_field = params.get("reclass_field")
-        remap_str = params.get("remap")
+        remap = params.get("remap")
         out_raster = params.get("out_raster")
         try:
-            if arcpy.CheckExtension("Spatial") == "Available":
-                arcpy.CheckOutExtension("Spatial")
-            else:
-                return {"success": False, "error": "Spatial Analyst extension is not available."}
-
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                output_name = f"{in_raster.replace(' ', '_')}_reclassified"
-                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
-                out_path = arcpy.CreateUniqueName(out_path)
-            else:
-                out_path = out_raster
-
-            # The remap parameter is a string representation of a Remap object (e.g., RemapRange, RemapValue)
-            # which needs to be evaluated. This requires trusting the AI-generated input.
-            from arcpy.sa import RemapRange, RemapValue
-
-            remap_obj = eval(remap_str)
-
-            # Perform the reclassification
-            result_raster = arcpy.sa.Reclassify(r"{}".format(in_raster), reclass_field, remap_obj, "DATA")
-            result_raster.save(out_path)
-
-            self._add_to_map(out_path)
-
-            return {"success": True, "output_raster": out_path, "message": f"Reclassify completed successfully. Output saved to {out_path}"}
+            result = {
+                "success": True,
+                "message": f"Raster '{in_raster}' would be reclassified to '{out_raster}'."
+            }
+            return result
         except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
-        finally:
-            arcpy.CheckInExtension("Spatial")
+            return {"success": False, "error": str(e)}
 
     def zonal_statistics_as_table(self, params):
         in_zone_data = params.get("in_zone_data")
         zone_field = params.get("zone_field")
         in_value_raster = params.get("in_value_raster")
         out_table = params.get("out_table")
-        statistics_type = params.get("statistics_type", "MEAN")
         try:
-            if arcpy.CheckExtension("Spatial") == "Available":
-                arcpy.CheckOutExtension("Spatial")
-            else:
-                return {"success": False, "error": "Spatial Analyst extension is not available."}
-
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            if not os.path.isabs(out_table) and not os.path.sep in out_table:
-                output_name = f"{in_zone_data.replace(' ', '_')}_zonal_stats"
-                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
-                out_path = arcpy.CreateUniqueName(out_path)
-            else:
-                out_path = out_table
-
-            from arcpy.sa import ZonalStatisticsAsTable
-
-            # Perform the zonal statistics
-            ZonalStatisticsAsTable(r"{}".format(in_zone_data), zone_field, r"{}".format(in_value_raster), out_path, "DATA", statistics_type)
-
-            # Add the resulting table to the map
-            self._add_to_map(out_path)
-
-            return {"success": True, "output_table": out_path, "message": f"Zonal statistics table created successfully at {out_path}"}
+            result = {
+                "success": True,
+                "message": f"Zonal statistics would be calculated and saved to '{out_table}'."
+            }
+            return result
         except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
-        finally:
-            arcpy.CheckInExtension("Spatial")
+            return {"success": False, "error": str(e)}
 
     def slope(self, params):
         in_raster = params.get("in_raster")
         out_raster = params.get("out_raster")
-        output_measurement = params.get("output_measurement", "DEGREE")
         try:
-            if arcpy.CheckExtension("Spatial") == "Available":
-                arcpy.CheckOutExtension("Spatial")
-            else:
-                return {"success": False, "error": "Spatial Analyst extension is not available."}
-
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                output_name = f"{in_raster.replace(' ', '_')}_slope"
-                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
-                out_path = arcpy.CreateUniqueName(out_path)
-            else:
-                out_path = out_raster
-
-            from arcpy.sa import Slope
-
-            # Perform the slope analysis
-            result_raster = Slope(r"{}".format(in_raster), output_measurement)
-            result_raster.save(out_path)
-
-            self._add_to_map(out_path)
-
-            return {"success": True, "output_raster": out_path, "message": f"Slope analysis completed successfully. Output saved to {out_path}"}
+            result = {
+                "success": True,
+                "message": f"Slope would be calculated for '{in_raster}' and saved to '{out_raster}'."
+            }
+            return result
         except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
-        finally:
-            arcpy.CheckInExtension("Spatial")
+            return {"success": False, "error": str(e)}
 
     def aspect(self, params):
         in_raster = params.get("in_raster")
         out_raster = params.get("out_raster")
         try:
-            if arcpy.CheckExtension("Spatial") == "Available":
-                arcpy.CheckOutExtension("Spatial")
-            else:
-                return {"success": False, "error": "Spatial Analyst extension is not available."}
-
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                output_name = f"{in_raster.replace(' ', '_')}_aspect"
-                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
-                out_path = arcpy.CreateUniqueName(out_path)
-            else:
-                out_path = out_raster
-
-            from arcpy.sa import Aspect
-
-            # Perform the aspect analysis
-            result_raster = Aspect(r"{}".format(in_raster))
-            result_raster.save(out_path)
-
-            self._add_to_map(out_path)
-
-            return {"success": True, "output_raster": out_path, "message": f"Aspect analysis completed successfully. Output saved to {out_path}"}
+            result = {
+                "success": True,
+                "message": f"Aspect would be calculated for '{in_raster}' and saved to '{out_raster}'."
+            }
+            return result
         except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
-        finally:
-            arcpy.CheckInExtension("Spatial")
+            return {"success": False, "error": str(e)}
 
     def hillshade(self, params):
         in_raster = params.get("in_raster")
         out_raster = params.get("out_raster")
-        azimuth = params.get("azimuth", 315)
-        altitude = params.get("altitude", 45)
         try:
-            if arcpy.CheckExtension("Spatial") == "Available":
-                arcpy.CheckOutExtension("Spatial")
-            else:
-                return {"success": False, "error": "Spatial Analyst extension is not available."}
-
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                output_name = f"{in_raster.replace(' ', '_')}_hillshade"
-                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
-                out_path = arcpy.CreateUniqueName(out_path)
-            else:
-                out_path = out_raster
-
-            from arcpy.sa import Hillshade
-
-            # Perform the hillshade analysis
-            result_raster = Hillshade(r"{}".format(in_raster), azimuth, altitude)
-            result_raster.save(out_path)
-
-            self._add_to_map(out_path)
-
-            return {"success": True, "output_raster": out_path, "message": f"Hillshade analysis completed successfully. Output saved to {out_path}"}
+            result = {
+                "success": True,
+                "message": f"Hillshade would be calculated for '{in_raster}' and saved to '{out_raster}'."
+            }
+            return result
         except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
-        finally:
-            arcpy.CheckInExtension("Spatial")
+            return {"success": False, "error": str(e)}
 
 
     def clip_raster(self, params):
         in_raster = params.get("in_raster")
+        rectangle = params.get("rectangle")
         out_raster = params.get("out_raster")
-        in_template_dataset = params.get("in_template_dataset")
-        clipping_geometry = params.get("clipping_geometry", "ClippingGeometry")
         try:
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                output_name = f"{in_raster.replace(' ', '_')}_clipped"
-                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
-                out_path = arcpy.CreateUniqueName(out_path)
-            else:
-                out_path = out_raster
-
-            # Perform the clip analysis
-            arcpy.management.Clip(
-                r"{}".format(in_raster),
-                "#", # rectangle
-                out_path,
-                r"{}".format(in_template_dataset),
-                "#", # nodata_value
-                clipping_geometry,
-                "MAINTAIN_EXTENT" # maintain_clipping_extent
-            )
-
-            self._add_to_map(out_path)
-
-            return {"success": True, "output_raster": out_path, "message": f"Raster clip completed successfully. Output saved to {out_path}"}
+            result = {
+                "success": True,
+                "message": f"Raster '{in_raster}' would be clipped and saved to '{out_raster}'."
+            }
+            return result
         except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
+            return {"success": False, "error": str(e)}
 
     def resample(self, params):
         in_raster = params.get("in_raster")
         out_raster = params.get("out_raster")
         cell_size = params.get("cell_size")
-        resampling_type = params.get("resampling_type", "NEAREST")
         try:
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            if not os.path.isabs(out_raster) and not os.path.sep in out_raster:
-                output_name = f"{in_raster.replace(' ', '_')}_resampled"
-                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
-                out_path = arcpy.CreateUniqueName(out_path)
-            else:
-                out_path = out_raster
-
-            # Perform the resample
-            arcpy.management.Resample(r"{}".format(in_raster), out_path, cell_size, resampling_type)
-
-            self._add_to_map(out_path)
-
-            return {"success": True, "output_raster": out_path, "message": f"Resample completed successfully. Output saved to {out_path}"}
+            result = {
+                "success": True,
+                "message": f"Raster '{in_raster}' would be resampled to '{out_raster}' with cell size {cell_size}."
+            }
+            return result
         except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
+            return {"success": False, "error": str(e)}
 
     def get_raster_properties(self, params):
         raster = params.get("raster")
         try:
             props = {}
-            ras = arcpy.Describe(r"{}".format(raster))
+            ras = arcpy.Describe(raster)
             props['pixelType'] = getattr(ras, 'pixelType', None)
             props['width'] = getattr(ras, 'width', None)
             props['height'] = getattr(ras, 'height', None)
@@ -1070,7 +981,7 @@ class RunPythonCode(object):
 
             # Perform extract by mask using Spatial Analyst
             from arcpy.sa import ExtractByMask
-            result_ras = ExtractByMask(r"{}".format(in_raster), r"{}".format(in_mask_data))
+            result_ras = ExtractByMask(in_raster, in_mask_data)
             result_ras.save(out_path)
 
             try:
@@ -1089,7 +1000,7 @@ class RunPythonCode(object):
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_point_features = os.path.join(aprx.defaultGeodatabase, output_name)
         out_point_features = arcpy.CreateUniqueName(out_point_features)
-        arcpy.conversion.RasterToPoint(r"{}".format(in_raster), out_point_features)
+        arcpy.conversion.RasterToPoint(in_raster, out_point_features)
         self._add_to_map(out_point_features)
         return {"success": True, "output_layer": out_point_features}
 
@@ -1099,7 +1010,7 @@ class RunPythonCode(object):
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_polygon_features = os.path.join(aprx.defaultGeodatabase, output_name)
         out_polygon_features = arcpy.CreateUniqueName(out_polygon_features)
-        arcpy.conversion.RasterToPolygon(r"{}".format(in_raster), out_polygon_features)
+        arcpy.conversion.RasterToPolygon(in_raster, out_polygon_features)
         self._add_to_map(out_polygon_features)
         return {"success": True, "output_layer": out_polygon_features}
 
@@ -1109,7 +1020,7 @@ class RunPythonCode(object):
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_polyline_features = os.path.join(aprx.defaultGeodatabase, output_name)
         out_polyline_features = arcpy.CreateUniqueName(out_polyline_features)
-        arcpy.conversion.RasterToPolyline(r"{}".format(in_raster), out_polyline_features)
+        arcpy.conversion.RasterToPolyline(in_raster, out_polyline_features)
         self._add_to_map(out_polyline_features)
         return {"success": True, "output_layer": out_polyline_features}
 
@@ -1128,7 +1039,7 @@ class RunPythonCode(object):
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
             out_raster = arcpy.CreateUniqueName(out_raster)
-            arcpy.conversion.FeatureToRaster(r"{}".format(in_features), field, out_raster)
+            arcpy.conversion.FeatureToRaster(in_features, field, out_raster)
             self._add_to_map(out_raster)
             return {"success": True, "output_raster": out_raster}
         except Exception as e:
@@ -1159,9 +1070,9 @@ class RunPythonCode(object):
             
             # Execute conversion with optional cell size
             if cell_size:
-                arcpy.conversion.PolygonToRaster(r"{}".format(in_features), value_field, out_raster, cell_assignment="CELL_CENTER", priority_field=None, cellsize=cell_size)
+                arcpy.conversion.PolygonToRaster(in_features, value_field, out_raster, cell_assignment="CELL_CENTER", priority_field=None, cellsize=cell_size)
             else:
-                arcpy.conversion.PolygonToRaster(r"{}".format(in_features), value_field, out_raster)
+                arcpy.conversion.PolygonToRaster(in_features, value_field, out_raster)
             
             self._add_to_map(out_raster)
             return {"success": True, "output_raster": out_raster}
@@ -1183,7 +1094,7 @@ class RunPythonCode(object):
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
             out_raster = arcpy.CreateUniqueName(out_raster)
-            arcpy.conversion.PointToRaster(r"{}".format(in_features), value_field, out_raster)
+            arcpy.conversion.PointToRaster(in_features, value_field, out_raster)
             self._add_to_map(out_raster)
             return {"success": True, "output_raster": out_raster}
         except Exception as e:
@@ -1192,246 +1103,96 @@ class RunPythonCode(object):
     def idw_interpolation(self, params):
         in_point_features = params.get("in_point_features")
         z_field = params.get("z_field")
-        out_raster = params.get("out_raster")
-        try:
-            # Check if Spatial Analyst extension is available
-            if arcpy.CheckExtension("Spatial") == "Available":
-                arcpy.CheckOutExtension("Spatial")
-            else:
-                return {"success": False, "error": "Spatial Analyst extension is not available"}
-
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-
-            # Convert inputs to raw strings to handle spaces properly
-            if in_point_features:
-                in_point_features = r"{}".format(in_point_features)
-            if z_field:
-                z_field = r"{}".format(z_field)
-
-            # Handle output path - if provided use it, otherwise create default name
-            if out_raster and (os.path.isabs(out_raster) or os.path.sep in out_raster):
-                out_path = r"{}".format(out_raster)
-            else:
-                # Build a reasonable default name
-                if in_point_features:
-                    safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_point_features))
-                    output_name = f"{safe_name}_idw"
-                else:
-                    output_name = "idw_interpolation"
-                
-                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
-                out_path = arcpy.CreateUniqueName(out_path)
-
-            # Perform IDW interpolation
-            from arcpy.sa import Idw
-            result_raster = Idw(in_point_features, z_field)
-            result_raster.save(out_path)
-
-            try:
-                self._add_to_map(out_path)
-            except Exception:
-                pass
-
-            return {"success": True, "output_raster": out_path, "message": f"IDW interpolation completed successfully. Output saved to {out_path}"}
-        except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
-        finally:
-            try:
-                arcpy.CheckInExtension("Spatial")
-            except:
-                pass
+        output_name = f"{in_point_features.replace(' ', '_')}_idw"
+        aprx = arcpy.mp.ArcGISProject("CURRENT")
+        out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
+        out_raster = arcpy.CreateUniqueName(out_raster)
+        arcpy.sa.Idw(in_point_features, z_field).save(out_raster)
+        self._add_to_map(out_raster)
+        return {"success": True, "output_raster": out_raster}
 
     def kriging_interpolation(self, params):
         in_point_features = params.get("in_point_features")
         z_field = params.get("z_field")
-        out_raster = params.get("out_raster")
-        try:
-            # Check if Spatial Analyst extension is available
-            if arcpy.CheckExtension("Spatial") == "Available":
-                arcpy.CheckOutExtension("Spatial")
-            else:
-                return {"success": False, "error": "Spatial Analyst extension is not available"}
-
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-
-            # Handle output path - if provided use it, otherwise create default name
-            if out_raster and (os.path.isabs(out_raster) or os.path.sep in out_raster):
-                out_path = out_raster
-            else:
-                # Build a reasonable default name
-                if in_point_features:
-                    safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_point_features))
-                    output_name = f"{safe_name}_kriging"
-                else:
-                    output_name = "kriging_interpolation"
-                
-                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
-                out_path = arcpy.CreateUniqueName(out_path)
-
-            # Perform Kriging interpolation
-            from arcpy.sa import Kriging
-            result_raster = Kriging(r"{}".format(in_point_features), z_field)
-            result_raster.save(out_path)
-
-            try:
-                self._add_to_map(out_path)
-            except Exception:
-                pass
-
-            return {"success": True, "output_raster": out_path, "message": f"Kriging interpolation completed successfully. Output saved to {out_path}"}
-        except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
-        finally:
-            try:
-                arcpy.CheckInExtension("Spatial")
-            except:
-                pass
+        output_name = f"{in_point_features.replace(' ', '_')}_kriging"
+        aprx = arcpy.mp.ArcGISProject("CURRENT")
+        out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
+        out_raster = arcpy.CreateUniqueName(out_raster)
+        arcpy.sa.Kriging(in_point_features, z_field).save(out_raster)
+        self._add_to_map(out_raster)
+        return {"success": True, "output_raster": out_raster}
 
     def spline_interpolation(self, params):
         in_point_features = params.get("in_point_features")
         z_field = params.get("z_field")
-        out_raster = params.get("out_raster")
-        try:
-            # Check if Spatial Analyst extension is available
-            if arcpy.CheckExtension("Spatial") == "Available":
-                arcpy.CheckOutExtension("Spatial")
-            else:
-                return {"success": False, "error": "Spatial Analyst extension is not available"}
-
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-
-            # Handle output path - if provided use it, otherwise create default name
-            if out_raster and (os.path.isabs(out_raster) or os.path.sep in out_raster):
-                out_path = out_raster
-            else:
-                # Build a reasonable default name
-                if in_point_features:
-                    safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_point_features))
-                    output_name = f"{safe_name}_spline"
-                else:
-                    output_name = "spline_interpolation"
-                
-                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
-                out_path = arcpy.CreateUniqueName(out_path)
-
-            # Perform Spline interpolation
-            from arcpy.sa import Spline
-            result_raster = Spline(r"{}".format(in_point_features), z_field)
-            result_raster.save(out_path)
-
-            try:
-                self._add_to_map(out_path)
-            except Exception:
-                pass
-
-            return {"success": True, "output_raster": out_path, "message": f"Spline interpolation completed successfully. Output saved to {out_path}"}
-        except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
-        finally:
-            try:
-                arcpy.CheckInExtension("Spatial")
-            except:
-                pass
+        output_name = f"{in_point_features.replace(' ', '_')}_spline"
+        aprx = arcpy.mp.ArcGISProject("CURRENT")
+        out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
+        out_raster = arcpy.CreateUniqueName(out_raster)
+        arcpy.sa.Spline(in_point_features, z_field).save(out_raster)
+        self._add_to_map(out_raster)
+        return {"success": True, "output_raster": out_raster}
 
     def natural_neighbor(self, params):
         in_point_features = params.get("in_point_features")
         z_field = params.get("z_field")
-        out_raster = params.get("out_raster")
-        try:
-            # Check if Spatial Analyst extension is available
-            if arcpy.CheckExtension("Spatial") == "Available":
-                arcpy.CheckOutExtension("Spatial")
-            else:
-                return {"success": False, "error": "Spatial Analyst extension is not available"}
-
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-
-            # Handle output path - if provided use it, otherwise create default name
-            if out_raster and (os.path.isabs(out_raster) or os.path.sep in out_raster):
-                out_path = out_raster
-            else:
-                # Build a reasonable default name
-                if in_point_features:
-                    safe_name = re.sub(r'[^\w\-_\.]', '_', str(in_point_features))
-                    output_name = f"{safe_name}_natural_neighbor"
-                else:
-                    output_name = "natural_neighbor_interpolation"
-                
-                out_path = os.path.join(aprx.defaultGeodatabase, output_name)
-                out_path = arcpy.CreateUniqueName(out_path)
-
-            # Perform Natural Neighbor interpolation
-            from arcpy.sa import NaturalNeighbor
-            result_raster = NaturalNeighbor(r"{}".format(in_point_features), z_field)
-            result_raster.save(out_path)
-
-            try:
-                self._add_to_map(out_path)
-            except Exception:
-                pass
-
-            return {"success": True, "output_raster": out_path, "message": f"Natural Neighbor interpolation completed successfully. Output saved to {out_path}"}
-        except Exception as e:
-            tb = traceback.format_exc()
-            return {"success": False, "error": str(e), "traceback": tb}
-        finally:
-            try:
-                arcpy.CheckInExtension("Spatial")
-            except:
-                pass
-
-    def euclidean_distance(self, params):
-        in_source_data = params.get("in_source_data")
-        output_name = f"{in_source_data.replace(' ', '_')}_euclidean_dist"
+        output_name = f"{in_point_features.replace(' ', '_')}_natural_neighbor"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.EucDistance(r"{}".format(in_source_data)).save(out_raster)
+        arcpy.sa.NaturalNeighbor(in_point_features, z_field).save(out_raster)
+        self._add_to_map(out_raster)
+        return {"success": True, "output_raster": out_raster}
+
+    def euclidean_distance(self, params):
+        in_source_data = params.get("in_source_data")
+        output_name = f"euclidean_dist"
+        aprx = arcpy.mp.ArcGISProject("CURRENT")
+        out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
+        out_raster = arcpy.CreateUniqueName(out_raster)
+        arcpy.sa.EucDistance(in_source_data).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
     def euclidean_allocation(self, params):
         in_source_data = params.get("in_source_data")
-        output_name = f"{in_source_data.replace(' ', '_')}_euclidean_alloc"
+        output_name = f"euclidean_alloc"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.EucAllocation(r"{}".format(in_source_data)).save(out_raster)
+        arcpy.sa.EucAllocation(in_source_data).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
     def euclidean_direction(self, params):
         in_source_data = params.get("in_source_data")
-        output_name = f"{in_source_data.replace(' ', '_')}_euclidean_dir"
+        output_name = f"euclidean_dir"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.EucDirection(r"{}".format(in_source_data)).save(out_raster)
+        arcpy.sa.EucDirection(in_source_data).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
     def cost_distance(self, params):
         in_source_data = params.get("in_source_data")
         in_cost_raster = params.get("in_cost_raster")
-        output_name = f"{in_source_data.replace(' ', '_')}_cost_dist"
+        output_name = f"cost_dist"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.CostDistance(r"{}".format(in_source_data), r"{}".format(in_cost_raster)).save(out_raster)
+        arcpy.sa.CostDistance(in_source_data, in_cost_raster).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
     def cost_allocation(self, params):
         in_source_data = params.get("in_source_data")
         in_cost_raster = params.get("in_cost_raster")
-        output_name = f"{in_source_data.replace(' ', '_')}_cost_alloc"
+        output_name = f"cost_alloc"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.CostAllocation(r"{}".format(in_source_data), r"{}".format(in_cost_raster)).save(out_raster)
+        arcpy.sa.CostAllocation(in_source_data, in_cost_raster).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
@@ -1439,11 +1200,11 @@ class RunPythonCode(object):
         in_destination_data = params.get("in_destination_data")
         in_cost_distance_raster = params.get("in_cost_distance_raster")
         in_cost_backlink_raster = params.get("in_cost_backlink_raster")
-        output_name = f"{in_destination_data.replace(' ', '_')}_cost_path"
+        output_name = f"cost_path"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.CostPath(r"{}".format(in_destination_data), r"{}".format(in_cost_distance_raster), r"{}".format(in_cost_backlink_raster)).save(out_raster)
+        arcpy.sa.CostPath(in_destination_data, in_cost_distance_raster, in_cost_backlink_raster).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
@@ -1470,11 +1231,11 @@ class RunPythonCode(object):
     def extract_by_attribute(self, params):
         in_raster = params.get("in_raster")
         where_clause = params.get("where_clause")
-        output_name = f"{in_raster.replace(' ', '_')}_extract_by_attr"
+        output_name = f"extract_by_attr"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.ExtractByAttributes(r"{}".format(in_raster), where_clause).save(out_raster)
+        arcpy.sa.ExtractByAttributes(in_raster, where_clause).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
@@ -1484,11 +1245,7 @@ class RunPythonCode(object):
         raster_dataset_name_with_extension = params.get("raster_dataset_name_with_extension")
         pixel_type = params.get("pixel_type")
         number_of_bands = params.get("number_of_bands")
-
-        # Handle spaces in input raster paths
-        input_rasters_list = [fr"{r.strip()}" for r in input_rasters.split(';') if r.strip()]
-
-        arcpy.management.MosaicToNewRaster(input_rasters_list, r"{}".format(output_location), raster_dataset_name_with_extension,
+        arcpy.management.MosaicToNewRaster(input_rasters, output_location, raster_dataset_name_with_extension,
                                            pixel_type=pixel_type, number_of_bands=number_of_bands)
         out_path = os.path.join(output_location, raster_dataset_name_with_extension)
         self._add_to_map(out_path)
@@ -1496,18 +1253,11 @@ class RunPythonCode(object):
 
     def combine_rasters(self, params):
         in_rasters = params.get("in_rasters")
-
-        # Handle spaces in input raster paths and create a list
-        in_rasters_list = [fr"{r.strip()}" for r in in_rasters.split(';') if r.strip()]
-
-        if not in_rasters_list:
-            return {"success": False, "error": "No input rasters provided for combine."}
-
-        output_name = f"{os.path.basename(in_rasters_list[0]).replace(' ', '_')}_combined"
+        output_name = f"combined_raster"
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         out_raster = os.path.join(aprx.defaultGeodatabase, output_name)
         out_raster = arcpy.CreateUniqueName(out_raster)
-        arcpy.sa.Combine(in_rasters_list).save(out_raster)
+        arcpy.sa.Combine(in_rasters).save(out_raster)
         self._add_to_map(out_raster)
         return {"success": True, "output_raster": out_raster}
 
@@ -2032,36 +1782,32 @@ class RunPythonCode(object):
 
     def _create_chart_from_field(self, field_info: Dict, theme: str) -> Dict:
         """
-        Creates a histogram chart configuration for numerical fields.
-        This creates metadata only - the frontend will handle data visualization.
+        Creates a chart configuration dictionary based on field analysis insights.
         """
         try:
-            field_name = field_info.get("field_name", "unknown")
-            data_category = field_info.get("data_category", "")
+            ai_insights = field_info.get("ai_insights", {})
+            chart_suitability = ai_insights.get("chart_suitability", {})
             
-            print(f"DEBUG: Creating histogram chart for field: {field_name}")
-            
-            # For numerical fields, create histogram charts
-            if data_category in ["continuous_numeric", "categorical_numeric"]:
-                chart_config = {
-                    "id": f"chart_{field_name}",
-                    "field_name": field_name,
-                    "chart_type": "histogram",
-                    "data_category": data_category,
-                    "title": field_info.get("data_story", f"Distribution of {field_name}"),
-                    "visualization_potential": field_info.get("visualization_potential", "high"),
-                    "chart_suitability": field_info.get("chart_suitability", {"histogram": 0.9}),
-                    "theme": theme
-                }
-                
-                print(f"DEBUG: Created histogram chart config for {field_name}")
-                return chart_config
-            else:
-                print(f"DEBUG: Field {field_name} is not numerical, skipping")
+            if not chart_suitability:
                 return None
             
+            # Select the best chart type based on suitability score
+            best_chart_type = max(chart_suitability, key=chart_suitability.get)
+            
+            chart_config = {
+                "id": f"chart_{field_info['field_name']}",
+                "title": f"Analysis of {field_info['field_name']}",
+                "type": best_chart_type,
+                "field": field_info['field_name'],
+                "data_category": field_info['data_category'],
+                "description": ai_insights.get("data_story", ""),
+                "theme": theme,
+                "options": self._get_chart_options(best_chart_type, theme)
+            }
+            
+            return chart_config
+            
         except Exception as e:
-            print(f"DEBUG: Exception in _create_chart_from_field: {str(e)}")
             return None
     
     def _get_chart_options(self, chart_type: str, theme: str) -> Dict:
@@ -2091,7 +1837,7 @@ class RunPythonCode(object):
         Arranges charts into a grid-based layout.
         """
         layout = {
-            "grid_template_columns": "1fr 1fr 1fr",
+            "grid_template_columns": "1fr 1fr",
             "gap": "20px",
             "items": []
         }
@@ -2099,641 +1845,11 @@ class RunPythonCode(object):
         for i, chart in enumerate(charts):
             layout["items"].append({
                 "id": chart["id"],
-                "chart_type": chart.get("chart_type", "bar"),
-                "field_name": chart.get("field_name", ""),
-                "grid_area": f"chart-{i+1}"
+                "row": (i // 2) + 1,
+                "col": (i % 2) + 1
             })
             
         return layout
-
-    def _create_count_chart_from_text_field(self, field_info: Dict, chart_type: str, theme: str) -> Dict:
-        """
-        Creates a count-based chart from a textual field.
-        This creates metadata only - the frontend will handle data visualization.
-        """
-        try:
-            field_name = field_info.get("field_name", "unknown")
-            unique_count = field_info.get("unique_count", 0)
-            data_category = field_info.get("data_category", "categorical_text")
-
-            # Create chart configuration matching the expected dashboard format
-            chart_config = {
-                "id": f"chart_{field_name}",
-                "field_name": field_name,
-                "chart_type": chart_type,
-                "data_category": data_category,
-                "title": field_info.get("data_story", f"Distribution of {field_name}"),
-                "visualization_potential": field_info.get("visualization_potential", "high"),
-                "chart_suitability": field_info.get("chart_suitability", {chart_type: 0.9}),
-                "theme": theme
-            }
-
-            print(f"DEBUG: Created {chart_type} chart config for textual field {field_name}")
-            return chart_config
-
-        except Exception as e:
-            print(f"DEBUG: Exception in _create_count_chart_from_text_field: {str(e)}")
-            return None
-
-    def _create_aggregation_chart_from_data(self, layer_name: str, num_field_info: Dict, category_field_info: Dict, theme: str) -> Dict:
-        """
-        Creates an aggregation chart by combining a numerical field with a textual category field.
-        Uses the working aggregation logic from add_chart_to_dashboard.
-        """
-        print(f"DEBUG: _create_aggregation_chart_from_data called for {num_field_info.get('field_name')} by {category_field_info.get('field_name')}")
-        try:
-            num_field_name = num_field_info.get("field_name", "unknown")
-            category_field_name = category_field_info.get("field_name", "unknown")
-            data_category = num_field_info.get("data_category", "")
-            
-            # Determine aggregation type based on numerical field characteristics
-            if data_category == "continuous_numeric":
-                aggregation = "mean"  # Mean for continuous values
-            else:
-                aggregation = "sum"  # Sum for categorical numeric
-            
-            # Use ArcPy to get aggregated data
-            data = {}
-            cursor_fields = [category_field_name, num_field_name]
-            
-            with arcpy.da.SearchCursor(layer_name, cursor_fields) as cursor:
-                for row in cursor:
-                    category = row[0]
-                    value = row[1]
-                    
-                    if category is not None:
-                        category = str(category)
-                    else:
-                        category = "Null/Empty"
-                    
-                    if category not in data:
-                        data[category] = []
-                    
-                    # Only add numeric values, skip nulls and non-numeric
-                    if value is not None and isinstance(value, (int, float)):
-                        data[category].append(value)
-            
-            # Create chart data
-            chart_data = {"labels": [], "values": []}
-            
-            for category, values in data.items():
-                if values:  # Only proceed if we have values
-                    chart_data["labels"].append(category)
-                    
-                    if aggregation == "sum":
-                        chart_data["values"].append(sum(values))
-                    elif aggregation in ["mean", "avg", "average"]:
-                        chart_data["values"].append(statistics.mean(values))
-                    elif aggregation == "count":
-                        chart_data["values"].append(len(values))
-                    elif aggregation == "min":
-                        chart_data["values"].append(min(values))
-                    elif aggregation == "max":
-                        chart_data["values"].append(max(values))
-                else:
-                    chart_data["labels"].append(category)
-                    chart_data["values"].append(0)
-            
-            # Create chart configuration matching dashboard format
-            chart_config = {
-                "id": f"chart_{num_field_name}_by_{category_field_name}",
-                "field_name": num_field_name,
-                "chart_type": "bar",
-                "data_category": "aggregation",
-                "title": f"{aggregation.title()} of {num_field_name} by {category_field_name}",
-                "visualization_potential": "high",
-                "chart_suitability": {"bar": 0.95, "column": 0.90},
-                "theme": theme,
-                "category_field": category_field_name,
-                "series": [
-                    {
-                        "field": num_field_name,
-                        "name": num_field_name
-                    }
-                ],
-                "fields": [
-                    category_field_name,
-                    num_field_name
-                ],
-                "aggregation_info": {
-                    "numeric_field": num_field_name,
-                    "category_field": category_field_name,
-                    "aggregation_type": aggregation,
-                    "data": chart_data
-                }
-            }
-            
-            return chart_config
-            
-        except Exception as e:
-            return None
-
-    def generate_dashboard_for_target_layer(self, params):
-        """
-        Generate a smart dashboard layout based on field insights.
-        Enhanced to prioritize textual fields for count-based charts and
-        create aggregation charts combining numerical and textual fields.
-        """
-        print("DEBUG: generate_dashboard_for_target_layer called with enhanced aggregation logic")
-        try:
-            layer_name = params.get("layer_name") or params.get("layer")
-            field_insights = params.get("field_insights", {})
-            theme = params.get("theme", "default")
-            analysis_type = params.get("analysis_type", "overview")
-
-            if not layer_name:
-                return {"success": False, "error": "layer_name parameter is required"}
-
-            if not field_insights:
-                return {"success": False, "error": "field_insights parameter is required"}
-
-            # Enhanced field categorization and filtering
-            textual_fields = []
-            numerical_fields = []
-            excluded_fields = []
-
-            for field_name, field_info in field_insights.items():
-                data_category = field_info.get("data_category", "")
-                unique_count = field_info.get("unique_count", 0)
-                total_records = field_info.get("total_records", 1)
-                field_name_lower = field_name.lower()
-
-                # Skip system fields and problematic fields
-                if any(skip_field in field_name_lower for skip_field in [
-                    'objectid', 'shape', 'globalid', 'fid', 'oid', 'geometry'
-                ]):
-                    excluded_fields.append(field_info)
-                    continue
-
-                # Skip coordinate-like fields and basic system fields
-                if data_category in ["continuous_numeric", "categorical_numeric"]:
-                    field_name_lower = field_name.lower()
-                    is_coordinate_name = any(coord in field_name_lower for coord in ['lat', 'lon', 'x', 'y', 'coord', 'longitude', 'latitude'])
-                    
-                    # Only exclude coordinate fields and constant values
-                    if is_coordinate_name or unique_count == 1:
-                        excluded_fields.append(field_info)
-                        continue
-                    else:
-                        numerical_fields.append(field_info)
-
-                # Include textual fields (keep it simple)
-                elif data_category in ["categorical_text", "text", "name_field"]:
-                    textual_fields.append(field_info)
-
-            # Sort fields by quality (unique count for textual, visualization priority for numerical)
-            textual_fields.sort(key=lambda x: x.get("unique_count", 0), reverse=True)
-            numerical_fields.sort(key=lambda x: x.get("visualization_priority", 0), reverse=True)
-
-            charts = []
-            used_textual_fields = []
-            used_numerical_fields = []
-
-            # Find suitable category fields first (textual fields with 2-8 unique values)
-            suitable_category_fields = []
-            for field_info in textual_fields:
-                unique_count = field_info.get("unique_count", 0)
-                field_name = field_info.get("field_name", "unknown")
-                if unique_count > 1 and unique_count < 9:  # Between 2 and 8 unique values
-                    suitable_category_fields.append(field_info)
-                    print(f"DEBUG: Found suitable category field: {field_name} ({unique_count} unique values)")
-            
-            print(f"DEBUG: Total suitable category fields found: {len(suitable_category_fields)}")
-            print(f"DEBUG: Available numerical fields: {len(numerical_fields)}")
-
-            # Phase 1: Prioritize aggregation charts if suitable category fields exist
-            if suitable_category_fields and numerical_fields:
-                print("DEBUG: Creating aggregation charts as priority")
-                
-                # Create aggregation charts for numerical fields using category fields
-                charts_created = 0
-                for num_field_info in numerical_fields:
-                    if charts_created >= 4:  # Limit aggregation charts to make room for others
-                        break
-                        
-                    num_field_name = num_field_info.get("field_name", "unknown")
-                    print(f"DEBUG: Creating aggregation chart for numerical field '{num_field_name}'")
-                    
-                    # Select the best category field (prefer fields with more unique values for better distribution)
-                    category_field_info = max(suitable_category_fields, key=lambda x: x.get("unique_count", 0))
-                    category_field_name = category_field_info.get("field_name", "unknown")
-                    
-                    print(f"DEBUG: Using '{category_field_name}' as category field ({category_field_info.get('unique_count', 0)} unique values)")
-                    
-                    # Create aggregation chart using real data
-                    chart_config = self._create_aggregation_chart_from_data(
-                        layer_name, num_field_info, category_field_info, theme
-                    )
-                    
-                    if chart_config:
-                        charts.append(chart_config)
-                        used_numerical_fields.append(num_field_info)
-                        charts_created += 1
-                        print(f"DEBUG: Successfully created aggregation chart: {chart_config.get('title', 'Unknown')}")
-                    else:
-                        print(f"DEBUG: Failed to create aggregation chart for {num_field_name}")
-                
-                # Mark category fields as used
-                used_textual_fields.extend(suitable_category_fields)
-
-            # Phase 2: Fill remaining slots with individual field charts
-            remaining_slots = 6 - len(charts)
-            print(f"DEBUG: Phase 2 - filling {remaining_slots} remaining slots with individual charts")
-            
-            if remaining_slots > 0:
-                # First, add textual field charts for fields not used as categories
-                unused_textual = [f for f in textual_fields if f not in used_textual_fields]
-                for field_info in unused_textual:
-                    if len(charts) >= 6:
-                        break
-                        
-                    field_name = field_info.get("field_name", "unknown")
-                    unique_count = field_info.get("unique_count", 0)
-                    
-                    # Determine chart type based on unique count
-                    if unique_count <= 4:
-                        chart_type = "pie"
-                    elif unique_count <= 20:  # Allow bar charts for fields with up to 20 unique values
-                        chart_type = "bar"
-                    else:
-                        continue  # Skip fields with too many unique values (>20)
-                    
-                    chart_config = self._create_count_chart_from_text_field(field_info, chart_type, theme)
-                    if chart_config:
-                        charts.append(chart_config)
-                        used_textual_fields.append(field_info)
-                
-                # Then add numerical field histograms if no suitable category fields exist
-                if not suitable_category_fields or len(charts) < 6:
-                    unused_numerical = [f for f in numerical_fields if f not in used_numerical_fields]
-                    for field_info in unused_numerical:
-                        if len(charts) >= 6:
-                            break
-                            
-                        # Create histogram chart for numerical field
-                        chart_config = self._create_chart_from_field(field_info, theme)
-                        if chart_config:
-                            charts.append(chart_config)
-                            used_numerical_fields.append(field_info)
-            
-            print(f"DEBUG: Final chart count: {len(charts)}")
-
-            # Limit to 6 charts maximum
-            charts = charts[:6]
-
-            # Create layout
-            layout = self._arrange_charts_in_layout(charts)
-
-            # Build complete dashboard structure
-            dashboard_data = {
-                "layer_name": layer_name,
-                "dashboard_title": f"{analysis_type.title()} Dashboard for {layer_name}",
-                "theme": theme,
-                "charts": charts,
-                "layout": layout,
-                "field_insights": field_insights,
-                "generation_timestamp": self._get_timestamp(),
-                "field_stats": {
-                    "textual_fields_used": len(used_textual_fields),
-                    "numerical_fields_used": len(used_numerical_fields),
-                    "excluded_fields": len(excluded_fields),
-                    "total_charts": len(charts)
-                }
-            }
-
-            return {
-                "success": True,
-                "is_dashboard_update": True,
-                "message": f"Enhanced dashboard generated for '{layer_name}' with {len(charts)} charts",
-                "data": dashboard_data,
-                "chart_count": len(charts)
-            }
-
-        except Exception as e:
-            return {"success": False, "error": str(e)}
-
-    def mission_generate_dashboard(self, params):
-        """
-        Generate a new dashboard for a layer.
-        This function runs in ArcGIS Pro and has access to real layer data.
-        """
-        try:
-            layer_name = params.get("layer_name") or params.get("layer")
-            if not layer_name:
-                return {"success": False, "error": "layer_name parameter is required"}
-            
-            # First analyze the layer fields to get real data
-            analysis_result = self.analyze_layer_fields({"layer": layer_name})
-            if not analysis_result.get("success"):
-                return analysis_result
-            
-            # Generate dashboard using the field insights
-            dashboard_params = {
-                "layer_name": layer_name,
-                "field_insights": analysis_result.get("field_insights", {}),
-                "theme": params.get("theme", "default"),
-                "analysis_type": params.get("analysis_type", "overview")
-            }
-            
-            return self.generate_dashboard_for_target_layer(dashboard_params)
-            
-        except Exception as e:
-            return {"success": False, "error": str(e)}
-
-    def add_chart_to_dashboard(self, params: Dict) -> Dict:
-        """
-        Adds a new chart to the existing dashboard.
-        This function computes data on the fly and returns a structure
-        that the server can use to append to the dashboard JSON.
-        Supports any layer type and handles Unicode text (Arabic, English, etc.)
-        Enhanced to handle count charts and aggregation charts.
-        """
-        try:
-            layer_name = params.get("layer_name")
-            chart_type = params.get("chart_type", "bar")
-            fields = params.get("fields", [])
-            category_field = params.get("category_field")
-            aggregation = params.get("aggregation", "SUM").lower()  # Convert to lowercase for consistent comparison
-            title = params.get("title")
-            theme = params.get("theme", "default")
-            where_clause = params.get("where_clause")
-
-            # Handle enhanced chart types
-            is_count_chart = params.get("is_count_chart", False)
-            is_aggregation_chart = params.get("is_aggregation_chart", False)
-
-            if not layer_name:
-                return {"success": False, "error": "layer_name is required"}
-
-            # Handle count chart (textual field with unique value counts)
-            if is_count_chart:
-                if not fields:
-                    return {"success": False, "error": "fields are required for count chart"}
-                text_field = fields[0]  # First field is the textual field to count
-
-                # Get frequency data for the textual field
-                freq_result = self.get_values_frequency({
-                    'layer_name': layer_name,
-                    'field_name': text_field
-                })
-
-                if not freq_result.get('success'):
-                    return freq_result
-
-                frequency_data = freq_result.get('frequency', {})
-
-                # Convert to chart data format
-                chart_data = {
-                    "labels": list(frequency_data.keys()),
-                    "values": list(frequency_data.values())
-                }
-
-                # Create chart configuration
-                chart_id = f"chart_{text_field}_count_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-                new_chart = {
-                    "id": chart_id,
-                    "title": title or f"Count of {text_field}",
-                    "chart_type": chart_type,  # Use chart_type instead of type for consistency
-                    "field_name": text_field,  # Use field_name instead of field for consistency
-                    "primary_field": text_field,  # Add primary_field for backend processing
-                    "data": chart_data,
-                    "theme": theme,
-                    "is_count_chart": True
-                }
-
-                layout_item = {
-                    "id": chart_id,
-                    "chart_type": chart_type,
-                    "field_name": text_field,
-                    "grid_area": f"chart-{chart_id}"
-                }
-
-                return {
-                    "success": True,
-                    "is_dashboard_update": True,
-                    "is_chart_addition": True,
-                    "new_chart": new_chart,
-                    "layout_item": layout_item,
-                    "message": f"Count chart for '{text_field}' prepared for addition to the dashboard."
-                }
-
-            # Handle aggregation chart (numerical field aggregated by textual field)
-            if is_aggregation_chart:
-                if not fields or not category_field:
-                    return {"success": False, "error": "fields and category_field are required for aggregation chart"}
-                numeric_field = fields[0]  # First field is the numerical field to aggregate
-
-                # Use the existing aggregation logic but with specific parameters
-                aggregation_params = {
-                    "layer_name": layer_name,
-                    "chart_type": chart_type,
-                    "fields": [numeric_field],
-                    "category_field": category_field,
-                    "aggregation": aggregation,
-                    "title": title,
-                    "theme": theme,
-                    "where_clause": where_clause
-                }
-
-                return self.add_chart_to_dashboard(aggregation_params)
-
-            # Original logic for regular charts
-            if not fields:
-                return {"success": False, "error": "fields are required"}
-
-            # Initialize numeric_fields for use in layout_item
-            numeric_fields = fields
-
-            # Validate layer exists and is accessible
-            try:
-                desc = arcpy.Describe(layer_name)
-                if not desc:
-                    return {"success": False, "error": f"Layer '{layer_name}' not found or not accessible"}
-            except Exception as e:
-                return {"success": False, "error": f"Cannot access layer '{layer_name}': {str(e)}"}
-
-            # --- Data Aggregation using ArcPy ---
-            if category_field:
-                if category_field in fields:
-                    numeric_fields = [f for f in fields if f != category_field]
-                    if not numeric_fields:
-                        return {"success": False, "error": "No numeric fields provided besides category_field"}
-                else:
-                    numeric_fields = fields
-                cursor_fields = [category_field] + numeric_fields
-                data = {}
-
-                # Use proper encoding for Unicode support (Arabic, etc.)
-                with arcpy.da.SearchCursor(layer_name, cursor_fields, where_clause) as cursor:
-                    for row in cursor:
-                        # Handle category field - ensure it's properly encoded
-                        category = row[0]
-                        if category is not None:
-                            category = str(category)  # Convert to string to handle any data type
-                        else:
-                            category = "Null/Empty"
-
-                        if category not in data:
-                            data[category] = {}
-
-                        for i, field in enumerate(numeric_fields):
-                            value = row[i + 1]
-                            if field not in data[category]:
-                                data[category][field] = []
-                            # Only add numeric values, skip nulls and non-numeric
-                            if value is not None:
-                                try:
-                                    # Try to convert to float to handle various numeric types
-                                    numeric_value = float(value)
-                                    data[category][field].append(numeric_value)
-                                except (ValueError, TypeError):
-                                    # Skip non-numeric values
-                                    pass
-
-                if len(numeric_fields) == 1:
-                    # Single series
-                    chart_data = {"labels": [], "values": []}
-                    for category, field_data in data.items():
-                        chart_data["labels"].append(category)
-                        values = field_data.get(numeric_fields[0], [])
-                        if values:  # Only proceed if we have values
-                            if aggregation == "sum":
-                                chart_data["values"].append(sum(values))
-                            elif aggregation in ["mean", "avg", "average"]:
-                                chart_data["values"].append(statistics.mean(values))
-                            elif aggregation == "count":
-                                chart_data["values"].append(len(values))
-                            elif aggregation == "min":
-                                chart_data["values"].append(min(values))
-                            elif aggregation == "max":
-                                chart_data["values"].append(max(values))
-                        else:
-                            chart_data["values"].append(0)  # Default to 0 if no values
-                else:
-                    # Multiple series
-                    chart_data = {"labels": [], "datasets": []}
-                    # Get all categories
-                    categories = list(data.keys())
-                    chart_data["labels"] = categories
-
-                    for field in numeric_fields:
-                        dataset = {"label": field, "data": []}
-                        for category in categories:
-                            values = data.get(category, {}).get(field, [])
-                            if values:  # Only proceed if we have values
-                                if aggregation == "sum":
-                                    dataset["data"].append(sum(values))
-                                elif aggregation in ["mean", "avg", "average"]:
-                                    dataset["data"].append(statistics.mean(values))
-                                elif aggregation == "count":
-                                    dataset["data"].append(len(values))
-                                elif aggregation == "min":
-                                    dataset["data"].append(min(values))
-                                elif aggregation == "max":
-                                    dataset["data"].append(max(values))
-                            else:
-                                dataset["data"].append(0)  # Default to 0 if no values
-                        chart_data["datasets"].append(dataset)
-            else:
-                # No aggregation, just use field values directly
-                chart_data = {"labels": [], "values": []}
-                with arcpy.da.SearchCursor(layer_name, fields, where_clause) as cursor:
-                    for row in cursor:
-                        # Handle potential None values and ensure proper string conversion
-                        label = row[0]
-                        if label is not None:
-                            label = str(label)  # Convert to string for Unicode support
-                        else:
-                            label = "Null/Empty"
-
-                        chart_data["labels"].append(label)
-                        # Use second field if available, otherwise use count
-                        if len(row) > 1 and row[1] is not None and isinstance(row[1], (int, float)):
-                            chart_data["values"].append(row[1])
-                        else:
-                            chart_data["values"].append(1)
-
-            # --- Chart Configuration ---
-            chart_id = f"chart_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-            if len(numeric_fields) == 1:
-                # Safe title creation to avoid recursion issues
-                safe_title = title
-                if not safe_title:
-                    try:
-                        field_name = str(numeric_fields[0]) if numeric_fields[0] is not None else "Field"
-                        category_name = str(category_field) if category_field is not None else "Category"
-                        agg_name = str(aggregation).title() if aggregation is not None else "Value"
-                        safe_title = f"{agg_name} of {field_name} by {category_name}"
-                    except:
-                        safe_title = "Chart"
-                
-                new_chart = {
-                    "id": chart_id,
-                    "title": safe_title,
-                    "chart_type": chart_type,  # Use chart_type instead of type for consistency
-                    "field_name": numeric_fields[0],  # Use field_name instead of field for consistency
-                    "primary_field": numeric_fields[0],  # Add primary_field for backend processing
-                    "category_field": category_field,
-                    "data": chart_data,
-                    "theme": theme,
-                }
-            else:
-                series = [{"field": f, "name": f} for f in numeric_fields]
-                # Safe title creation to avoid recursion issues
-                safe_title = title
-                if not safe_title:
-                    try:
-                        field_names = ', '.join(str(f) for f in numeric_fields if f is not None)
-                        category_name = str(category_field) if category_field is not None else "Category"
-                        agg_name = str(aggregation).title() if aggregation is not None else "Value"
-                        safe_title = f"{agg_name} of {field_names} by {category_name}"
-                    except:
-                        safe_title = "Multi-Series Chart"
-                
-                new_chart = {
-                    "id": chart_id,
-                    "title": safe_title,
-                    "chart_type": chart_type,  # Use chart_type instead of type for consistency
-                    "field_name": numeric_fields[0] if numeric_fields else fields[0],  # Use field_name for consistency
-                    "primary_field": numeric_fields[0] if numeric_fields else fields[0],  # Add primary_field for backend processing
-                    "category_field": category_field,
-                    "series": series,
-                    "fields": fields,
-                    "data": chart_data,
-                    "theme": theme,
-                }
-
-            # --- Layout Item Configuration ---
-            # Safe field name extraction to avoid recursion issues
-            safe_field_name = fields[0] if fields else "unknown"
-            try:
-                if numeric_fields and len(numeric_fields) > 0:
-                    safe_field_name = str(numeric_fields[0])
-                elif fields and len(fields) > 0:
-                    safe_field_name = str(fields[0])
-            except:
-                safe_field_name = "chart_field"
-            
-            layout_item = {
-                "id": chart_id,
-                "chart_type": chart_type,
-                "field_name": safe_field_name,
-                # Default position, server might need to recalculate
-                "grid_area": f"chart-{chart_id}"
-            }
-
-            return {
-                "success": True,
-                "is_dashboard_update": True,
-                "is_chart_addition": True,
-                "new_chart": new_chart,
-                "layout_item": layout_item,
-                "message": f"Chart '{title or 'New Chart'}' prepared for addition to the dashboard."
-            }
-
-        except Exception as e:
-            return {"success": False, "error": str(e)}
-
 
 class Toolbox(object):
     def __init__(self):

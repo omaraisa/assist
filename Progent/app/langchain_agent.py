@@ -30,31 +30,118 @@ except Exception:
 
 # Custom callback to log all agent intermediate steps (thoughts, actions, etc.)
 class LoggingCallbackHandler(BaseCallbackHandler):
-    def __init__(self, logger):
+    def __init__(self, logger, websocket_manager=None, client_id=None):
         super().__init__()
         self.logger = logger
+        self.websocket_manager = websocket_manager
+        self.client_id = client_id
+        self.reasoning_steps = []
+        self.current_step = None
 
     def on_chain_start(self, serialized, inputs, **kwargs):
         self.logger.info(f"[Agent Start] Inputs: {inputs}")
+        self.reasoning_steps = []  # Reset reasoning steps for new chain
+        self.current_step = {
+            "type": "chain_start",
+            "timestamp": inputs.get("timestamp", ""),
+            "content": "Starting AI reasoning process...",
+            "details": f"Processing user input: {inputs.get('input', '')[:100]}..."
+        }
+        self.reasoning_steps.append(self.current_step)
+        self._send_reasoning_update()
 
     def on_chain_end(self, outputs, **kwargs):
         self.logger.info(f"[Agent End] Outputs: {outputs}")
+        self.current_step = {
+            "type": "chain_end",
+            "timestamp": "",
+            "content": "AI reasoning completed",
+            "details": f"Final output generated"
+        }
+        self.reasoning_steps.append(self.current_step)
+        self._send_reasoning_update()
 
     def on_tool_start(self, serialized, input_str, **kwargs):
         self.logger.info(f"[Tool Start] Input: {input_str}")
+        self.current_step = {
+            "type": "tool_start",
+            "timestamp": "",
+            "content": f"Executing tool: {serialized.get('name', 'unknown')}",
+            "details": f"Input: {input_str[:200]}..."
+        }
+        self.reasoning_steps.append(self.current_step)
+        self._send_reasoning_update()
 
     def on_tool_end(self, output, **kwargs):
         self.logger.info(f"[Tool End] Output: {output}")
+        self.current_step = {
+            "type": "tool_end",
+            "timestamp": "",
+            "content": "Tool execution completed",
+            "details": f"Result: {str(output)[:200]}..."
+        }
+        self.reasoning_steps.append(self.current_step)
+        self._send_reasoning_update()
 
     def on_text(self, text, **kwargs):
         # This is called for every intermediate step (thought, action, etc.)
         self.logger.info(f"[Agent Step] {text}")
+        if text.strip():
+            self.current_step = {
+                "type": "thought",
+                "timestamp": "",
+                "content": text.strip(),
+                "details": ""
+            }
+            self.reasoning_steps.append(self.current_step)
+            self._send_reasoning_update()
 
     def on_agent_action(self, action, **kwargs):
         self.logger.info(f"[Agent Action] {action}")
+        tool_name = action.tool if hasattr(action, 'tool') else action.get('tool', 'unknown')
+        tool_input = action.tool_input if hasattr(action, 'tool_input') else action.get('tool_input', '')
+        self.current_step = {
+            "type": "agent_action",
+            "timestamp": "",
+            "content": f"AI decided to use tool: {tool_name}",
+            "details": f"Input: {str(tool_input)[:200]}..."
+        }
+        self.reasoning_steps.append(self.current_step)
+        self._send_reasoning_update()
 
     def on_agent_finish(self, finish, **kwargs):
         self.logger.info(f"[Agent Finish] {finish}")
+        output = finish.return_values if hasattr(finish, 'return_values') else finish.get('return_values', {})
+        self.current_step = {
+            "type": "agent_finish",
+            "timestamp": "",
+            "content": "AI completed task execution",
+            "details": f"Final result: {str(output)[:200]}..."
+        }
+        self.reasoning_steps.append(self.current_step)
+        self._send_reasoning_update()
+
+    def _send_reasoning_update(self):
+        """Send current reasoning steps to the frontend"""
+        if self.websocket_manager and self.client_id:
+            try:
+                reasoning_data = {
+                    "type": "reasoning_update",
+                    "data": {
+                        "steps": self.reasoning_steps.copy(),
+                        "current_step": self.current_step
+                    }
+                }
+                # Create a task but don't await it to avoid blocking the callback
+                import asyncio
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    asyncio.create_task(self.websocket_manager.send_to_client(self.client_id, reasoning_data))
+                else:
+                    # If no event loop is running, we can't send the message
+                    self.logger.warning("No event loop running, cannot send reasoning update")
+            except Exception as e:
+                self.logger.error(f"Failed to send reasoning update: {e}")
 import logging
 import json
 import ast
@@ -679,8 +766,14 @@ class LangChainAgent:
 
     def __init__(self, model_key: str, websocket_manager: Any):
         self.websocket_manager = websocket_manager
-        self.callback_handler = LoggingCallbackHandler(logger)
+        self.client_id = None
+        self.callback_handler = LoggingCallbackHandler(logger, websocket_manager, None)
         self.set_model(model_key)
+
+    def set_client_context(self, client_id: str):
+        """Set the client context for reasoning updates"""
+        self.client_id = client_id
+        self.callback_handler.client_id = client_id
 
     def _get_tools(self, client_id: str) -> List[BaseTool]:
         """Gets the tools for the LangChain agent."""
@@ -897,6 +990,10 @@ Thought: {agent_scratchpad}"""
     ) -> Dict[str, Any]:
         """Generates a response using the LangChain agent with smart message classification."""
         logger.info(f"LangChain agent generating response for: {user_message[:100]}...")
+
+        # Set client context for reasoning updates
+        if client_id:
+            self.set_client_context(client_id)
 
         try:
             if not self.llm:

@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
-             xmlns:framework="clr-namespace:ArcGIS.Desktop.Framework;assembly=ArcGIS.Desktop.Framework"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Background="{DynamicResource Esri_BackgroundBrush}">
@@ -14,13 +13,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <!-- Smooth connected-green gradient used for the Connect/Disconnect button when connected -->
-            <LinearGradientBrush x:Key="ConnectedGradient" StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#FFBEE6B2" Offset="0.0"/><!-- very light green -->
-                <GradientStop Color="#FF93D16A" Offset="0.5"/><!-- mid green -->
-                <GradientStop Color="#FF6FC54A" Offset="1.0"/><!-- stronger green -->
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="ConnectedBorderBrush" Color="#FF4FA03A"/>
             <Style x:Key="ProgentTextBox" TargetType="TextBox">
                 <Setter Property="Margin" Value="5"/>
                 <Setter Property="Padding" Value="5"/>
@@ -38,47 +30,9 @@
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="Cursor" Value="Hand"/>
                 <Style.Triggers>
-                    <!-- When the ViewModel's IsConnected is true, use a smooth green gradient and matching border -->
-                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                        <Setter Property="Background" Value="{StaticResource ConnectedGradient}"/>
-                        <Setter Property="BorderBrush" Value="{StaticResource ConnectedBorderBrush}"/>
-                    </DataTrigger>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="{DynamicResource Esri_ButtonMouseOverBrush}"/>
                     </Trigger>
-                </Style.Triggers>
-            </Style>
-            <!-- Theme-aware style for the logo -->
-            <Style x:Key="ProgentLogoStyle" TargetType="Image">
-                <Setter Property="Source" Value="Images/logo.png"/>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding Source={x:Static framework:FrameworkApplication.ApplicationTheme}}" Value="Dark">
-                        <Setter Property="Source" Value="Images/logo-bright.png"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <!-- Style for selectable log text (TextBox) with gray theme-aware foreground -->
-            <Style x:Key="LogSelectableTextBoxStyle" TargetType="TextBox">
-                <Setter Property="IsReadOnly" Value="True"/>
-                <Setter Property="IsReadOnlyCaretVisible" Value="False"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Padding" Value="0"/>
-                <Setter Property="TextWrapping" Value="Wrap"/>
-                <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
-                <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
-                <!-- Default (Light) medium gray -->
-                <Setter Property="Foreground" Value="#555555"/>
-                <Style.Triggers>
-                    <!-- Dark theme: lighter gray for contrast -->
-                    <DataTrigger Binding="{Binding Source={x:Static framework:FrameworkApplication.ApplicationTheme}}" Value="Dark">
-                        <Setter Property="Foreground" Value="#CCCCCC"/>
-                    </DataTrigger>
-                    <!-- High contrast: defer to system/highlight brush -->
-                    <DataTrigger Binding="{Binding Source={x:Static framework:FrameworkApplication.ApplicationTheme}}" Value="HighContrast">
-                        <Setter Property="Foreground" Value="{DynamicResource Esri_HighlightTextBrush}"/>
-                    </DataTrigger>
                 </Style.Triggers>
             </Style>
         </ResourceDictionary>
@@ -89,16 +43,13 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
         <Border Grid.Row="0" BorderBrush="{DynamicResource Esri_GroupBorderBrush}" BorderThickness="1" CornerRadius="3" Padding="5">
-            <DockPanel>
-                <!-- Left: theme-aware logo inside the dockpane (keeps existing Config.daml toolbar logo unchanged) -->
-                <Image Style="{StaticResource ProgentLogoStyle}" Width="28" Height="28" Margin="0,0,8,0" DockPanel.Dock="Left"/>
-                <StackPanel>
-                    <TextBlock Text="Server URL:" FontWeight="Bold" Foreground="{DynamicResource Esri_TextStyleDefaultBrush}" Margin="5,0,5,0"/>
-                    <TextBox Text="{Binding ServerUrl}" Style="{StaticResource ProgentTextBox}"/>
-                    <Button Content="{Binding ConnectButtonText}" Command="{Binding ConnectCommand}" Style="{StaticResource ProgentButton}"/>
-                </StackPanel>
-            </DockPanel>
+            <StackPanel>
+                <TextBlock Text="Server URL:" FontWeight="Bold" Foreground="{DynamicResource Esri_TextFillColorBrush}" Margin="5,0,5,0"/>
+                <TextBox Text="{Binding ServerUrl}" Style="{StaticResource ProgentTextBox}"/>
+                <Button Content="{Binding ConnectButtonText}" Command="{Binding ConnectCommand}" Style="{StaticResource ProgentButton}"/>
+            </StackPanel>
         </Border>
 
         <Border Grid.Row="1" BorderBrush="{DynamicResource Esri_GroupBorderBrush}" BorderThickness="1" CornerRadius="3" Padding="5" Margin="0,10,0,0">
@@ -107,13 +58,11 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="Log" FontWeight="Bold" Foreground="{DynamicResource Esri_TextStyleDefaultBrush}" Margin="5,0,5,5"/>
+                <TextBlock Grid.Row="0" Text="Log" FontWeight="Bold" Foreground="{DynamicResource Esri_TextFillColorBrush}" Margin="5,0,5,5"/>
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Background="{DynamicResource Esri_TextControlBackgroundBrush}" Padding="5">
-                    <!-- TextBox instead of TextBlock so user can select/copy log text -->
-                    <TextBox Text="{Binding LogText}" Style="{StaticResource LogSelectableTextBoxStyle}"/>
+                    <TextBlock Text="{Binding LogText}" TextWrapping="Wrap" Foreground="{DynamicResource Esri_TextControlForegroundBrush}"/>
                 </ScrollViewer>
             </Grid>
         </Border>
     </Grid>
 </UserControl>
-

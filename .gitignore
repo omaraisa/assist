@@ -14,7 +14,7 @@ Progent/**/__pycache__/
 .Python
 
 # Environment files (Progent/ subtree)
-Progent/.env
+.env
 Progent/.venv
 Progent/env/
 Progent/venv/

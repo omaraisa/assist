@@ -103,15 +103,7 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket_manager.connect(websocket, client_id)
     
     try:
-        # Send initial configuration to client
-        await websocket_manager.send_to_client(client_id, {
-            "type": "config",
-            "data": {
-                "ai_models": settings.AI_MODELS,
-                "current_model": settings.DEFAULT_AI_MODEL
-            }
-        })
-        
+        # Config will be sent after client registers its type
         while True:
             # Receive message from client
             data = await websocket.receive_text()
@@ -141,6 +133,15 @@ async def handle_websocket_message(client_id: str, message: Dict):
                     # Request initial software state
                     await websocket_manager.send_to_client(client_id, {
                         "type": "get_software_state"
+                    })
+                elif client_type == "chatbot":
+                    # Send config message with available AI models
+                    await websocket_manager.send_to_client(client_id, {
+                        "type": "config",
+                        "data": {
+                            "models": settings.AI_MODELS,
+                            "default_model": settings.DEFAULT_AI_MODEL
+                        }
                     })
             
         elif message_type == "user_message":

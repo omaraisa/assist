@@ -82,7 +82,7 @@ namespace Progent
 
         private async Task ReceiveLoop()
         {
-            var buffer = new byte[1024 * 1024]; // 1MB buffer
+            var buffer = new byte[1024 * 4];
             try
             {
                 while (_client.State == WebSocketState.Open && !_cancellationTokenSource.IsCancellationRequested)

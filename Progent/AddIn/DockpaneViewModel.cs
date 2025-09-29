@@ -25,77 +25,43 @@ namespace Progent
         private string _logText = "";
         private string _connectButtonText = "Connect";
         private bool _isConnected = false;
-        private bool _isBusy = false;
-        public bool IsConnected
-        {
-            get => _isConnected;
-            set
-            {
-                _isConnected = value;
-                OnPropertyChanged();
-            }
-        }
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set
-            {
-                _isBusy = value;
-                OnPropertyChanged();
-            }
-        }
         private WebSocketService _webSocketService;
 
         public DockpaneViewModel()
         {
-            // Set logo based on theme - simple and reliable
-            SetThemeAwareLogo();
             ConnectCommand = new RelayCommand(async () =>
             {
-                IsBusy = true;
-                try
+                if (_isConnected)
                 {
-                    if (IsConnected)
-                    {
-                        await _webSocketService.DisconnectAsync();
-                        IsBusy = false;
-                    }
-                    else
-                    {
-                        _webSocketService = new WebSocketService(ServerUrl);
-                        _webSocketService.OnConnected += async () =>
-                        {
-                            ConnectButtonText = "Disconnect";
-                            IsConnected = true;
-                            Log("Connected to server.");
-                            Process.Start(new ProcessStartInfo("http://localhost:6060") { UseShellExecute = true });
-                            await _webSocketService.SendMessageAsync(JsonConvert.SerializeObject(new { type = "client_register", client_type = "arcgis_pro" }));
-                            IsBusy = false;
-                        };
-                        _webSocketService.OnDisconnected += () =>
-                        {
-                            ConnectButtonText = "Connect";
-                            IsConnected = false;
-                            Log("Disconnected from server.");
-                            IsBusy = false;
-                        };
-                        _webSocketService.OnError += (error) =>
-                        {
-                            Log(error);
-                            ConnectButtonText = "Connect";
-                            IsConnected = false;
-                            IsBusy = false;
-                        };
-                        _webSocketService.OnMessageReceived += HandleMessageReceived;
-                        await _webSocketService.ConnectAsync();
-                    }
+                    await _webSocketService.DisconnectAsync();
                 }
-                catch (Exception ex)
+                else
                 {
-                    Log($"Error in connect command: {ex.Message}");
-                    IsBusy = false;
+                    _webSocketService = new WebSocketService(ServerUrl);
+                    _webSocketService.OnConnected += async () =>
+                    {
+                        ConnectButtonText = "Disconnect";
+                        _isConnected = true;
+                        Log("Connected to server.");
+                        Process.Start(new ProcessStartInfo("http://localhost:6060") { UseShellExecute = true });
+                        await _webSocketService.SendMessageAsync(JsonConvert.SerializeObject(new { type = "client_register", client_type = "arcgis_pro" }));
+                    };
+                    _webSocketService.OnDisconnected += () =>
+                    {
+                        ConnectButtonText = "Connect";
+                        _isConnected = false;
+                        Log("Disconnected from server.");
+                    };
+                    _webSocketService.OnError += (error) =>
+                    {
+                        Log(error);
+                        ConnectButtonText = "Connect";
+                        _isConnected = false;
+                    };
+                    _webSocketService.OnMessageReceived += HandleMessageReceived;
+                    await _webSocketService.ConnectAsync();
                 }
-            }, () => !IsBusy);
+            });
         }
 
         private async void HandleMessageReceived(string message)
@@ -137,45 +103,18 @@ namespace Progent
                             pythonResult = new JObject { ["status"] = "error", ["data"] = pythonResultString };
                         }
 
-                    var data = pythonResult["data"];
-                        bool isDashboardUpdate = (data is JObject dataObj) && dataObj.Value<bool>("is_dashboard_update");
+                    var response = new JObject
+                    {
+                        ["type"] = "function_response",
+                        ["session_id"] = sessionId,
+                        ["source_client"] = sourceClient,
+                        ["status"] = pythonResult["status"],
+                        ["function_name"] = functionName ?? "RunPythonCode",
+                        ["data"] = pythonResult["data"],
+                        ["software_context"] = await GetSoftwareContext()
+                    };
 
-                        if (isDashboardUpdate)
-                        {
-                            var dashboardUpdate = new JObject
-                            {
-                                ["type"] = "dashboard_update",
-                                ["session_id"] = sessionId,
-                                ["source_client"] = sourceClient,
-                                ["data"] = data
-                            };
-                            await _webSocketService.SendMessageAsync(dashboardUpdate.ToString());
-
-                            var ackResponse = new JObject
-                            {
-                                ["type"] = "function_response",
-                                ["session_id"] = sessionId,
-                                ["source_client"] = sourceClient,
-                                ["status"] = "success",
-                                ["function_name"] = functionName,
-                                ["data"] = new JObject { ["message"] = "Dashboard layout generated and updated." }
-                            };
-                            await _webSocketService.SendMessageAsync(ackResponse.ToString());
-                        }
-                        else
-                        {
-                            var response = new JObject
-                            {
-                                ["type"] = "function_response",
-                                ["session_id"] = sessionId,
-                                ["source_client"] = sourceClient,
-                                ["status"] = pythonResult["status"],
-                                ["function_name"] = functionName ?? "RunPythonCode",
-                                ["data"] = data,
-                                ["software_context"] = await GetSoftwareContext()
-                            };
-                            await _webSocketService.SendMessageAsync(response.ToString());
-                        }
+                    await _webSocketService.SendMessageAsync(response.ToString());
                 }
                 else if (type == "get_software_state")
                 {
@@ -289,81 +228,22 @@ namespace Progent
                 context["map_name"] = activeMap.Name;
 
                 var layersInfo = new JObject();
-                foreach(var layer in activeMap.GetLayersAsFlattenedList())
+                foreach(var layer in activeMap.GetLayersAsFlattenedList().OfType<FeatureLayer>())
                 {
                     var layerInfo = new JObject
                     {
-                        ["visible"] = layer.IsVisible,
-                        ["layer_type"] = layer.GetType().Name
+                        ["definition_query"] = layer.DefinitionQuery,
+                        ["visible"] = layer.IsVisible
                     };
-
-                    // Handle different layer types
-                    if (layer is ArcGIS.Desktop.Mapping.FeatureLayer featureLayer)
+                    var fields = new JObject();
+                    foreach(var field in layer.GetFeatureClass().GetDefinition().GetFields())
                     {
-                        layerInfo["definition_query"] = featureLayer.DefinitionQuery;
-                        var fields = new JObject();
-                        try
-                        {
-                            foreach(var field in featureLayer.GetFeatureClass().GetDefinition().GetFields())
-                            {
-                                fields[field.Name] = field.FieldType.ToString();
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            // Some feature layers might not have accessible fields
-                            fields["error"] = $"Unable to access fields: {ex.Message}";
-                        }
-                        layerInfo["fields"] = fields;
-                        layerInfo["geometry_type"] = featureLayer.ShapeType.ToString();
+                        fields[field.Name] = field.FieldType.ToString();
                     }
-                    else if (layer is ArcGIS.Desktop.Mapping.RasterLayer rasterLayer)
-                    {
-                        layerInfo["data_type"] = "Raster";
-                        // Raster layers don't have traditional fields, but we can include basic info
-                        layerInfo["fields"] = new JObject(); // Empty for rasters
-                    }
-                    else
-                    {
-                        // Other layer types (group layers, etc.)
-                        layerInfo["data_type"] = "Other";
-                        layerInfo["fields"] = new JObject();
-                    }
-
+                    layerInfo["fields"] = fields;
                     layersInfo[layer.Name] = layerInfo;
                 }
                 context["layers_info"] = layersInfo;
-
-                // Include standalone tables in the layers_info as well for consistency
-                foreach(var table in activeMap.GetStandaloneTablesAsFlattenedList())
-                {
-                    var tableInfo = new JObject
-                    {
-                        ["visible"] = true, // Tables are typically always "visible" in the table of contents
-                        ["layer_type"] = "StandaloneTable",
-                        ["data_type"] = "Table",
-                        ["fields"] = new JObject()
-                    };
-
-                    // Try to get table fields
-                    try
-                    {
-                        var tableFields = new JObject();
-                        // For standalone tables, we need to use a different approach
-                        var tableDef = table.GetTable().GetDefinition();
-                        foreach(var field in tableDef.GetFields())
-                        {
-                            tableFields[field.Name] = field.FieldType.ToString();
-                        }
-                        tableInfo["fields"] = tableFields;
-                    }
-                    catch (Exception ex)
-                    {
-                        tableInfo["fields"] = new JObject { ["error"] = $"Unable to access fields: {ex.Message}" };
-                    }
-
-                    layersInfo[table.Name] = tableInfo;
-                }
 
                 var tablesInfo = new JObject();
                 foreach(var table in activeMap.GetStandaloneTablesAsFlattenedList())
@@ -412,39 +292,6 @@ namespace Progent
         private void Log(string message)
         {
             LogText += $"{DateTime.Now:T} - {message}{Environment.NewLine}";
-        }
-
-        private void SetThemeAwareLogo()
-        {
-            try
-            {
-                var app = System.Windows.Application.Current;
-                if (app?.Resources == null) return;
-
-                // Check if we're in dark theme by looking at background brush
-                bool isDarkTheme = false;
-                if (app.Resources.Contains("Esri_BackgroundBrush"))
-                {
-                    var brush = app.Resources["Esri_BackgroundBrush"] as System.Windows.Media.SolidColorBrush;
-                    if (brush != null)
-                    {
-                        var color = brush.Color;
-                        var brightness = (color.R * 0.299 + color.G * 0.587 + color.B * 0.114);
-                        isDarkTheme = brightness < 128;
-                    }
-                }
-
-                // Use bright logo for dark theme, regular logo for light theme
-                var logoPath = isDarkTheme ? "/Progent;component/Images/logo-bright.png" : "/Progent;component/Images/logo.png";
-                var uri = new Uri($"pack://application:,,,{logoPath}", UriKind.Absolute);
-                var bitmap = new System.Windows.Media.Imaging.BitmapImage(uri);
-                
-                app.Resources["ProgentLogo"] = bitmap;
-            }
-            catch
-            {
-                // If anything fails, silently continue - logo just won't show
-            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
