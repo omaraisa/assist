@@ -43,88 +43,238 @@ class LoggingCallbackHandler(BaseCallbackHandler):
         self.reasoning_steps = []  # Reset reasoning steps for new chain
         self.current_step = {
             "type": "chain_start",
-            "timestamp": inputs.get("timestamp", ""),
+            "timestamp": datetime.now().strftime("%H:%M"),
             "content": "Starting AI reasoning process...",
             "details": f"Processing user input: {inputs.get('input', '')[:100]}..."
         }
         self.reasoning_steps.append(self.current_step)
-        self._send_reasoning_update()
+        # Stream this step immediately to frontend
+        try:
+            self._send_step(self.current_step)
+        except Exception:
+            pass
 
     def on_chain_end(self, outputs, **kwargs):
         self.logger.info(f"[Agent End] Outputs: {outputs}")
         self.current_step = {
             "type": "chain_end",
-            "timestamp": "",
+            "timestamp": datetime.now().strftime("%H:%M"),
             "content": "AI reasoning completed",
             "details": f"Final output generated"
         }
         self.reasoning_steps.append(self.current_step)
-        self._send_reasoning_update()
 
     def on_tool_start(self, serialized, input_str, **kwargs):
         self.logger.info(f"[Tool Start] Input: {input_str}")
         self.current_step = {
             "type": "tool_start",
-            "timestamp": "",
+            "timestamp": datetime.now().strftime("%H:%M"),
             "content": f"Executing tool: {serialized.get('name', 'unknown')}",
             "details": f"Input: {input_str[:200]}..."
         }
         self.reasoning_steps.append(self.current_step)
-        self._send_reasoning_update()
+        # Stream this step immediately to frontend
+        try:
+            self._send_step(self.current_step)
+        except Exception:
+            pass
 
     def on_tool_end(self, output, **kwargs):
         self.logger.info(f"[Tool End] Output: {output}")
         self.current_step = {
             "type": "tool_end",
-            "timestamp": "",
+            "timestamp": datetime.now().strftime("%H:%M"),
             "content": "Tool execution completed",
             "details": f"Result: {str(output)[:200]}..."
         }
         self.reasoning_steps.append(self.current_step)
-        self._send_reasoning_update()
+        # Stream this step immediately to frontend
+        try:
+            self._send_step(self.current_step)
+        except Exception:
+            pass
 
     def on_text(self, text, **kwargs):
         # This is called for every intermediate step (thought, action, etc.)
         self.logger.info(f"[Agent Step] {text}")
+        
+        # Debug: Log all text to see what Gemini produces
         if text.strip():
-            self.current_step = {
-                "type": "thought",
-                "timestamp": "",
-                "content": text.strip(),
-                "details": ""
-            }
-            self.reasoning_steps.append(self.current_step)
-            self._send_reasoning_update()
+            self.logger.info(f"[DEBUG] Text content: {repr(text.strip())}")
+        
+        if text.strip():
+            # Filter out non-thought text and extract actual reasoning
+            text_content = text.strip()
+            
+            # Look for actual thought patterns in various formats
+            if "Thought:" in text_content:
+                # Extract just the thought part
+                thought_text = text_content.split("Thought:")[-1].strip()
+                if thought_text and not thought_text.startswith("Action:"):
+                    self.current_step = {
+                        "type": "thought",
+                        "timestamp": datetime.now().strftime("%H:%M"),
+                        "content": thought_text,
+                        "details": ""
+                    }
+                    self.reasoning_steps.append(self.current_step)
+                    self.logger.info(f"[DEBUG] Captured thought from text: {thought_text}")
+                    try:
+                        self._send_step(self.current_step)
+                    except Exception:
+                        pass
+            elif any(pattern in text_content for pattern in [
+                "I need to", "I should", "I will", "Let me", "First,", 
+                "To accomplish this", "The user wants", "I'll start by",
+                "My approach", "The task is", "I can help"
+            ]):
+                # Capture other reasoning patterns - more flexible for different models
+                # Only capture if it's a meaningful sentence (not just action fragments)
+                if len(text_content) > 15 and not text_content.startswith("Action:"):
+                    self.current_step = {
+                        "type": "thought", 
+                        "timestamp": datetime.now().strftime("%H:%M"),
+                        "content": text_content,
+                        "details": ""
+                    }
+                    self.reasoning_steps.append(self.current_step)
+                    self.logger.info(f"[DEBUG] Captured thought from pattern: {text_content}")
+                    try:
+                        self._send_step(self.current_step)
+                    except Exception:
+                        pass
 
     def on_agent_action(self, action, **kwargs):
         self.logger.info(f"[Agent Action] {action}")
         tool_name = action.tool if hasattr(action, 'tool') else action.get('tool', 'unknown')
         tool_input = action.tool_input if hasattr(action, 'tool_input') else action.get('tool_input', '')
+        
+        # Debug: Log the full action log to see what Gemini produces
+        if hasattr(action, 'log') and action.log:
+            self.logger.info(f"[DEBUG] Action log content: {repr(action.log)}")
+        
+        # Try to capture the reasoning/thought that led to this action
+        if hasattr(action, 'log') and action.log:
+            log_text = action.log.strip()
+            
+            # Look for thought patterns in various formats
+            # If the model included an explanatory paragraph before the Action:, capture that whole paragraph
+            if 'Action:' in log_text:
+                # Take everything before the first 'Action:' occurrence as the human-friendly thought/explanation
+                pre_action = log_text.split('Action:')[0].strip()
+                # Clean common prefixes/suffixes
+                pre_action = pre_action.strip('\n ').strip()
+                if pre_action:
+                    # Avoid capturing short tokens or single words
+                    if len(pre_action) > 10:
+                        self.current_step = {
+                            "type": "thought",
+                            "timestamp": datetime.now().strftime("%H:%M"),
+                            "content": pre_action,
+                            "details": ""
+                        }
+                        self.reasoning_steps.append(self.current_step)
+                        try:
+                            self._send_step(self.current_step)
+                        except Exception:
+                            pass
+            elif "Thought:" in log_text:
+                lines = log_text.split('\n')
+                for line in lines:
+                    if line.strip().startswith("Thought:"):
+                        thought_content = line.strip().replace("Thought:", "").strip()
+                        if thought_content:
+                            self.current_step = {
+                                "type": "thought",
+                                "timestamp": datetime.now().strftime("%H:%M"),
+                                "content": thought_content,
+                                "details": ""
+                            }
+                            self.reasoning_steps.append(self.current_step)
+                            try:
+                                self._send_step(self.current_step)
+                            except Exception:
+                                pass
+            else:
+                # For models like Gemini that might not use "Thought:" prefix
+                # Look for any descriptive text that explains the reasoning
+                if len(log_text) > 20:  # Only capture substantial text
+                    # Split by common sentence delimiters and find reasoning
+                    text_parts = log_text.replace('\n', ' ').replace('Action:', '|||Action:').split('|||')
+                    for part in text_parts:
+                        part = part.strip()
+                        # Skip if it's just an action definition
+                        if part.startswith('Action:'):
+                            continue
+                        # Capture if it looks like reasoning/explanation
+                        if len(part) > 15 and any(word in part.lower() for word in [
+                            'need', 'should', 'will', 'first', 'then', 'next', 'because', 
+                            'to accomplish', 'user wants', 'task', 'help', 'create', 'buffer'
+                        ]):
+                            self.current_step = {
+                                "type": "thought",
+                                "timestamp": datetime.now().strftime("%H:%M"),
+                                "content": part.strip(),
+                                "details": ""
+                            }
+                            self.reasoning_steps.append(self.current_step)
+                            self.logger.info(f"[DEBUG] Captured thought: {part.strip()}")
+                            break
+        
+        # Create an agent_action step that includes the tool name and a short input preview
+        agent_action_content = f"AI decided to use tool: {tool_name}"
+        # If there was an explanatory paragraph captured above, include a short pointer
+        if hasattr(action, 'log') and action.log:
+            # If log contains Action:, try to also capture the Action Input line for details
+            action_log = action.log
+            input_preview = ''
+            if 'Action Input:' in action_log:
+                try:
+                    # Grab the part after 'Action Input:' up to 300 chars
+                    input_preview = action_log.split('Action Input:')[-1].strip()[:300]
+                except Exception:
+                    input_preview = str(tool_input)[:200]
+            else:
+                input_preview = str(tool_input)[:200]
+
         self.current_step = {
             "type": "agent_action",
-            "timestamp": "",
-            "content": f"AI decided to use tool: {tool_name}",
-            "details": f"Input: {str(tool_input)[:200]}..."
+            "timestamp": datetime.now().strftime("%H:%M"),
+            "content": agent_action_content,
+            "details": f"Input: {input_preview}..." if input_preview else f"Input: {str(tool_input)[:200]}..."
         }
         self.reasoning_steps.append(self.current_step)
-        self._send_reasoning_update()
+        try:
+            self._send_step(self.current_step)
+        except Exception:
+            pass
 
     def on_agent_finish(self, finish, **kwargs):
         self.logger.info(f"[Agent Finish] {finish}")
         output = finish.return_values if hasattr(finish, 'return_values') else finish.get('return_values', {})
         self.current_step = {
             "type": "agent_finish",
-            "timestamp": "",
+            "timestamp": datetime.now().strftime("%H:%M"),
             "content": "AI completed task execution",
             "details": f"Final result: {str(output)[:200]}..."
         }
         self.reasoning_steps.append(self.current_step)
-        self._send_reasoning_update()
+        # Stream this final step immediately
+        try:
+            self._send_step(self.current_step)
+        except Exception:
+            pass
 
-    def _send_reasoning_update(self):
-        """Send current reasoning steps to the frontend"""
-        if self.websocket_manager and self.client_id:
+    def send_reasoning_updates(self):
+        """Send all accumulated reasoning steps to the frontend"""
+        if self.websocket_manager and self.client_id and self.reasoning_steps:
             try:
+                # Debug: Log what we're sending
+                self.logger.info(f"Sending {len(self.reasoning_steps)} reasoning steps to frontend")
+                for i, step in enumerate(self.reasoning_steps):
+                    self.logger.info(f"Step {i}: {step['type']} - {step['content'][:100]}")
+                
+                # Send all reasoning steps at once
                 reasoning_data = {
                     "type": "reasoning_update",
                     "data": {
@@ -132,21 +282,43 @@ class LoggingCallbackHandler(BaseCallbackHandler):
                         "current_step": self.current_step
                     }
                 }
-                # Create a task but don't await it to avoid blocking the callback
+                # This should be called from the main async context
                 import asyncio
-                loop = asyncio.get_event_loop()
-                if loop.is_running():
+                if asyncio.get_event_loop().is_running():
                     asyncio.create_task(self.websocket_manager.send_to_client(self.client_id, reasoning_data))
                 else:
-                    # If no event loop is running, we can't send the message
+                    # Fallback for when no event loop is running
                     self.logger.warning("No event loop running, cannot send reasoning update")
             except Exception as e:
                 self.logger.error(f"Failed to send reasoning update: {e}")
+
+    def _send_step(self, step: dict):
+        """Send a single reasoning step to the frontend as soon as it's available.
+
+        This enables streaming display of AI thoughts/actions in the UI.
+        """
+        if not (self.websocket_manager and self.client_id and step):
+            return
+        try:
+            payload = {"type": "reasoning_step", "data": step}
+            import asyncio
+            if asyncio.get_event_loop().is_running():
+                # Fire-and-forget to avoid blocking the agent loop
+                asyncio.create_task(self.websocket_manager.send_to_client(self.client_id, payload))
+            else:
+                # If no loop, try a synchronous send (best-effort)
+                try:
+                    asyncio.run(self.websocket_manager.send_to_client(self.client_id, payload))
+                except Exception:
+                    self.logger.debug("Could not send step synchronously; skipping")
+        except Exception as e:
+            self.logger.debug(f"Failed to stream reasoning step: {e}")
 import logging
 import json
 import ast
 import uuid
 import asyncio
+from datetime import datetime
 from typing import Dict, List, Any
 
 try:
@@ -827,6 +999,42 @@ class LangChainAgent:
                 else:
                     self.llm = None
                     logger.warning("Google Gemini model selected, but no API key found. The agent will not be functional until a key is provided.")
+        elif model_key.startswith("GPT"):
+            try:
+                from langchain_openai import ChatOpenAI
+            except Exception as ie:
+                logger.warning(f"Could not import langchain_openai: {ie}. GPT agent will not be available.")
+                self.llm = None
+            else:
+                if model_config.get("api_key"):
+                    self.llm = ChatOpenAI(
+                        model=model_config["model"],
+                        openai_api_key=model_config.get("api_key"),
+                        temperature=model_config["temperature"],
+                        max_tokens=model_config["max_tokens"],
+                    )
+                    logger.info("LangChain agent LLM set to OpenAI GPT")
+                else:
+                    self.llm = None
+                    logger.warning("GPT model selected, but no API key found. The agent will not be functional until a key is provided.")
+        elif model_key.startswith("CLAUDE"):
+            try:
+                from langchain_anthropic import ChatAnthropic
+            except Exception as ie:
+                logger.warning(f"Could not import langchain_anthropic: {ie}. Claude agent will not be available.")
+                self.llm = None
+            else:
+                if model_config.get("api_key"):
+                    self.llm = ChatAnthropic(
+                        model=model_config["model"],
+                        anthropic_api_key=model_config.get("api_key"),
+                        temperature=model_config["temperature"],
+                        max_tokens=model_config["max_tokens"],
+                    )
+                    logger.info("LangChain agent LLM set to Anthropic Claude")
+                else:
+                    self.llm = None
+                    logger.warning("Claude model selected, but no API key found. The agent will not be functional until a key is provided.")
         else:
             # For non-Gemini models, try to provide a LangChain-compatible
             # adapter for Ollama so the same agent/tools can be reused.
@@ -1084,6 +1292,10 @@ Assistant:"""
                     "available_functions": json.dumps(AVAILABLE_FUNCTIONS, indent=2)
                 })
                 logger.info(f"AI response: {response.get('output', '')}")
+                
+                # Send accumulated reasoning updates to frontend
+                self.callback_handler.send_reasoning_updates()
+                
                 return response
         except Exception as e:
             logger.error(f"Error generating LangChain agent response: {e}", exc_info=True)

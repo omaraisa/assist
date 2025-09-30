@@ -89,7 +89,7 @@ class RunPythonCode(object):
         output_fc = arcpy.CreateUniqueName(output_fc)
         unit_mapping = {"meters": "METERS", "kilometers": "KILOMETERS", "feet": "FEET", "miles": "MILES"}
         arcpy_units = unit_mapping.get(units.lower(), "METERS")
-        arcpy.analysis.Buffer(layer_name, output_fc, f"{distance} {arcpy_units}")
+        arcpy.analysis.Buffer(layer_name, output_fc, f"{distance} {arcpy_units}", dissolve_option="ALL")
         self._add_to_map(output_fc)
         return {"success": True, "output_layer": output_name, "output_path": output_fc}
 

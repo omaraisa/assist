@@ -318,26 +318,18 @@ class SmartAssistantClient {
     
     handleReasoningUpdate(data) {
         console.log('Reasoning update:', data);
-        
-        // Find the current bot message container (could be thinking bubble or existing bot message)
-        let currentBotMessage = this.elements.chatMessages.querySelector('.msg.bot-msg:last-child');
-        
-        if (!currentBotMessage) {
-            // If no bot message exists and we have a thinking bubble, convert it to a proper bot message
-            const thinkingBubble = document.getElementById('thinking-bubble');
-            if (thinkingBubble) {
-                this.convertThinkingBubbleToReasoningMessage(thinkingBubble);
-                currentBotMessage = thinkingBubble;
-            } else {
-                // Create a new bot message container if none exists
-                currentBotMessage = this.createBotMessageContainer();
-            }
-        }
-        
-        // Update reasoning section with current step
-        if (data.current_step) {
-            this.updateReasoningSection(currentBotMessage, data.current_step);
-        }
+        // Reasoning UI disabled by user request - no-op
+        return;
+    }
+    
+    createReasoningMessage(steps) {
+        // Reasoning UI disabled by user request - no-op
+        return;
+    }
+    
+    addReasoningStep(container, stepData, index) {
+        // Reasoning UI disabled by user request - no-op
+        return;
     }
     
     convertThinkingBubbleToReasoningMessage(thinkingBubble) {
@@ -482,8 +474,10 @@ class SmartAssistantClient {
         const typeMap = {
             'chain_start': 'Planning',
             'agent_action': 'Action',
-            'tool_execution': 'Tool',
-            'observation': 'Observation',
+            'tool_start': 'Tool Start',
+            'tool_end': 'Tool Result', 
+            'thought': 'Thinking',
+            'agent_finish': 'Complete',
             'chain_end': 'Complete'
         };
         return typeMap[stepType] || stepType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -798,89 +792,32 @@ class SmartAssistantClient {
     }
     
     showLoading() {
-        // Create inline thinking bubble in chat
-        this.createThinkingBubble();
+        // Thinking UI disabled by user request - do nothing
+        return;
     }
     
     hideLoading() {
-        // Remove the thinking bubble (it will be replaced by actual response)
-        this.removeThinkingBubble();
+        // Thinking UI disabled by user request - do nothing
+        return;
     }
     
     createThinkingBubble() {
-        // Remove any existing thinking bubble
-        this.removeThinkingBubble();
-        
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'msg bot-msg thinking-bubble';
-        messageDiv.id = 'thinking-bubble';
-        
-        const timestamp = new Date().toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        messageDiv.innerHTML = `
-            <div class="msg-bubble thinking">
-                <div class="msg-info">
-                    <div class="msg-info-name">Progent</div>
-                    <div class="msg-info-time">${timestamp}</div>
-                </div>
-                <div class="thinking-content">
-                    <div class="thinking-dots">
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                    </div>
-                    <span class="thinking-text">Thinking...</span>
-                </div>
-            </div>
-        `;
-        
-        // Remove welcome message if it exists
-        const welcomeMessage = this.elements.chatMessages.querySelector('.welcome-message');
-        if (welcomeMessage) {
-            welcomeMessage.remove();
-        }
-        
-        this.elements.chatMessages.appendChild(messageDiv);
-        this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
+        // Thinking UI disabled by user request - do nothing
+        return;
     }
     
     removeThinkingBubble() {
-        const thinkingBubble = document.getElementById('thinking-bubble');
-        if (thinkingBubble) {
-            thinkingBubble.remove();
-        }
+        // Thinking UI disabled by user request - do nothing
+        return;
     }
     
     setThinkingState(thinking) {
+        // Disable thinking state UI changes. Only track the boolean internally.
         this.isThinking = thinking;
-        if (thinking) {
-            this.showLoading();
-            // Use a stop/square icon when thinking
-            this.elements.sendBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                    <rect x="6" y="6" width="12" height="12" rx="2"/>
-                </svg>
-            `;
-            this.elements.sendBtn.setAttribute('aria-label', 'Stop');
-            this.elements.sendBtn.classList.add('stop-mode');
-            this.elements.userInput.disabled = true;
-        } else {
-            this.hideLoading();
-            // Use send/arrow icon when not thinking
-            this.elements.sendBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-                </svg>
-            `;
-            this.elements.sendBtn.setAttribute('aria-label', 'Send Message');
-            this.elements.sendBtn.classList.remove('stop-mode');
-            this.elements.userInput.disabled = !this.isConnected;
-        }
-        // Button is always enabled - user can send when connected or stop when thinking
+        // Keep send button enabled and input enabled based on connection
         this.elements.sendBtn.disabled = false;
+        this.elements.userInput.disabled = !this.isConnected;
+        return;
     }
     
     cancelRequest() {

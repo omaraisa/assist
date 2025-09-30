@@ -111,9 +111,8 @@ class AIService:
                     "model": self.current_model
                 }
             
-            # Use LangChain agent for Gemini AND Ollama models (if agent has an LLM)
-            if (self.current_model.startswith("GEMINI") or 
-                self.current_model.startswith("OLLAMA")) and self.langchain_agent and self.langchain_agent.llm:
+            # Use LangChain agent for all models (Gemini, GPT, Claude, Ollama) if agent has an LLM
+            if self.langchain_agent and self.langchain_agent.llm:
                 logger.info(f"Using LangChain agent for model: {self.current_model}")
                 
                 response = await self.langchain_agent.generate_response(
