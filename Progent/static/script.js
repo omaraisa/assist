@@ -212,7 +212,7 @@ class SmartAssistantClient {
                 
             case 'reasoning_update':
                 console.log('Handling reasoning update:', message.data);
-                this.handleReasoningUpdate(message.data);
+                // this.handleReasoningUpdate(message.data);
                 break;
                 
             case 'function_result':
@@ -255,18 +255,18 @@ class SmartAssistantClient {
     
     replaceThinkingBubbleWithResponse(thinkingBubble, content) {
         // Check if the thinking bubble already has reasoning content
-        const existingReasoningSection = thinkingBubble.querySelector('.reasoning-section');
-        
-        if (existingReasoningSection) {
-            // If it has reasoning, just update the final message text and remove thinking state
-            thinkingBubble.className = 'msg bot-msg';
-            thinkingBubble.id = '';
-            
-            const msgText = thinkingBubble.querySelector('.msg-text');
-            if (msgText) {
-                msgText.innerHTML = this.formatMessage(content);
-            }
-        } else {
+        // const existingReasoningSection = thinkingBubble.querySelector('.reasoning-section');
+        // 
+        // if (existingReasoningSection) {
+        //     // If it has reasoning, just update the final message text and remove thinking state
+        //     thinkingBubble.className = 'msg bot-msg';
+        //     thinkingBubble.id = '';
+        //     
+        //     const msgText = thinkingBubble.querySelector('.msg-text');
+        //     if (msgText) {
+        //         msgText.innerHTML = this.formatMessage(content);
+        //     }
+        // } else {
             // Create a new bot message without reasoning
             const messageDiv = document.createElement('div');
             messageDiv.className = 'msg bot-msg';
@@ -288,7 +288,7 @@ class SmartAssistantClient {
             
             // Replace the thinking bubble with the actual response
             thinkingBubble.parentNode.replaceChild(messageDiv, thinkingBubble);
-        }
+        // }
         
         // Auto-scroll to bottom
         this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
@@ -316,172 +316,276 @@ class SmartAssistantClient {
         }
     }
     
-    handleReasoningUpdate(data) {
-        console.log('Reasoning update:', data);
-        // Reasoning UI disabled by user request - no-op
-        return;
-    }
+    // handleReasoningUpdate(data) {
+    //     console.log('Reasoning update:', data);
+    //     
+    //     // Find the most recent bot message or create a new reasoning message
+    //     let targetMessage = this.elements.chatMessages.querySelector('.msg.bot-msg:last-child');
+    //     
+    //     // If we have reasoning data with steps, create a dedicated reasoning message
+    //     if (data.steps && data.steps.length > 0) {
+    //         // Create a new reasoning message that appears before the final response
+    //         this.createReasoningMessage(data.steps);
+    //     }
+    // }
     
-    createReasoningMessage(steps) {
-        // Reasoning UI disabled by user request - no-op
-        return;
-    }
+    // createReasoningMessage(steps) {
+    //     // Create a dedicated reasoning message
+    //     const reasoningMessageDiv = document.createElement('div');
+    //     reasoningMessageDiv.className = 'msg bot-msg reasoning-msg';
+    //     
+    //     const timestamp = new Date().toLocaleTimeString([], {
+    //         hour: '2-digit',
+    //         minute: '2-digit'
+    //     });
+    //     
+    //     reasoningMessageDiv.innerHTML = `
+    //         <div class="msg-bubble">
+    //             <div class="msg-info">
+    //                 <div class="msg-info-name">Progent</div>
+    //                 <div class="msg-info-time">${timestamp}</div>
+    //             </div>
+    //             <div class="reasoning-section" style="display: block;">
+    //                 <div class="reasoning-header">
+    //                     <span class="reasoning-toggle">Hide reasoning</span>
+    //                     <span class="reasoning-steps-count">${steps.length} steps</span>
+    //                 </div>
+    //                 <div class="reasoning-content" style="display: block;">
+    //                     <div class="reasoning-steps"></div>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     `;
+    //     
+    //     // Add click handler for reasoning toggle
+    //     const toggle = reasoningMessageDiv.querySelector('.reasoning-toggle');
+    //     const content = reasoningMessageDiv.querySelector('.reasoning-content');
+    //     const header = reasoningMessageDiv.querySelector('.reasoning-header');
+    //     
+    //     toggle.addEventListener('click', () => {
+    //         const isExpanded = content.style.display !== 'none';
+    //         content.style.display = isExpanded ? 'none' : 'block';
+    //         toggle.textContent = isExpanded ? 'Show reasoning' : 'Hide reasoning';
+    //         header.classList.toggle('expanded', !isExpanded);
+    //     });
+    //     
+    //     // Populate with all reasoning steps (reverse to show chronological order)
+    //     const reasoningStepsContainer = reasoningMessageDiv.querySelector('.reasoning-steps');
+    //     steps.slice().reverse().forEach((step, index) => {
+    //         this.addReasoningStep(reasoningStepsContainer, step, index);
+    //     });
+    //     
+    //     // Insert before the last bot message (if it exists) or append to chat
+    //     const lastBotMessage = this.elements.chatMessages.querySelector('.msg.bot-msg:last-child');
+    //     if (lastBotMessage && !lastBotMessage.classList.contains('reasoning-msg')) {
+    //         // Insert reasoning message before the final response
+    //         this.elements.chatMessages.insertBefore(reasoningMessageDiv, lastBotMessage);
+    //     } else {
+    //         // Append if no final message yet
+    //         this.elements.chatMessages.appendChild(reasoningMessageDiv);
+    //     }
+    //     
+    //     // Remove welcome message if it exists
+    //     const welcomeMessage = this.elements.chatMessages.querySelector('.welcome-message');
+    //     if (welcomeMessage) {
+    //         welcomeMessage.remove();
+    //     }
+    //     
+    //     // Auto-scroll to bottom
+    //     this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
+    // }
     
-    addReasoningStep(container, stepData, index) {
-        // Reasoning UI disabled by user request - no-op
-        return;
-    }
+    // addReasoningStep(container, stepData, index) {
+    //     // Only show thinking/thought steps - skip everything else
+    //     if (stepData.type !== 'thought') {
+    //         return;
+    //     }
+    //     
+    //     const stepDiv = document.createElement('div');
+    //     stepDiv.className = 'reasoning-step';
+    //     
+    //     // Use timestamp from stepData if available, otherwise current time
+    //     let timestamp = stepData.timestamp;
+    //     if (!timestamp || timestamp === '') {
+    //         timestamp = new Date().toLocaleTimeString([], {
+    //             hour: '2-digit',
+    //             minute: '2-digit'
+    //         });
+    //     }
+    //     
+    //     // Clean up thought content to show just the actual thought
+    //     let content = stepData.content || '';
+    //     content = content.replace(/^Thought:\s*/i, '');
+    //     
+    //     // Skip empty content
+    //     if (!content || content.trim() === '') {
+    //         return;
+    //     }
+    //     
+    //     stepDiv.innerHTML = `
+    //         <div class="step-header">
+    //             <span class="step-type">Thinking</span>
+    //             <span class="step-time">${timestamp}</span>
+    //         </div>
+    //         <div class="step-content">${this.formatMessage(content)}</div>
+    //     `;
+    //     
+    //     container.appendChild(stepDiv);
+    //     
+    //     // Add animation delay
+    //     stepDiv.style.animationDelay = `${index * 0.1}s`;
+    // }
     
-    convertThinkingBubbleToReasoningMessage(thinkingBubble) {
-        // Remove thinking-specific classes and IDs
-        thinkingBubble.id = '';
-        thinkingBubble.className = 'msg bot-msg';
-        
-        const timestamp = new Date().toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        // Replace the thinking content with a proper bot message structure including reasoning
-        thinkingBubble.innerHTML = `
-            <div class="msg-bubble">
-                <div class="msg-info">
-                    <div class="msg-info-name">Progent</div>
-                    <div class="msg-info-time">${timestamp}</div>
-                </div>
-                <div class="reasoning-section" style="display: block;">
-                    <div class="reasoning-header">
-                        <span class="reasoning-toggle">Hide reasoning</span>
-                        <span class="reasoning-steps-count">0 steps</span>
-                    </div>
-                    <div class="reasoning-content" style="display: block;">
-                        <div class="reasoning-steps"></div>
-                    </div>
-                </div>
-                <div class="msg-text"></div>
-            </div>
-        `;
-        
-        // Add click handler for reasoning toggle
-        const toggle = thinkingBubble.querySelector('.reasoning-toggle');
-        const content = thinkingBubble.querySelector('.reasoning-content');
-        const header = thinkingBubble.querySelector('.reasoning-header');
-        
-        toggle.addEventListener('click', () => {
-            const isExpanded = content.style.display !== 'none';
-            content.style.display = isExpanded ? 'none' : 'block';
-            toggle.textContent = isExpanded ? 'Show reasoning' : 'Hide reasoning';
-            header.classList.toggle('expanded', !isExpanded);
-        });
-    }
+    // convertThinkingBubbleToReasoningMessage(thinkingBubble) {
+    //     // Remove thinking-specific classes and IDs
+    //     thinkingBubble.id = '';
+    //     thinkingBubble.className = 'msg bot-msg';
+    //     
+    //     const timestamp = new Date().toLocaleTimeString([], {
+    //         hour: '2-digit',
+    //         minute: '2-digit'
+    //     });
+    //     
+    //     // Replace the thinking content with a proper bot message structure including reasoning
+    //     thinkingBubble.innerHTML = `
+    //         <div class="msg-bubble">
+    //             <div class="msg-info">
+    //                 <div class="msg-info-name">Progent</div>
+    //                 <div class="msg-info-time">${timestamp}</div>
+    //             </div>
+    //             <div class="reasoning-section" style="display: block;">
+    //                 <div class="reasoning-header">
+    //                     <span class="reasoning-toggle">Hide reasoning</span>
+    //                     <span class="reasoning-steps-count">0 steps</span>
+    //                 </div>
+    //                 <div class="reasoning-content" style="display: block;">
+    //                     <div class="reasoning-steps"></div>
+    //                 </div>
+    //             </div>
+    //             <div class="msg-text"></div>
+    //         </div>
+    //     `;
+    //     
+    //     // Add click handler for reasoning toggle
+    //     const toggle = thinkingBubble.querySelector('.reasoning-toggle');
+    //     const content = thinkingBubble.querySelector('.reasoning-content');
+    //     const header = thinkingBubble.querySelector('.reasoning-header');
+    //     
+    //     toggle.addEventListener('click', () => {
+    //         const isExpanded = content.style.display !== 'none';
+    //         content.style.display = isExpanded ? 'none' : 'block';
+    //         toggle.textContent = isExpanded ? 'Show reasoning' : 'Hide reasoning';
+    //         header.classList.toggle('expanded', !isExpanded);
+    //     });
+    // }
     
-    createBotMessageContainer() {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'msg bot-msg';
-        
-        const timestamp = new Date().toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        messageDiv.innerHTML = `
-            <div class="msg-bubble">
-                <div class="msg-info">
-                    <div class="msg-info-name">Progent</div>
-                    <div class="msg-info-time">${timestamp}</div>
-                </div>
-                <div class="reasoning-section" style="display: none;">
-                    <div class="reasoning-header">
-                        <span class="reasoning-toggle">Show reasoning</span>
-                        <span class="reasoning-steps-count">0 steps</span>
-                    </div>
-                    <div class="reasoning-content" style="display: none;">
-                        <div class="reasoning-steps"></div>
-                    </div>
-                </div>
-                <div class="msg-text"></div>
-            </div>
-        `;
-        
-        // Add click handler for reasoning toggle
-        const toggle = messageDiv.querySelector('.reasoning-toggle');
-        const content = messageDiv.querySelector('.reasoning-content');
-        const header = messageDiv.querySelector('.reasoning-header');
-        
-        toggle.addEventListener('click', () => {
-            const isExpanded = content.style.display !== 'none';
-            content.style.display = isExpanded ? 'none' : 'block';
-            toggle.textContent = isExpanded ? 'Show reasoning' : 'Hide reasoning';
-            header.classList.toggle('expanded', !isExpanded);
-        });
-        
-        // Remove welcome message if it exists
-        const welcomeMessage = this.elements.chatMessages.querySelector('.welcome-message');
-        if (welcomeMessage) {
-            welcomeMessage.remove();
-        }
-        
-        this.elements.chatMessages.appendChild(messageDiv);
-        this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
-        
-        return messageDiv;
-    }
+    // createBotMessageContainer() {
+    //     const messageDiv = document.createElement('div');
+    //     messageDiv.className = 'msg bot-msg';
+    //     
+    //     const timestamp = new Date().toLocaleTimeString([], {
+    //         hour: '2-digit',
+    //         minute: '2-digit'
+    //     });
+    //     
+    //     messageDiv.innerHTML = `
+    //         <div class="msg-bubble">
+    //             <div class="msg-info">
+    //                 <div class="msg-info-name">Progent</div>
+    //                 <div class="msg-info-time">${timestamp}</div>
+    //             </div>
+    //             <div class="reasoning-section" style="display: none;">
+    //                 <div class="reasoning-header">
+    //                     <span class="reasoning-toggle">Show reasoning</span>
+    //                     <span class="reasoning-steps-count">0 steps</span>
+    //                 </div>
+    //                 <div class="reasoning-content" style="display: none;">
+    //                     <div class="reasoning-steps"></div>
+    //                 </div>
+    //             </div>
+    //             <div class="msg-text"></div>
+    //         </div>
+    //     `;
+    //     
+    //     // Add click handler for reasoning toggle
+    //     const toggle = messageDiv.querySelector('.reasoning-toggle');
+    //     const content = messageDiv.querySelector('.reasoning-content');
+    //     const header = messageDiv.querySelector('.reasoning-header');
+    //     
+    //     toggle.addEventListener('click', () => {
+    //         const isExpanded = content.style.display !== 'none';
+    //         content.style.display = isExpanded ? 'none' : 'block';
+    //         toggle.textContent = isExpanded ? 'Show reasoning' : 'Hide reasoning';
+    //         header.classList.toggle('expanded', !isExpanded);
+    //     });
+    //     
+    //     // Remove welcome message if it exists
+    //     const welcomeMessage = this.elements.chatMessages.querySelector('.welcome-message');
+    //     if (welcomeMessage) {
+    //         welcomeMessage.remove();
+    //     }
+    //     
+    //     this.elements.chatMessages.appendChild(messageDiv);
+    //     this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
+    //     
+    //     return messageDiv;
+    // }
     
-    updateReasoningSection(botMessage, stepData) {
-        const reasoningSection = botMessage.querySelector('.reasoning-section');
-        const reasoningSteps = botMessage.querySelector('.reasoning-steps');
-        const stepsCount = botMessage.querySelector('.reasoning-steps-count');
-        
-        if (!reasoningSection || !reasoningSteps || !stepsCount) return;
-        
-        // Show reasoning section
-        reasoningSection.style.display = 'block';
-        
-        // Add the new reasoning step
-        const stepDiv = document.createElement('div');
-        stepDiv.className = 'reasoning-step';
-        
-        const timestamp = new Date().toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        // Format content - combine content and details if both exist
-        let content = stepData.content || '';
-        if (stepData.details && stepData.details !== content) {
-            content += (content ? ' ' : '') + stepData.details;
-        }
-        
-        stepDiv.innerHTML = `
-            <div class="step-header">
-                <span class="step-type">${this.formatStepType(stepData.type)}</span>
-                <span class="step-time">${timestamp}</span>
-            </div>
-            <div class="step-content">${this.formatMessage(content)}</div>
-        `;
-        
-        reasoningSteps.appendChild(stepDiv);
-        
-        // Update steps count
-        const stepCount = reasoningSteps.children.length;
-        stepsCount.textContent = `${stepCount} step${stepCount !== 1 ? 's' : ''}`;
-        
-        // Auto-scroll to bottom
-        this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
-    }
+    // updateReasoningSection(botMessage, stepData) {
+    //     const reasoningSection = botMessage.querySelector('.reasoning-section');
+    //     const reasoningSteps = botMessage.querySelector('.reasoning-steps');
+    //     const stepsCount = botMessage.querySelector('.reasoning-steps-count');
+    //     
+    //     if (!reasoningSection || !reasoningSteps || !stepsCount) return;
+    //     
+    //     // Show reasoning section
+    //     reasoningSection.style.display = 'block';
+    //     
+    //     // Add the new reasoning step
+    //     const stepDiv = document.createElement('div');
+    //     stepDiv.className = 'reasoning-step';
+    //     
+    //     const timestamp = new Date().toLocaleTimeString([], {
+    //         hour: '2-digit',
+    //         minute: '2-digit'
+    //     });
+    //     
+    //     // Format content - combine content and details if both exist
+    //     let content = stepData.content || '';
+    //     if (stepData.details && stepData.details !== content) {
+    //         content += (content ? ' ' : '') + stepData.details;
+    //     }
+    //     
+    //     stepDiv.innerHTML = `
+    //         <div class="step-header">
+    //             <span class="step-type">${this.formatStepType(stepData.type)}</span>
+    //             <span class="step-time">${timestamp}</span>
+    //         </div>
+    //         <div class="step-content">${this.formatMessage(content)}</div>
+    //     `;
+    //     
+    //     reasoningSteps.appendChild(stepDiv);
+    //     
+    //     // Update steps count
+    //     const stepCount = reasoningSteps.children.length;
+    //     stepsCount.textContent = `${stepCount} step${stepCount !== 1 ? 's' : ''}`;
+    //     
+    //     // Auto-scroll to bottom
+    //     this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
+    // }
     
-    formatStepType(stepType) {
-        const typeMap = {
-            'chain_start': 'Planning',
-            'agent_action': 'Action',
-            'tool_start': 'Tool Start',
-            'tool_end': 'Tool Result', 
-            'thought': 'Thinking',
-            'agent_finish': 'Complete',
-            'chain_end': 'Complete'
-        };
-        return typeMap[stepType] || stepType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
-    }
+    // formatStepType(stepType) {
+    //     const typeMap = {
+    //         'chain_start': 'Planning',
+    //         'agent_action': 'Action',
+    //         'tool_start': 'Tool Start',
+    //         'tool_end': 'Tool Result', 
+    //         'thought': 'Thinking',
+    //         'agent_finish': 'Complete',
+    //         'chain_end': 'Complete'
+    //     };
+    //     return typeMap[stepType] || stepType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    // }
     
     updateModelOptions(models) {
         const select = this.elements.modelSelect;
@@ -594,19 +698,19 @@ class SmartAssistantClient {
         `;
         
         // Special handling for bot messages - check if we need to add to existing reasoning message
-        if (type === 'bot') {
-            const lastBotMessage = this.elements.chatMessages.querySelector('.msg.bot-msg:last-child');
-            if (lastBotMessage && lastBotMessage.querySelector('.reasoning-section')) {
-                // Add the final message content to the existing reasoning message
-                const msgText = lastBotMessage.querySelector('.msg-text');
-                if (msgText && !msgText.textContent.trim()) {
-                    msgText.innerHTML = this.formatMessage(content);
-                    // Auto-scroll to bottom
-                    this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
-                    return; // Don't add a new message div
-                }
-            }
-        }
+        // if (type === 'bot') {
+        //     const lastBotMessage = this.elements.chatMessages.querySelector('.msg.bot-msg:last-child');
+        //     if (lastBotMessage && lastBotMessage.querySelector('.reasoning-section')) {
+        //         // Add the final message content to the existing reasoning message
+        //         const msgText = lastBotMessage.querySelector('.msg-text');
+        //         if (msgText && !msgText.textContent.trim()) {
+        //             msgText.innerHTML = this.formatMessage(content);
+        //             // Auto-scroll to bottom
+        //             this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
+        //             return; // Don't add a new message div
+        //         }
+        //     }
+        // }
         
         // Remove welcome message if it exists
         const welcomeMessage = this.elements.chatMessages.querySelector('.welcome-message');
@@ -644,32 +748,6 @@ class SmartAssistantClient {
             const msgBubble = thinkingBubble.querySelector('.msg-bubble');
             msgBubble.className = 'msg-bubble'; // Remove thinking class
             
-            // Add reasoning section (empty for now, will be populated by reasoning updates)
-            const reasoningSection = document.createElement('div');
-            reasoningSection.className = 'reasoning-section';
-            reasoningSection.style.display = 'none';
-            reasoningSection.innerHTML = `
-                <div class="reasoning-header">
-                    <span class="reasoning-toggle">Show reasoning</span>
-                    <span class="reasoning-steps-count">0 steps</span>
-                </div>
-                <div class="reasoning-content" style="display: none;">
-                    <div class="reasoning-steps"></div>
-                </div>
-            `;
-            
-            // Add click handler for reasoning toggle
-            const toggle = reasoningSection.querySelector('.reasoning-toggle');
-            const reasoningContent = reasoningSection.querySelector('.reasoning-content');
-            const header = reasoningSection.querySelector('.reasoning-header');
-            
-            toggle.addEventListener('click', () => {
-                const isExpanded = reasoningContent.style.display !== 'none';
-                reasoningContent.style.display = isExpanded ? 'none' : 'block';
-                toggle.textContent = isExpanded ? 'Show reasoning' : 'Hide reasoning';
-                header.classList.toggle('expanded', !isExpanded);
-            });
-            
             // Replace thinking content with response content
             msgBubble.innerHTML = `
                 <div class="msg-info">
@@ -679,7 +757,6 @@ class SmartAssistantClient {
                         minute: '2-digit'
                     })}</div>
                 </div>
-                ${reasoningSection.outerHTML}
                 <div class="msg-text">${this.formatMessage(content)}</div>
             `;
             
@@ -792,32 +869,89 @@ class SmartAssistantClient {
     }
     
     showLoading() {
-        // Thinking UI disabled by user request - do nothing
-        return;
+        // Create inline thinking bubble in chat
+        this.createThinkingBubble();
     }
     
     hideLoading() {
-        // Thinking UI disabled by user request - do nothing
-        return;
+        // Remove the thinking bubble (it will be replaced by actual response)
+        this.removeThinkingBubble();
     }
     
     createThinkingBubble() {
-        // Thinking UI disabled by user request - do nothing
-        return;
+        // Remove any existing thinking bubble
+        this.removeThinkingBubble();
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'msg bot-msg thinking-bubble';
+        messageDiv.id = 'thinking-bubble';
+        
+        const timestamp = new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        messageDiv.innerHTML = `
+            <div class="msg-bubble thinking">
+                <div class="msg-info">
+                    <div class="msg-info-name">Progent</div>
+                    <div class="msg-info-time">${timestamp}</div>
+                </div>
+                <div class="thinking-content">
+                    <div class="thinking-dots">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                    <span class="thinking-text">Thinking...</span>
+                </div>
+            </div>
+        `;
+        
+        // Remove welcome message if it exists
+        const welcomeMessage = this.elements.chatMessages.querySelector('.welcome-message');
+        if (welcomeMessage) {
+            welcomeMessage.remove();
+        }
+        
+        this.elements.chatMessages.appendChild(messageDiv);
+        this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
     }
     
     removeThinkingBubble() {
-        // Thinking UI disabled by user request - do nothing
-        return;
+        const thinkingBubble = document.getElementById('thinking-bubble');
+        if (thinkingBubble) {
+            thinkingBubble.remove();
+        }
     }
     
     setThinkingState(thinking) {
-        // Disable thinking state UI changes. Only track the boolean internally.
         this.isThinking = thinking;
-        // Keep send button enabled and input enabled based on connection
+        if (thinking) {
+            this.showLoading();
+            // Use a stop/square icon when thinking
+            this.elements.sendBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                    <rect x="6" y="6" width="12" height="12" rx="2"/>
+                </svg>
+            `;
+            this.elements.sendBtn.setAttribute('aria-label', 'Stop');
+            this.elements.sendBtn.classList.add('stop-mode');
+            this.elements.userInput.disabled = true;
+        } else {
+            this.hideLoading();
+            // Use send/arrow icon when not thinking
+            this.elements.sendBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                </svg>
+            `;
+            this.elements.sendBtn.setAttribute('aria-label', 'Send Message');
+            this.elements.sendBtn.classList.remove('stop-mode');
+            this.elements.userInput.disabled = !this.isConnected;
+        }
+        // Button is always enabled - user can send when connected or stop when thinking
         this.elements.sendBtn.disabled = false;
-        this.elements.userInput.disabled = !this.isConnected;
-        return;
     }
     
     cancelRequest() {

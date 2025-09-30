@@ -1167,6 +1167,9 @@ IMPORTANT: Do NOT add explanatory text or comments in Action Input - provide ONL
 IMPORTANT: Do NOT use markdown formatting, code blocks, or triple backticks (```) in your responses.
 IMPORTANT: After seeing a successful function result, immediately provide your Final Answer - do not repeat actions.
 
+INFORMATIONAL QUESTIONS:
+For questions that can be answered directly from the ArcGIS state above (like "how many layers", "what layers are available", "what is the current map name"), you can provide the Final Answer immediately without using any tools.
+
 Use the following format:
 
 Question: the input question you must answer
@@ -1176,6 +1179,12 @@ Action Input: the input to the action
 Observation: the result of the action
 ... (this Thought/Action/Action Input/Observation can repeat N times)
 Thought: I now know the final answer
+Final Answer: the final answer to the original input question
+
+OR for informational questions that don't require tools:
+
+Question: the input question you must answer
+Thought: I can answer this directly from the current ArcGIS state
 Final Answer: the final answer to the original input question
 
 CRITICAL STOPPING RULE:
@@ -1230,11 +1239,15 @@ Current ArcGIS Pro State: {simplified_state}
 {chat_history_str}
 User: {user_message}
 
-Does this message require GIS operations/tools, or is it conversational?
+Does this message require GIS operations/tools, or is it just asking for information?
 
 Respond with exactly one word:
-- "TOOLS" if the user wants GIS analysis, data manipulation, spatial operations, or asks about layers/maps
-- "CHAT" if it's a greeting, general question about you, or casual conversation
+- "TOOLS" if the user wants to PERFORM GIS analysis, data manipulation, spatial operations, create/modify layers, or run functions
+- "CHAT" if the user is just asking for information about current state, asking questions, or having casual conversation
+
+Examples:
+- "TOOLS": "buffer the points layer", "create a new layer", "calculate area", "select intersecting features"
+- "CHAT": "how many layers do I have", "what layers are available", "what is the current map", "tell me about this data"
 
 Message: {user_message}
 Classification:"""
