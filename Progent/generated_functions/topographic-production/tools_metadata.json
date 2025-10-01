@@ -1,0 +1,82 @@
+{
+  "extraction_info": {
+    "date": "2025-10-01T15:34:16.001996",
+    "total_toolsets": 1,
+    "total_tools": 0,
+    "toolbox": "topographic-production"
+  },
+  "tools": [
+    {
+      "toolset": "topographic-production",
+      "tool_name": "Banding",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/topographic-production/an-overview-of-the-banding-toolset.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T15:33:50.826177"
+    },
+    {
+      "toolset": "topographic-production",
+      "tool_name": "Cartographic Refinement",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/topographic-production/an-overview-of-the-cartographic-refinement-toolset.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T15:33:54.894058"
+    },
+    {
+      "toolset": "topographic-production",
+      "tool_name": "Features",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/topographic-production/an-overview-of-the-cartography-features-toolset.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T15:33:57.455127"
+    },
+    {
+      "toolset": "topographic-production",
+      "tool_name": "Layout",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/topographic-production/an-overview-of-the-layout-toolset.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T15:33:59.879857"
+    },
+    {
+      "toolset": "topographic-production",
+      "tool_name": "Features",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/topographic-production/an-overview-of-the-features-toolset.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T15:34:04.140429"
+    },
+    {
+      "toolset": "topographic-production",
+      "tool_name": "Generalization",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/topographic-production/an-overview-of-the-generalization-toolset.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T15:34:06.544387"
+    },
+    {
+      "toolset": "topographic-production",
+      "tool_name": "Geodatabase",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/topographic-production/an-overview-of-the-geodatabase-toolset.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T15:34:09.052560"
+    },
+    {
+      "toolset": "topographic-production",
+      "tool_name": "Topology",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/topographic-production/an-overview-of-the-topology-toolset.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T15:34:11.461403"
+    },
+    {
+      "toolset": "topographic-production",
+      "tool_name": "Validation",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/topographic-production/an-overview-of-the-validation-toolset.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T15:34:13.685122"
+    }
+  ]
+}

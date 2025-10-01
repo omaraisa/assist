@@ -12,6 +12,7 @@ from copy import deepcopy
 
 # Import the new analysis tools module
 from . import analysis_tools
+from . import d_analyst_tools
 
 class RunPythonCode(object):
     def __init__(self):
@@ -20,6 +21,7 @@ class RunPythonCode(object):
         self.canRunInBackground = False
         # Instantiate the analysis tools
         self.analysis_tools = analysis_tools.AnalysisTools()
+        self.d_analyst_tools = d_analyst_tools.DAnalystTools()
 
     def getParameterInfo(self):
         function_name = arcpy.Parameter(
@@ -74,6 +76,11 @@ class RunPythonCode(object):
             
             # If not found, try to find it in the analysis_tools instance
             func = getattr(self.analysis_tools, function_name, None)
+            if func:
+                return func(params)
+
+            # If not found, try to find it in the d_analyst_tools instance
+            func = getattr(self.d_analyst_tools, function_name, None)
             if func:
                 return func(params)
             else:
