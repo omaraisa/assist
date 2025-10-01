@@ -432,7 +432,7 @@ def main():
             tools = extract_tools_from_toolset_overview(t_html, toolset)
             all_tools[toolset] = tools
             total_tools += len(tools)
-            print(f"    Found {len(tools)} tools: {', '.join(tools)}")
+            print(f"    Found {len(tools)} tools: {', '.join([t['name'] for t in tools])}")
     else:
         # For non-analysis toolboxes the overview page typically lists the tools directly
         tools = extract_tools_from_toolset_overview(html, toolbox_slug)

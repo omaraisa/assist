@@ -1,0 +1,2475 @@
+{
+  "extraction_info": {
+    "date": "2025-10-01T15:00:45.093603",
+    "total_toolsets": 1,
+    "total_tools": 46,
+    "toolbox": "business-analyst"
+  },
+  "tools": [
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Calculate Market Penetration",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/calculate-market-penetration.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class that will be used for calculating market penetration.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class that contains the calculated market penetration features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "id_field",
+          "explanation": "A unique ID field in the market penetration layer.",
+          "datatype": "Field"
+        },
+        {
+          "name": "market_penetration_base_field",
+          "explanation": "The field containing the values that will be used to calculate market penetration. This field will be used as the denominator and represents your market—for example, Total Population or Total Households.",
+          "datatype": "Field"
+        },
+        {
+          "name": "in_customer_features",
+          "explanation": "The input feature class containing the points for the customer\r\nlayer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "area_description_field(Optional)",
+          "explanation": "The field that will be used to describe each feature in the market penetration layer.",
+          "datatype": "Field"
+        },
+        {
+          "name": "weight_field(Optional)",
+          "explanation": "The field in the customer layer that will be used as a weight to calculate market penetration rather than customer counts.",
+          "datatype": "Field"
+        },
+        {
+          "name": "create_report(Optional)",
+          "explanation": "Specifies whether a summary report will be created.\r\nCREATE_REPORT—A summary report will be created.DO_NOT_CREATE_REPORT—A summary report will not be created. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "store_id(Optional)",
+          "explanation": "A unique identifier associated with each store for each trade area.",
+          "datatype": "Field"
+        },
+        {
+          "name": "link_field(Optional)",
+          "explanation": "An ID that assigns a trade area to a customer.",
+          "datatype": "Field"
+        },
+        {
+          "name": "report_title(Optional)",
+          "explanation": "The title of the report.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_folder(Optional)",
+          "explanation": "The output directory that will contain the report.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "report_format[report_format,...](Optional)",
+          "explanation": "Specifies the format  one or more output report formats.PDF—The report will be in PDF format. This is the default.XLSX—The report will be in XLSX format.HTML—The report will be in HTML format.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Calculates the market penetration based on the number of customers within an area compared to a demographic variable such as total population. An optional report can be created detailing the market penetration.",
+      "extraction_date": "2025-10-01T14:58:17.215898"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Color Coded Layer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/create-color-coded-layer.htm",
+      "parameters": [
+        {
+          "name": "classification_variable",
+          "explanation": "A variable that will display as a color-coded map.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_layer_name",
+          "explanation": "The name of the color-coded layer that will be added to the map.",
+          "datatype": "String"
+        },
+        {
+          "name": "classification_method",
+          "explanation": "Specifies the method that will be used to calculate  the class breaks.NATURAL_BREAKS—Natural breaks classes are based on natural groupings inherent in the data. Class breaks that best group similar values and maximize the differences between classes will be identified. This is the default.QUANTILE—Each class will contain an equal number of features. A quantile classification is well suited to linearly distributed data. EQUAL_INTERVAL—The range of attribute values will be divided into equal-sized subranges. This allows you to specify the number of intervals and  will automatically determine the class breaks based on the value range.STD_DEV—  Class breaks will be placed above and below the mean value at a specified interval size, such as 2, 1, or 0.5, in the unit of standard deviation, until reaching the minimum and maximum values of the input variable.GEOMETRIC_INTERVAL—Class breaks will be created based on class intervals that have a geometric series. The geometric coefficient in this classifier can change once (to its inverse) to optimize the class ranges.AUTO—Classification methods will be automatically defined using the variable metadata. This presents the recommended thematic map style based on the data type.",
+          "datatype": "String"
+        },
+        {
+          "name": "number_of_classes",
+          "explanation": "The number of data classification breaks that will appear on the map. The default value is 5.",
+          "datatype": "String"
+        },
+        {
+          "name": "area_of_interest(Optional)",
+          "explanation": "The feature layer that will be used to determine the geographic extent of the analysis.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_dataset_path(Optional)",
+          "explanation": "The geodatabase in which the output feature dataset will be created.",
+          "datatype": "Workspace"
+        },
+        {
+          "name": "out_dataset_name(Optional)",
+          "explanation": "The name of the feature dataset in the output geodatabase in which the color-coded layer feature classes will be created.",
+          "datatype": "String"
+        },
+        {
+          "name": "boundary_mode(Optional)",
+          "explanation": "Specifies the types of boundaries that will be used to create levels in the color-coded group layer.STANDARD_GEOGRAPHIES—Boundaries will be levels of standard geographies. This is the default.H3_HEXAGONS—Boundaries will be levels of H3 hexagons.",
+          "datatype": "String"
+        },
+        {
+          "name": "secondary_variable(Optional)",
+          "explanation": "A second variable that will display as a color-coded map.",
+          "datatype": "String"
+        },
+        {
+          "name": "grid_size(Optional)",
+          "explanation": "Specifies the grid size that will be used to create the bivariate color symbology.TWO_BY_TWO—A 4-class bivariate color scheme will be used.THREE_BY_THREE—A 9-class bivariate color scheme will be used. This is the default.FOUR_BY_FOUR—A 12-class bivariate color scheme will be used.",
+          "datatype": "String"
+        },
+        {
+          "name": "renderer_type(Optional)",
+          "explanation": "Specifies the type of symbology that will be used.BIVARIATE—Two variables will be displayed using a grid color scheme.GRADUATED_COLORS—Varying color shades will be displayed across geographical areas. This is the default.GRADUATED_SYMBOLS—Varying symbol sizes will be displayed across geographical areas.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Creates multilevel, scale-dependent choropleth layers from a variable describing a business, demographic, consumer, or landscape characteristic.",
+      "extraction_date": "2025-10-01T14:58:19.956427"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Enrich Layer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/enrich-layer-advanced.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The features that will be enriched.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output layer containing both the input attributes and user-selected attributes. Selected attributes are summarized from underlying demographic boundaries. Only the area inside the input boundary is considered.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "variables[variables,...]",
+          "explanation": "The variables that will be summarized and added to the output feature class.",
+          "datatype": "String"
+        },
+        {
+          "name": "buffer_type(Optional)",
+          "explanation": "Specifies the area that will be enriched.\r\nThe default value is STRAIGHT_LINE_DISTANCE.Input line features can only use the STRAIGHT_LINE_DISTANCE distance option.",
+          "datatype": "String"
+        },
+        {
+          "name": "distance(Optional)",
+          "explanation": "The distance or size of an area to enrich, for example, a 1-mile buffer or 5-minute walk time. Units correspond to the polygon type. The default value is 1.",
+          "datatype": "Double"
+        },
+        {
+          "name": "unit(Optional)",
+          "explanation": "The units associated with the distance parameter. The default value is MILES.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Enriches data by adding demographic and landscape facts about the people and places that surround or are inside data locations. The output is a duplicate of the input with additional attribute fields. This tool requires an ArcGIS Online organizational account or a locally stored or installed dataset. This tool uses detailed aggregation and apportionment settings to summarize data.  The Apportion Polygon tool is similar to this tool. However, Apportion Polygon uses user-specified apportionment. Enrich Layer uses U.S. Census Block points or global settlement points for apportionment. For more information, see Data apportionment.",
+      "extraction_date": "2025-10-01T14:58:22.468763"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Find Nearby Locations",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/find-nearby-locations.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The point layer to be measured to or from the in_location_points parameter value.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "id_field",
+          "explanation": "A field containing unique identifiers for each input feature.",
+          "datatype": "Field"
+        },
+        {
+          "name": "in_location_points",
+          "explanation": "The layer that will be used to generate the output with distance and direction attributes to or from the in_features parameter value.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output location point features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "distance_type(Optional)",
+          "explanation": "The calculated distance based on the method of travel. Straight Line is the default value.",
+          "datatype": "String"
+        },
+        {
+          "name": "units(Optional)",
+          "explanation": "The measurement units, in distance or time, that will be used when calculating nearby locations.",
+          "datatype": "String"
+        },
+        {
+          "name": "distance_limit(Optional)",
+          "explanation": "The analysis extent measured in distance or time.",
+          "datatype": "Double"
+        },
+        {
+          "name": "number_limit",
+          "explanation": "The numeric limit of the in_location_points value.",
+          "datatype": "Long"
+        },
+        {
+          "name": "percent_limit",
+          "explanation": "The closest points, as a percentage of the points of the in_location_points value.",
+          "datatype": "Double"
+        },
+        {
+          "name": "create_report(Optional)",
+          "explanation": "Specifies whether an output report will be created.CREATE_REPORT—A report will be created.DO_NOT_CREATE_REPORT—A report will not be created. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "report_title(Optional)",
+          "explanation": "The title of the output report.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_folder(Optional)",
+          "explanation": "The directory that will contain the output report.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "report_format[report_format,...](Optional)",
+          "explanation": "The output report formats. The default value is InfographicHTML. Additional available formats are PDF, XLSX, S.XLSX, HTML, S.XML, ZIP, CVS, PAGX, and InfographicPDF.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_fields[report_fields,...](Optional)",
+          "explanation": "The additional fields that will be added to the report.",
+          "datatype": "Field"
+        },
+        {
+          "name": "travel_direction(Optional)",
+          "explanation": "Specifies whether travel times or distances will be measured from location points to input features or from input features to location points.TOWARD_STORES—The direction of travel will be from location points to input features. This is the default.AWAY_FROM_STORES—The direction of travel will be from input features to location points.",
+          "datatype": "String"
+        },
+        {
+          "name": "time_of_day(Optional)",
+          "explanation": "The time at which travel will begin.",
+          "datatype": "Date"
+        },
+        {
+          "name": "time_zone(Optional)",
+          "explanation": "Specifies the time zone that will be used for the time_of_day parameter.UTC—Coordinated universal time (UTC) will be used. Choose this option if you want the best location for a specific time, such as now, but aren't certain of the time zone in which the in_location_points value will be located.TIME_ZONE_AT_LOCATION—The time zone in which the in_location_points value is located will be used. If the travel direction is input features to location points, this is the time zone of the input features. If the travel direction is location points to input features, this is the time zone of the location points. This is the default.",
+          "datatype": "String"
+        },
+        {
+          "name": "search_tolerance(Optional)",
+          "explanation": "The maximum distance that input points can be from the network. Points located beyond the search tolerance will be excluded from processing.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "location_name(Optional)",
+          "explanation": "A field from the input in_location_points parameter. This field contains the name or ID for each input point used in the Find Nearby Locations report.",
+          "datatype": "Field"
+        }
+      ],
+      "summary": "Identifies locations closest to the input features based on a selected distance type. The number of points in the output is defined by limiting the count or percentage of location points to return or by limiting the distance from the input points.",
+      "extraction_date": "2025-10-01T14:58:25.174720"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Desire Lines",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-desire-lines.htm",
+      "parameters": [
+        {
+          "name": "in_stores_layer",
+          "explanation": "The input point layer representing store or facility locations.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "in_customers_layer",
+          "explanation": "The input point layer representing customers or patrons.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The resultant feature class that will be added to the Contents pane.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "store_id_field",
+          "explanation": "A unique ID field representing a store or facility location.",
+          "datatype": "Field"
+        },
+        {
+          "name": "link_field",
+          "explanation": "An ID field used to assign individual customers to stores.",
+          "datatype": "Field"
+        },
+        {
+          "name": "distance_type(Optional)",
+          "explanation": "The method of travel that will be used for distance calculation. Straight Line is the default value. When using Portal for ArcGIS or local data sources, travel mode options are dynamically populated.",
+          "datatype": "String"
+        },
+        {
+          "name": "units(Optional)",
+          "explanation": "The type of distance- or time-measuring units that will be used when calculating minimal distance.",
+          "datatype": "String"
+        },
+        {
+          "name": "cutoff(Optional)",
+          "explanation": "The distance beyond which customers will be considered outliers and excluded from consideration during desire line generation.",
+          "datatype": "Double"
+        },
+        {
+          "name": "travel_direction(Optional)",
+          "explanation": "Specifies the direction of travel that will be used between stores and demand points.TOWARD_STORES—The direction of travel will be from demand points to stores.\r\nThis is the default.AWAY_FROM_STORES—The direction of travel will be from stores to demand points.",
+          "datatype": "String"
+        },
+        {
+          "name": "time_of_day(Optional)",
+          "explanation": "The time at which travel begins.",
+          "datatype": "Date"
+        },
+        {
+          "name": "time_zone(Optional)",
+          "explanation": "Specifies the time zone that will be used for the time_of_day parameter.UTC—Coordinated universal time (UTC) will be used. Choose this option if you want to choose the best location for a specific time, such as now, but aren't certain in which time zone the stores or demand points are located.TIME_ZONE_AT_LOCATION—The time zone in which the stores or demand points are located will be used. If travel_direction is AWAY_FROM_STORES, this is the time zone of the stores. If travel_direction is TOWARD_STORES, this is the time zone of the demand points. This is the default.",
+          "datatype": "String"
+        },
+        {
+          "name": "create_report(Optional)",
+          "explanation": "Specifies whether a Wind Rose report will be created.CREATE_REPORT—A report will be created.DO_NOT_CREATE_REPORT—A report will not be created. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "report_title(Optional)",
+          "explanation": "The title of the Wind Rose report.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_folder(Optional)",
+          "explanation": "The output directory that will contain the Wind Rose report.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "report_format[report_format,...](Optional)",
+          "explanation": "One or more output report formats. The default value is PDF. Additional available formats are XLSX, HTML, CSV, and PAGX.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Generates a series of lines from each customer to an associated store location. These lines are often called spider diagrams. The tool can also generate an optional Wind Rose report from the output. Note:This tool is similar to the Generate Origin-Destination Links tool in the Analysis toolbox Proximity toolset.",
+      "extraction_date": "2025-10-01T14:58:27.965584"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Grids and Hexagons",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-grids-and-hexagons.htm",
+      "parameters": [
+        {
+          "name": "area_of_interest",
+          "explanation": "The input feature class that will be used to define the extent of the grid or hexagon layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class that will contain the grid or hexagon features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "cell_type(Optional)",
+          "explanation": "Specifies the cell type that will be created in the output.SQUARE—Regular four-sided polygons with equal side lengths will be created. This is the default.HEXAGON—Regular six-sided polygons with equal side lengths will be created.H3_HEXAGON—Regular six-sided polygons with equal side lengths based on H3: Uber's hexagonal hierarchical spatial index will be created.",
+          "datatype": "String"
+        },
+        {
+          "name": "enrich_type(Optional)",
+          "explanation": "Specifies the method that will be used for variable enrichment.ENRICH_CELL—Enrichment will be performed on the cell_type parameter value.ENRICH_BUFFER—Enrichment will be performed on a buffer around the centroid of the grid or hexagon.",
+          "datatype": "String"
+        },
+        {
+          "name": "cell_size(Optional)",
+          "explanation": "The size of the cell to generate squares or hexagons. The default value is 1 square mile.",
+          "datatype": "Areal Unit"
+        },
+        {
+          "name": "h3_resolution(Optional)",
+          "explanation": "The resolution that will be used to generate the H3 hexagons. A value of 15 represents the finest resolution. The default value is 7.",
+          "datatype": "Long"
+        },
+        {
+          "name": "variables[variables,...](Optional)",
+          "explanation": "A list of variables that will be appended to the output.",
+          "datatype": "String"
+        },
+        {
+          "name": "distance_type(Optional)",
+          "explanation": "Specifies the method of travel that will be used for the buffer calculation.",
+          "datatype": "String"
+        },
+        {
+          "name": "distance(Optional)",
+          "explanation": "The distance that will be used for the buffer calculations.",
+          "datatype": "Double"
+        },
+        {
+          "name": "units(Optional)",
+          "explanation": "The units that will be used for the distance parameter.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_enriched_buffers(Optional)",
+          "explanation": "The feature class that will contain the enriched buffers.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "travel_direction(Optional)",
+          "explanation": "Specifies the direction of travel that will be used between the center of the cell and the buffer boundary.TOWARD_STORES—The direction of travel will be from location points to input features. This is the default.AWAY_FROM_STORES—The direction of travel will be from input features to location points.",
+          "datatype": "String"
+        },
+        {
+          "name": "time_of_day(Optional)",
+          "explanation": "The time at which the travel will begin.",
+          "datatype": "Date"
+        },
+        {
+          "name": "time_zone(Optional)",
+          "explanation": "Specifies the time zone that will be used for the time_of_day parameter.UTC—Coordinated universal time (UTC) will be used. Choose this option if you want the best location for a specific time, such as now, but aren't certain of the time zone.TIME_ZONE_AT_LOCATION—The time zone in which the area_of_interest value is located will be used. This is the default.",
+          "datatype": "String"
+        },
+        {
+          "name": "search_tolerance(Optional)",
+          "explanation": "The maximum distance that input points can be from the network. Points located beyond the search tolerance will be excluded from processing.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "polygon_detail(Optional)",
+          "explanation": "Specifies the level of detail that will be used for the output drive time polygons. STANDARD—The optimal setting that combines processing speed with overall accuracy will be used. This is the default.GENERALIZED—The fastest method will be used.HIGH—The highest level of detail will be used.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_centroids(Optional)",
+          "explanation": "The feature class that will contain the cell centroids.",
+          "datatype": "Feature Class"
+        }
+      ],
+      "summary": "Creates features with vector-based square grid cells, hexagons, or H3 hexagons for a given area.",
+      "extraction_date": "2025-10-01T14:58:30.731095"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Points from Business Listings",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-points-from-business-listings.htm",
+      "parameters": [
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class that will contain the returned businesses.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "in_search_features(Optional)",
+          "explanation": "The area that will be used to search for businesses. Selected features supersede the feature class and will be used as the search area.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "search_terms(Optional)",
+          "explanation": "The terms that will be used to search for businesses. You can use terms such as business name or business type keywords. If this parameter is not set, all businesses from the in_search_features parameter value will be returned.",
+          "datatype": "String"
+        },
+        {
+          "name": "exact_match(Optional)",
+          "explanation": "Specifies whether only the text provided for the search_terms parameter will be returned from the search.EXACT_MATCH—Only exact matches to the text provided for the search_terms parameter will be returned.PARTIAL_MATCH—Partial matches to the text provided for the search_terms parameter as well as exact matches will be returned. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "match_name_only(Optional)",
+          "explanation": "Specifies whether the search will be limited to the business name only.MATCH_NAME_ONLY—Only exact matches to the business name provided for the search_terms parameter will be returned.MATCH_ALL_FIELDS—Partial matches to the business name provided for the search_terms parameter as well as exact matches will be returned. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "filters[[filter_name, filter_value, include],...](Optional)",
+          "explanation": "The filters that will be applied to the search_terms parameter.filter_name—Set the filter by the dataset field.filter_value—Set the filter by applying a value to the selected field.include—Set the filter by including or excluding field values.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "max_count(Optional)",
+          "explanation": "The limit for the number of returned \r\nfeatures. The default value is 1,000,000 for local data and 5,000 for online data hosted by ArcGIS Online.The record limit when using\r\non-premises hosted data is set by your administrator.",
+          "datatype": "Long"
+        },
+        {
+          "name": "business_dataset(Optional)",
+          "explanation": "The dataset that will be used in the business search.",
+          "datatype": "String"
+        },
+        {
+          "name": "find_related_poi",
+          "explanation": "Specifies whether semantic search will be used to find related items to the search terms.FIND_RELATED_POI—Semantic search will be used.IGNORE_RELATED_POI—Semantic search will not be used. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "style(Optional)",
+          "explanation": "Specifies the point symbology that will be used for the output feature class.Location—The data will be displayed using a single symbol. This is the default.Place—The data will be displayed using thematic symbols.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Generates a point feature layer from a business point location search.",
+      "extraction_date": "2025-10-01T14:58:33.386516"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Find a geoprocessing tool",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/analysis/geoprocessing/basics/find-geoprocessing-tools.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T14:58:36.137513"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Huff Model",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/huff-model.htm",
+      "parameters": [
+        {
+          "name": "in_facility_features",
+          "explanation": "An input point feature layer representing existing facility locations. It is the first feature from the layer or the feature selected when a selection is available.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "facility_id_field",
+          "explanation": "A unique ID field for existing facilities.",
+          "datatype": "Field"
+        },
+        {
+          "name": "in_candidate_features",
+          "explanation": "An input point feature layer representing new candidate facility locations. It is the first feature from the layer or the feature selected when a selection is available.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "candidate_id_field",
+          "explanation": "A unique ID field for candidate facilities.",
+          "datatype": "Field"
+        },
+        {
+          "name": "in_sales_potential_features",
+          "explanation": "An input point or polygon feature layer used to calculate the sales potential. It is either all features from a layer or only selected features when a selection is available.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "sales_potential_id_field",
+          "explanation": "A unique ID field for sales potential features.",
+          "datatype": "Field"
+        },
+        {
+          "name": "sales_potential_field",
+          "explanation": "The field containing the values that will be used to calculate the sales potential.",
+          "datatype": "Field"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class that will contain the tool results representing the probability of sales.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "attractiveness_variables[[existing_facilities_value, candidates_location_value, exponent],...]",
+          "explanation": "The attribute fields that indicate the attractiveness of each competitor. In many cases, the size of the facility is used as a substitute for attractiveness and will be a multivalue table. An additional attractiveness variable is needed. The attractiveness field must be present in the existing facilities (competitors) and the candidate facilities layer.\r\nexisting_facilities_value—Numeric field in the in_facility_features parameter layer that represents attractiveness.candidates_location_value—Numeric field in the in_candidate_features parameter layer that matches the attractiveness value from the in_facility_features parameter layer. Distance does not require a matching field.exponent—The value that determines how much of a factor the variable is to the attractiveness value. The default value is 1.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "distance_exponent",
+          "explanation": "The distance exponent is generally a negative number because attractiveness decreases when distance increases. The default value is -1.5.",
+          "datatype": "Double"
+        },
+        {
+          "name": "distance_type(Optional)",
+          "explanation": "The type of distance, based on method of travel, that will be used. The default value is Straight Line.",
+          "datatype": "String"
+        },
+        {
+          "name": "distance_units(Optional)",
+          "explanation": "The distance-measuring units that will be used when calculating distance.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_distance_matrix(Optional)",
+          "explanation": "The name and location of the matrix table of distance calculations. The IDs for the in_facility_features and in_candidate_features parameters must be unique.",
+          "datatype": "Table"
+        },
+        {
+          "name": "travel_direction(Optional)",
+          "explanation": "Specifies the direction of travel that will be used between stores and sales potential features.TOWARD_STORES—The direction of travel will be from sales potential features to stores. This is the default.AWAY_FROM_STORES—The direction of travel will be from stores to sales potential features.",
+          "datatype": "String"
+        },
+        {
+          "name": "time_of_day(Optional)",
+          "explanation": "The time and date that will be used when calculating distance.",
+          "datatype": "Date"
+        },
+        {
+          "name": "time_zone(Optional)",
+          "explanation": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION—The time zone in which the territories are located will be used. This is the default.UTC—Coordinated universal time (UTC) will be used.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Creates a probability surface to predict the sales potential of an area based on distance and an attractiveness factor.",
+      "extraction_date": "2025-10-01T14:58:40.785714"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Huff Model Calibration",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/huff-model-calibration.htm",
+      "parameters": [
+        {
+          "name": "in_facility_features",
+          "explanation": "The input point feature class representing competitors or existing stores.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "facility_id_field",
+          "explanation": "A unique ID field representing a store or facility location.",
+          "datatype": "Field"
+        },
+        {
+          "name": "in_customer_features",
+          "explanation": "The input point feature class representing customer locations.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "link_field",
+          "explanation": "The field that will be used as an ID to assign individual customers to a facility or store.",
+          "datatype": "Field"
+        },
+        {
+          "name": "in_sales_potential_features",
+          "explanation": "The input polygon feature class used to determine the potential sales market.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "sales_potential_id_field",
+          "explanation": "A unique ID field representing the sales potential area.",
+          "datatype": "Field"
+        },
+        {
+          "name": "out_calibration",
+          "explanation": "The output calibration file that will contain the calibrated Huff model results, which is the exponent values for the attractiveness variables and distance. The output file extension will be *.huffmodel.",
+          "datatype": "File"
+        },
+        {
+          "name": "attractiveness_variables[attractiveness_variables,...]",
+          "explanation": "The fields that will be used to determine the attractiveness of each competitor. In many\r\ncases, the size of the store is used as a substitute for\r\nattractiveness.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "customer_weight_field(Optional)",
+          "explanation": "A calculated weighted value field assigned to each customer.",
+          "datatype": "Field"
+        },
+        {
+          "name": "distance_type(Optional)",
+          "explanation": "The method of travel that will be used to calculate distance. The default value is Straight Line.",
+          "datatype": "String"
+        },
+        {
+          "name": "distance_units(Optional)",
+          "explanation": "The distance-measuring units that will be used when calculating distance.",
+          "datatype": "String"
+        },
+        {
+          "name": "travel_direction(Optional)",
+          "explanation": "Specifies the direction of travel that will be used between stores and sales potential features.TOWARD_STORES—The direction of travel will be from sales potential features to stores. This is the default.AWAY_FROM_STORES—The direction of travel will be from stores to sales potential features.",
+          "datatype": "String"
+        },
+        {
+          "name": "time_of_day(Optional)",
+          "explanation": "The time and date that will be used when calculating distance.",
+          "datatype": "Date"
+        },
+        {
+          "name": "time_zone(Optional)",
+          "explanation": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION—The time zone in which the territories are located will be used. This is the default.UTC—Coordinated universal time (UTC) will be used.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Calculates exponent values for use in the Huff Model tool.",
+      "extraction_date": "2025-10-01T14:58:43.161540"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Find a geoprocessing tool",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/analysis/geoprocessing/basics/find-geoprocessing-tools.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T14:58:45.720307"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Import Business Analyst Report Template",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/import-business-analyst-report-template.htm",
+      "parameters": [
+        {
+          "name": "online_report_template_id",
+          "explanation": "The report template ID.",
+          "datatype": "String"
+        },
+        {
+          "name": "output_folder(Optional)",
+          "explanation": "The local folder where the report template items will be imported.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "dataset_id(Optional)",
+          "explanation": "The dataset that will be used to populate the report variables.",
+          "datatype": "String"
+        },
+        {
+          "name": "config(Optional)",
+          "explanation": "A JSON string specifying where the report's SDCX variables will be stored. The config options are as follows:id—The portal item ID of the SDCX.download—True or false. Set to true to download the SDCX, or set to false to reference an existing SDCX.path—The location of the SDCX. Use an empty string to use the existing default—for example, the report output folder location—or specify a new folder location or an existing folder that contains the SDCX.name—The name of the SDCX. Specify a new name for the SDCX or the name of an existing SDCX.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Imports an online report so that it can run locally using a locally installed ArcGIS Business Analyst dataset. This tool is the underlying engine that runs the Import Template interactive workflow from the Catalog pane. This tool is ideal for performing more advanced automated tasks, such as importing templates through Python scripting or programmatically modifying data paths. The Import Template workflow will run the tool in the background and add its information to the Geoprocessing history.",
+      "extraction_date": "2025-10-01T14:58:49.973972"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Summary Reports",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/create-summary-reports.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The boundary layer containing one or more polygons that will be used to create reports.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "report_templates[report_templates,...]",
+          "explanation": "One or more report templates that will be used to create the summary report. You must be signed in to ArcGIS Online or have Business Analyst Data installed.",
+          "datatype": "String"
+        },
+        {
+          "name": "reports_folder",
+          "explanation": "The output location where the summary reports will be saved.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "summarization_options(Optional)",
+          "explanation": "Specifies how the data will be displayed in a report.INDIVIDUAL_FEATURES—Selected report templates will be returned for each individual trade area polygon. This is the default.WHOLE_LAYER—Selected report templates will be returned representing only the full extent of the trade area.BOTH_FEATURES_AND_LAYER—Selected report templates will be returned for both individual features and the whole layer.",
+          "datatype": "String"
+        },
+        {
+          "name": "single_report(Optional)",
+          "explanation": "Specifies whether a single output will be created or a separate file will be created for each report.CREATE_SINGLE_REPORT—All reports will be combined into a single output.CREATE_REPORT_PER_TEMPLATE—A separate file will be created for each selected report. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "formats[formats,...](Optional)",
+          "explanation": "The report output format. The default value is PDF.",
+          "datatype": "String"
+        },
+        {
+          "name": "store_id_field(Optional)",
+          "explanation": "The field that will be used to group data for each site in output reports. These field values are not displayed in the header.",
+          "datatype": "Field"
+        },
+        {
+          "name": "store_name_field(Optional)",
+          "explanation": "The field values that will be displayed in the output report headers that identify the site corresponding to each polygon's data.",
+          "datatype": "Field"
+        },
+        {
+          "name": "store_address_field(Optional)",
+          "explanation": "The store address associated with each trade area.",
+          "datatype": "Field"
+        },
+        {
+          "name": "store_latitude_field(Optional)",
+          "explanation": "The field that will contain the latitude coordinates (y field).",
+          "datatype": "Field"
+        },
+        {
+          "name": "store_longitude_field(Optional)",
+          "explanation": "The field that will contain the longitude coordinates (x field).",
+          "datatype": "Field"
+        },
+        {
+          "name": "ring_id_field(Optional)",
+          "explanation": "The field that will control the presentation order of data for inputs with multiple polygons per site.",
+          "datatype": "Field"
+        },
+        {
+          "name": "area_description_field(Optional)",
+          "explanation": "The field that will be displayed as the output template header with values corresponding to each input polygon's data.",
+          "datatype": "Field"
+        },
+        {
+          "name": "title(Optional)",
+          "explanation": "The title in the report header.",
+          "datatype": "String"
+        },
+        {
+          "name": "subtitle(Optional)",
+          "explanation": "The subtitle in the report header. The default value is Prepared by Business Analyst Pro.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_per_feature(Optional)",
+          "explanation": "Specifies whether a single report or multiple reports will be created.CREATE_REPORT_PER_FEATURE—A report will be created for each feature.CREATE_SINGLE_REPORT—A single report will be created. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "add_infographic_header(Optional)",
+          "explanation": "Specifies whether a header will be added to the infographic.ENABLE_INFOGRAPHIC_HEADER—A header will be added to the infographic.DISABLE_INFOGRAPHIC_HEADER—A header will not be added to the infographic. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "add_infographic_footer(Optional)",
+          "explanation": "Specifies whether a footer will be added to the infographic.ENABLE_INFOGRAPHIC_FOOTER—A footer will be added to the infographic.DISABLE_INFOGRAPHIC_FOOTER—A footer will not be added to the infographic. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "add_infographic_data_source(Optional)",
+          "explanation": "Specifies whether the data source will be added to the infographic.ENABLE_INFOGRAPHIC_DATA_SOURCE—The data source will be added to the infographic.DISABLE_INFOGRAPHIC_DATA_SOURCE—The data source will not be added to the infographic. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "report_style(Optional)",
+          "explanation": "Specifies the style that will be used for the Esri report.CLASSIC—The generated Esri report will use the traditional style. This is the default.MODERN—The generated Esri report will use the updated style.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Creates infographic and summary reports for a boundary layer using standard or custom templates.",
+      "extraction_date": "2025-10-01T14:58:52.750142"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Find a geoprocessing tool",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/analysis/geoprocessing/basics/find-geoprocessing-tools.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T14:58:55.327552"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate SDCX Index",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-sdcx-index.htm",
+      "parameters": [
+        {
+          "name": "sdcx_file",
+          "explanation": "The input Statistical Data Collection file (.sdcx).",
+          "datatype": "File"
+        }
+      ],
+      "summary": "Creates an index for a Statistical Data Collection (SDCX). The index will improve performance when using the custom data in analysis tools such as Enrich Layer.",
+      "extraction_date": "2025-10-01T14:58:59.528066"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Find a geoprocessing tool",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/analysis/geoprocessing/basics/find-geoprocessing-tools.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T14:59:02.063814"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Add Field Based Suitability Criteria",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/add-field-based-criteria.htm",
+      "parameters": [
+        {
+          "name": "in_analysis_layer",
+          "explanation": "The Suitability Analysis layer that will be used in the analysis.",
+          "datatype": "Feature Layer; Group Layer"
+        },
+        {
+          "name": "fields[fields,...]",
+          "explanation": "The numeric fields from which the suitability criteria will be determined.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Adds criteria based on the numerical fields existing in the input layer.",
+      "extraction_date": "2025-10-01T14:59:06.103282"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Add Point Layer Based Suitability Criteria",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/add-point-based-criteria.htm",
+      "parameters": [
+        {
+          "name": "in_analysis_layer",
+          "explanation": "The Suitability Analysis layer that will be used in the analysis.",
+          "datatype": "Feature Layer; Group Layer"
+        },
+        {
+          "name": "site_layer_id_field",
+          "explanation": "A field containing unique values for each record in the Suitability Analysis layer.",
+          "datatype": "String"
+        },
+        {
+          "name": "in_point_features",
+          "explanation": "The layer containing point locations that will be added as criteria based on the spatial relationship to the Suitability Analysis layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "criteria_type",
+          "explanation": "Specifies the type of spatial relationship that will be used as criteria.COUNT—A count of points that fall within each Suitability Analysis layer polygon will be used as criteria. This is the default.WEIGHT—Field-weighted criteria of points that fall within each Suitability Analysis polygon based on the user-selected statistical type will be used as criteria.MINIMAL_DISTANCE—The distance from the closest point to each of the Suitability Analysis layer centroids will be used as criteria.",
+          "datatype": "String"
+        },
+        {
+          "name": "distance_type(Optional)",
+          "explanation": "The method of travel that will be used to calculate the minimal distance.",
+          "datatype": "String"
+        },
+        {
+          "name": "units(Optional)",
+          "explanation": "The unit of measure that will be used when calculating minimal distance.",
+          "datatype": "String"
+        },
+        {
+          "name": "in_site_centers_features(Optional)",
+          "explanation": "The point layer that will be used as site centers. This point layer will replace default polygon centroids of the Suitability Analysis layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "site_centers_id_field(Optional)",
+          "explanation": "A field in the in_site_centers_features parameter value that uniquely identifies each record.",
+          "datatype": "Field"
+        },
+        {
+          "name": "weight_field",
+          "explanation": "Numeric fields that exist in a point layer that will be selected for weighting.",
+          "datatype": "Field"
+        },
+        {
+          "name": "statistics_type(Optional)",
+          "explanation": "Specifies the type of statistical operation that will be applied to the weighted field.SUM—The total of the field values will be calculated for each point feature.AVE—The average field value will be calculated for each point feature.STD_DEV—The standard deviation of the field values will be calculated for each point feature.MIN—The smallest field value will be determined for each point feature.MAX—The largest field value will be determined for each point feature.",
+          "datatype": "String"
+        },
+        {
+          "name": "cutoff_distance(Optional)",
+          "explanation": "The distance beyond which points will not be considered in the calculation.",
+          "datatype": "Double"
+        }
+      ],
+      "summary": "Adds criteria based on spatial relationships between the input layer and a specified point layer.",
+      "extraction_date": "2025-10-01T14:59:08.726353"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Add Variable Based Suitability Criteria",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/add-variable-based-criteria.htm",
+      "parameters": [
+        {
+          "name": "in_analysis_layer",
+          "explanation": "The Suitability Analysis layer that will be used in the analysis.",
+          "datatype": "Feature Layer; Group Layer"
+        },
+        {
+          "name": "variables[variables,...]",
+          "explanation": "The variables from which the suitability criteria will be determined.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Adds criteria based on the values calculated for the input layer using the Enrich Layer tool.",
+      "extraction_date": "2025-10-01T14:59:11.098545"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Calculate Suitability Score",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/calculate-score.htm",
+      "parameters": [
+        {
+          "name": "in_analysis_layer",
+          "explanation": "The Suitability Analysis Layer that will be used in the analysis.",
+          "datatype": "Feature Layer; Group Layer"
+        }
+      ],
+      "summary": "Calculates or recalculates a suitability score.",
+      "extraction_date": "2025-10-01T14:59:13.460696"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Make Suitability Analysis Layer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/make-suitability-analysis-layer.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The feature layer that will be used in the creation of the Suitability Analysis layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "layer_name",
+          "explanation": "The name of the output Suitability Analysis layer that will be created.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_dataset_path(Optional)",
+          "explanation": "The geodatabase that will contain the output feature dataset.",
+          "datatype": "Workspace"
+        },
+        {
+          "name": "out_dataset_name(Optional)",
+          "explanation": "The name of the output feature dataset that will contain the collection of suitability analysis layer feature classes.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Creates a Suitability Analysis group layer for an input site's polygonal layer.",
+      "extraction_date": "2025-10-01T14:59:15.881343"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Remove Suitability Criteria",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/remove-suitability-criteria.htm",
+      "parameters": [
+        {
+          "name": "in_analysis_layer",
+          "explanation": "The suitability analysis layer from which criteria will be removed.",
+          "datatype": "Feature Layer; Group Layer"
+        },
+        {
+          "name": "drop_criteria[drop_criteria,...]",
+          "explanation": "A list of criteria to be removed from a suitability analysis layer.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Removes criteria from a suitability analysis layer.",
+      "extraction_date": "2025-10-01T14:59:18.361776"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Set Criteria Properties",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/set-criteria-properties.htm",
+      "parameters": [
+        {
+          "name": "in_analysis_layer",
+          "explanation": "The Suitability Analysis layer that will be used in the analysis.",
+          "datatype": "Feature Layer; Group Layer"
+        },
+        {
+          "name": "criteria_properties[[criterion, title, weight, influence, ideal_value, minimum_value, maximum_value, enabled],...]",
+          "explanation": "The input features that will be used to set up the criteria properties.criterion—The field, point, or variable that will be used to calculate the suitability score.title—The name of the criteria.weight—The influence a criteria value has on the overall suitability score.\r\nThe number must be greater than or equal to 0.influence—An example of a positive influence is as follows: You want a site to score higher if it has a greater number of households holding graduate or professional degrees. An example of an inverse influence is as follows: A lower median home value is more desirable, as it is indicative of greater home affordability. An example of an ideal influence is a search for areas within a range of values.POSITIVE—The higher the criteria value, the higher the suitability score.INVERSE—The lower the criteria value, the higher the suitability score.IDEAL—The closer to the ideal value, the higher the suitability score.TARGET—The closer to the target value, the higher the suitability score.ideal_value—The closer the criteria value is to the ideal value, the higher the suitability score.minimum_value—A numeric value that sets a hard limit for the criteria lower bound.maximum_value—A numeric value that sets a hard limit for the criteria upper bound.enabled—Use a value of true to include the criteria in the final suitability score.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "criteria_score_preset(Optional)",
+          "explanation": "Specifies the preprocessing and combination method that will be used when calculating the final score.SUM_SCALED—The sum of scaled values with scores representing the distribution of values for each criterion will be used. This is the default.GEOMEAN_SCALED—The geometric mean of the scaled values will be used.CUSTOM—User-defined preprocessing and combination methods will be used.",
+          "datatype": "String"
+        },
+        {
+          "name": "preprocessing(Optional)",
+          "explanation": "Specifies the method that will be used to convert the input\r\nvariables to a standardized scale.MINMAX— Variables will be scaled between 0 and 1 using the minimum and maximum values of each variable. This is the default.PERCENTILE— Variables will be converted to percentiles between 0 and 1.ZSCORE— Each variable will be standardized by subtracting the mean value and dividing by the standard deviation.RAW— The values of the variables will be used without change.",
+          "datatype": "String"
+        },
+        {
+          "name": "criteria_score_method(Optional)",
+          "explanation": "Specifies the method that will be used to combine the scaled\r\nvariables into a single value.SUM— The values will be added. This is the default.MEAN— The arithmetic (additive) mean of the values will be calculated. This is the default.PRODUCT— The values will be multiplied. All scaled values must be greater than or equal to zero.GEOMETRIC_MEAN— The geometric (multiplicative) mean of the values will be calculated. All scaled values must be greater than or equal to zero.",
+          "datatype": "String"
+        },
+        {
+          "name": "final_score_method(Optional)",
+          "explanation": "Specifies the method that will be used to scale the combined score. This parameter will determine the final score.METHOD_0_1—The final score will be calculated with the lowest value of 0 and the highest value of 1.METHOD_0_100—The final score will be calculated with the lowest value of 0 and the highest value of 100.NONE— The data will not be scaled. This is the default.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Defines parameters for criteria.",
+      "extraction_date": "2025-10-01T14:59:21.129643"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Set Target Site",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/set-target-site.htm",
+      "parameters": [
+        {
+          "name": "in_analysis_layer",
+          "explanation": "The Suitability Analysis layer that will be used in the analysis.",
+          "datatype": "Group Layer; Feature Dataset"
+        },
+        {
+          "name": "target_site_layer(Optional)",
+          "explanation": "The layer that contains the target site.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "target_site_feature_id(Optional)",
+          "explanation": "The feature from the target site layer that will be added to the group layer as the target site.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Adds a target site to a Suitability Analysis group layer. A target site is typically a trade area around a high-performing location, such as a store or clinic. Criteria values in the target site are used to score candidate sites that are closest in value to the target site.",
+      "extraction_date": "2025-10-01T14:59:23.706310"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Find a geoprocessing tool",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/analysis/geoprocessing/basics/find-geoprocessing-tools.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T14:59:26.343794"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Analyze Market Area Gap",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/analyze-market-area-gap.htm",
+      "parameters": [
+        {
+          "name": "customer_layer",
+          "explanation": "A point layer representing customers.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "target_profile",
+          "explanation": "A segmentation profile representing the segments that will be analyzed. The target profile typically represents your customer segmentation profile.",
+          "datatype": "File"
+        },
+        {
+          "name": "base_profile",
+          "explanation": "A segmentation profile representing the base profile segments that will be used for comparison. The base profile typically represents your market area segmentation profile.",
+          "datatype": "File"
+        },
+        {
+          "name": "geography_level",
+          "explanation": "The geography level that will be used to define the market area gap analysis layer.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class containing the market area gap analysis.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "target_group",
+          "explanation": "A collection of segments grouped into targets. Targets represent segments that are selected based on similar characteristics—for example, segments that have high index and percent composition.",
+          "datatype": "File"
+        },
+        {
+          "name": "core_target",
+          "explanation": "A group of segments that make up a large percentage of your customer base and have an above average index, indicating likelihood to be a customer.",
+          "datatype": "String"
+        },
+        {
+          "name": "developmental_target",
+          "explanation": "A group of segments that make up a significant percentage of your customers and of the market area but do not have an above average index.",
+          "datatype": "String"
+        },
+        {
+          "name": "boundary_layer(Optional)",
+          "explanation": "The boundary that determines the layer extent. If no value is provided, the entire country will be used.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "create_report(Optional)",
+          "explanation": "Specifies whether a  gap analysis report will be created.CREATE_REPORT—A gap analysis report will be created.DO_NOT_CREATE_REPORT—A gap analysis report will not be created. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "report_title(Optional)",
+          "explanation": "The title of the report.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_folder(Optional)",
+          "explanation": "The output location where the report will be saved.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "report_format[report_format,...](Optional)",
+          "explanation": "Specifies the format of the output report.PDF—The report will be in PDF format. This is the default.XLSX—The report will be in XLSX format.HTML—The report will be in HTML format.CSV—The report will be in CSV format.PAGX—The report will be in PAGX format.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Generates a layer that displays the gap between total customers and expected customers. Learn more about Analyze Market Area Gap outputs",
+      "extraction_date": "2025-10-01T14:59:30.704157"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Analyze Market Potential",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/analyze-market-potential.htm",
+      "parameters": [
+        {
+          "name": "target_profile",
+          "explanation": "A segmentation profile representing the segments that will be analyzed. The target profile typically represents your customer segmentation profile.",
+          "datatype": "File"
+        },
+        {
+          "name": "base_profile",
+          "explanation": "A segmentation profile representing the base profile segments that will be used for comparison. The base profile typically represents your market area segmentation profile.",
+          "datatype": "File"
+        },
+        {
+          "name": "geography_level",
+          "explanation": "The geography level that will be used to define the market potential layer.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class containing the market potential analysis.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "boundary_layer(Optional)",
+          "explanation": "The boundary that determines the layer extent. If no value is provided, the entire country will be used.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "create_report(Optional)",
+          "explanation": "Specifies whether a market potential report will be created.CREATE_REPORT—A market potential report will be created.DO_NOT_CREATE_REPORT—A market potential report will not be created. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "report_title(Optional)",
+          "explanation": "The title of the report.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_folder(Optional)",
+          "explanation": "The output location where the report will be saved.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "report_format[report_format,...](Optional)",
+          "explanation": "Specifies the format of the output report.PDF—The report will be in PDF format. This is the default.XLSX—The report will be in XLSX format.HTML—The report will be in HTML format.CSV—The report will be in CSV format.PAGX—The report will be in PAGX format.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Generates a layer that displays expected customers by a selected geography level. Learn more about Analyze Market Potential outputs",
+      "extraction_date": "2025-10-01T14:59:33.143180"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Create Target Group",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/create-target-group.htm",
+      "parameters": [
+        {
+          "name": "target_group",
+          "explanation": "The name of the output target group file.",
+          "datatype": "File"
+        },
+        {
+          "name": "input_type[input_type,...]",
+          "explanation": "Specifies a list of the targets that will be added to the new target group.name—The name of the target.segments—The segments that will be added to the target.color—The color associated with the segment.",
+          "datatype": "Value Table"
+        }
+      ],
+      "summary": "Creates a new target group. A target group is a container for targets that you create, name, and populate with segments from a locally installed Business Analyst dataset.",
+      "extraction_date": "2025-10-01T14:59:35.620893"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Export Segmentation Profile",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/export-segmentation-profile.htm",
+      "parameters": [
+        {
+          "name": "in_profile",
+          "explanation": "The segmentation file that will be exported.",
+          "datatype": "File"
+        },
+        {
+          "name": "out_table_name",
+          "explanation": "The name of the table that will be created.",
+          "datatype": "Table"
+        }
+      ],
+      "summary": "Exports a segmentation profile to a table.",
+      "extraction_date": "2025-10-01T14:59:38.054879"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate\r\nCustomer Segmentation Profile",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-customer-segmentation-profile.htm",
+      "parameters": [
+        {
+          "name": "in_customers_layer",
+          "explanation": "The input point feature class that represents existing customers.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "in_segmentation_base",
+          "explanation": "The segmentation base for the profile that will be created. Available options are provided by the segmentation dataset in use.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_profile",
+          "explanation": "The name of the segmentation profile file that will be created.",
+          "datatype": "File"
+        },
+        {
+          "name": "in_volume_field(Optional)",
+          "explanation": "The field containing volume information from which the profile can be created. For example, you can create a profile using the sales for each customer.",
+          "datatype": "Field"
+        }
+      ],
+      "summary": "Creates a segmentation profile with an existing customer layer.",
+      "extraction_date": "2025-10-01T14:59:40.479908"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate\r\nMarket Area Segmentation Profile",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-market-area-segmentation-profile.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class with polygon features that will be used to create a segmentation area profile.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "segmentation_base",
+          "explanation": "The segmentation base for the profile being created. The available options are provided by the segmentation dataset in use.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_profile",
+          "explanation": "The name of the segmentation profile file that will be created.",
+          "datatype": "File"
+        }
+      ],
+      "summary": "Creates a segmentation profile by summarizing segments from standard geography boundaries within the input area.",
+      "extraction_date": "2025-10-01T14:59:42.946823"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate\r\nSegmentation Profile Report",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-segmentation-profile-report.htm",
+      "parameters": [
+        {
+          "name": "target_profile",
+          "explanation": "A segmentation profile representing the segments that will be profiled. The target profile typically represents your customer segmentation profile.",
+          "datatype": "File"
+        },
+        {
+          "name": "base_profile",
+          "explanation": "A segmentation profile representing the base profile segments. This is the segmentation that will be used for comparison. The base profile typically represents your market area segmentation profile.",
+          "datatype": "File"
+        },
+        {
+          "name": "report_title(Optional)",
+          "explanation": "The title of the report.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_folder(Optional)",
+          "explanation": "The output location where the report will be saved.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "report_format[report_format,...](Optional)",
+          "explanation": "Specifies the format of the output report.PDF—The report will be in PDF format. This is the default.XLSX—The report will be in XLSX format.HTML—The report will be in HTML format.CSV—The report will be in CSV format.PAGX—The report will be in PAGX format.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Creates a report that displays segments of your customers and compares them to the study area (base profile).",
+      "extraction_date": "2025-10-01T14:59:45.411314"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Survey Report For Profile",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-survey-report-for-profile.htm",
+      "parameters": [
+        {
+          "name": "target_profile",
+          "explanation": "A segmentation profile representing the segments that will be analyzed. The target profile typically represents your customer segmentation profile.",
+          "datatype": "File"
+        },
+        {
+          "name": "base_profile",
+          "explanation": "A segmentation profile representing the base profile segments. This is the segmentation used for comparison. The base profile typically represents your market area segmentation profile.",
+          "datatype": "File"
+        },
+        {
+          "name": "survey_category",
+          "explanation": "A category that contains characteristics from the consumer survey.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_folder",
+          "explanation": "The output location where the report will be saved.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "sort_column(Optional)",
+          "explanation": "Specifies the column that will be used to sort the report.EXPECTED_NUMBER—The report will be sorted based on counts—for example, number of adults. This is the default.INDEX—The report will be sorted based on rank.",
+          "datatype": "String"
+        },
+        {
+          "name": "sort_order(Optional)",
+          "explanation": "Specifies the order of the report, based on the sort column, in ascending or descending order.ASCENDING—The report will be sorted in ascending order.DESCENDING—The report will be sorted in descending order. This is the default.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_title(Optional)",
+          "explanation": "The title of the report.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_format[report_format,...](Optional)",
+          "explanation": "Specifies the format of the output report.PDF—The report will be in PDF format. This is the default.XLSX—The report will be in XLSX format.HTML—The report will be in HTML format.CSV—The report will be in CSV format.PAGX—The report will be in PAGX format.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Displays characteristics from the consumer survey data for your target profile to determine customer lifestyle habits and preferences.",
+      "extraction_date": "2025-10-01T14:59:47.878763"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Survey Report For Targets",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-survey-report-for-targets.htm",
+      "parameters": [
+        {
+          "name": "target_profile",
+          "explanation": "A segmentation profile representing the segments that will be analyzed. The target profile typically represents your customer segmentation profile.",
+          "datatype": "File"
+        },
+        {
+          "name": "target_group",
+          "explanation": "A collection of segments grouped into targets. Targets represent segments that are selected based on similar characteristics, for example, segments that have high index and percent composition.",
+          "datatype": "File"
+        },
+        {
+          "name": "core_target",
+          "explanation": "A group of segments that comprise a large percentage of your customer base and have an above average index, indicating likelihood to be a customer.",
+          "datatype": "String"
+        },
+        {
+          "name": "developmental_target",
+          "explanation": "A group of segments that comprise a significant percentage of your customers and of the market area but do not have an above average index.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_folder",
+          "explanation": "The output location where the report will be saved.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "report_type(Optional)",
+          "explanation": "Specifies the survey characteristics that will be added to the report.UNDERSTANDING_YOUR_TARGET—Media-related characteristics will be added to the report, for example, reading, watching, and listening related.DEVELOPING_MARKET_STRATEGIES—Leisure-related characteristics will be added to the report, for example, leisure, sports, and travel.CUSTOM— User-defined characteristics will be added to the report. This is the default.",
+          "datatype": "String"
+        },
+        {
+          "name": "survey_categories[survey_categories,...](Optional)",
+          "explanation": "A category that contains the characteristics from the consumer survey.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_title(Optional)",
+          "explanation": "The title of the report.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_format[report_format,...](Optional)",
+          "explanation": "Specifies the format of the output report.PDF—The report will be in PDF format. This is the default.XLSX—The report will be in XLSX format.HTML—The report will be in HTML format.CSV—The report will be in CSV format.PAGX—The report will be in PAGX format.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Displays the top characteristics, in each of the selected survey categories, of your Core and Developmental target groups, as well as your overall customer profile.",
+      "extraction_date": "2025-10-01T14:59:50.295167"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Target Group Layer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-target-group-layer.htm",
+      "parameters": [
+        {
+          "name": "geography_level",
+          "explanation": "The geography level that will be used to define the target layer.",
+          "datatype": "String"
+        },
+        {
+          "name": "segmentation_base",
+          "explanation": "The segmentation base for the profile being created. The available options are provided by the segmentation dataset in use.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class for the target layer.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "target_group",
+          "explanation": "A user-created group of targets. This is used if the dataset supports target groups.",
+          "datatype": "File"
+        },
+        {
+          "name": "boundary_layer(Optional)",
+          "explanation": "The boundary that will determine the layer extent.",
+          "datatype": "Feature Layer"
+        }
+      ],
+      "summary": "Generates a layer that identifies geographies that contain selected segments and categorized groups based on targets.",
+      "extraction_date": "2025-10-01T14:59:52.721199"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Target Layer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-target-layer.htm",
+      "parameters": [
+        {
+          "name": "geography_level",
+          "explanation": "The geography level that will be used to define the target layer.",
+          "datatype": "String"
+        },
+        {
+          "name": "segmentation_base",
+          "explanation": "The segmentation base for the profile being created. The available options are provided by the segmentation dataset in use.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class for the target layer.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "input_type",
+          "explanation": "Specifies the target input type.USE_TARGET_GROUP—A target group will be used as the input type.SELECT_SEGMENTS—Segments will be used as the input type. One or more segments can compose a target.",
+          "datatype": "String"
+        },
+        {
+          "name": "target_group(Optional)",
+          "explanation": "The target group, if the dataset supports target groups.",
+          "datatype": "File"
+        },
+        {
+          "name": "target(Optional)",
+          "explanation": "A target from the target_group parameter value.",
+          "datatype": "String"
+        },
+        {
+          "name": "segments[segments,...](Optional)",
+          "explanation": "The segments from the provided dataset.",
+          "datatype": "String"
+        },
+        {
+          "name": "boundary_layer(Optional)",
+          "explanation": "The boundary that will determine the layer extent.",
+          "datatype": "Feature Layer"
+        }
+      ],
+      "summary": "Creates a layer that identifies geographies that contain selected segments and geographies that do not contain selected segments.",
+      "extraction_date": "2025-10-01T14:59:55.307092"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Target Penetration Layer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-target-penetration-layer.htm",
+      "parameters": [
+        {
+          "name": "geography_level",
+          "explanation": "The geography level that will be used to define the target layer.",
+          "datatype": "String"
+        },
+        {
+          "name": "segmentation_base",
+          "explanation": "The segmentation base for the profile being created. The available options are provided by the segmentation dataset in use.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class for the target layer.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "input_type",
+          "explanation": "Specifies the target input type.USE_TARGET_GROUP—A target group will be used as the input type.SELECT_SEGMENTS—Selected segments will be used as the input type. One or more segments can compose a target. This is the default.",
+          "datatype": "String"
+        },
+        {
+          "name": "target_group(Optional)",
+          "explanation": "A user-created group of targets. This parameter is used when the dataset supports target groups.",
+          "datatype": "File"
+        },
+        {
+          "name": "target(Optional)",
+          "explanation": "A target from the target_group parameter value.",
+          "datatype": "String"
+        },
+        {
+          "name": "segments[segments,...](Optional)",
+          "explanation": "The segments from the provided dataset.",
+          "datatype": "String"
+        },
+        {
+          "name": "boundary_layer(Optional)",
+          "explanation": "The boundary that will determine the extent of the analysis.",
+          "datatype": "Feature Layer"
+        }
+      ],
+      "summary": "Generates a layer based on the percent of penetration of selected segments, providing a detailed view of the concentrations of the target segments.",
+      "extraction_date": "2025-10-01T14:59:57.811135"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Import Segmentation Profile",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/import-segmentation-profile.htm",
+      "parameters": [
+        {
+          "name": "in_table",
+          "explanation": "The input table with segmentation information.",
+          "datatype": "Table View"
+        },
+        {
+          "name": "segmentation_base",
+          "explanation": "The segmentation base for the profile being created. Available options are provided by the segmentation dataset in use.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_profile",
+          "explanation": "The name of the segmentation file that will be created.",
+          "datatype": "File"
+        },
+        {
+          "name": "segment_id_field",
+          "explanation": "A string field that contains the segmentation code.",
+          "datatype": "Field"
+        },
+        {
+          "name": "count_field",
+          "explanation": "A numeric field that contains segment count information.",
+          "datatype": "Field"
+        },
+        {
+          "name": "total_volume_field(Optional)",
+          "explanation": "A numeric field that contains volume information.",
+          "datatype": "Field"
+        }
+      ],
+      "summary": "Generates a segmentation profile from a table.",
+      "extraction_date": "2025-10-01T15:00:00.334108"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Import Survey Profiles",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/import-survey-profiles.htm",
+      "parameters": [
+        {
+          "name": "profiles[profiles,...]",
+          "explanation": "The categories of survey variables that can be selected for importing as profiles.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_folder",
+          "explanation": "The folder that will contain the imported profiles.",
+          "datatype": "Folder"
+        }
+      ],
+      "summary": "Imports segmentation profiles consisting of survey variable data.",
+      "extraction_date": "2025-10-01T15:00:02.953538"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Find a geoprocessing tool",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/analysis/geoprocessing/basics/find-geoprocessing-tools.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T15:00:05.588617"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Assign Customers By Distance",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/assign-customers-by-distance.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input point feature layer representing customers.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "in_store_features",
+          "explanation": "The input point feature layer representing store or facilities.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "store_id_field",
+          "explanation": "A unique ID field for in_store_features.",
+          "datatype": "Field"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "A point layer containing customers with assigned store or facility and distance.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "link_field(Optional)",
+          "explanation": "A new field that contains the assigned store or facility ID.",
+          "datatype": "String"
+        },
+        {
+          "name": "distance_type(Optional)",
+          "explanation": "The method of travel used to calculate the distance between customers and stores.",
+          "datatype": "String"
+        },
+        {
+          "name": "distance_units(Optional)",
+          "explanation": "The units that will be used to measure the selected distance type.",
+          "datatype": "String"
+        },
+        {
+          "name": "travel_direction(Optional)",
+          "explanation": "Specifies the direction of travel that will be used between stores or facilities and customers.TOWARD_STORES—The direction of travel will be from customers to stores. This is the default.AWAY_FROM_STORES—The direction of travel will be from stores to customers.",
+          "datatype": "String"
+        },
+        {
+          "name": "time_of_day(Optional)",
+          "explanation": "The time and date that will be used when calculating distance.",
+          "datatype": "Date"
+        },
+        {
+          "name": "time_zone(Optional)",
+          "explanation": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION—The time zone in which the territories are located will be used. This is the default.UTC—Coordinated universal time (UTC) will be used.",
+          "datatype": "String"
+        },
+        {
+          "name": "search_tolerance(Optional)",
+          "explanation": "The maximum distance that input points can be from the network. Points located beyond the search tolerance will be excluded from processing.The parameter requires a distance value and units for the tolerance. The default value is 5000 meters.",
+          "datatype": "Linear Unit"
+        }
+      ],
+      "summary": "Assigns customers to the closest store based on a selected distance type.",
+      "extraction_date": "2025-10-01T15:00:11.423207"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Approximate Drive Times",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-approximate-drive-times.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input  polygon feature layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class containing the drive time polygons.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "distance_type",
+          "explanation": "The method of travel used to create the output polygons.",
+          "datatype": "String"
+        },
+        {
+          "name": "units(Optional)",
+          "explanation": "The distance units to be used with the threshold values.",
+          "datatype": "String"
+        },
+        {
+          "name": "in_stores_layer(Optional)",
+          "explanation": "A point layer that will be used as the starting point for creating network service areas.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "store_id_field(Optional)",
+          "explanation": "The ID that uniquely identifies each in_stores_layer point.",
+          "datatype": "Field"
+        },
+        {
+          "name": "link_field(Optional)",
+          "explanation": "The ID that uniquely identifies each in_features point.",
+          "datatype": "Field"
+        },
+        {
+          "name": "iterations_limit(Optional)",
+          "explanation": "The maximum number of drive times that can be used to find the optimal threshold limit.",
+          "datatype": "Long"
+        },
+        {
+          "name": "minimum_step(Optional)",
+          "explanation": "The minimum increment distance or time—for example, 1 mile or 1 min—that will be used between iterations to expand until the threshold is reached.",
+          "datatype": "Double"
+        },
+        {
+          "name": "target_percent_diff(Optional)",
+          "explanation": "The maximum difference between the target value and threshold value when determining the threshold drive time, for example, 5 percent. The default value is 5.",
+          "datatype": "Double"
+        },
+        {
+          "name": "travel_direction(Optional)",
+          "explanation": "Specifies the direction of travel toward or away from stores.TOWARD_STORES—  The direction of travel will be toward stores. This is the default.AWAY_FROM_STORES— The direction of travel will be away from stores.",
+          "datatype": "String"
+        },
+        {
+          "name": "time_of_day(Optional)",
+          "explanation": "The time and date that will be used when calculating distance.",
+          "datatype": "Date"
+        },
+        {
+          "name": "time_zone(Optional)",
+          "explanation": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION—The time zone in which the territories are located will be used. This is the default.UTC—Coordinated universal time (UTC) will be used.",
+          "datatype": "String"
+        },
+        {
+          "name": "search_tolerance(Optional)",
+          "explanation": "The maximum distance that input points can be from the network.The default value is 5000 meters.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "polygon_detail(Optional)",
+          "explanation": "Specifies the level of detail that will be used for the output drive time polygons.STANDARD—Polygons with a standard level of detail will be created. This is the default.GENERALIZED—Generalized polygons will be created using the hierarchy present in the network data source to produce results quickly.HIGH—Polygons with a high level of detail will be created for applications in which precise results are important.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Creates trade areas that approximate the size, shape, and area of existing polygons using available routes from the selected distance type.",
+      "extraction_date": "2025-10-01T15:00:14.182642"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Customer Derived Trade Areas",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/customer-derived-trade-areas.htm",
+      "parameters": [
+        {
+          "name": "in_stores_layer",
+          "explanation": "A point layer representing store or facility locations.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "store_id_field",
+          "explanation": "The unique ID field representing a store or facility location.",
+          "datatype": "Field"
+        },
+        {
+          "name": "in_customers_layer",
+          "explanation": "An input point layer representing customers or patrons.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "link_field",
+          "explanation": "An ID field that will be used to assign individual customers to stores.",
+          "datatype": "Field"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output trade area feature class.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "method",
+          "explanation": "Specifies the type of customer-derived trade area that will be generated.SIMPLE—A generalized trade area based on the percentages of customers corresponding to each store will be generated.AMOEBA—Points representing the boundary of the polygon trade area will be connected using natural curvature.DETAILED—Points representing the boundary of the polygon trade area will be connected using straight lines.DETAILED_WITH_SMOOTHING—Points representing the boundary of the polygon trade area will be connected with smoothed curves using cubic splines. This method takes into account the shape and pattern of the customer distributions.  This is the default.THRESHOLD_RINGS— Concentric rings that expand from input stores until they contain the specified threshold of customers will be generated.THRESHOLD_DRIVETIMES—Polygons that expand from stores along network routes until they contain the specified threshold of customers will be generated.",
+          "datatype": "String"
+        },
+        {
+          "name": "rings[rings,...]",
+          "explanation": "The values that will be used to represent the percentage of customers, for example, total count or a customer attribute and total sales assigned to each store. Each value represents one trade area polygon.",
+          "datatype": "Double"
+        },
+        {
+          "name": "customer_aggregation_type",
+          "explanation": "Specifies the type of aggregation that will be used.COUNT—Percentage-based trade areas will be calculated using the geographic locations of customers. This is the default.WEIGHT—Percentage-based trade areas will be calculated using a customer attribute, for example, sales.",
+          "datatype": "String"
+        },
+        {
+          "name": "customer_weight_field(Optional)",
+          "explanation": "The field that will be used to calculate the trade areas. This is based on either the number of customers (count) or the calculated weighted value assigned to each customer.",
+          "datatype": "Field"
+        },
+        {
+          "name": "exclude_outlying_customers(Optional)",
+          "explanation": "Specifies whether outlying customers will be excluded from the trade area generation.EXCLUDE_OUTLIERS—Outlying customers will be excluded.ALL_POINTS—Outlying customers will not be excluded; all customers will be considered. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "cutoff_distance(Optional)",
+          "explanation": "The distance beyond which customers will be considered outliers and excluded from consideration during trade area generation.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "dissolve_option(Optional)",
+          "explanation": "Specifies whether polygons of the entire area will be created or the polygons will be split into individual features. When the method parameter is set to THRESHOLD_DRIVETIMES, the only available option is OVERLAP.OVERLAP— Output polygons will be generated in which each feature begins at zero and grows to satisfy the specified percentage of customers. For example, if you specify a trade area of 50 percent and 70 percent of customers, one polygon will be generated to include 0 to 50 percent and a second polygon will include all 0  to 70 percent of customers. This is the default.SPLIT— Output polygons will be generated for individual features based on the specified percentage breaks. For example, if you specify a trade area of 50 percent and 70 percent of customers, one polygon will be generated to include 0 to 50 percent and a second polygon will include 50 to 70 percent of customers.",
+          "datatype": "String"
+        },
+        {
+          "name": "use_customer_centroids(Optional)",
+          "explanation": "Specifies whether the centroid of your customer area will be used to calculate trade areas outward from this point.USE_CENTROIDS—The centroid of customer points will be used to calculate trade areas.USE_STORES—The centroid of customer points will not used; store location will be used as the starting point to calculate trade areas. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "distance_type(Optional)",
+          "explanation": "The method of travel that will be used to calculate the distance.",
+          "datatype": "String"
+        },
+        {
+          "name": "units(Optional)",
+          "explanation": "The units that will be used for the distance values.",
+          "datatype": "String"
+        },
+        {
+          "name": "travel_direction(Optional)",
+          "explanation": "Specifies the direction of travel toward or away from stores.TOWARD_STORES—  The direction of travel will be toward stores. This is the default.AWAY_FROM_STORES— The direction of travel will be away from stores.",
+          "datatype": "String"
+        },
+        {
+          "name": "time_of_day(Optional)",
+          "explanation": "The time and date that will be used when calculating distance.",
+          "datatype": "Date"
+        },
+        {
+          "name": "time_zone(Optional)",
+          "explanation": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION—The time zone in which the territories are located will be used. This is the default.UTC—Coordinated universal time (UTC) will be used.",
+          "datatype": "String"
+        },
+        {
+          "name": "search_tolerance(Optional)",
+          "explanation": "The maximum distance that input points can be from the network. Points located beyond the search tolerance will be excluded from processing.This parameter requires a distance value and units for the tolerance.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "polygon_detail(Optional)",
+          "explanation": "Specifies the level of detail that will be used for the output drive time polygons.STANDARD— Polygons with a standard level of detail will be created. This is the default.GENERALIZED—Generalized polygons will be created using the hierarchy present in the network data source to produce results quickly.HIGH— Polygons with a high level of detail will be created for applications in which precise results are important.",
+          "datatype": "String"
+        },
+        {
+          "name": "iterations_limit(Optional)",
+          "explanation": "Restricts the number of drive times that can be used to find the optimal threshold limit.",
+          "datatype": "Long"
+        },
+        {
+          "name": "minimum_step(Optional)",
+          "explanation": "The minimum increment distance or time—for example, 1 mile or 1 minute—that will be used between iterations to expand until the threshold is reached.",
+          "datatype": "Double"
+        },
+        {
+          "name": "target_percent_diff(Optional)",
+          "explanation": "The maximum percentage difference between the target value and threshold value that will be used when determining the threshold drive time, for example, 5 percent. The default value is 5.",
+          "datatype": "Double"
+        }
+      ],
+      "summary": "Creates trade areas around stores based on the number of customers or volume attribute of each customer.",
+      "extraction_date": "2025-10-01T15:00:17.084591"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Drive Time Trade Area",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-drive-time-trade-area.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input point feature layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class containing the drive time polygons.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "distance_type",
+          "explanation": "The method of travel that will be used for drive time calculation.",
+          "datatype": "String"
+        },
+        {
+          "name": "distances[distances,...]",
+          "explanation": "The distances that will be used for drive time calculations.",
+          "datatype": "Double"
+        },
+        {
+          "name": "units(Optional)",
+          "explanation": "The units that will be used for the distance values. The default value is miles.",
+          "datatype": "String"
+        },
+        {
+          "name": "id_field(Optional)",
+          "explanation": "A unique ID field for existing facilities.",
+          "datatype": "Field"
+        },
+        {
+          "name": "dissolve_option(Optional)",
+          "explanation": "Specifies whether overlapping or nonoverlapping service areas for a single location will be used when multiple distances are specified.\r\nOVERLAP— Each polygon will include the area reachable from the facility up to the distance value. This is the default.SPLIT— Each polygon will include only the area between consecutive distance values.",
+          "datatype": "String"
+        },
+        {
+          "name": "remove_overlap(Optional)",
+          "explanation": "Specifies whether overlapping concentric rings will be created or overlap will be removed from multiple locations in relation to one another.REMOVE_OVERLAP—Polygons will be split and the overlap between output features will be removed.KEEP_OVERLAP—Output features will be created with overlap. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "travel_direction(Optional)",
+          "explanation": "Specifies the direction of travel toward or away from stores.TOWARD_STORES—  The direction of travel will be toward stores. This is the default.AWAY_FROM_STORES— The direction of travel will be away from stores.",
+          "datatype": "String"
+        },
+        {
+          "name": "time_of_day(Optional)",
+          "explanation": "The time and date that will be used when calculating distance.",
+          "datatype": "Date"
+        },
+        {
+          "name": "time_zone(Optional)",
+          "explanation": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION—The time zone in which the territories are located will be used. This is the default.UTC—Coordinated universal time (UTC) will be used.",
+          "datatype": "String"
+        },
+        {
+          "name": "search_tolerance(Optional)",
+          "explanation": "The maximum distance that input points can be from the network. Points located beyond the search tolerance will be excluded from processing.This parameter requires a distance value and units for the tolerance. The default value is 5000 meters.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "polygon_detail(Optional)",
+          "explanation": "Specifies the level of detail that will be used for the output drive time polygons.STANDARD— Polygons with a standard level of detail will be created. This is the default.GENERALIZED—Generalized polygons will be created using the hierarchy present in the network data source to produce results quickly.HIGH— Polygons with a high level of detail will be created for applications in which precise results are important.",
+          "datatype": "String"
+        },
+        {
+          "name": "input_method(Optional)",
+          "explanation": "Specifies the type of value that will be used for each drive time.VALUES—A constant value will be used (all trade areas will be the same size). This is the default.EXPRESSION— The values from a field or an expression will be used (trade areas can be different sizes).",
+          "datatype": "String"
+        },
+        {
+          "name": "expression(Optional)",
+          "explanation": "A fields-based expression used to calculate drive time.",
+          "datatype": "SQL Expression"
+        }
+      ],
+      "summary": "Creates a feature class of trade areas around point features based on travel time and distance.",
+      "extraction_date": "2025-10-01T15:00:19.748010"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Geographies From Overlay",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-geographies-from-overlay.htm",
+      "parameters": [
+        {
+          "name": "geography_level",
+          "explanation": "The geography level that will be used to define the trade area.",
+          "datatype": "String"
+        },
+        {
+          "name": "in_features",
+          "explanation": "The features that will be used to extract the standard geography level features by the specified spatial relationship. It can be either all features from the layer or only those selected once a selection is available.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "id_field",
+          "explanation": "The field that will be used to identify the in_features parameter value—for example, the IDs of drive time polygons.",
+          "datatype": "Field"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature containing the trade area.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "overlap_type(Optional)",
+          "explanation": "Specifies how the subgeography will be selected from the boundary layer.INTERSECT—If any of the subgeography features touch or intersect the boundary layer, they will be included in the output layer. This is the default.CENTROID_WITHIN—If the centroids of any of the subgeography features are contained within the boundary layer, they will be included in the output layer.\r\nCOMPLETELY_WITHIN—Only the features of the subgeography layer that are completely contained within the boundary layer will be included in the output layer.",
+          "datatype": "String"
+        },
+        {
+          "name": "ratios(Optional)",
+          "explanation": "Specifies how percentages will be calculated. The percentages are generated based on how much each geography\r\nintersects the boundary layer and appends the values to the\r\ngeography layer.\r\nNO_RATIOS—No percentages will be calculated. This is the default.AREA_ONLY—The percentage will only be calculated for areas of the\r\ngeographies that intersect the boundary layer.ALL_RATIOS—The values calculated will contain percentages for Population,\r\nHousing Units, Households, and Business Points.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Generates trade areas from the features of an input standard geography level that has a specified spatial relationship with the input.",
+      "extraction_date": "2025-10-01T15:00:22.205124"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Standard Geography Trade Areas",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-standard-geography-trade-areas.htm",
+      "parameters": [
+        {
+          "name": "geography_level",
+          "explanation": "The geography level that will be used to define the trade area.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature containing the trade area.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "input_type(Optional)",
+          "explanation": "Specifies whether the geography IDs will be from a table or a list.TABLE—The input IDs will be from a table.LIST—The input IDs will be from a list. This is the default.",
+          "datatype": "String"
+        },
+        {
+          "name": "in_ids_table(Optional)",
+          "explanation": "The input table with IDs that will be used to select geographies that will define the trade area.",
+          "datatype": "Table View"
+        },
+        {
+          "name": "geography_key_field(Optional)",
+          "explanation": "A field in the in_ids_table parameter value that identifies the records that will be included in the output.",
+          "datatype": "Field"
+        },
+        {
+          "name": "ids_list(Optional)",
+          "explanation": "The input list of comma-separated geography IDs.",
+          "datatype": "String"
+        },
+        {
+          "name": "summarize_duplicates(Optional)",
+          "explanation": "Specifies whether duplicate fields in the table containing\r\nmatching geography IDs will be summarized.SUMMARIZE_DUPLICATES—The numeric fields for all duplicate records will be summarized.USE_FIRST—The data of the first record will be appended. Other records will be ignored. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "group_field(Optional)",
+          "explanation": "The field that will be used to perform a group by operation.",
+          "datatype": "Field"
+        },
+        {
+          "name": "dissolve_output(Optional)",
+          "explanation": "Specifies whether the output will be dissolved based on the group_field parameter value.DISSOLVE—The output will be dissolved.DONT_DISSOLVE—The output will not be dissolved. This is the default.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Creates trade areas based on predefined named statistical areas. This tool does not consume credits.",
+      "extraction_date": "2025-10-01T15:00:24.638855"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Threshold Drive Times",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-threshold-drive-times.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input point feature layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class containing the drive time polygons.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "threshold_variable",
+          "explanation": "The selected Business Analyst dataset variable to which the threshold value will be applied.Threshold variables must be numeric. No other statistic type is supported.",
+          "datatype": "String"
+        },
+        {
+          "name": "threshold_values[threshold_values,...]",
+          "explanation": "The threshold variable value that will determine the size of the output rings. The rings will expand until they contain the threshold value of the selected variable.",
+          "datatype": "Double"
+        },
+        {
+          "name": "distance_type",
+          "explanation": "The method of travel that will be used to create the output polygons.",
+          "datatype": "String"
+        },
+        {
+          "name": "units(Optional)",
+          "explanation": "The distance units that will be used with the threshold values.",
+          "datatype": "String"
+        },
+        {
+          "name": "id_field(Optional)",
+          "explanation": "The ID that uniquely identifies each input point and is included in the output as an attribute.",
+          "datatype": "Field"
+        },
+        {
+          "name": "travel_direction(Optional)",
+          "explanation": "Specifies the direction of travel toward or away from stores.TOWARD_STORES—  The direction of travel will be toward stores. This is the default.AWAY_FROM_STORES— The direction of travel will be away from stores.",
+          "datatype": "String"
+        },
+        {
+          "name": "time_of_day(Optional)",
+          "explanation": "The time and date that will be used when calculating distance.",
+          "datatype": "Date"
+        },
+        {
+          "name": "time_zone(Optional)",
+          "explanation": "Specifies the time zone that will be used for the Time of Day parameter.TIME_ZONE_AT_LOCATION—The time zone in which the territories are located will be used. This is the default.UTC—Coordinated universal time (UTC) will be used.",
+          "datatype": "String"
+        },
+        {
+          "name": "search_tolerance(Optional)",
+          "explanation": "The maximum distance that input points can be from the network.The default value is 5,000 meters.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "polygon_detail(Optional)",
+          "explanation": "Specifies the level of detail that will be used for the output drive time polygons.STANDARD—Polygons with a standard level of detail will be created. This is the default.GENERALIZED—Generalized polygons will be created using the hierarchy present in the network data source to produce results quickly.HIGH—Polygons with a high level of detail will be created for applications in which precise results are important.",
+          "datatype": "String"
+        },
+        {
+          "name": "iterations_limit(Optional)",
+          "explanation": "Restricts the number of drive times that can be used to find the optimal threshold limit.",
+          "datatype": "Long"
+        },
+        {
+          "name": "minimum_step(Optional)",
+          "explanation": "The minimum distance between one threshold area candidate and the next as the model approaches the threshold value to prevent infinite iterations.",
+          "datatype": "Double"
+        },
+        {
+          "name": "target_percent_diff(Optional)",
+          "explanation": "The maximum percentage difference between the target value and threshold value that will be used when determining the threshold drive time, for example, 5 percent. The default value is 5.",
+          "datatype": "Double"
+        },
+        {
+          "name": "input_method(Optional)",
+          "explanation": "Specifies the type of value that will be used for each drive time.VALUES—A constant value will be used (all trade areas will be the same size). This is the default.EXPRESSION—The values from a field or an expression will be used (trade areas can be different sizes).",
+          "datatype": "String"
+        },
+        {
+          "name": "expression(Optional)",
+          "explanation": "A fields-based expression that will be used to calculate drive time.",
+          "datatype": "SQL Expression"
+        }
+      ],
+      "summary": "Creates a feature class of network distance trade areas that expand around point features until criteria is reached.",
+      "extraction_date": "2025-10-01T15:00:27.308417"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Threshold Rings",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-threshold-rings.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input point feature layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class containing the threshold rings.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "threshold_variable",
+          "explanation": "The selected Business Analyst dataset variable to which the threshold value will be applied.Threshold variables must be numeric. No other statistic type is supported.",
+          "datatype": "String"
+        },
+        {
+          "name": "threshold_values[threshold_values,...]",
+          "explanation": "The threshold variable value that will determine the size of the output rings. The rings will expand until they contain the threshold value of the selected variable.",
+          "datatype": "Double"
+        },
+        {
+          "name": "units(Optional)",
+          "explanation": "The distance units that will be used with the threshold values.",
+          "datatype": "String"
+        },
+        {
+          "name": "id_field(Optional)",
+          "explanation": "The ID that uniquely identifies each input point and is included in the output as an attribute.",
+          "datatype": "Field"
+        },
+        {
+          "name": "input_method(Optional)",
+          "explanation": "Specifies the type of value that will be used for each drive time.VALUES—A constant value will be used (all trade areas will be the same size). This is the default.EXPRESSION—The values from a field or an expression will be used (trade areas can be different sizes).",
+          "datatype": "String"
+        },
+        {
+          "name": "expression(Optional)",
+          "explanation": "A fields-based expression that will be used to calculate the radii.",
+          "datatype": "SQL Expression"
+        },
+        {
+          "name": "minimum_step(Optional)",
+          "explanation": "The minimum distance between one threshold area candidate and the next as the model approaches the threshold value to prevent infinite iterations.",
+          "datatype": "Double"
+        },
+        {
+          "name": "target_percent_diff(Optional)",
+          "explanation": "The maximum percentage difference between the target value and threshold value that will be used when determining the threshold drive time, for example, 5 percent. The default value is 5.",
+          "datatype": "Double"
+        }
+      ],
+      "summary": "Creates a feature class of ring trade areas that expand around point features until the threshold value is reached.",
+      "extraction_date": "2025-10-01T15:00:29.806828"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Generate Trade Area Rings",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/generate-trade-area-rings.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input features containing the center points for the rings.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class that will contain the output ring features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "radii[radii,...](Optional)",
+          "explanation": "The distances, in ascending size, used to create rings around the input features.",
+          "datatype": "Double"
+        },
+        {
+          "name": "units(Optional)",
+          "explanation": "The linear unit to be used with the distance values.",
+          "datatype": "String"
+        },
+        {
+          "name": "id_field(Optional)",
+          "explanation": "A unique ID field in the ring center layer.",
+          "datatype": "Field"
+        },
+        {
+          "name": "remove_overlap(Optional)",
+          "explanation": "Creates overlapping concentric rings or removes overlap.REMOVE_OVERLAP—Thiessen polygons are used to remove overlap between output ring polygons.KEEP_OVERLAP—Output ring features are created with overlap. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "dissolve_option(Optional)",
+          "explanation": "Specifies whether overlapping or nonoverlapping service areas for a single location will be used when multiple distances are specified.\r\nOVERLAP—Each polygon will include the area reachable from the facility up to the distance value. This is the default.SPLIT—Each polygon will include only the area between consecutive distance values.",
+          "datatype": "String"
+        },
+        {
+          "name": "input_method(Optional)",
+          "explanation": "Specifies the type of value that is to be used for each drive time.VALUES—Uses a constant value (all trade areas will be the same size). This is the default.EXPRESSION—The values from a field or an expression (trade areas can be a different size).",
+          "datatype": "String"
+        },
+        {
+          "name": "expression(Optional)",
+          "explanation": "A fields-based expression to calculate the radii.",
+          "datatype": "SQL Expression"
+        }
+      ],
+      "summary": "Creates rings around point locations.",
+      "extraction_date": "2025-10-01T15:00:32.304079"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Measure Cannibalization",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/measure-cannibalization.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input polygon features that will be analyzed for overlap.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "area_id_field",
+          "explanation": "The field that uniquely identifies each feature in the input layer.",
+          "datatype": "Field"
+        },
+        {
+          "name": "area_description_field",
+          "explanation": "The field that describes each feature in the input layer.",
+          "datatype": "Field"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class that will contain the areas of overlap found in the input layer.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "store_id_field(Optional)",
+          "explanation": "The unique ID that associates a store with each polygon when the inputs are trade areas.",
+          "datatype": "Field"
+        },
+        {
+          "name": "create_report(Optional)",
+          "explanation": "Specifies whether a report will be generated.CREATE_REPORT—A report will be generated.DO_NOT_CREATE_REPORT—A report will not be generated. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "report_title(Optional)",
+          "explanation": "The title of the report. The default value is Measure Cannibalization.",
+          "datatype": "String"
+        },
+        {
+          "name": "report_folder(Optional)",
+          "explanation": "The output location where the report will be saved.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "report_format[report_format,...](Optional)",
+          "explanation": "The output format or formats of the report.",
+          "datatype": "String"
+        },
+        {
+          "name": "variables[variables,...](Optional)",
+          "explanation": "One or more variables that will be used to calculate additional overlap metrics—for example, the total number of people and households in intersection areas, or the percentage of the total number of people and households in a trade area falling into overlapped area.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Calculates the amount of overlap between two or more polygons. Overlap refers to the extent of the polygons beyond intersection. An optional report can be created detailing overlapped statistics.",
+      "extraction_date": "2025-10-01T15:00:34.713299"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Remove Overlap",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/remove-overlap.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input features containing the overlapping polygons.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class containing the new trade area features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "method(Optional)",
+          "explanation": "Specifies how the overlap between trade areas will be removed.CENTER_LINE— Overlap will be removed by creating a border that evenly distributes the area of intersection between polygons. This is the default.THIESSEN— Overlap will be removed using straight lines to divide the area of intersection.GRID— Overlap will be removed by creating a grid of parallel lines used to define a natural division between polygons.",
+          "datatype": "String"
+        },
+        {
+          "name": "define_trade_area(Optional)",
+          "explanation": "Specifies whether ring overlap in a trade area will be removed.DEFINE_TRADE_AREA—Overlap will only be removed between polygons with equal values in the ring_id_field parameter.DO_NOT_DEFINE_TRADE_AREA—Overlap will be removed from all intersecting polygons. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "ring_id_field(Optional)",
+          "explanation": "A field from the input  that defines common trade areas. Overlap between polygons will only be removed if their values in this field are equal.",
+          "datatype": "Field"
+        },
+        {
+          "name": "weight_field(Optional)",
+          "explanation": "A field from the input used to influence removal of overlap based on its values.",
+          "datatype": "Field"
+        },
+        {
+          "name": "store_id(Optional)",
+          "explanation": "A unique ID field in the stores feature layer.",
+          "datatype": "Field"
+        },
+        {
+          "name": "in_stores_layer(Optional)",
+          "explanation": "The input features containing the center points for the overlapping\r\ntrade areas.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "link_field(Optional)",
+          "explanation": "A unique ID field representing a store or facility location.",
+          "datatype": "Field"
+        }
+      ],
+      "summary": "Removes overlap between two or more areas to form adjacent boundaries.",
+      "extraction_date": "2025-10-01T15:00:37.245135"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Remove Overlap (multiple)",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/business-analyst/remove-overlap-multiple.htm",
+      "parameters": [
+        {
+          "name": "in_features[in_features,...]",
+          "explanation": "The input features containing the overlapping polygons.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class containing the new trade area features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "method(Optional)",
+          "explanation": "Specifies how the overlap between trade areas will be removed.\r\nCENTER_LINE—Overlap will be removed by creating a border that evenly distributes the overlapping area between polygons. This is the simplest method. This is the default.THIESSEN—Overlap will be removed using straight lines to divide the area of intersection. This method uses a series of geometric functions to create nonoverlapping trade areas.GRID—Overlap will be removed by creating a grid of parallel lines used to define a natural division between polygons.",
+          "datatype": "String"
+        },
+        {
+          "name": "join_attributes(Optional)",
+          "explanation": "Specifies the attributes of the input layers that will be transferred to the output.ALL—All attributes from the input features will be transferred to the output feature class. This is the default.NO_FID—All attributes from the input features, except the FID field, will be transferred to the output feature class.ONLY_FID—Only the FID field from the input features will be transferred to the output feature class.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Removes overlap between polygons contained in multiple input layers.",
+      "extraction_date": "2025-10-01T15:00:40.062985"
+    },
+    {
+      "toolset": "business-analyst",
+      "tool_name": "Find a geoprocessing tool",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/analysis/geoprocessing/basics/find-geoprocessing-tools.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T15:00:42.851798"
+    }
+  ]
+}

@@ -1,17 +1,2225 @@
 {
   "extraction_info": {
-    "date": "2025-10-01T13:20:19.852162",
-    "toolbox": "conversion",
-    "total_toolsets": 6,
-    "total_tools": 0,
-    "toolsets": [
-      "Extract",
-      "General",
-      "Overlay",
-      "Pairwise Overlay",
-      "Proximity",
-      "Statistics"
-    ]
+    "date": "2025-10-01T14:01:07.521020",
+    "total_toolsets": 1,
+    "total_tools": 50,
+    "toolbox": "conversion"
   },
-  "tools": []
+  "tools": [
+    {
+      "toolset": "conversion",
+      "tool_name": "Excel To Table",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/excel-to-table.htm",
+      "parameters": [
+        {
+          "name": "Input_Excel_File",
+          "explanation": "The Excel file that will be converted.",
+          "datatype": "File"
+        },
+        {
+          "name": "Output_Table",
+          "explanation": "The output table.",
+          "datatype": "Table"
+        },
+        {
+          "name": "field_names_row(Optional)",
+          "explanation": "The row in the Excel sheet that contains values that will be used as field names.  The default value is 1.  The row specified will be skipped when converting records to the output table.If the Sheet\tparameter value is a named range, this parameter's value will be set to the minimum row of the named range. The value will also be limited to the minimum and maximum row number of the named range.To avoid using any row's values as field names, set this parameter to 0, which will name the output fields using the column letter (for example, COL_A, COL_B, COL_C).If a cell in a particular column is empty, the output field name will be based on the column letter. For example, if the input has three columns, and the row contains \"city\", \"\", and \"country\" in columns A, B, and C, respectively, the output table's field names will be city, COL_B, and country.",
+          "datatype": "Long"
+        },
+        {
+          "name": "cell_range(Optional)",
+          "explanation": "The  cell range. This parameter is disabled when a named ranged is selected. If no cell range is specified, the tool will use the start and end cells of the specified sheet.A cell is the intersection of a row and a column. Columns are identified by letters (A, B, C, D), and rows are identified by numbers (1, 2, 3, 4). Each cell has an address based on its column and row. For example, the cell B9 is the intersection of column B and row 9.A cell range defines a rectangle  using the upper left cell and lower right cell, separated by a colon (:).  Cell ranges are inclusive, so a range of A2:C10 will include all values in columns A through  C and all values in rows 2 through 10.The output field names are derived from cell values in row 1, regardless of the rows specified in the cell range. For example, if the cell range specified is B2:D10, the field names will be based on the values in cells B1, C1, and D1.The following are examples of valid cell ranges: A2:C10—The values in columns A through C, from row 2 through 10B3:B40—The values in column B, from row 3 through 40D5:X5—The values in columns D through X, for row 5E200:ALM20000—The values in columns E through ALM (1000th column), from row 200 through 20000 The following are examples of invalid cell ranges: A20:C10—The first cell cannot be lower (have a larger row number) than the second cell.Z3:B5—The second cell cannot be to the left (have a smaller column letter) of the first cell.A5:G—Both cells must have a valid cell identifier: a letter and a number. This parameter is only enabled when the Sheet parameter value is a sheet.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Converts Microsoft Excel files into a table.",
+      "extraction_date": "2025-10-01T13:58:07.839160"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Table To Excel",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/table-to-excel.htm",
+      "parameters": [
+        {
+          "name": "Input_Table[Input_Table,...]",
+          "explanation": "The table or tables to be converted to an Excel file.",
+          "datatype": "Table View"
+        },
+        {
+          "name": "Output_Excel_File",
+          "explanation": "The output Excel file. Specify the format of the Excel file using the .xls or .xlsx file extension.",
+          "datatype": "File"
+        },
+        {
+          "name": "Use_field_alias_as_column_header(Optional)",
+          "explanation": "Specifies whether input field names or field aliases will be used as the output column names.NAME—Column headers will be set using the input field names. This is the default.ALIAS—Column headers will be set using the input geodatabase table's field aliases.  If the input is a layer in a map, the value set on the layer's field alias  is ignored.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "Use_domain_and_subtype_description(Optional)",
+          "explanation": "Specifies whether values from subtype fields or fields with a coded value domain will be transferred to the output.CODE—All field values will be used as they are stored in the table. This is the default.DESCRIPTION—For subtype fields, the subtype description will be used.  For fields with a coded value domain, the coded value descriptions will be used.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Converts  a table to a Microsoft Excel file (.xls or .xlsx).",
+      "extraction_date": "2025-10-01T13:58:10.266038"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "PDF To TIFF",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/pdf-to-tiff.htm",
+      "parameters": [
+        {
+          "name": "in_pdf_file",
+          "explanation": "The input .pdf file to be exported to TIFF.",
+          "datatype": "File"
+        },
+        {
+          "name": "out_tiff_file",
+          "explanation": "The output  .tif file.",
+          "datatype": "Raster Dataset"
+        },
+        {
+          "name": "pdf_password(Optional)",
+          "explanation": "This parameter is unavailable at ArcGIS 3.5. It will be supported in a future release.",
+          "datatype": "Encrypted String"
+        },
+        {
+          "name": "pdf_page_number(Optional)",
+          "explanation": "The page number of the PDF document to export to TIFF.",
+          "datatype": "Long"
+        },
+        {
+          "name": "pdf_map(Optional)",
+          "explanation": "The map that will be exported.In a .pdf file, a map is a defined container of graphics on the PDF page that has a spatial reference. A PDF map is equivalent to an ArcGIS Pro map in that it is the container for spatial data. A PDF document may have one or more maps. For example, a page may have a main map and an additional smaller overview or key map.If the geotiff_tags parameter value is specified, it will be used to set the output spatial reference of the .tif file.If the clip_option parameter value is specified,  it will be used to define the extent of the output .tif file.You can specify the map by name.  You can also use the LARGEST option to use the largest map in the PDF. This is the default.For .pdf files that use the OGC GeoPDF standard, the only supported option is LARGEST.Note:When entering the map's name, replace any space with an underscore.  For example, My Map becomes My_Map.",
+          "datatype": "String"
+        },
+        {
+          "name": "clip_option(Optional)",
+          "explanation": "Specifies whether the entire page or only the map will be exported.CLIP_TO_MAP—Only  the map specified in the pdf_map parameter will be exported to TIFF.NO_CLIP—The entire page will be exported to TIFF. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "resolution(Optional)",
+          "explanation": "The resolution of the output .tif file in dots per inch (DPI).  The default is 250.",
+          "datatype": "Long"
+        },
+        {
+          "name": "color_mode(Optional)",
+          "explanation": "Specifies the number of bits that will be used to describe color.Note:Additional options will be supported in a future release.RGB_TRUE_COLOR—32-bit RGBA color will be used. If the tiff_compression parameter is set to JPEG, 24-bit RGB color will be used. This is the default.",
+          "datatype": "String"
+        },
+        {
+          "name": "tiff_compression(Optional)",
+          "explanation": "Specifies the compression scheme for the output .tif file.LZW—Lempel-Ziv-Welch, a lossless data compression, will be used. This is the default.DEFLATE—A lossless data compression will be used.JPEG—JPEG lossy compression will be used. The compression quality will be automatically set to 100 and cannot be changed.NONE—Compression will not be applied.PACK_BITS—PackBits lossless compression will be used.",
+          "datatype": "String"
+        },
+        {
+          "name": "geotiff_tags(Optional)",
+          "explanation": "Specifies whether GeoTIFF tags will be added to the output. This parameter is only supported if the in_pdf_file parameter value has a spatial reference.GEOTIFF_TAGS—GeoTIFF tags will be added to the output. This is the default.NO_GEOTIFF_TAGS—GeoTIFF tags will not be added to the output.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Exports a .pdf file to Tagged Image File Format (TIFF).",
+      "extraction_date": "2025-10-01T13:58:14.836614"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Raster to ASCII",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/raster-to-ascii.htm",
+      "parameters": [
+        {
+          "name": "in_raster",
+          "explanation": "The input raster dataset.The raster can be integer or floating-point type.",
+          "datatype": "Raster Layer"
+        },
+        {
+          "name": "out_ascii_file",
+          "explanation": "The output ASCII raster file.",
+          "datatype": "File"
+        }
+      ],
+      "summary": "Converts a raster dataset to an ASCII file representing raster data.",
+      "extraction_date": "2025-10-01T13:58:19.070098"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Raster to Float",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/raster-to-float.htm",
+      "parameters": [
+        {
+          "name": "in_raster",
+          "explanation": "The input raster dataset.The raster can be integer or floating-point type.",
+          "datatype": "Raster Layer"
+        },
+        {
+          "name": "out_float_file",
+          "explanation": "The output floating-point raster file.The file name must have a .flt extension.",
+          "datatype": "File"
+        }
+      ],
+      "summary": "Converts a raster dataset to a file of binary floating-point values representing raster data.",
+      "extraction_date": "2025-10-01T13:58:21.482174"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Raster to Point",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/raster-to-point.htm",
+      "parameters": [
+        {
+          "name": "in_raster",
+          "explanation": "The input raster dataset.The raster can be integer or floating-point type.",
+          "datatype": "Raster Layer"
+        },
+        {
+          "name": "out_point_features",
+          "explanation": "The output feature class that will contain the converted points.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "raster_field(Optional)",
+          "explanation": "The field to assign values from the cells in the input raster to the points in the output dataset.It can be an integer, floating point, or string field.",
+          "datatype": "Field"
+        }
+      ],
+      "summary": "Converts a raster dataset to point features.",
+      "extraction_date": "2025-10-01T13:58:23.947902"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Raster to Polygon",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/raster-to-polygon.htm",
+      "parameters": [
+        {
+          "name": "in_raster",
+          "explanation": "The input raster dataset.The raster must be integer type.",
+          "datatype": "Raster Layer"
+        },
+        {
+          "name": "out_polygon_features",
+          "explanation": "The output feature class that will contain the converted polygons.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "simplify(Optional)",
+          "explanation": "Determines if the output polygons will be smoothed into simpler shapes or conform to the input raster's cell edges.SIMPLIFY—The polygons will be smoothed into simpler shapes. The smoothing is done in such a way that the polygons contain a minimum number of segments while remaining as close as possible to the original raster cell edges. This is the default.NO_SIMPLIFY—The edge of the polygons will conform exactly to the input raster's cell edges. With this option, converting the resulting polygon feature class back to a raster would produce a raster the same as the original.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "raster_field(Optional)",
+          "explanation": "The field used to assign values from the cells in the input raster to the polygons in the output dataset.It can be an integer or a string field.",
+          "datatype": "Field"
+        },
+        {
+          "name": "create_multipart_features(Optional)",
+          "explanation": "Specifies whether the output polygons will consist of single-part or multipart features.\r\nMULTIPLE_OUTER_PART—Specifies that multipart features will be created based on polygons that have the same value.SINGLE_OUTER_PART—Specifies that individual features will be created for each polygon. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "max_vertices_per_feature(Optional)",
+          "explanation": "The vertex limit used to subdivide a polygon into smaller polygons. This parameter produces similar output as created by the Dice tool.If left empty, the output polygons will not be split. The default is empty.",
+          "datatype": "Long"
+        }
+      ],
+      "summary": "Converts a raster dataset to polygon features.",
+      "extraction_date": "2025-10-01T13:58:26.509064"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Raster to Polyline",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/raster-to-polyline.htm",
+      "parameters": [
+        {
+          "name": "in_raster",
+          "explanation": "The input raster dataset.The raster must be integer type.",
+          "datatype": "Raster Layer"
+        },
+        {
+          "name": "out_polyline_features",
+          "explanation": "The output feature class that will contain the converted polylines.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "background_value(Optional)",
+          "explanation": "Specifies the value that will identify the background cells. The raster dataset is viewed as a set of foreground cells and background cells. The linear features are formed from the foreground cells.ZERO—The background is composed of cells of zero or less or NoData. All cells with a value greater than zero are considered a foreground value.NODATA—The background is composed of NoData cells. All cells with valid values belong to the foreground.",
+          "datatype": "String"
+        },
+        {
+          "name": "minimum_dangle_length(Optional)",
+          "explanation": "Minimum length of dangling polylines that will be retained. The default is zero.",
+          "datatype": "Double"
+        },
+        {
+          "name": "simplify(Optional)",
+          "explanation": "Simplifies a line by removing small fluctuations or extraneous bends from it while preserving its essential shape.SIMPLIFY—The polylines will be simplified into simpler shapes such that each contains a minimum number of segments. This is the default. NO_SIMPLIFY—The polylines will not be simplified.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "raster_field(Optional)",
+          "explanation": "The field used to assign values from the cells in the input raster to the polyline features in the output dataset.It can be an integer or a string field.",
+          "datatype": "Field"
+        }
+      ],
+      "summary": "Converts a raster dataset to polyline features.",
+      "extraction_date": "2025-10-01T13:58:29.186038"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "WFS To Feature Class",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/wfs-to-feature-class.htm",
+      "parameters": [
+        {
+          "name": "input_WFS_server",
+          "explanation": "The URL of the source WFS service (for example,  http://sampleserver6.arcgisonline.com/arcgis/services/SampleWorldCities/MapServer/WFSServer?). If the input is a complex WFS service (is_complex is set to  COMPLEX), this can also be the path to the .xml file.",
+          "datatype": "String"
+        },
+        {
+          "name": "WFS_feature_type",
+          "explanation": "The name of the WFS layer that will be extracted from the input WFS service.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_path",
+          "explanation": "The location of the output feature class or geodatabase.If the input is a simple WFS service, the output location can be a geodatabase or a feature dataset in a geodatabase. If the output location is a feature dataset, the coordinates will be converted from the source coordinate system to the coordinate system of the feature dataset.If the input is a complex WFS service, the output location must be a folder.",
+          "datatype": "Workspace; Feature Dataset; Folder"
+        },
+        {
+          "name": "out_name",
+          "explanation": "The name of the output feature class or geodatabase.If the input is a simple WFS service, the name will be used to create a feature class in the output location. If the feature class name already exists in the geodatabase, the name will be automatically incremented. By default, the feature type name is used.If the input is a complex WFS service, the name will be used to create a geodatabase in the output location.",
+          "datatype": "String"
+        },
+        {
+          "name": "is_complex(Optional)",
+          "explanation": "Specifies whether the input_WFS_server parameter value is a complex WFS service.COMPLEX—The WFS service is a complex WFS service.NOT_COMPLEX—The WFS service is not a complex WFS service. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "max_features(Optional)",
+          "explanation": "The maximum number of features that can be returned. The default is 1000.",
+          "datatype": "Long"
+        },
+        {
+          "name": "expose_metadata(Optional)",
+          "explanation": "Specifies whether metadata tables will be created from the service. This is only applicable to complex WFS services.EXPOSE_METADATA—Metadata tables will be created in the output geodatabase.DO_NOT_EXPOSE—Metadata tables will not be created in the output geodatabase. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "swap_xy(Optional)",
+          "explanation": "Specifies whether the x,y axis order of the output feature class will be swapped. Some WFS services may have the order of the x,y coordinates swapped on the server side, causing the feature class to display incorrectly.SWAP_XY—The x,y axis order will be swapped.DO_NOT_SWAP_XY—The x,y axis order will not be swapped. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "page_size(Optional)",
+          "explanation": "The page size that will be used when downloading features from the WFS service. The default is 100. Some servers limit the number of features that can be requested at a time or server performance may be slow when requesting a large\r\nnumber of features in a single request. Use this parameter to request a\r\nsmaller number of features in multiple pages to avoid server timeouts or maximum feature limits. This\r\nparameter is only applicable for simple WFS 2.0 services that support  the startIndex and  count WFS parameters. The parameter will be ignored for older versions of WFS (1.1.0 and 1.0.0).",
+          "datatype": "Long"
+        }
+      ],
+      "summary": "Imports a feature type from a Web Feature Service (WFS) to a feature class in a geodatabase.",
+      "extraction_date": "2025-10-01T13:58:33.536061"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Features To GPX",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/features-to-gpx.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input point, multipoint, or line features.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_gpx_file",
+          "explanation": "The .gpx file that will be created with the  geometry and attributes of the input features.",
+          "datatype": "File"
+        },
+        {
+          "name": "name_field(Optional)",
+          "explanation": "A field from the input features with values used to populate the GPX name tag.",
+          "datatype": "Field"
+        },
+        {
+          "name": "description_field(Optional)",
+          "explanation": "A field from the input features with\r\nvalues used to populate the GPX desc tag.",
+          "datatype": "Field"
+        },
+        {
+          "name": "z_field(Optional)",
+          "explanation": "A numeric field from the input features with  values used to populate the GPX elevation tag. If an elevation field is not specified, the z-values from the input features' geometries will be used to populate the GPX elevation tag.",
+          "datatype": "Field"
+        },
+        {
+          "name": "date_field(Optional)",
+          "explanation": "A date/time field from the input features with values used to populate the GPX time tag.",
+          "datatype": "Field"
+        }
+      ],
+      "summary": "Converts point, multipoint, or polyline features to a GPX format file (.gpx).",
+      "extraction_date": "2025-10-01T13:58:37.767980"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "GPX To Features",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/gpx-to-features.htm",
+      "parameters": [
+        {
+          "name": "Input_GPX_File",
+          "explanation": "The input .gpx file to be converted.",
+          "datatype": "File"
+        },
+        {
+          "name": "Output_Feature_class",
+          "explanation": "The output point feature class.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "Output_Type(Optional)",
+          "explanation": "Specifies the geometry type of the output feature class.POINTS—An output point feature class will be created. All GPX points will be included in the output. This is the default.TRACKS_AS_LINES—An output polyline feature class will be created. Only GPX track points will be included in the output.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Converts the point data in a .gpx file to features.",
+      "extraction_date": "2025-10-01T13:58:40.313926"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "graphics layers",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/mapping/layer-properties/graphics-layers.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T13:58:44.544869"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "feature classes",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/data/feature-classes/feature-classes.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T13:58:47.011034"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Features To Graphics",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/features-to-graphics.htm",
+      "parameters": [
+        {
+          "name": "in_layer",
+          "explanation": "The layer to convert to graphics.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_layer",
+          "explanation": "The graphics layer containing the converted graphic elements.",
+          "datatype": "Graphics Layer"
+        },
+        {
+          "name": "exclude_features(Optional)",
+          "explanation": "Specifies whether the converted\r\nfeatures will be excluded using a query.EXCLUDE_FEATURES—The features will be excluded. This is the default.KEEP_FEATURES—The features will not be excluded; they will be preserved.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Converts a feature layer's symbolized features into graphic elements in a graphics layer.",
+      "extraction_date": "2025-10-01T13:58:49.443188"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "graphics layer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/mapping/layer-properties/graphics-layers.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T13:58:51.899440"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Graphics To Features",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/graphics-to-features.htm",
+      "parameters": [
+        {
+          "name": "in_layer",
+          "explanation": "The graphics layer containing the source graphic elements that will be converted to features.",
+          "datatype": "Graphics Layer"
+        },
+        {
+          "name": "graphics_type",
+          "explanation": "Specifies the type of graphic element that will be converted.POINT—Point graphic elements will be converted.POLYLINE—Polyline graphic elements will be converted.POLYGON—Polygon graphic elements will be converted.MULTIPOINT—Multipoint graphic elements will be converted.ANNOTATION—Annotation and text graphic elements will be converted.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature layer that will contain the converted graphic elements.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "delete_graphics(Optional)",
+          "explanation": "Specifies whether the converted graphic elements from the in_layer parameter will be deleted after conversion.DELETE_GRAPHICS—The converted graphic elements will be deleted. This is the default.KEEP_GRAPHICS—The converted graphic elements will not be deleted; they will be preserved.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "reference_scale(Optional)",
+          "explanation": "The reference scale that will be used to convert text elements to annotation features. This parameter is required when the graphics_type parameter is set to ANNOTATION.",
+          "datatype": "Double"
+        }
+      ],
+      "summary": "Converts a graphics layer into a feature layer with geometries based on the input graphics layer's elements.",
+      "extraction_date": "2025-10-01T13:58:54.320311"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Work with graphics layers",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/mapping/layer-properties/graphics-layers.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T13:58:56.688153"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "graphics layers",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/mapping/layer-properties/graphics-layers.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T13:59:00.071230"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "feature classes",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/help/data/feature-classes/feature-classes.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T13:59:02.445639"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Features To JSON",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/features-to-json.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The features that will be converted to JSON format.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_json_file",
+          "explanation": "The output .json or .geojson file.",
+          "datatype": "File"
+        },
+        {
+          "name": "format_json(Optional)",
+          "explanation": "Specifies whether the JSON will be formatted to improve readability similar to the ArcGIS REST API specification's PJSON (Pretty JSON) format.NOT_FORMATTED— The features will not be formatted. This is the default.FORMATTED—The features will be formatted to the PJSON specification.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "include_z_values(Optional)",
+          "explanation": "Specifies whether the z-values of the features will be included in the JSON.NO_Z_VALUES— The z-values will not be included in geometries, and the hasZ property of the JSON will not be included. This is the default.Z_VALUES—The z-values will be included in geometries, and the hasZ property of the JSON will be set to true.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "include_m_values(Optional)",
+          "explanation": "Specifies whether the m-values of the features will be included in the JSON.NO_M_VALUES— The m-values will not be included in geometries, and the hasM property of the JSON will not be included. This is the default. M_VALUES—The m-values will be included in geometries, and the hasM property of the JSON will be set to true.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "geoJSON(Optional)",
+          "explanation": "Specifies whether the output will be created in GeoJSON format, conforming to the GeoJSON specification or Esri JSON format,.GEOJSON— The output will be created in GeoJSON format (.geojson file). NO_GEOJSON—The output will be created in Esri JSON format (.json file). This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "outputToWGS84(Optional)",
+          "explanation": "Specifies whether the input features will be projected to the WGS84 geographic coordinate system with a default geographic transformation. This parameter only applies when the output is GeoJSON.WGS84— Features will be projected to WGS84.KEEP_INPUT_SR—Features will not be projected to WGS84. The GeoJSON will contain a CRS tag that defines the coordinate system. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "use_field_alias(Optional)",
+          "explanation": "Specifies whether the output file will use field aliases for feature attributes.USE_FIELD_NAME—Output feature attributes will not use field aliases; they will use field names. This is the default.USE_FIELD_ALIAS—Output feature attributes will use field aliases.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Converts features to Esri JSON or GeoJSON format. The fields, geometry, and spatial reference of features will be converted to their corresponding JSON representation and written to a file with a .json or .geojson extension.",
+      "extraction_date": "2025-10-01T13:59:06.067409"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "JSON To Features",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/json-to-features.htm",
+      "parameters": [
+        {
+          "name": "in_json_file",
+          "explanation": "The input .json or .geojson file that will be converted to a feature class. The input file extension determines the format used by the tool for proper conversion. For Esri JSON formatted file, use the .json extension; for  GeoJSON formatted files, use the .geojson extension.",
+          "datatype": "File"
+        },
+        {
+          "name": "out_features",
+          "explanation": "The output feature class that will contain the features from the input .json or .geojson file.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "geometry_type(Optional)",
+          "explanation": "Specifies the geometry type that will be used to convert from GeoJSON to features. This parameter is only used when the input is a .geojson file.\r\nIf the .geojson file does not contain any of the specified geometry types, the output feature class will be empty.POINT—Points will be converted to features.MULTIPOINT—Multipoints will be converted to features.POLYLINE—Polylines will be converted to features.POLYGON—Polygons will be converted to features.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Converts feature collections in an Esri JSON formatted file (.json) or a GeoJSON formatted file (.geojson) to a feature class.",
+      "extraction_date": "2025-10-01T13:59:08.445008"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "featureSet",
+      "help_url": "https://developers.arcgis.com/documentation/common-data-types/featureset-object.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T13:59:09.768859"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "KML To Layer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/kml-to-layer.htm",
+      "parameters": [
+        {
+          "name": "in_kml_file",
+          "explanation": "The .kml or .kmz file that will be converted to geodatabase datasets.",
+          "datatype": "File; KML Layer"
+        },
+        {
+          "name": "output_folder",
+          "explanation": "The destination folder where the output geodatabase and layer file (.lyrx) will be created.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "output_data(Optional)",
+          "explanation": "The name that will be used for both the output geodatabase and layer file (.lyrx). The default is the name of the input file.\r\nYou can specify the name of an existing geodatabase in the target folder, and the conversion will write new datasets into the existing geodatabase. If the geodatabase with the specified name  does not exist, it will be created in the target folder.",
+          "datatype": "String"
+        },
+        {
+          "name": "include_groundoverlay(Optional)",
+          "explanation": "Specifies whether ground overlays from the KML will be included in the output.\r\nUse caution if the KMZ points to a service that serves imagery. The tool will attempt to convert the raster imagery at all available scales. This process may be lengthy and possibly overwhelm the server or time out.GROUNDOVERLAY—Ground overlays will be included in the output. NO_GROUNDOVERLAY—Ground overlays will not be included in the output.  This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "out_suffix(Optional)",
+          "explanation": "The suffix that will be added to the names of all output feature datasets, feature classes, mosaic datasets, and layer files. If no suffix is specified, the name of the feature dataset in the output geodatabase will be Placemarks.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Converts a .kml or .kmz file into datasets in a geodatabase  and a layer file.  The layer file  maintains the symbology of the input .kml or .kmz file. Learn more about KML support in ArcGIS",
+      "extraction_date": "2025-10-01T13:59:14.212900"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Layer To KML",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/layer-to-kml.htm",
+      "parameters": [
+        {
+          "name": "layer",
+          "explanation": "The  feature or raster layer  or group layer that will be converted to KML format.",
+          "datatype": "Feature Layer; Raster Layer; Mosaic Layer; Group Layer; Layer File"
+        },
+        {
+          "name": "out_kmz_file",
+          "explanation": "The output .kml or .kmz file. The output file can use the .kmz extension  to produce an archive or zipped file, or the .kml  extension to produce a basic KML format file. An output .kmz file is the default.Output .kmz files support raster layers, symbology and other layer properties, attachments, and other advanced features. Output .kml files will use basic KML symbols and properties.",
+          "datatype": "File; Workspace; KML Layer"
+        },
+        {
+          "name": "layer_output_scale(Optional)",
+          "explanation": "The scale of the output file. For raster layers, a value of 0 can be used to create one untiled output image. If a value greater than or equal to 1 is used, it will determine the output resolution of the raster. This parameter has no effect on layers that are not raster layers.",
+          "datatype": "Double"
+        },
+        {
+          "name": "is_composite(Optional)",
+          "explanation": "Specifies whether the output will be a single composite image.  This parameter only applies if you specify the output KML as a .kmz file, as output .kml files do not support ground overlay images or rasters.COMPOSITE—The output will be a single composite image representing the raster or vector features in the source layer. The raster is draped over the terrain as a GroundOverlay. Use this option to reduce the size of the output file. When this option is used, individual features and layers in the .kml file cannot be selected. Only output .kmz files support images.NO_COMPOSITE—If the input has vector features, they will be preserved as KML vectors.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "boundary_box_extent(Optional)",
+          "explanation": "The geographic extent of the layer to be converted. Only features or raster cells in this extent will be included in the output KML. The extent can be specified using the following options:MAXOF—The maximum extent of all inputs will be used.MINOF—The minimum area common to all inputs will be used.DISPLAY—The extent is equal to the visible display.Layer name—The extent of the specified layer will be used.Extent object—The extent of the specified object will be used. Space delimited string of coordinates—The extent of the specified string will be used. Coordinates are expressed in the order of x-min, y-min, x-max, y-max.",
+          "datatype": "Extent"
+        },
+        {
+          "name": "image_size(Optional)",
+          "explanation": "The size of the tiles for raster layers if the layer_output_scale parameter value is greater than or equal to 1. This parameter has no effect on layers that are not raster layers.",
+          "datatype": "Long"
+        },
+        {
+          "name": "dpi_of_client(Optional)",
+          "explanation": "The device resolution for KML output when the is_composite parameter is set to COMPOSITE. Use this parameter with the image_size parameter to control output image resolution.This parameter does not resample source rasters. Input rasters will have a snapshot taken and included in the KML output as a simple .png image.",
+          "datatype": "Long"
+        },
+        {
+          "name": "ignore_zvalue(Optional)",
+          "explanation": "Specifies whether the z-values of the input features will be ignored and all features will be located, or clamped, at the ground elevation.ABSOLUTE—The z-values of the features will be maintained in the output KML. The features will be drawn in KML clients relative to sea level.CLAMPED_TO_GROUND—The z-values of the input features will be ignored and all features will be located, or clamped, at the ground elevation. If the input features do not have z-values, they will always be clamped to the ground. This is the default.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Converts a feature or raster layer  to KML format (.kmz or .kml file). The output KML will contain a translation of Esri feature geometries, raster cells, layer symbology, and other properties. Learn more about KML support in ArcGIS",
+      "extraction_date": "2025-10-01T13:59:16.906685"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Map To KML",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/map-to-kml.htm",
+      "parameters": [
+        {
+          "name": "in_map",
+          "explanation": "The map, scene, or basemap that will be converted to KML.",
+          "datatype": "Map"
+        },
+        {
+          "name": "out_kmz_file",
+          "explanation": "The output KML file, which is compressed and has a .kmz extension.",
+          "datatype": "File"
+        },
+        {
+          "name": "map_output_scale(Optional)",
+          "explanation": "The scale at which each layer in the map will be exported. This\r\nparameter is important with any scale dependency, such as layer\r\nvisibility or scale-dependent rendering. If the layer is not\r\nvisible at the output scale, it is not included in the output KML. Any value, such as 1, can be used if there are no scale\r\ndependencies. For raster layers, a value of 0 can be used to create one untiled output image. If a value greater than or equal to 1 is used, it determines the output resolution of the raster. This parameter has no effect on layers that are not raster layers.Only numeric characters are accepted; for example, enter\r\n20000 as the scale, not 1:20000. In languages that use commas as the decimal point, 20,000 is also acceptable.If you're exporting a layer that is to be displayed as 3D vectors and\r\nthe is_composite parameter is set to NO_COMPOSITE, you can set this\r\nparameter to any value as long as the features do not have any\r\nscale-dependent rendering.",
+          "datatype": "Double"
+        },
+        {
+          "name": "is_composite(Optional)",
+          "explanation": "Specifies whether the output KML will contain a single composite image or separate layers.COMPOSITE—The output KML will contain a single image that\r\ncomposites all the features in the map into a single raster image.\r\nThe raster is draped over the terrain as a KML GroundOverlay.\r\nThis option reduces the size of the output KML. Individual features and layers in the KML are\r\nnot selectable.NO_COMPOSITE—The output KML will contain separate, individual layers. This is the default. Whether the layers are\r\nreturned as rasters or as a combination of vectors and rasters is\r\ndetermined by the is_vector_to_raster parameter value.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "is_vector_to_raster(Optional)",
+          "explanation": "Specifies whether each feature layer in the map will be converted to a separate raster image\r\nor preserved as features. This parameter is not used if the is_composite parameter is set to COMPOSITE.VECTOR_TO_IMAGE—Feature layers will be converted to a separate raster image\r\nin the KML output. Normal raster layers are also added to the KML\r\noutput. Each output KML raster layer is selectable, and its\r\ntransparency can be adjusted in certain KML viewer applications.\r\nVECTOR_TO_VECTOR—Features will be preserved in the output KML as feature geometries. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "extent_to_export(Optional)",
+          "explanation": "The geographic extent of the layer to be converted. Only features or raster cells in this extent will be included in the output KML. The extent can be specified using the following options:\r\nMAXOF—The maximum extent of all inputs will be used.MINOF—The minimum area common to all inputs will be used.DISPLAY—The extent is equal to the visible display.Layer name—The extent of the specified layer will be used.Extent object—The extent of the specified object will be used. Space delimited string of coordinates—The extent of the specified string will be used. Coordinates are expressed in the order of x-min, y-min, x-max, y-max.",
+          "datatype": "Extent"
+        },
+        {
+          "name": "image_size(Optional)",
+          "explanation": "The size of the tiles for raster layers if\r\nthe map_output_scale parameter value is greater than\r\nor equal to 1. This parameter has no effect on layers that are not raster layers.",
+          "datatype": "Long"
+        },
+        {
+          "name": "dpi_of_client(Optional)",
+          "explanation": "The device resolution for any rasters in the output KML\r\ndocument. Typical screen resolution is 96 dpi. If the data in\r\nthe map supports a high resolution and the KML requires it,\r\nconsider increasing the value. Use this parameter with the image_size parameter to control output image resolution.\r\nThe default value is 96.",
+          "datatype": "Long"
+        },
+        {
+          "name": "ignore_zvalue(Optional)",
+          "explanation": "Specifies whether the z-values of the input features will be ignored and all features will be located, or clamped, at the ground elevation.ABSOLUTE—The z-values of the features will be maintained in the output KML. The features will be drawn in KML clients relative to sea level.CLAMPED_TO_GROUND—The z-values of the input features will be ignored and all features will be located, or clamped, at the ground elevation. If the input features do not have z-values, they will always be clamped to the ground. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "layout(Optional)",
+          "explanation": "The name of the layout that contains legend elements that will be included in the KML output as screen overlays.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Converts a map containing feature or raster layers  to KML format (.kmz  file). The output KML will contain a translation of Esri feature geometries, raster cells, layer symbology, and other properties. Learn more about KML support in ArcGIS",
+      "extraction_date": "2025-10-01T13:59:19.556704"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "KML conversion",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/kml-conversion.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T13:59:22.022249"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Convert LAS",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/convert-las.htm",
+      "parameters": [
+        {
+          "name": "in_las",
+          "explanation": "The .las, .zlas, or .laz files that will be converted. Multiple files can be processed by specifying the folder containing the files or a LAS dataset.",
+          "datatype": "Layer File; LAS Dataset Layer; Folder; File"
+        },
+        {
+          "name": "target_folder",
+          "explanation": "The existing folder where the output files will be written.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "file_version(Optional)",
+          "explanation": "Specifies the file version that will be used for the output files.SAME_AS_INPUT—The output file version will be the same as the input. This is the default.1.0—The base version for the LAS format that supported 256 class codes will be used.1.1—The output file version will be 1.1. Class codes were reduced to 32, but support for classification flags was added.1.2—The output file version will be 1.2. Support for red-green-blue (RGB) color channels and GPS time was added.1.3—The output file version will be 1.3. Storage of lidar waveform data for point record formats that are not supported in the ArcGIS platform was added.1.4— The output file version will be 1.4. Support for coordinate system definition using Well Known Text (WKT) convention, 256 class codes, up to 15 discrete returns per pulse, higher precision scan angle, and overlap classification flag was added.",
+          "datatype": "String"
+        },
+        {
+          "name": "point_format(Optional)",
+          "explanation": "Specifies the point record format that will be used for the output files. The available options will vary based on the output LAS format file version.\r\n0—The base type for storing discrete LAS points that supports attributes such as lidar intensity, return values, scan angle, scan direction, and edge of flight line will be used.1—GPS time is added to the attributes supported in point format 0, which will be used.2—RGB values are added to the attributes supported in point format 0, which will be used.3—RGB values and GPS time are added to the attributes supported in point format 0, which will be used.6—The preferred base type for storing discrete LAS points in LAS file version 1.4 will be used.7—RGB values are added to the attributes supported in point format 6, which will be used.8—RGB and near-infrared values are added to the attributes supported in point format 6, which will be used.",
+          "datatype": "String"
+        },
+        {
+          "name": "compression(Optional)",
+          "explanation": "Specifies whether the output files will be stored in  a compressed or uncompressed format.NO_COMPRESSION—Output files will be in the uncompressed LAS format (*.las). This format supports edits to classification codes and flags. This is the default.ZLAS—Output files will be compressed in the zLAS format (*.zlas). This format supports edits to classification codes and flags. LAZ—Output files will be compressed in the LAZ format (*.laz).EDITED_ZLAS_TO_NON_EDITED—Edited .zlas files will be converted to unedited .zlas files. Creating unedited *.zlas files preserves the classification edits while allowing the files to be usable in ArcGIS Pro 3.1 and earlier. When this option is used on a LAS dataset referencing any combination of .las files, edited .zlas files, and unedited .zlas files, only the edited .zlas files will be processed.",
+          "datatype": "String"
+        },
+        {
+          "name": "las_options[las_options,...](Optional)",
+          "explanation": "Specifies the modifications that will be made to the output files that will reduce their size and improve their performance in display and analysis.\r\nREARRANGE_POINTS—Points will be rearranged to improve display and analysis performance. Statistics will be automatically computed during this process. This is the default.REMOVE_VLR—Variable-length records that are added after the header as well as the points records of each file will be removed.REMOVE_EXTRA_BYTES—Extra bytes that may be present with each point from the input file will be removed.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_las_dataset(Optional)",
+          "explanation": "The output LAS dataset referencing the newly created .las files.",
+          "datatype": "LAS Dataset"
+        },
+        {
+          "name": "define_coordinate_system(Optional)",
+          "explanation": "Specifies how the coordinate system of each input file will be defined.NO_FILES—The coordinate system of each input file will be defined by the information in its header. Any file that lacks spatial reference information will be treated as having an unknown coordinate system. This is the default.ALL_FILES—The coordinate system of each input file will be defined by the in_coordinate_system parameter.FILES_MISSING_PROJECTION—The coordinate system of any input file that does not have spatial reference information in its header will be defined by the in_coordinate_system parameter.",
+          "datatype": "String"
+        },
+        {
+          "name": "in_coordinate_system(Optional)",
+          "explanation": "The coordinate system that will be used to define the spatial reference of some or all input files based on the define_coordinate_system parameter value.",
+          "datatype": "Coordinate System"
+        }
+      ],
+      "summary": "Converts .las, .zlas, and .laz files between different LAS compression methods, file versions, and point record formats.",
+      "extraction_date": "2025-10-01T13:59:26.599134"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "LAS Dataset To Raster",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/las-dataset-to-raster.htm",
+      "parameters": [
+        {
+          "name": "in_las_dataset",
+          "explanation": "The LAS dataset that will be processed.",
+          "datatype": "LAS Dataset Layer"
+        },
+        {
+          "name": "out_raster",
+          "explanation": "The location and name of the output raster. When storing a raster dataset in a geodatabase or in a folder such as an Esri Grid, do not add a file extension to the name of the raster dataset. A file extension can be provided to define the raster's format when storing it in a folder, such as .tif to generate a GeoTIFF or .img to generate an ERDAS IMAGINE format file.\t\t\t\t\tIf the raster is stored as a .tif file or in a geodatabase, the raster compression type and quality can be specified using geoprocessing environment settings.",
+          "datatype": "Raster Dataset"
+        },
+        {
+          "name": "value_field(Optional)",
+          "explanation": "Specifies the information from the lidar data that will be used to generate the raster output.\r\nELEVATION—Elevation from the lidar files will be used to create the raster. This is the default.INTENSITY—Intensity information from the lidar files will be used to create the raster. RGB—RGB values from the lidar points will be used to create 3-band imagery.",
+          "datatype": "String"
+        },
+        {
+          "name": "interpolation_type\"BINNING {cell_assignment_type} {void_fill_method}\" or \"TRIANGULATION {interpolation_method} {point_thinning_type} {point_selection_method} {resolution}\"(Optional)",
+          "explanation": "The interpolation type that will be used to determine the cell value of the output raster. Either binning or triangulation based interpolation can be specified. Each type presents unique options for assigning cell values. When Interpolation Type is set to Binning, the point cloud is evaluated on a cell-by-cell basis. The value of  each cell that contains points is determined by the points within the cell, whereas the value of cells without points can either be interpolated or assigned as NoData. The following options are available for the binning type:Cell Assignment—The technique that will be used for assigning values to cells which contain points.Average—Assigns the average value of all points in the cell. This is the default.Minimum—Assigns the minimum value found in the points within the\r\ncell.Maximum—Assigns the maximum value found in the points within the\r\ncell.IDW—Uses Inverse Distance Weighted interpolation to determine the\r\ncell value.Nearest—Uses Nearest Neighbor assignment to determine the cell\r\nvalue.Void Fill Method—The technique that will be used for assigning values to cells that do not contain points.None—NoData is assigned to the cells that do not contain points.Simple—Assigns values to cells without points by averaging the  values from the cells that immediately surround them. This technique eliminates small voids.Linear—Constructs a triangulated surface across void areas and uses linear interpolation on the TIN to determine the empty cell's value. This technique will cover very large voids in the data and is the default.Natural Neighbor—Uses natural neighbor interpolation to determine the\r\nvalue of cells with no points. It is recommended that the LAS dataset has a clip polygon surface constraint when using this technique.When Interpolation Type is set to Triangulation,  cell values are derived by constructing in-memory TIN surfaces from the LAS dataset's points and surface constraints. The in-memory TINs are used to   interpolate cell values for the output raster. The following options are available for the triangulation type:Interpolation MethodLinear—Uses linear interpolation to determine cell values.Natural Neighbors—Uses natural neighbor interpolation to determine cell value.Thinning TypeNo Thinning—The LAS dataset points will not be thinned when constructing the intermediate TIN surfaces.Window Size—The LAS dataset points will be thinned by dividing the data extent into square bins and selecting a point within each bin. The size of the bin that will be used to subdivide the data area will be determined by the value provided for the Resolution parameter, and the point that is selected will be based on the option specified for the Selection Method parameter.\tSelection MethodMaximum—The point with the highest value in each window size is maintained. This is the default.Minimum—The point with the lowest value in each window size is maintained.Closest To Mean—The point whose value is closest to the average of all point values in the window size is maintained.When the point thinning type is set to Window Size,  the points are subsampled before interpolating the output raster by dividing the data into square grids. The size of the grids are based on the value provided for the resolution. The unit of the value will be based on the linear unit of the LAS dataset's horizontal coordinate system.The Resolution value is the length of each side of the two-dimensional grid that will be used to subdivide the data when the point thinning type is set to Window Size. The unit for this value is based on the linear units of the data's coordinate system.",
+          "datatype": "Interpolate"
+        },
+        {
+          "name": "data_type(Optional)",
+          "explanation": "Specifies the type of numeric values that will be stored in the output raster.\t\t\t\t\tFLOAT—The output raster will use 32-bit floating point, which supports values ranging from -3.402823466e+38 to 3.402823466e+38. This is the default.INT—The output raster will use an appropriate integer bit depth. This option will round z-values to the nearest whole number and write an integer to each raster cell value.",
+          "datatype": "String"
+        },
+        {
+          "name": "sampling_type(Optional)",
+          "explanation": "Specifies how the Sampling Value parameter will be interpreted to define the output raster's cell size.\t\t\t\t\tOBSERVATIONS—The Sampling Value will define the number of columns or rows in the output raster based on whichever is longest. The cell size will be derived by dividing the longest side of the output's extent with the input in the Sampling Value parameter. If an observation value of 3000 is used on a dataset whose longest side is 23.67 kilometers, the output raster's resolution will be 7.89 meters. This method offers a helpful way of creating an output with a predictable size that can be generated rapidly.CELLSIZE—The cell size will be directly defined by the Sampling Value parameter. This is the default.",
+          "datatype": "String"
+        },
+        {
+          "name": "sampling_value(Optional)",
+          "explanation": "The value used in conjunction with the Sampling Type parameter to define the output raster's cell size.",
+          "datatype": "Double"
+        },
+        {
+          "name": "z_factor(Optional)",
+          "explanation": "The factor by which z-values will be multiplied. This is typically used to convert z linear units to match x,y linear units. The default is 1, which leaves elevation values unchanged. This parameter is not available if the spatial reference of the input surface has a z-datum with a specified linear unit.",
+          "datatype": "Double"
+        }
+      ],
+      "summary": "Creates a raster using elevation, intensity, or RGB values stored in the lidar points referenced by the LAS dataset.",
+      "extraction_date": "2025-10-01T13:59:29.507873"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Mesh To LAS",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/mesh-to-las.htm",
+      "parameters": [
+        {
+          "name": "in_mesh",
+          "explanation": "The integrated mesh scene layer package or I3S service that will be exported to the LAS format point cloud.",
+          "datatype": "Scene Layer; File"
+        },
+        {
+          "name": "target_folder",
+          "explanation": "The folder where the output LAS format files that will be created from the integrated mesh will be stored.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "method(Optional)",
+          "explanation": "Specifies the method that will be used to create the point cloud from the integrated mesh.\r\nSAMPLE_POINTS_FROM_FACES—Points will be sampled from the integrated mesh triangle faces. Triangles may potentially be subdivided based on the maximum_triangle_area parameter value. The centroid of each triangle or subdivided triangle will be converted to points. This is the default.USE_TRIANGLE_VERTICES—Points will be created from the vertices of the integrated mesh.",
+          "datatype": "String"
+        },
+        {
+          "name": "maximum_triangle_area(Optional)",
+          "explanation": "Controls the density of points created from the integrated mesh by defining the maximum area of each triangle that contributes points. Any mesh triangle that is larger than this value will be subdivided. If no value is provided, one point will be sampled from the face of each triangle.This parameter is only used when the method parameter is set to SAMPLE_POINTS_FROM_FACES.",
+          "datatype": "Areal Unit"
+        },
+        {
+          "name": "extent(Optional)",
+          "explanation": "The extent of the integrated mesh that will be exported to the point cloud. If the processing extent is specified with an extraction boundary polygon, both the intersection of the extent and the boundary will be exported.\r\nMAXOF—The maximum extent of all inputs will be used.MINOF—The minimum area common to all inputs will be used.DISPLAY—The extent is equal to the visible display.Layer name—The extent of the specified layer will be used.Extent object—The extent of the specified object will be used. Space delimited string of coordinates—The extent of the specified string will be used. Coordinates are expressed in the order of x-min, y-min, x-max, y-max.",
+          "datatype": "Extent"
+        },
+        {
+          "name": "boundary(Optional)",
+          "explanation": "The polygon features defining the area that will be clipped.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "rearrange_points(Optional)",
+          "explanation": "Specifies whether points  in the .las  or .zlas files will be rearranged to optimize the performance of reading and updating the classification of the point cloud.\r\nMAINTAIN_POINTS—The order of points will not be rearranged .REARRANGE_POINTS—The order of points will be rearranged into spatial clusters that optimize reading the data. Rearranged points can improve the performance of subsequent operations that are performed on the point cloud. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "compute_stats(Optional)",
+          "explanation": "Specifies whether statistics will be computed for the .las files referenced by the LAS dataset. Computing statistics provides a spatial index for each .las file, which improves analysis and display performance. Statistics also enhance the filtering and symbology experience by limiting the display of LAS attributes, such as classification codes and return information, to values that are present in the .las file.\r\n\t\t\t\t\t\t\t\t\t\tCOMPUTE_STATS—Statistics will be computed. This is the default.NO_COMPUTE_STATS—Statistics will not be computed.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "out_las_dataset(Optional)",
+          "explanation": "The output LAS dataset that will reference the LAS format files created by the conversion process.",
+          "datatype": "LAS Dataset"
+        },
+        {
+          "name": "compression(Optional)",
+          "explanation": "Specifies whether the output .las file will be in  a compressed format or the standard LAS format.NO_COMPRESSION—The output will be in the standard LAS format (*.las file). This is the default.ZLAS—Output .las files will be compressed in the zLAS format.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Converts an integrated mesh into a LAS format point cloud.",
+      "extraction_date": "2025-10-01T13:59:32.451993"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Point Cloud To Raster",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/point-cloud-to-raster.htm",
+      "parameters": [
+        {
+          "name": "in_point_cloud",
+          "explanation": "The point cloud scene layer package (*.slpk file) or I3S point cloud scene layer service that will be used to generate an elevation raster. An I3S point cloud scene layer service must have the export property enabled to be processed.",
+          "datatype": "Scene Layer; File"
+        },
+        {
+          "name": "cell_size",
+          "explanation": "The length and width of each cell in the output raster.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "out_raster",
+          "explanation": "The location and name of the output raster. When storing a raster dataset in a geodatabase or in a folder such as an Esri Grid, do not add a file extension to the name of the raster dataset. A file extension can be provided to define the raster's format when storing it in a folder, such as .tif to generate a GeoTIFF or .img to generate an ERDAS IMAGINE format file.\t\t\t\t\tIf the raster is stored as a .tif file or in a geodatabase, the raster compression type and quality can be specified using geoprocessing environment settings.",
+          "datatype": "Raster Dataset"
+        },
+        {
+          "name": "cell_assignment(Optional)",
+          "explanation": "Specifies the method that will be used for assigning values to cells containing points.AVERAGE—The cell value will be defined by the average of the z-values for all points in the cell. This is the default.MINIMUM—The cell value will be defined by the lowest z-value from the points in the cell.MAXIMUM—The cell value will be defined by the highest z-value from the points in the cell.NEAREST—The cell value will be assigned based on the height of the point closest to the cell center.",
+          "datatype": "String"
+        },
+        {
+          "name": "void_fill(Optional)",
+          "explanation": "Specifies the method that will be used for interpolating the values of cells within the interpolation zone that do not contain points.NONE—No value will be assigned to raster cells that do not contain points.SIMPLE—The z-value of points located in the cells that immediately surround the empty cell will be averaged to eliminate small voids.LINEAR—Void areas will be triangulated and linear interpolation will be used to assign the cell value. This is the default.NATURAL_NEIGHBOR—Natural neighbor interpolation will be used to determine the cell value.",
+          "datatype": "String"
+        },
+        {
+          "name": "z_factor(Optional)",
+          "explanation": "The factor by which z-values will be multiplied. This is typically used to convert z linear units to match x,y linear units. The default is 1, which leaves the z-values unchanged.",
+          "datatype": "Double"
+        }
+      ],
+      "summary": "Creates a raster surface from height values in a point cloud scene layer package (*.slpk file) or Indexed 3D Scene (I3S) service.",
+      "extraction_date": "2025-10-01T13:59:34.907506"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "SAS To Table",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/sas-to-table.htm",
+      "parameters": [
+        {
+          "name": "in_sas_dataset",
+          "explanation": "The input SAS dataset.\r\nProvide the dataset in the form libref.tablename in which libref is the name of a SAS library and tablename is the name of the SAS dataset.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_table",
+          "explanation": "The output table.",
+          "datatype": "Table"
+        },
+        {
+          "name": "use_cas_connection(Optional)",
+          "explanation": "Specifies whether the input SAS dataset will be downloaded from CAS or accessed from a local SAS library.USE_CAS—The input SAS dataset will be downloaded from CAS.LOCAL_SAS—The input SAS dataset will be accessed from a local SAS library.  This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "hostname(Optional)",
+          "explanation": "The URL of the CAS host.",
+          "datatype": "String"
+        },
+        {
+          "name": "port(Optional)",
+          "explanation": "The port of the CAS connection.",
+          "datatype": "Long"
+        },
+        {
+          "name": "username(Optional)",
+          "explanation": "The username for the CAS connection.",
+          "datatype": "String"
+        },
+        {
+          "name": "password(Optional)",
+          "explanation": "The password for the CAS connection.  This password is hidden and not accessible after running the tool.",
+          "datatype": "String Hidden"
+        },
+        {
+          "name": "custom_cfg_file(Optional)",
+          "explanation": "The file specifying custom configurations for the SAS session. The file is only required for customized local or remote SAS deployments.",
+          "datatype": "File"
+        },
+        {
+          "name": "authinfo_file(Optional)",
+          "explanation": "The file containing authentication information when connecting to CAS.\r\nThe file must contain the username and encoded password for the connection.  If a file is provided, the username and password parameters do not need to be specified.",
+          "datatype": "File"
+        }
+      ],
+      "summary": "Converts a SAS dataset to a table.",
+      "extraction_date": "2025-10-01T13:59:39.566899"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Table To SAS",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/table-to-sas.htm",
+      "parameters": [
+        {
+          "name": "in_table",
+          "explanation": "The input table.",
+          "datatype": "Table View"
+        },
+        {
+          "name": "out_sas_dataset",
+          "explanation": "The output SAS dataset.\r\nProvide the dataset in the form libref.table in which libref is the name of a SAS library and table is the name of the SAS table.",
+          "datatype": "String"
+        },
+        {
+          "name": "replace_sas_dataset(Optional)",
+          "explanation": "Specifies whether an existing SAS dataset will be overwritten in the output.OVERWRITE—The output SAS dataset can overwrite an existing dataset.NO_OVERWRITE—The output SAS dataset cannot overwrite an existing dataset..  This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "use_domain_and_subtype_description(Optional)",
+          "explanation": "Specifies whether domain and subtype descriptions will be included in the output SAS dataset.USE_DOMAIN—Domain and subtype descriptions will be included in the output SAS dataset.NO_DOMAIN—Domain and subtype descriptions will not be included in the output SAS dataset.  This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "use_cas_connection(Optional)",
+          "explanation": "Specifies whether the output SAS dataset will be uploaded to \r\nCAS or saved in a local SAS library.USE_CAS—The output SAS dataset will be uploaded to CAS.LOCAL_SAS—The output SAS dataset will be saved in a local SAS library.  This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "hostname(Optional)",
+          "explanation": "The URL of the CAS host.",
+          "datatype": "String"
+        },
+        {
+          "name": "port(Optional)",
+          "explanation": "The port of the CAS connection.",
+          "datatype": "Long"
+        },
+        {
+          "name": "username(Optional)",
+          "explanation": "The username for the CAS connection.",
+          "datatype": "String"
+        },
+        {
+          "name": "password(Optional)",
+          "explanation": "The password for the CAS connection.  This password is hidden and not accessible after running the tool.",
+          "datatype": "String Hidden"
+        },
+        {
+          "name": "custom_cfg_file(Optional)",
+          "explanation": "The file specifying custom configurations for the SAS session. The file is only required for customized local or remote SAS deployments.",
+          "datatype": "File"
+        },
+        {
+          "name": "authinfo_file(Optional)",
+          "explanation": "The file containing authentication information when connecting to CAS.\r\nThe file must contain the username and encoded password for the connection.  If a file is provided, the username and password parameters do not need to be specified.",
+          "datatype": "File"
+        }
+      ],
+      "summary": "Converts a table to a SAS dataset.",
+      "extraction_date": "2025-10-01T13:59:42.281698"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Add CAD Fields",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/add-cad-fields.htm",
+      "parameters": [
+        {
+          "name": "input_table",
+          "explanation": "Input table, feature class, or shapefile that will have the CAD-specific fields added to it",
+          "datatype": "Table View"
+        },
+        {
+          "name": "Entities",
+          "explanation": "Adds the list of CAD-specific Entity property fields to the input tableADD_ENTITY_PROPERTIES—Adds the list of CAD-specific Entity property fields to the input tableNO_ENTITY_PROPERTIES—Does not add the list of CAD-specific Entity property fields to the input table",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "LayerProps(Optional)",
+          "explanation": "Adds the list of CAD-specific Layer property fields to the input tableADD_LAYER_PROPERTIES—Adds the list of CAD-specific Layer property fields to the input tableNO_LAYER_PROPERTIES—Does not add the list of CAD-specific Layer property fields to the input table",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "TextProps(Optional)",
+          "explanation": "Adds the list of CAD-specific Text property fields to the input tableADD_TEXT_PROPERTIES—Adds the list of CAD-specific Text property fields to the input tableNO_TEXT_PROPERTIES—Does not add the list of CAD-specific Text property fields to the input table",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "DocProps(Optional)",
+          "explanation": "Adds the list of CAD-specific Document property fields to the input tableADD_DOCUMENT_PROPERTIES—Adds the list of CAD-specific Document property fields to the input tableNO_DOCUMENT_PROPERTIES—Does not add the list of CAD-specific Document property fields to the input table",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "XDataProps(Optional)",
+          "explanation": "Adds the list of CAD-specific XData property fields to the input tableADD_XDATA_PROPERTIES—Adds the list of CAD-specific XData property fields to the input tableNO_XDATA_PROPERTIES—Does not add the list of CAD-specific XData property fields to the input table",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Adds several reserved CAD fields in one step. Fields created by this tool are used by the Export To CAD tool to generate CAD entities with specific properties.   After executing this tool, you must calculate or type the appropriate field values.",
+      "extraction_date": "2025-10-01T13:59:46.641102"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Export To CAD",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/export-to-cad.htm",
+      "parameters": [
+        {
+          "name": "in_features[in_features,...]",
+          "explanation": "A collection of feature classes and feature layers whose spatial reference and geometry  will be exported to one or more CAD files. Both the feature geometry and the feature attributes  will be added to AutoCAD formatted files.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "Output_Type",
+          "explanation": "Specifies the CAD platform and file version that will be used for new  output CAD files. Multiple versions of CAD software may share one file format version for multiple releases.  The options reflect the file format version, not necessarily the software version that may still use a previous file format version.DGN_V8—The output type will be Microstation DGN.DWG_R2018—The output type will be DWG version 2018. This is the default.DWG_R2013—The output type will be DWG version 2013.DWG_R2010—The output type will be DWG version 2010.DWG_R2007—The output type will be DWG version 2007.DWG_R2005—The output type will be DWG version 2005.DWG_R2004—The output type will be DWG version 2004.DWG_R2000—The output type will be DWG version 2000.DWG_R14—The output type will be DWG version 14.DXF_R2018—The output type will be DXF version 2018.DXF_R2013—The output type will be DXF version 2013.DXF_R2010—The output type will be DXF version 2010.DXF_R2007—The output type will be DXF version 2007.DXF_R2005—The output type will be DXF version 2005.DXF_R2004—The output type will be DXF version 2004.DXF_R2000—The output type will be DXF version 2000.DXF_R14—The output type will be DXF version 14.",
+          "datatype": "String"
+        },
+        {
+          "name": "Append_To_Existing(Optional)",
+          "explanation": "Specifies whether the output will be appended to an existing CAD file. This allows you to add information to a CAD file on disk.Append_To_Existing_Files—Entities will be appended to an output CAD file if one exists. The existing CAD file content will be retained. Overwrite_Existing_Files—If an  output CAD file exists, it will be overwritten. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "Seed_File(Optional)",
+          "explanation": "An existing CAD drawing whose contents and document and layer properties will be used as a seed file when output CAD files are created. The CAD platform and format version of the seed file overrides the value specified by the Output_Type parameter. If appending to existing CAD files, the seed drawing is ignored.",
+          "datatype": "CAD Drawing Dataset"
+        }
+      ],
+      "summary": "Exports features to  new or existing CAD files based on one or more input feature layers or feature classes. The geometry, feature attributes, and coordinates system of ArcGIS feature layers will be included when outputting to AutoCAD .dwg or .dxf files. This GIS data  can be used with the ArcGIS for AutoCAD plug-in to AutoCAD.  If you do not have the plug-in, you can access the output geometry as CAD entities.",
+      "extraction_date": "2025-10-01T13:59:49.301987"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Export to CAD",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/export-to-cad.htm",
+      "parameters": [
+        {
+          "name": "in_features[in_features,...]",
+          "explanation": "A collection of feature classes and feature layers whose spatial reference and geometry  will be exported to one or more CAD files. Both the feature geometry and the feature attributes  will be added to AutoCAD formatted files.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "Output_Type",
+          "explanation": "Specifies the CAD platform and file version that will be used for new  output CAD files. Multiple versions of CAD software may share one file format version for multiple releases.  The options reflect the file format version, not necessarily the software version that may still use a previous file format version.DGN_V8—The output type will be Microstation DGN.DWG_R2018—The output type will be DWG version 2018. This is the default.DWG_R2013—The output type will be DWG version 2013.DWG_R2010—The output type will be DWG version 2010.DWG_R2007—The output type will be DWG version 2007.DWG_R2005—The output type will be DWG version 2005.DWG_R2004—The output type will be DWG version 2004.DWG_R2000—The output type will be DWG version 2000.DWG_R14—The output type will be DWG version 14.DXF_R2018—The output type will be DXF version 2018.DXF_R2013—The output type will be DXF version 2013.DXF_R2010—The output type will be DXF version 2010.DXF_R2007—The output type will be DXF version 2007.DXF_R2005—The output type will be DXF version 2005.DXF_R2004—The output type will be DXF version 2004.DXF_R2000—The output type will be DXF version 2000.DXF_R14—The output type will be DXF version 14.",
+          "datatype": "String"
+        },
+        {
+          "name": "Append_To_Existing(Optional)",
+          "explanation": "Specifies whether the output will be appended to an existing CAD file. This allows you to add information to a CAD file on disk.Append_To_Existing_Files—Entities will be appended to an output CAD file if one exists. The existing CAD file content will be retained. Overwrite_Existing_Files—If an  output CAD file exists, it will be overwritten. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "Seed_File(Optional)",
+          "explanation": "An existing CAD drawing whose contents and document and layer properties will be used as a seed file when output CAD files are created. The CAD platform and format version of the seed file overrides the value specified by the Output_Type parameter. If appending to existing CAD files, the seed drawing is ignored.",
+          "datatype": "CAD Drawing Dataset"
+        }
+      ],
+      "summary": "Exports features to  new or existing CAD files based on one or more input feature layers or feature classes. The geometry, feature attributes, and coordinates system of ArcGIS feature layers will be included when outputting to AutoCAD .dwg or .dxf files. This GIS data  can be used with the ArcGIS for AutoCAD plug-in to AutoCAD.  If you do not have the plug-in, you can access the output geometry as CAD entities.",
+      "extraction_date": "2025-10-01T13:59:51.885167"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Multipatch To Collada",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/multipatch-to-collada.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The multipatch features to be exported.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "output_folder",
+          "explanation": "The destination folder where the output COLLADA files and texture image files will be placed.",
+          "datatype": "Folder"
+        },
+        {
+          "name": "prepend_source(Optional)",
+          "explanation": "Specifies whether the names of the output COLLADA files will be prepended with the name of the source feature layer.\r\nPREPEND_SOURCE_NAME—The file names will be prepended with the name of the source feature layer.PREPEND_NONE—The file names will not be prepended with the name of the source feature layer. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "field_name(Optional)",
+          "explanation": "The feature attribute that will be used as the output COLLADA file name for each exported feature. If no field is specified, the feature's Object ID will be used.",
+          "datatype": "Field"
+        },
+        {
+          "name": "collada_version",
+          "explanation": "Specifies the COLLADA version to which the files will be exported.\r\n1.5—Files will be exported to COLLADA version 1.5. Version 1.5 supports the inclusion of georeferencing information and enhanced rendering capabilities. This is the default.1.4—Files will be exported to COLLADA version 1.4. Version 1.4 is the widely supported standard used in many design related application platforms. Select this version if the COLLADA file will be used on systems that do not support version 1.5.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Converts one or more multipatch features into a collection of COLLADA files (.dae) and referenced texture image files in an output folder.",
+      "extraction_date": "2025-10-01T13:59:56.056221"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Table to dBASE",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/table-to-dbase.htm",
+      "parameters": [
+        {
+          "name": "Input_Table[table,...]",
+          "explanation": "The list of tables to be converted to dBASE tables.",
+          "datatype": "Table View"
+        },
+        {
+          "name": "Output_Folder",
+          "explanation": "The destination folder where the output dBASE tables will be placed.",
+          "datatype": "Folder"
+        }
+      ],
+      "summary": "Converts one or more tables to dBASE tables.",
+      "extraction_date": "2025-10-01T14:00:00.259046"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Table To dBASE",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/table-to-dbase.htm",
+      "parameters": [
+        {
+          "name": "Input_Table[table,...]",
+          "explanation": "The list of tables to be converted to dBASE tables.",
+          "datatype": "Table View"
+        },
+        {
+          "name": "Output_Folder",
+          "explanation": "The destination folder where the output dBASE tables will be placed.",
+          "datatype": "Folder"
+        }
+      ],
+      "summary": "Converts one or more tables to dBASE tables.",
+      "extraction_date": "2025-10-01T14:00:02.630990"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Table to dBASE",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/table-to-dbase.htm",
+      "parameters": [
+        {
+          "name": "Input_Table[table,...]",
+          "explanation": "The list of tables to be converted to dBASE tables.",
+          "datatype": "Table View"
+        },
+        {
+          "name": "Output_Folder",
+          "explanation": "The destination folder where the output dBASE tables will be placed.",
+          "datatype": "Folder"
+        }
+      ],
+      "summary": "Converts one or more tables to dBASE tables.",
+      "extraction_date": "2025-10-01T14:00:05.872965"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "BIM File To Geodatabase",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/bimfile-to-geodatabase.htm",
+      "parameters": [
+        {
+          "name": "in_bim_file_workspace[in_bim_file_workspace,...]",
+          "explanation": "The BIM file or files that will be converted to geodatabase feature classes.",
+          "datatype": "BIM File Workspace"
+        },
+        {
+          "name": "out_gdb_path",
+          "explanation": "The geodatabase where the output feature dataset will be created. This  must be an existing geodatabase.",
+          "datatype": "Workspace"
+        },
+        {
+          "name": "out_dataset_name",
+          "explanation": "The building dataset name.",
+          "datatype": "String"
+        },
+        {
+          "name": "spatial_reference(Optional)",
+          "explanation": "The spatial reference of the output feature dataset.To control other aspects of the spatial reference, such as the x,y-, z-, and m-domains, resolutions, and tolerances, set the appropriate geoprocessing environments.",
+          "datatype": "Spatial Reference"
+        },
+        {
+          "name": "identifier(Optional)",
+          "explanation": "A unique building identifier that will be added to all output feature classes. The identifier allows you to add unique names to each building to be used at a later time.",
+          "datatype": "String"
+        },
+        {
+          "name": "include_floorplan(Optional)",
+          "explanation": "Specifies whether the output dataset will include the floorplan feature classes.INCLUDE_FLOORPLAN—The output dataset will include the floorplan feature classes. This is the default.EXCLUDE_FLOORPLAN—The output dataset will exclude the floorplan feature classes.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Imports the contents of one or more BIM file workspaces into a single geodatabase feature dataset.",
+      "extraction_date": "2025-10-01T14:00:09.137412"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "CAD To Geodatabase",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/cad-to-geodatabase.htm",
+      "parameters": [
+        {
+          "name": "input_cad_datasets[CAD drawing dataset,...]",
+          "explanation": "The collection of CAD files that will be converted to geodatabase features.",
+          "datatype": "CAD Drawing Dataset"
+        },
+        {
+          "name": "out_gdb_path",
+          "explanation": "The geodatabase where the output feature dataset will be created. This  geodatabase must already exist.",
+          "datatype": "Workspace"
+        },
+        {
+          "name": "out_dataset_name",
+          "explanation": "The name of the feature dataset that will be created.",
+          "datatype": "String"
+        },
+        {
+          "name": "reference_scale",
+          "explanation": "This parameter is not needed for this tool, as CAD annotation is treated as points in ArcGIS Pro.",
+          "datatype": "Double"
+        },
+        {
+          "name": "spatial_reference(Optional)",
+          "explanation": "The spatial reference of the output feature dataset. To control other aspects of the spatial reference, such as the x-, y-, z-, and m-domains, resolutions, and tolerances, set the appropriate geoprocessing environments.",
+          "datatype": "Spatial Reference"
+        }
+      ],
+      "summary": "Reads a CAD dataset and creates feature classes of the drawing. The feature classes are written to a geodatabase feature dataset.",
+      "extraction_date": "2025-10-01T14:00:11.641496"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Export Features",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/export-features.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input features that will be exported to a new feature class.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_features",
+          "explanation": "The output feature class containing the exported features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "where_clause(Optional)",
+          "explanation": "An SQL expression used to select a subset of features.  For more information on SQL syntax  see the help topic SQL reference for query expressions used in ArcGIS.",
+          "datatype": "SQL Expression"
+        },
+        {
+          "name": "use_field_alias_as_name(Optional)",
+          "explanation": "Specifies whether the input's field names or field aliases will be used as the output field name.NOT_USE_ALIAS—The input's field names will be used as the output field names. This is the default.USE_ALIAS—The input's field aliases will be used as the output field names.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "field_mapping(Optional)",
+          "explanation": "The fields that will be transferred to the output dataset with their respective properties and source fields. The output includes all fields from the input dataset by default.Use the field map to add, delete, rename, and reorder fields, as well as change other field properties.The field map can also be used to combine values from two or more input\r\nfields into a single output field.",
+          "datatype": "Field Mappings"
+        },
+        {
+          "name": "sort_field[sort_field,...](Optional)",
+          "explanation": "The field or fields whose values will be used to reorder the input records and the direction the records will be sorted.ASCENDING—Records will be sorted from low value to high value.DESCENDING—Records will be sorted from high value to low value.",
+          "datatype": "Value Table"
+        }
+      ],
+      "summary": "Converts a feature class or feature layer to a new feature class.",
+      "extraction_date": "2025-10-01T14:00:14.253482"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Export Table",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/export-table.htm",
+      "parameters": [
+        {
+          "name": "in_table",
+          "explanation": "The input table containing the rows to be exported to a new table.",
+          "datatype": "Table View; Raster Layer"
+        },
+        {
+          "name": "out_table",
+          "explanation": "The output table containing the exported rows. If the output location is a folder, include an extension such as .csv, .txt, or .dbf to export the table to the respective format. If the output location is a geodatabase, do not specify an extension.",
+          "datatype": "Table"
+        },
+        {
+          "name": "where_clause(Optional)",
+          "explanation": "An SQL expression used to select a subset of records.  For more information on SQL syntax see the help topic SQL reference for query expressions used in ArcGIS.",
+          "datatype": "SQL Expression"
+        },
+        {
+          "name": "use_field_alias_as_name",
+          "explanation": "Specifies whether the input's field names or field aliases will be used as the output field name.NOT_USE_ALIAS—The input's field names will be used as the output field names. This is the default.USE_ALIAS—The input's field aliases will be used as the output field names.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "field_mapping(Optional)",
+          "explanation": "The fields that will be transferred to the output dataset with their respective properties and source fields. The output includes all fields from the input dataset by default.Use the field map to add, delete, rename, and reorder fields, as well as change other field properties.The field map can also be used to combine values from two or more input\r\nfields into a single output field.",
+          "datatype": "Field Mappings"
+        },
+        {
+          "name": "sort_field[sort_field,...](Optional)",
+          "explanation": "The field or fields whose values will be used to reorder the input records and the direction the records will be sorted.ASCENDING—Records will be sorted from low value to high value.DESCENDING—Records will be sorted from high value to low value.",
+          "datatype": "Value Table"
+        }
+      ],
+      "summary": "Exports the rows of a table or table view to a new table.",
+      "extraction_date": "2025-10-01T14:00:16.846606"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Extract BIM File Floorplan",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/extract-bim-file-floorplan.htm",
+      "parameters": [
+        {
+          "name": "in_bim_file_workspace",
+          "explanation": "The BIM file workspace that contains the building information to be extracted.",
+          "datatype": "BIM File Workspace"
+        },
+        {
+          "name": "output_workspace",
+          "explanation": "The geodatabase where the output feature dataset will be created. This  must be an existing geodatabase.",
+          "datatype": "Workspace"
+        },
+        {
+          "name": "out_feature_dataset_name",
+          "explanation": "The name of the dataset where the output feature classes will be created. If the feature dataset does not exist, it will be created with the spatial reference of the input BIM file workspace.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_polyline_featureclass_name",
+          "explanation": "The name of the output polyline feature class. Polyline features will be extracted into this feature class.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_polygon_featureclass_name",
+          "explanation": "The name of the output polygon feature class. Polygon features will be extracted into this feature class.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_poi_featureclass_name",
+          "explanation": "The name of the output points of interest feature class. Points of interest features will be extracted into this feature class.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_footprint_featureclass_name",
+          "explanation": "The name of the output footprint feature class. Footprint polygons from the BIM file workspace will be created in this feature class. The feature class will include the following categories:Merge Slabs (IFC) Merge Floor (Revit)",
+          "datatype": "String"
+        },
+        {
+          "name": "additional_polyline_categories[additional_polyline_categories,...]",
+          "explanation": "The additional polyline features that will be included in the floor plan polyline feature class.  Features from the following categories can be included:\r\n FurnitureFurniture systemWindows(All)",
+          "datatype": "String"
+        },
+        {
+          "name": "additional_polygon_categories[additional_polygon_categories,...]",
+          "explanation": "Specifies the additional polygon features that will be included in the floor plan polygon feature class.  Features from the following categories can be included from Revit data:\r\n AreasRoomsRoofs\r\n\r\nFeatures from the following categories can be included from IFC data: SpacesRoofs",
+          "datatype": "String"
+        },
+        {
+          "name": "included_levels[included_levels,...]",
+          "explanation": "The building level or levels of features that will be included in the output feature classes. If no building levels are provided, features from all levels will be included by default.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Extracts 2.5D floor plan data from a BIM file workspace into a geodatabase dataset.",
+      "extraction_date": "2025-10-01T14:00:19.427100"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Extract Locations From Document",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/extract-locations-from-document.htm",
+      "parameters": [
+        {
+          "name": "in_file",
+          "explanation": "The input file that will be scanned for locations\r\n(coordinates or custom locations), dates, and custom attributes; or a folder in which all files in the folder will be scanned for locations.",
+          "datatype": "File"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class containing point features that represent the locations that were found.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "in_template(Optional)",
+          "explanation": "The template file (*.lxttmpl) that determines the setting to use for each tool parameter. When a template file is provided, all values specified for other parameters will be ignored except those that determine the input content that will be processed and the output feature class.Some settings that are available in the Extract Locations pane are only available to this tool when the settings are saved to a template file, and the template file is referenced in this parameter. These settings are as follows:Spatial coordinates in x,y format—Allows two sequential numbers such as 630084 4833438 or 981075.652ftUS 607151.272ftUS to be recognized as coordinates when they are valid for a planar coordinate system associated with the input documents. You can specify whether numbers with and without units are recognized or  only numbers with units of measure are recognized as coordinates.Custom coordinate and date formats—Allows you to customize how text is recognized as a spatial coordinate or a date, particularly when written in a language other than English or using a format that is not common in the United States. For example, a spatial coordinate written as 30 20 10 N x 060 50 40 W can be recognized with a customization to recognize  the character x as valid text between the latitude and longitude. Coordinates and dates such as 60.91°N, 147.34°O and 17 juillet, 2018 can be recognized when customizations are specified to accommodate the language of the documents, in this case French. Also, when two-digit years are used, you can control the range of years to which they are matched.Preferences for some ambiguous dates—Dates such as 10/12/2019 are ambiguous because they can be interpreted as either October 12, 2019, or December 10, 2019. Some countries use the m/d/yy date format as a standard, and other countries use the d/m/yy format. A preference can be set for how these ambiguous dates are interpreted, either as m/d/yy or d/m/yy, to suit the country of origin of the documents.Length of fields in the output feature class—You can specify the length of the fields containing text surrounding spatial coordinates that are extracted from a document using the Pre-Text Field Length (pre_text_length in Python) and Post-Text Field Length (post_text_length in Python) parameters. The Extract Locations pane allows you to control the length of several additional fields in the attribute table, including fields  containing dates extracted from the document, the original text that was converted to dates, the file name from which the information was extracted, and so on.",
+          "datatype": "File"
+        },
+        {
+          "name": "coord_dd_latlon(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as decimal degrees formatted as latitude and longitude (infrequent false positives). Examples are: 33.8N 77.035W and W77N38.88909.FIND_DD_LATLON—The tool will search for decimal degrees coordinates formatted as latitude and longitude. This is the default.DONT_FIND_DD_LATLON—The tool will not search for decimal degrees coordinates formatted as latitude and longitude.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dd_xydeg(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as decimal degrees formatted as X Y with degree symbols (infrequent false positives). Examples are: 38.8° -77.035° and -077d+38.88909d.FIND_DD_XYDEG— The tool will search for decimal degrees coordinates formatted as X Y with degree symbols. This is the default.DONT_FIND_DD_XYDEG—The tool will not search for decimal degrees coordinates formatted as X Y with degree symbols.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dd_xyplain(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as decimal degrees formatted as X Y with no symbols (frequent false positives). Examples are: 38.8 -77.035 and -077.0, +38.88909.FIND_DD_XYPLAIN—The tool will search for decimal degrees coordinates formatted as X Y with no symbols (frequent false positives). This is the default.DONT_FIND_DD_XYPLAIN—The tool will not search for decimal degrees\r\ncoordinates formatted as X Y with no symbols.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dm_latlon(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as degrees decimal minutes formatted as latitude and longitude (infrequent false positives). Examples are: 3853.3N 7702.100W and W7702N3853.3458.FIND_DM_LATLON—The tool will search for degrees decimal minutes coordinates formatted as latitude and longitude. This is the default.DONT_FIND_DM_LATLON—The tool will not search for degrees decimal minutes coordinates formatted as latitude and longitude.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dm_xymin(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as degrees decimal minutes formatted as X Y with minutes symbols (infrequent false positives). Examples are: 3853' -7702.1' and -07702m+3853.3458m.FIND_DM_XYMIN—The tool will search for degrees decimal minutes coordinates formatted as X Y with minutes symbols. This is the default.DONT_FIND_DM_XYMIN—The tool will not search for degrees decimal minutes coordinates formatted as X Y with minutes symbols.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dms_latlon(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as latitude and longitude (infrequent false positives). Examples are: 385320.7N 770206.000W and W770206N385320.76.\r\nFIND_DMS_LATLON—The tool will search for degrees minutes seconds coordinates formatted as latitude and longitude. This is the default.DONT_FIND_DMS_LATLON—The tool will not search for degrees minutes seconds coordinates formatted as latitude and longitude.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dms_xysec(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as X Y with seconds symbols (infrequent false positives). Examples are: 385320\" -770206.0\" and -0770206.0s+385320.76s.FIND_DMS_XYSEC—The tool will search for degrees minutes seconds coordinates formatted as X Y with seconds symbols. This is the default.DONT_FIND_DMS_XYSEC—The tool will not search for degrees minutes seconds coordinates formatted as X Y with seconds symbols.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dms_xysep(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as X Y with separators (moderate false positives). Examples are: 8:53:20 -77:2:6.0 and -077/02/06/+38/53/20.76.FIND_DMS_XYSEP—The tool will search for degrees minutes seconds coordinates formatted as X Y with separators. This is the default.DONT_FIND_DMS_XYSEP—The tool will not search for degrees minutes seconds coordinates formatted as X Y with separators.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_utm(Optional)",
+          "explanation": "Specifies whether to search for Universal Transverse Mercator (UTM) coordinates (infrequent false positives). Examples are: 18S 323503 4306438 and 18 north 323503.25 4306438.39.FIND_UTM_MAINWORLD—The tool will search for UTM coordinates. This is the default.DONT_FIND_UTM_MAINWORLD—The tool will not search for UTM coordinates.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_ups_north(Optional)",
+          "explanation": "Specifies whether to search for Universal Polar Stereographic (UPS) coordinates in the north polar area (infrequent false positives). Examples are: Y 2722399 2000000 and north 2722399 2000000.FIND_UTM_NORTHPOLAR—The tool will search for UPS coordinates in the north polar area. This is the default.DONT_FIND_UTM_NORTHPOLAR—The tool will not search for UPS coordinates in the north polar area.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_ups_south(Optional)",
+          "explanation": "Specifies whether to search for Universal Polar Stereographic (UPS) coordinates in the south polar area (infrequent false positives). Examples are: A 2000000 3168892 and south 2000000 3168892.FIND_UTM_SOUTHPOLAR—The tool will search for UPS coordinates in the south polar area. This is the default.DONT_FIND_UTM_SOUTHPOLAR—The tool will not search for UPS coordinates in the south polar area.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_mgrs(Optional)",
+          "explanation": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates (infrequent false positives). Examples are: 18S UJ 13503 06438 and 18SUJ0306.\r\nFIND_MGRS_MAINWORLD—The tool will search for MGRS coordinates. This is the default.DONT_FIND_MGRS_MAINWORLD—The tool will not search for MGRS coordinates.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_mgrs_northpolar(Optional)",
+          "explanation": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates in the north polar area (infrequent false positives). Examples are: Y TG 56814 69009 and YTG5669.FIND_MGRS_NORTHPOLAR—The tool will search for MGRS coordinates in the north polar area. This is the default.DONT_FIND_MGRS_NORTHPOLAR—The tool will not search for MGRS coordinates in the north polar area.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_mgrs_southpolar(Optional)",
+          "explanation": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates in the south polar area (moderate false positives). Examples are: A TN 56814 30991 and ATN5630.FIND_MGRS_SOUTHPOLAR—The tool will search for MGRS coordinates in the south polar area. This is the default.DONT_FIND_MGRS_SOUTHPOLAR—The tool will not search for MGRS coordinates in the south polar area.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "comma_decimal(Optional)",
+          "explanation": "Specifies whether a comma (,) will be recognized as a decimal separator. By default, content is scanned for\r\nspatial coordinates defined by numbers that use a period (.) or a middle dot (·) as the decimal separator, for example: Lat 01° 10·80’ N Long 103° 28·60’ E. If\r\nyou are working with content in which spatial coordinates are defined by numbers that use a comma (,) as the\r\ndecimal separator, for example:  52° 8′ 32,14″ N; 5° 24′ 56,09″ E, set this parameter to recognize a comma as the decimal separator instead. This parameter is not set automatically based on the regional setting for your computer's operating system.USE_COMMA_DECIMAL_MARK—A comma will be recognized as the decimal separator.USE_DOT_DECIMAL_MARK—A period or a middle dot will be recognized as the decimal separator. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_use_lonlat(Optional)",
+          "explanation": "When numbers resemble x,y coordinates, both numbers are less than 90, and there are no symbols or notations to indicate which number represents the latitude or longitude, results can be ambiguous. Interpret the numbers as a longitude-latitude coordinate (x,y) instead of a latitude-longitude coordinate (y,x).PREFER_LONLAT—x,y coordinates will be interpreted as longitude-latitude.PREFER_LATLON—x,y coordinates will be interpreted as latitude-longitude. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "in_coor_system(Optional)",
+          "explanation": "The coordinate system that will be used to interpret the spatial coordinates defined in the input. GCS-WGS-84 is the default.",
+          "datatype": "Spatial Reference"
+        },
+        {
+          "name": "in_custom_locations(Optional)",
+          "explanation": "The custom location file (.lxtgaz) that will be used when scanning the input content. A point is created to represent each occurrence of each place name in the custom location file up to the limits established by other tool parameters.",
+          "datatype": "File"
+        },
+        {
+          "name": "fuzzy_match(Optional)",
+          "explanation": "Specifies whether fuzzy matching will be used for searching the custom location file.USE_FUZZY—Fuzzy matching will be used when searching the custom location file.DONT_USE_FUZZY—Exact matching will be used when searching the custom location file. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "max_features_extracted(Optional)",
+          "explanation": "The maximum number of features that can be extracted. The tool will stop scanning the input content for locations when the maximum number is reached. When running as a geoprocessing service, the service and the server may have separate limits on the number of features allowed.",
+          "datatype": "Long"
+        },
+        {
+          "name": "ignore_first_features(Optional)",
+          "explanation": "The number of features detected and ignored before extracting all other features. This parameter can be used to focus the search on a specific portion of the data.",
+          "datatype": "Long"
+        },
+        {
+          "name": "date_monthname(Optional)",
+          "explanation": "Specifies whether to search for dates in which the month name appears (infrequent false positives). 12 May 2003 and January 15, 1997 are examples.FIND_DATE_MONTHNAME—The tool will search for dates in which the month name appears. This is the default.DONT_FIND_DATE_MONTHNAME—The tool will not search for dates in which the month name appears.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "date_m_d_y(Optional)",
+          "explanation": "Specifies whether to search for dates in which numbers are in the M/D/Y or D/M/Y format (moderate false positives). 5/12/03 and 1-15-1997 are examples.FIND_DATE_M_D_Y—The tool will search for dates in which numbers are in the M/D/Y or D/M/Y format (moderate false positives). This is the default.DONT_FIND_DATE_M_D_Y—The tool will not search for dates in which numbers are in the M/D/Y or D/M/Y format.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "date_yyyymmdd(Optional)",
+          "explanation": "Specifies whether to search for dates in which numbers are in the YYYYMMDD format (moderate false positives). 20030512 and 19970115 are examples.FIND_DATE_YYYYMMDD—The tool will search for dates in which numbers are in the YYYYMMDD format (moderate false positives). This is the default.DONT_FIND_DATE_YYYYMMDD—The tool will not search for dates in which numbers are in the YYYYMMDD format.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "date_yymmdd(Optional)",
+          "explanation": "Specifies whether to search for dates in which numbers are in the YYMMDD format (frequent false positives). 030512 and 970115 are examples.FIND_DATE_YYMMDD—The tool will search for dates in which numbers are in the YYMMDD format (frequent false positives). This is the default.DONT_FIND_DATE_YYMMDD—The tool will not search for dates in which numbers are in the YYMMDD format.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "date_yyjjj(Optional)",
+          "explanation": "Specifies whether to search for dates in which numbers are in the YYJJJ or YYYYJJJ format (frequent false positives). 03132 and 97015 are examples.FIND_DATE_YYJJJ—The tool will search for dates in which numbers are in the YYJJJ or YYYYJJJ format (frequent false positives). This is the default.DONT_FIND_DATE_YYJJJ—The tool will not search for dates in which numbers are in the YYJJJ or YYYYJJJ format.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "max_dates_extracted(Optional)",
+          "explanation": "The maximum number of dates that will be extracted.",
+          "datatype": "Long"
+        },
+        {
+          "name": "ignore_first_dates(Optional)",
+          "explanation": "The number of dates that will be detected and ignored before extracting all other dates.",
+          "datatype": "Long"
+        },
+        {
+          "name": "date_range_begin(Optional)",
+          "explanation": "The earliest acceptable date to extract. Detected dates matching this value or later will be extracted.",
+          "datatype": "Date"
+        },
+        {
+          "name": "date_range_end(Optional)",
+          "explanation": "The latest acceptable date to extract. Detected dates matching this value or earlier will be extracted.",
+          "datatype": "Date"
+        },
+        {
+          "name": "in_custom_attributes(Optional)",
+          "explanation": "The custom attribute file (.lxtca) that will be used to scan the input content. Fields will be created in the output feature class's attribute table for all custom attributes defined in the file. When the input content is scanned, it will be examined to see if it contains text associated with all custom attributes specified in the file. When a match is found, the appropriate text is extracted from the input content and stored in the appropriate field.",
+          "datatype": "File"
+        },
+        {
+          "name": "file_link(Optional)",
+          "explanation": "The file path that will be used as the file name in the output data when the Input File parameter (in_file in Python) is transferred to the server. If this parameter is not specified, the path of the Input File will be used, which may be an unreachable folder on a server. This parameter has no effect when the Input File is not specified.",
+          "datatype": "String"
+        },
+        {
+          "name": "file_mod_datetime(Optional)",
+          "explanation": "The UTC date and time that the file was modified will be used as the modified attribute in the output data when the Input File parameter (in_file in Python) is transferred to the server. If this parameter is not specified, the current modified time of the input file will be used. This parameter has no effect when the Input File is not specified.",
+          "datatype": "Date"
+        },
+        {
+          "name": "pre_text_length(Optional)",
+          "explanation": "Content is extracted from the input document to provide context for the location that was found. This parameter defines the maximum number of characters that will be extracted preceding the text that defines the location. The extracted text is stored in the Pre-Text field in the output feature class's attribute table. The default is 254. The Pre-Text field's data type will also have this length. The length of a text field in a shapefile is limited to 254 characters; when the output is a shapefile, a larger number of characters will be truncated to 254.",
+          "datatype": "Long"
+        },
+        {
+          "name": "post_text_length(Optional)",
+          "explanation": "Content is extracted from the input document to provide context for the location that was found. This parameter defines the maximum number of characters that will be extracted following the text that defines the location. The extracted text is stored in the Post-Text field in the output feature class's attribute table. The default is 254. The Post-Text field's data type will also have this length. The length of a text field in a shapefile is limited to 254 characters; when the output is a shapefile, a larger number of characters will be truncated to 254.",
+          "datatype": "Long"
+        },
+        {
+          "name": "std_coord_fmt(Optional)",
+          "explanation": "Specifies the coordinate format that will be used to store the coordinate location. A standard representation of the spatial coordinate that defines the point feature is recorded in a field in the attribute table.STD_COORD_FMT_DD—The coordinate location is recorded in decimal degrees format. This is the default.STD_COORD_FMT_DM—The coordinate location is recorded in degrees decimal minutes format.STD_COORD_FMT_DMS—The coordinate location is recorded in degrees minutes seconds format.STD_COORD_FMT_UTM—The coordinate location is recorded in Universal Transverse Mercator format.STD_COORD_FMT_MGRS—The coordinate location is recorded in Military Grid Reference System format.",
+          "datatype": "String"
+        },
+        {
+          "name": "req_word_breaks(Optional)",
+          "explanation": "Specifies whether to search for text using word breaks. A word break occurs when words (text) are bounded by whitespace or punctuation characters as in European languages. This setting can produce frequent false positives or infrequent false positives depending on the language of the text. For example, when word breaks are not required, the English text Bernard will produce a match against the text San Bernardino, which would likely be considered a false positive. However, when text is written using a language that does not use word breaks, you cannot find words if word breaks are required. For example, with the text I flew to Tokyo in Japanese, 私は東京に飛んで, you would only be able to find the word Tokyo, 東京, when word breaks are not required.REQ_WORD_BREAKS—The tool will search for words that are bounded by whitespace or punctuation characters. This is the default.DONT_REQ_WORD_BREAKS—The tool will not search for words that are bounded by whitespace or punctuation characters.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Analyzes documents containing unstructured or semistructured text, such as email messages, travel forms, and so on, and extracts locations to a point feature class. The tool analyzes and processes the input documents as follows:Recognizes spatial coordinates specified in the content of the documents and  creates points representing these locations. The following coordinate formats are recognized: decimal degrees, degrees decimal minutes, degrees minutes seconds, Universal Transverse Mercator, and Military Grid Reference System.Recognizes place names specified in the content of the documents that are defined in a custom location file and creates points representing these locations. A custom location file associates a place name with a spatial coordinate representing that location. Recognizes text that is of interest, extracts this information from a document, and records it in fields in the output feature class's attribute table. This tool supports all Microsoft Office documents (Word, PowerPoint, and Excel); Adobe PDF documents; marked-up text such as XML and HTML documents; and any files containing plain text such as text files (.txt).",
+      "extraction_date": "2025-10-01T14:00:22.428477"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Extract Locations From Text",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/extract-locations-from-text.htm",
+      "parameters": [
+        {
+          "name": "in_text",
+          "explanation": "The text that will be scanned for locations (coordinates or custom locations), dates, and custom attributes; or text defining a file path, whose contents will be scanned for locations. For geoprocessing services, when a file path is provided, the file must be accessible from the service, as the file is not transferred to the server.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class containing point features that represent the locations that were found.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "in_template(Optional)",
+          "explanation": "The template file (*.lxttmpl) that determines the setting to use for each tool parameter. When a template file is provided, all values specified for other parameters will be ignored except those that determine the input content that will be processed and the output feature class.Some settings that are available in the Extract Locations pane are only available to this tool when the settings are saved to a template file, and the template file is referenced in this parameter. These settings are as follows:Spatial coordinates in x,y format—Allows two sequential numbers such as 630084 4833438 or 981075.652ftUS 607151.272ftUS to be recognized as coordinates when they are valid for a planar coordinate system associated with the input documents. You can specify whether numbers with and without units are recognized or  only numbers with units of measure are recognized as coordinates.Custom coordinate and date formats—Allows you to customize how text is recognized as a spatial coordinate or a date, particularly when written in a language other than English or using a format that is not common in the United States. For example, a spatial coordinate written as 30 20 10 N x 060 50 40 W can be recognized with a customization to recognize  the character x as valid text between the latitude and longitude. Coordinates and dates such as 60.91°N, 147.34°O and 17 juillet, 2018 can be recognized when customizations are specified to accommodate the language of the documents, in this case French. Also, when two-digit years are used, you can control the range of years to which they are matched.Preferences for some ambiguous dates—Dates such as 10/12/2019 are ambiguous because they can be interpreted as either October 12, 2019, or December 10, 2019. Some countries use the m/d/yy date format as a standard, and other countries use the d/m/yy format. A preference can be set for how these ambiguous dates are interpreted, either as m/d/yy or d/m/yy, to suit the country of origin of the documents.Length of fields in the output feature class—You can specify the length of the fields containing text surrounding spatial coordinates that are extracted from a document using the Pre-Text Field Length (pre_text_length in Python) and Post-Text Field Length (post_text_length in Python) parameters. The Extract Locations pane allows you to control the length of several additional fields in the attribute table, including fields  containing dates extracted from the document, the original text that was converted to dates, the file name from which the information was extracted, and so on.",
+          "datatype": "File"
+        },
+        {
+          "name": "coord_dd_latlon(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as decimal degrees formatted as latitude and longitude (infrequent false positives). Examples are: 33.8N 77.035W and W77N38.88909.FIND_DD_LATLON—The tool will search for decimal degrees coordinates formatted as latitude and longitude. This is the default.DONT_FIND_DD_LATLON—The tool will not search for decimal degrees coordinates formatted as latitude and longitude.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dd_xydeg(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as decimal degrees formatted as X Y with degree symbols (infrequent false positives). Examples are: 38.8° -77.035° and -077d+38.88909d.FIND_DD_XYDEG— The tool will search for decimal degrees coordinates formatted as X Y with degree symbols. This is the default.DONT_FIND_DD_XYDEG—The tool will not search for decimal degrees coordinates formatted as X Y with degree symbols.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dd_xyplain(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as decimal degrees formatted as X Y with no symbols (frequent false positives). Examples are: 38.8 -77.035 and -077.0, +38.88909.FIND_DD_XYPLAIN—The tool will search for decimal degrees coordinates formatted as X Y with no symbols (frequent false positives). This is the default.DONT_FIND_DD_XYPLAIN—The tool will not search for decimal degrees\r\ncoordinates formatted as X Y with no symbols.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dm_latlon(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as degrees decimal minutes formatted as latitude and longitude (infrequent false positives). Examples are: 3853.3N 7702.100W and W7702N3853.3458.FIND_DM_LATLON—The tool will search for degrees decimal minutes coordinates formatted as latitude and longitude. This is the default.DONT_FIND_DM_LATLON—The tool will not search for degrees decimal minutes coordinates formatted as latitude and longitude.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dm_xymin(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as degrees decimal minutes formatted as X Y with minutes symbols (infrequent false positives). Examples are: 3853' -7702.1' and -07702m+3853.3458m.FIND_DM_XYMIN—The tool will search for degrees decimal minutes coordinates formatted as X Y with minutes symbols. This is the default.DONT_FIND_DM_XYMIN—The tool will not search for degrees decimal minutes coordinates formatted as X Y with minutes symbols.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dms_latlon(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as latitude and longitude (infrequent false positives). Examples are: 385320.7N 770206.000W and W770206N385320.76.\r\nFIND_DMS_LATLON—The tool will search for degrees minutes seconds coordinates formatted as latitude and longitude. This is the default.DONT_FIND_DMS_LATLON—The tool will not search for degrees minutes seconds coordinates formatted as latitude and longitude.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dms_xysec(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as X Y with seconds symbols (infrequent false positives). Examples are: 385320\" -770206.0\" and -0770206.0s+385320.76s.FIND_DMS_XYSEC—The tool will search for degrees minutes seconds coordinates formatted as X Y with seconds symbols. This is the default.DONT_FIND_DMS_XYSEC—The tool will not search for degrees minutes seconds coordinates formatted as X Y with seconds symbols.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_dms_xysep(Optional)",
+          "explanation": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as X Y with separators (moderate false positives). Examples are: 8:53:20 -77:2:6.0 and -077/02/06/+38/53/20.76.FIND_DMS_XYSEP—The tool will search for degrees minutes seconds coordinates formatted as X Y with separators. This is the default.DONT_FIND_DMS_XYSEP—The tool will not search for degrees minutes seconds coordinates formatted as X Y with separators.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_utm(Optional)",
+          "explanation": "Specifies whether to search for Universal Transverse Mercator (UTM) coordinates (infrequent false positives). Examples are: 18S 323503 4306438 and 18 north 323503.25 4306438.39.FIND_UTM_MAINWORLD—The tool will search for UTM coordinates. This is the default.DONT_FIND_UTM_MAINWORLD—The tool will not search for UTM coordinates.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_ups_north(Optional)",
+          "explanation": "Specifies whether to search for Universal Polar Stereographic (UPS) coordinates in the north polar area (infrequent false positives). Examples are: Y 2722399 2000000 and north 2722399 2000000.FIND_UTM_NORTHPOLAR—The tool will search for UPS coordinates in the north polar area. This is the default.DONT_FIND_UTM_NORTHPOLAR—The tool will not search for UPS coordinates in the north polar area.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_ups_south(Optional)",
+          "explanation": "Specifies whether to search for Universal Polar Stereographic (UPS) coordinates in the south polar area (infrequent false positives). Examples are: A 2000000 3168892 and south 2000000 3168892.FIND_UTM_SOUTHPOLAR—The tool will search for UPS coordinates in the south polar area. This is the default.DONT_FIND_UTM_SOUTHPOLAR—The tool will not search for UPS coordinates in the south polar area.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_mgrs(Optional)",
+          "explanation": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates (infrequent false positives). Examples are: 18S UJ 13503 06438 and 18SUJ0306.\r\nFIND_MGRS_MAINWORLD—The tool will search for MGRS coordinates. This is the default.DONT_FIND_MGRS_MAINWORLD—The tool will not search for MGRS coordinates.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_mgrs_northpolar(Optional)",
+          "explanation": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates in the north polar area (infrequent false positives). Examples are: Y TG 56814 69009 and YTG5669.FIND_MGRS_NORTHPOLAR—The tool will search for MGRS coordinates in the north polar area. This is the default.DONT_FIND_MGRS_NORTHPOLAR—The tool will not search for MGRS coordinates in the north polar area.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_mgrs_southpolar(Optional)",
+          "explanation": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates in the south polar area (moderate false positives). Examples are: A TN 56814 30991 and ATN5630.FIND_MGRS_SOUTHPOLAR—The tool will search for MGRS coordinates in the south polar area. This is the default.DONT_FIND_MGRS_SOUTHPOLAR—The tool will not search for MGRS coordinates in the south polar area.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "comma_decimal(Optional)",
+          "explanation": "Specifies whether a comma (,) will be recognized as a decimal separator. By default, content is scanned for\r\nspatial coordinates defined by numbers that use a period (.) or a middle dot (·) as the decimal separator, for example: Lat 01° 10·80’ N Long 103° 28·60’ E. If\r\nyou are working with content in which spatial coordinates are defined by numbers that use a comma (,) as the\r\ndecimal separator, for example:  52° 8′ 32,14″ N; 5° 24′ 56,09″ E, set this parameter to recognize a comma as the decimal separator instead. This parameter is not set automatically based on the regional setting for your computer's operating system.USE_COMMA_DECIMAL_MARK—A comma will be recognized as the decimal separator.USE_DOT_DECIMAL_MARK—A period or a middle dot will be recognized as the decimal separator. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "coord_use_lonlat(Optional)",
+          "explanation": "When numbers resemble x,y coordinates, both numbers are less than 90, and there are no symbols or notations to indicate which number represents the latitude or longitude, results can be ambiguous. Interpret the numbers as a longitude-latitude coordinate (x,y) instead of a latitude-longitude coordinate (y,x).PREFER_LONLAT—x,y coordinates will be interpreted as longitude-latitude.PREFER_LATLON—x,y coordinates will be interpreted as latitude-longitude. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "in_coor_system(Optional)",
+          "explanation": "The coordinate system that will be used to interpret the spatial coordinates defined in the input. GCS-WGS-84 is the default.",
+          "datatype": "Spatial Reference"
+        },
+        {
+          "name": "in_custom_locations(Optional)",
+          "explanation": "The custom location file (.lxtgaz) that will be used when scanning the input content. A point is created to represent each occurrence of each place name in the custom location file up to the limits established by other tool parameters.",
+          "datatype": "File"
+        },
+        {
+          "name": "fuzzy_match(Optional)",
+          "explanation": "Specifies whether fuzzy matching will be used for searching the custom location file.USE_FUZZY—Fuzzy matching will be used when searching the custom location file.DONT_USE_FUZZY—Exact matching will be used when searching the custom location file. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "max_features_extracted(Optional)",
+          "explanation": "The maximum number of features that can be extracted. The tool will stop scanning the input content for locations when the maximum number is reached. When running as a geoprocessing service, the service and the server may have separate limits on the number of features allowed.",
+          "datatype": "Long"
+        },
+        {
+          "name": "ignore_first_features(Optional)",
+          "explanation": "The number of features detected and ignored before extracting all other features. This parameter can be used to focus the search on a specific portion of the data.",
+          "datatype": "Long"
+        },
+        {
+          "name": "date_monthname(Optional)",
+          "explanation": "Specifies whether to search for dates in which the month name appears (infrequent false positives). 12 May 2003 and January 15, 1997 are examples.FIND_DATE_MONTHNAME—The tool will search for dates in which the month name appears. This is the default.DONT_FIND_DATE_MONTHNAME—The tool will not search for dates in which the month name appears.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "date_m_d_y(Optional)",
+          "explanation": "Specifies whether to search for dates in which numbers are in the M/D/Y or D/M/Y format (moderate false positives). 5/12/03 and 1-15-1997 are examples.FIND_DATE_M_D_Y—The tool will search for dates in which numbers are in the M/D/Y or D/M/Y format (moderate false positives). This is the default.DONT_FIND_DATE_M_D_Y—The tool will not search for dates in which numbers are in the M/D/Y or D/M/Y format.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "date_yyyymmdd(Optional)",
+          "explanation": "Specifies whether to search for dates in which numbers are in the YYYYMMDD format (moderate false positives). 20030512 and 19970115 are examples.FIND_DATE_YYYYMMDD—The tool will search for dates in which numbers are in the YYYYMMDD format (moderate false positives). This is the default.DONT_FIND_DATE_YYYYMMDD—The tool will not search for dates in which numbers are in the YYYYMMDD format.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "date_yymmdd(Optional)",
+          "explanation": "Specifies whether to search for dates in which numbers are in the YYMMDD format (frequent false positives). 030512 and 970115 are examples.FIND_DATE_YYMMDD—The tool will search for dates in which numbers are in the YYMMDD format (frequent false positives). This is the default.DONT_FIND_DATE_YYMMDD—The tool will not search for dates in which numbers are in the YYMMDD format.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "date_yyjjj(Optional)",
+          "explanation": "Specifies whether to search for dates in which numbers are in the YYJJJ or YYYYJJJ format (frequent false positives). 03132 and 97015 are examples.FIND_DATE_YYJJJ—The tool will search for dates in which numbers are in the YYJJJ or YYYYJJJ format (frequent false positives). This is the default.DONT_FIND_DATE_YYJJJ—The tool will not search for dates in which numbers are in the YYJJJ or YYYYJJJ format.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "max_dates_extracted(Optional)",
+          "explanation": "The maximum number of dates that will be extracted.",
+          "datatype": "Long"
+        },
+        {
+          "name": "ignore_first_dates(Optional)",
+          "explanation": "The number of dates that will be detected and ignored before extracting all other dates.",
+          "datatype": "Long"
+        },
+        {
+          "name": "date_range_begin(Optional)",
+          "explanation": "The earliest acceptable date to extract. Detected dates matching this value or later will be extracted.",
+          "datatype": "Date"
+        },
+        {
+          "name": "date_range_end(Optional)",
+          "explanation": "The latest acceptable date to extract. Detected dates matching this value or earlier will be extracted.",
+          "datatype": "Date"
+        },
+        {
+          "name": "in_custom_attributes(Optional)",
+          "explanation": "The custom attribute file (.lxtca) that will be used to scan the input content. Fields will be created in the output feature class's attribute table for all custom attributes defined in the file. When the input content is scanned, it will be examined to see if it contains text associated with all custom attributes specified in the file. When a match is found, the appropriate text is extracted from the input content and stored in the appropriate field.",
+          "datatype": "File"
+        },
+        {
+          "name": "file_link(Optional)",
+          "explanation": "The file path that will be used as the file name in the output data when the Input File parameter (in_file in Python) is transferred to the server. If this parameter is not specified, the path of the Input File will be used, which may be an unreachable folder on a server. This parameter has no effect when the Input File is not specified.",
+          "datatype": "String"
+        },
+        {
+          "name": "file_mod_datetime(Optional)",
+          "explanation": "The UTC date and time that the file was modified will be used as the modified attribute in the output data when the Input File parameter (in_file in Python) is transferred to the server. If this parameter is not specified, the current modified time of the input file will be used. This parameter has no effect when the Input File is not specified.",
+          "datatype": "Date"
+        },
+        {
+          "name": "pre_text_length(Optional)",
+          "explanation": "Content is extracted from the input document to provide context for the location that was found. This parameter defines the maximum number of characters that will be extracted preceding the text that defines the location. The extracted text is stored in the Pre-Text field in the output feature class's attribute table. The default is 254. The Pre-Text field's data type will also have this length. The length of a text field in a shapefile is limited to 254 characters; when the output is a shapefile, a larger number of characters will be truncated to 254.",
+          "datatype": "Long"
+        },
+        {
+          "name": "post_text_length(Optional)",
+          "explanation": "Content is extracted from the input document to provide context for the location that was found. This parameter defines the maximum number of characters that will be extracted following the text that defines the location. The extracted text is stored in the Post-Text field in the output feature class's attribute table. The default is 254. The Post-Text field's data type will also have this length. The length of a text field in a shapefile is limited to 254 characters; when the output is a shapefile, a larger number of characters will be truncated to 254.",
+          "datatype": "Long"
+        },
+        {
+          "name": "std_coord_fmt(Optional)",
+          "explanation": "Specifies the coordinate format that will be used to store the coordinate location. A standard representation of the spatial coordinate that defines the point feature is recorded in a field in the attribute table.STD_COORD_FMT_DD—The coordinate location is recorded in decimal degrees format. This is the default.STD_COORD_FMT_DM—The coordinate location is recorded in degrees decimal minutes format.STD_COORD_FMT_DMS—The coordinate location is recorded in degrees minutes seconds format.STD_COORD_FMT_UTM—The coordinate location is recorded in Universal Transverse Mercator format.STD_COORD_FMT_MGRS—The coordinate location is recorded in Military Grid Reference System format.",
+          "datatype": "String"
+        },
+        {
+          "name": "req_word_breaks(Optional)",
+          "explanation": "Specifies whether to search for text using word breaks. A word break occurs when words (text) are bounded by whitespace or punctuation characters as in European languages. This setting can produce frequent false positives or infrequent false positives depending on the language of the text. For example, when word breaks are not required, the English text Bernard will produce a match against the text San Bernardino, which would likely be considered a false positive. However, when text is written using a language that does not use word breaks, you cannot find words if word breaks are required. For example, with the text I flew to Tokyo in Japanese, 私は東京に飛んで, you would only be able to find the word Tokyo, 東京, when word breaks are not required.REQ_WORD_BREAKS—The tool will search for words that are bounded by whitespace or punctuation characters. This is the default.DONT_REQ_WORD_BREAKS—The tool will not search for words that are bounded by whitespace or punctuation characters.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Analyzes input text or a text file and extracts locations to a point feature class. If the input text is a file path, the identified file will be opened and its content will be analyzed. If the input text is unstructured information such as an email message, or semistructured text such as a travel forms, the input text itself will be analyzed. The tool extracts locations found in the text or in the content of the file and adds the resulting points to a feature class. The tool analyzes and processes the text as follows:Recognizes spatial coordinates specified in the content of the text and  creates points representing these locations. The following coordinate formats are recognized: decimal degrees, degrees decimal minutes, degrees minutes seconds, Universal Transverse Mercator, and Military Grid Reference System.Recognizes place names specified in the text that are defined in a custom location file and creates points representing these locations. A custom location file associates a place name with a spatial coordinate representing that location. Recognizes text that is of interest, extracts this information from the text provided, and records it in fields in the output feature class's attribute table.",
+      "extraction_date": "2025-10-01T14:00:25.558012"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Feature Class To Geodatabase",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/feature-class-to-geodatabase.htm",
+      "parameters": [
+        {
+          "name": "Input_Features[Input_Features,...]",
+          "explanation": "One or more feature classes or feature layers that will be imported into a geodatabase.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "Output_Geodatabase",
+          "explanation": "The output or destination geodatabase.",
+          "datatype": "Feature Dataset; Workspace"
+        }
+      ],
+      "summary": "Converts one or more feature classes or feature layers to geodatabase feature classes.",
+      "extraction_date": "2025-10-01T14:00:27.916838"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Mobile Geodatabase To File Geodatabase",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/mobile-geodatabase-to-file-geodatabase.htm",
+      "parameters": [
+        {
+          "name": "in_mobile_gdb",
+          "explanation": "The mobile geodatabase with the contents that will be copied to a new file geodatabase.",
+          "datatype": "File"
+        },
+        {
+          "name": "out_file_gdb",
+          "explanation": "The name and location of the output file geodatabase, for example, c:\\temp\\outputGeodatabases\\copiedFGDB.gdb.",
+          "datatype": "File"
+        }
+      ],
+      "summary": "Copies the contents of a mobile geodatabase to a new file geodatabase.",
+      "extraction_date": "2025-10-01T14:00:30.112952"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Raster To Geodatabase",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/raster-to-geodatabase-multiple-.htm",
+      "parameters": [
+        {
+          "name": "Input_Rasters[Input_Rasters,...]",
+          "explanation": "The input raster datasets.",
+          "datatype": "Raster Dataset; Raster Layer"
+        },
+        {
+          "name": "Output_Geodatabase",
+          "explanation": "The output or destination geodatabase.",
+          "datatype": "Workspace"
+        },
+        {
+          "name": "Configuration_Keyword(Optional)",
+          "explanation": "The storage parameters (configuration) for a geodatabase. Configuration keywords are set up by your database administrator.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Loads raster datasets into a geodatabase.",
+      "extraction_date": "2025-10-01T14:00:32.493513"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Table To Geodatabase",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/table-to-geodatabase.htm",
+      "parameters": [
+        {
+          "name": "Input_Table[Input_Table,...]",
+          "explanation": "The list of tables that will be converted to geodatabase tables. Input tables can be INFO, dBASE, OLE DB, geodatabase tables, or table views.",
+          "datatype": "Table View"
+        },
+        {
+          "name": "Output_Geodatabase",
+          "explanation": "The destination geodatabase where the tables will be placed.",
+          "datatype": "Workspace"
+        }
+      ],
+      "summary": "Converts one or more tables to geodatabase tables in an output geodatabase.",
+      "extraction_date": "2025-10-01T14:00:34.957759"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Add Raster To GeoPackage",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/add-raster-to-geopackage.htm",
+      "parameters": [
+        {
+          "name": "in_dataset",
+          "explanation": "The raster dataset to load into the OGC GeoPackage raster pyramid.",
+          "datatype": "Raster Layer; Mosaic Layer"
+        },
+        {
+          "name": "target_geopackage",
+          "explanation": "The GeoPackage into which the raster dataset will be loaded.",
+          "datatype": "Workspace"
+        },
+        {
+          "name": "raster_name",
+          "explanation": "The name of the output GeoPackage raster pyramid.",
+          "datatype": "String"
+        },
+        {
+          "name": "tiling_scheme(Optional)",
+          "explanation": "Specifies the tiling scheme.TILED—The spatial reference of the input raster will be maintained and tiles will be generated consistent with the GeoPackage standard. This is the default.ARCGISONLINE_SCHEME— Raster tiles will be generated in a Web Mercator coordinate reference (the same scheme developed for the Army Geospatial Center).NSGPROFILE_SCALED_TRANSVERSE_MERCATOR—A scaled transverse Mercator will be used.NSGPROFILE_WGS84_GEOGRAPHIC—WGS84 Geographic will be used.GOOGLE_EARTH_WEB_MERCATOR—Raster tiles will be created using the parameters in the Web Mercator coordinate reference.FROM_FILE—A custom tiling scheme from a file with an XML schema definition created using the Generate Tile Cache Tiling Scheme tool will be used.",
+          "datatype": "String"
+        },
+        {
+          "name": "tiling_scheme_file(Optional)",
+          "explanation": "A custom tiling scheme file that is required when tiling_scheme is set to FROM_FILE.",
+          "datatype": "File"
+        },
+        {
+          "name": "area_of_interest(Optional)",
+          "explanation": "An area of interest used to limit the area of the raster to be loaded, rather than the entire dataset.",
+          "datatype": "Feature Set"
+        }
+      ],
+      "summary": "Loads raster datasets into an OGC GeoPackage raster pyramid.",
+      "extraction_date": "2025-10-01T14:00:39.098495"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Learn more about converting features to raster data",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/converting-features-to-raster-data.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T14:00:43.221401"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Feature to Raster",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/feature-to-raster.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature dataset to be converted to a raster dataset.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "field",
+          "explanation": "The field used to assign values to the output raster.It can be any field of the input feature dataset's attribute table.If the Shape field of a point or multipoint dataset contains z- or m-values, either of these can be used.",
+          "datatype": "Field"
+        },
+        {
+          "name": "out_raster",
+          "explanation": "The output raster dataset to be created.If the output raster will not be saved to a geodatabase, specify .tif for TIFF file format, .CRF for CRF file format, .img for ERDAS IMAGINE file format, or no extension for Esri Grid raster format.",
+          "datatype": "Raster Dataset"
+        },
+        {
+          "name": "cell_size(Optional)",
+          "explanation": "The cell size of the output raster being created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn’t been explicitly specified as the parameter value, the environment cell size value is used, if specified; otherwise, additional rules are used to calculate it from the other inputs. See Usages for more detail.",
+          "datatype": "Analysis Cell Size"
+        }
+      ],
+      "summary": "Converts features to a raster dataset.",
+      "extraction_date": "2025-10-01T14:00:45.632983"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Multipatch to Raster",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/multipatch-to-raster.htm",
+      "parameters": [
+        {
+          "name": "in_multipatch_features",
+          "explanation": "The input multipatch features to be converted to a raster.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_raster",
+          "explanation": "The output raster dataset to be created.It will be of floating point type.If the output raster will not be saved to a geodatabase, specify .tif for TIFF file format, .CRF for CRF file format, .img for ERDAS IMAGINE file format, or no extension for Esri Grid raster format.",
+          "datatype": "Raster Dataset"
+        },
+        {
+          "name": "cell_size(Optional)",
+          "explanation": "The cell size of the output raster being created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn’t been explicitly specified as the parameter value, the environment cell size value is used, if specified; otherwise, additional rules are used to calculate it from the other inputs. See Usages for more detail.",
+          "datatype": "Analysis Cell Size"
+        },
+        {
+          "name": "cell_assignment_method(Optional)",
+          "explanation": "Specifies whether the maximum or minimum z-value will be used for a cell when more than one z-value is detected at the cell center location when a vertical line is extended from the cell center location to intersect the input multipatch feature.\r\nMAXIMUM_HEIGHT—The maximum z-value will be assigned to the cell. This is the default.MINIMUM_HEIGHT—The minimum z-value will be assigned to the cell.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Converts multipatch features to a raster dataset.",
+      "extraction_date": "2025-10-01T14:00:48.102446"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Point to Raster",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/point-to-raster.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The point or multipoint input feature dataset to be converted to a raster.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "value_field",
+          "explanation": "The field used to assign values to the output raster.It can be any field of the input feature dataset's attribute table.If the Shape field of a point or multipoint dataset contains z- or m-values, either of these can be used.",
+          "datatype": "Field"
+        },
+        {
+          "name": "out_rasterdataset",
+          "explanation": "The output raster dataset to be created.If the output raster will not be saved to a geodatabase, specify .tif for TIFF file format, .CRF for CRF file format, .img for ERDAS IMAGINE file format, or no extension for Esri Grid raster format.",
+          "datatype": "Raster Dataset"
+        },
+        {
+          "name": "cell_assignment(Optional)",
+          "explanation": "The method to determine how the cell will be assigned a value when more than one feature falls within a cell.MOST_FREQUENT—If there is more than one feature within the cell, the one with the most common attribute, in the Value field, is assigned to the cell. If they have the same number of common attributes, the one with the lowest FID is used.SUM—The sum of the attributes of all the points within the cell (not valid for string data).MEAN—The mean of the attributes of all the points within the cell (not valid for string data).STANDARD_DEVIATION—The standard deviation of attributes of all the points within the cell. If there are less than two points in the cell, the cell is assigned NoData (not valid for string data).MAXIMUM—The maximum value of the attributes of the points within the cell (not valid for string data).MINIMUM—The minimum value of the attributes of the points within the cell (not valid for string data).RANGE—The range of the attributes of the points within the cell (not valid for string data).COUNT—The number of points within the cell.",
+          "datatype": "String"
+        },
+        {
+          "name": "priority_field(Optional)",
+          "explanation": "This field is used when a feature should take preference over another feature with the same attribute.Priority field is only used with the Most frequent cell assignment type option.",
+          "datatype": "Field"
+        },
+        {
+          "name": "cellsize(Optional)",
+          "explanation": "The cell size of the output raster being created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn’t been explicitly specified as the parameter value, the environment cell size value is used, if specified; otherwise, additional rules are used to calculate it from the other inputs. See Usages for more detail.",
+          "datatype": "Analysis Cell Size"
+        },
+        {
+          "name": "build_rat(Optional)",
+          "explanation": "Specifies whether the output raster will have a raster attribute table.This parameter only applies to integer rasters.BUILD—The output raster will have a raster attribute table. This is the default.DO_NOT_BUILD—The output raster will not have a raster attribute table.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Converts point features to a raster dataset. Learn how the Point to Raster tool works",
+      "extraction_date": "2025-10-01T14:00:50.737863"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Polygon to Raster",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/polygon-to-raster.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The polygon input feature dataset to be converted to a raster.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "value_field",
+          "explanation": "The field used to assign values to the output raster.It can be any field of the input feature dataset's attribute table.",
+          "datatype": "Field"
+        },
+        {
+          "name": "out_rasterdataset",
+          "explanation": "The output raster dataset to be created.If the output raster will not be saved to a geodatabase, specify .tif for TIFF file format, .CRF for CRF file format, .img for ERDAS IMAGINE file format, or no extension for Esri Grid raster format.",
+          "datatype": "Raster Dataset"
+        },
+        {
+          "name": "cell_assignment(Optional)",
+          "explanation": "The method to determine how the cell will be assigned a value when more than one feature falls within a cell.CELL_CENTER—The polygon that overlaps the center of the cell yields the attribute to assign to the cell.MAXIMUM_AREA—The single feature with the largest area within the cell yields the attribute to assign to the cell.MAXIMUM_COMBINED_AREA—If there is more than one feature in a cell with the same value, the areas of these features will be combined. The combined feature with the largest area within the cell will determine the value to assign to the cell.",
+          "datatype": "String"
+        },
+        {
+          "name": "priority_field(Optional)",
+          "explanation": "This field is used to determine which feature should take preference over another feature that falls over a cell. When it is used, the feature with the largest positive priority is always selected for conversion irrespective of the Cell assignment type chosen.",
+          "datatype": "Field"
+        },
+        {
+          "name": "cellsize(Optional)",
+          "explanation": "The cell size of the output raster being created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn’t been explicitly specified as the parameter value, the environment cell size value is used, if specified; otherwise, additional rules are used to calculate it from the other inputs. See Usages for more detail.",
+          "datatype": "Analysis Cell Size"
+        },
+        {
+          "name": "build_rat(Optional)",
+          "explanation": "Specifies whether the output raster will have a raster attribute table.This parameter only applies to integer rasters.BUILD—The output raster will have a raster attribute table. This is the default.DO_NOT_BUILD—The output raster will not have a raster attribute table.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Converts polygon features to a raster dataset. Learn how the Polygon to Raster tool works",
+      "extraction_date": "2025-10-01T14:00:53.319505"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Polyline to Raster",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/polyline-to-raster.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The polyline input feature dataset to be converted to a raster.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "value_field",
+          "explanation": "The field used to assign values to the output raster.It can be any field of the input feature dataset's attribute table.",
+          "datatype": "Field"
+        },
+        {
+          "name": "out_rasterdataset",
+          "explanation": "The output raster dataset to be created.If the output raster will not be saved to a geodatabase, specify .tif for TIFF file format, .CRF for CRF file format, .img for ERDAS IMAGINE file format, or no extension for Esri Grid raster format.",
+          "datatype": "Raster Dataset"
+        },
+        {
+          "name": "cell_assignment(Optional)",
+          "explanation": "The method to determine how the cell will be assigned a value when more than one feature falls within a cell.MAXIMUM_LENGTH—The feature with the longest length that covers the cell will determine the value to assign to the cell.MAXIMUM_COMBINED_LENGTH—If there is more than one feature in a cell with the same value, the lengths of these features will be combined. The combined feature with the longest length within the cell will determine the value to assign to the cell.",
+          "datatype": "String"
+        },
+        {
+          "name": "priority_field(Optional)",
+          "explanation": "This field is used to determine which feature should take preference over another feature that falls over a cell. When it is used, the feature with the largest positive priority is always selected for conversion irrespective of the Cell assignment type chosen.",
+          "datatype": "Field"
+        },
+        {
+          "name": "cellsize(Optional)",
+          "explanation": "The cell size of the output raster being created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn’t been explicitly specified as the parameter value, the environment cell size value is used, if specified; otherwise, additional rules are used to calculate it from the other inputs. See Usages for more detail.",
+          "datatype": "Analysis Cell Size"
+        },
+        {
+          "name": "build_rat(Optional)",
+          "explanation": "Specifies whether the output raster will have a raster attribute table.This parameter only applies to integer rasters.BUILD—The output raster will have a raster attribute table. This is the default.DO_NOT_BUILD—The output raster will not have a raster attribute table.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Converts polyline features to a raster dataset. Learn more about how the Polyline to Raster tool works",
+      "extraction_date": "2025-10-01T14:00:55.911540"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Raster To Other Format",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/raster-to-other-format-multiple-.htm",
+      "parameters": [
+        {
+          "name": "Input_Rasters[Input_Rasters,...]",
+          "explanation": "The raster datasets  to convert.",
+          "datatype": "Raster Dataset; Raster Layer"
+        },
+        {
+          "name": "Output_Workspace",
+          "explanation": "The folder where the raster dataset will be written.",
+          "datatype": "Workspace"
+        },
+        {
+          "name": "Raster_Format(Optional)",
+          "explanation": "Specifies the format that will be used for the output raster dataset.BIL—The output will be Esri BIL format.BIP—The output will be Esri BIP format.BMP—The output will be Microsoft BMP format.BSQ—The output will be Esri BSQ format.CRF—The output will be CRF format.ENVI DAT—The output will be ENVI DAT format.GIF—The output will be GIF format.GRID—The output will be Esri Grid format.IMAGINE Image—The output will be ERDAS IMAGINE format.JP2000—The output will be JPEG 2000 format.JPEG—The output will be JPEG format.MRF—The output will be MRF format.PNG—The output will be PNG format.TIFF—The output will be TIFF format.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Converts one or more raster datasets to a different format.",
+      "extraction_date": "2025-10-01T14:00:58.417616"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Feature Class To Shapefile",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/conversion/feature-class-to-shapefile.htm",
+      "parameters": [
+        {
+          "name": "Input_Features[Input_Features,...]",
+          "explanation": "The list of input feature classes or feature layers that will be converted and added to the output folder.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "Output_Folder",
+          "explanation": "The folder where the shapefiles will be written.",
+          "datatype": "Folder"
+        }
+      ],
+      "summary": "Converts the features from one or more feature classes or feature layers to shapefiles and adds them to a folder of shapefiles.",
+      "extraction_date": "2025-10-01T14:01:02.596459"
+    },
+    {
+      "toolset": "conversion",
+      "tool_name": "Geoprocessing considerations for shapefile output",
+      "help_url": "https://pro.arcgis.com/en/pro-app/3.5/tool-reference/appendices/geoprocessing-considerations-for-shapefile-output.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T14:01:05.177230"
+    }
+  ]
 }
