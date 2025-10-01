@@ -865,3 +865,83 @@ class BusinessAnalystTools:
             return {"success": True, "output_layer": output_name, "output_path": out_feature_class}
         except Exception as e:
             return {"success": False, "error": str(e)}
+
+    def geocoding_points_to_points_by_attribute_with_distance_and_time_and_speed_and_cost_and_impedance(self, params):
+        """Converts geocoding points to points by attribute with distance, time, speed, and cost, and impedance."""
+        try:
+            in_features = params.get("in_features")
+            if in_features is None: return {"success": False, "error": "in_features parameter is required"}
+            out_feature_class = params.get("out_feature_class")
+            if out_feature_class is None: 
+                aprx = arcpy.mp.ArcGISProject("CURRENT")
+                out_feature_class = arcpy.CreateUniqueName("GeocodingPointsToPointsByAttributeWithDistanceAndTimeAndSpeedAndCostAndImpedance_Output", aprx.defaultGeodatabase)
+            group_field = params.get("group_field")
+            if group_field is None: return {"success": False, "error": "group_field parameter is required"}
+            search_distance = params.get("search_distance")
+            if search_distance is None: return {"success": False, "error": "search_distance parameter is required"}
+            search_units = params.get("search_units")
+            if search_units is None: return {"success": False, "error": "search_units parameter is required"}
+            time_field = params.get("time_field")
+            if time_field is None: return {"success": False, "error": "time_field parameter is required"}
+            time_units = params.get("time_units")
+            if time_units is None: return {"success": False, "error": "time_units parameter is required"}
+            speed_field = params.get("speed_field")
+            if speed_field is None: return {"success": False, "error": "speed_field parameter is required"}
+            speed_units = params.get("speed_units")
+            if speed_units is None: return {"success": False, "error": "speed_units parameter is required"}
+            cost_field = params.get("cost_field")
+            if cost_field is None: return {"success": False, "error": "cost_field parameter is required"}
+            cost_units = params.get("cost_units")
+            if cost_units is None: return {"success": False, "error": "cost_units parameter is required"}
+            impedance_field = params.get("impedance_field")
+            if impedance_field is None: return {"success": False, "error": "impedance_field parameter is required"}
+            impedance_units = params.get("impedance_units")
+            if impedance_units is None: return {"success": False, "error": "impedance_units parameter is required"}
+
+            arcpy.ba.GeocodingPointsToPointsByAttributeWithDistanceAndTimeAndSpeedAndCostAndImpedance(in_features, out_feature_class, group_field, search_distance, search_units, time_field, time_units, speed_field, speed_units, cost_field, cost_units, impedance_field, impedance_units)
+
+            output_name = os.path.basename(out_feature_class)
+            self._add_to_map(out_feature_class)
+            return {"success": True, "output_layer": output_name, "output_path": out_feature_class}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def geocoding_points_to_polygons_by_attribute_with_distance_and_time_and_speed_and_cost_and_impedance(self, params):
+        """Converts geocoding points to polygons by attribute with distance, time, speed, and cost, and impedance."""
+        try:
+            in_features = params.get("in_features")
+            if in_features is None: return {"success": False, "error": "in_features parameter is required"}
+            out_feature_class = params.get("out_feature_class")
+            if out_feature_class is None: 
+                aprx = arcpy.mp.ArcGISProject("CURRENT")
+                out_feature_class = arcpy.CreateUniqueName("GeocodingPointsToPolygonsByAttributeWithDistanceAndTimeAndSpeedAndCostAndImpedance_Output", aprx.defaultGeodatabase)
+            group_field = params.get("group_field")
+            if group_field is None: return {"success": False, "error": "group_field parameter is required"}
+            search_distance = params.get("search_distance")
+            if search_distance is None: return {"success": False, "error": "search_distance parameter is required"}
+            search_units = params.get("search_units")
+            if search_units is None: return {"success": False, "error": "search_units parameter is required"}
+            time_field = params.get("time_field")
+            if time_field is None: return {"success": False, "error": "time_field parameter is required"}
+            time_units = params.get("time_units")
+            if time_units is None: return {"success": False, "error": "time_units parameter is required"}
+            speed_field = params.get("speed_field")
+            if speed_field is None: return {"success": False, "error": "speed_field parameter is required"}
+            speed_units = params.get("speed_units")
+            if speed_units is None: return {"success": False, "error": "speed_units parameter is required"}
+            cost_field = params.get("cost_field")
+            if cost_field is None: return {"success": False, "error": "cost_field parameter is required"}
+            cost_units = params.get("cost_units")
+            if cost_units is None: return {"success": False, "error": "cost_units parameter is required"}
+            impedance_field = params.get("impedance_field")
+            if impedance_field is None: return {"success": False, "error": "impedance_field parameter is required"}
+            impedance_units = params.get("impedance_units")
+            if impedance_units is None: return {"success": False, "error": "impedance_units parameter is required"}
+
+            arcpy.ba.GeocodingPointsToPolygonsByAttributeWithDistanceAndTimeAndSpeedAndCostAndImpedance(in_features, out_feature_class, group_field, search_distance, search_units, time_field, time_units, speed_field, speed_units, cost_field, cost_units, impedance_field, impedance_units)
+
+            output_name = os.path.basename(out_feature_class)
+            self._add_to_map(out_feature_class)
+            return {"success": True, "output_layer": output_name, "output_path": out_feature_class}
+        except Exception as e:
+            return {"success": False, "error": str(e)}

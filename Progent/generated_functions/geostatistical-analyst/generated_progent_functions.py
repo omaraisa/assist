@@ -155,7 +155,8 @@ Empirical Bayesian kriging is an interpolation method that accounts for the erro
     def empirical_bayesian_kriging_3d(self, params):
         """Empirical Bayesian Kriging 3D
 
-Interpolates 3D points using Empirical Bayesian Kriging methodology. All points must have x-, y-, and z-coordinates and a measured value to be interpolated. The output is a 3D geostatistical layer that calculates and renders itself as a 2D transect at a given elevation. The elevation of the layer can be changed using the range slider, and the layer will update to show the interpolated predictions for the new elevation. 3D interpolation has the following potential applications:
+Interpolates 3D points using Empirical Bayesian Kriging methodology. All points must have x-, y-, and z-coordinates and a measured value to be interpolated. The output is a 3D geostatistical layer that calculates and renders itself as a 2D transect at a given elevation. The elevation of the layer can be changed using the range slider, and the layer will update to show the interpolated predictions for the new elevation. 3D interpolation has the following potential applications:
+
 Oceanographers can create maps of dissolved oxygen and salinity at various depths in the ocean.Atmospheric scientists can create models for pollution and greenhouse gasses throughout the atmosphere.Geologists can predict subsurface geologic properties such as mineral concentrations and porosity. Learn more about Empirical Bayesian Kriging 3D
 
         params: {"in_features": <Feature Layer>, "elevation_field": <Field>, "value_field": <Field>, ...}
@@ -1111,7 +1112,8 @@ Creates a new geostatistical layer. An  existing geostatistical layer  is requir
     def ga_layer_3d_to_multidimensional_raster(self, params):
         """GA Layer 3D To Multidimensional Raster
 
-Exports a 3D geostatistical layer created using the Empirical Bayesian Kriging 3D tool to a multidimensional Cloud Raster Format (*.crf file) 
+Exports a 3D geostatistical layer created using the Empirical Bayesian Kriging 3D tool to a multidimensional Cloud Raster Format (*.crf file) 
+
 raster dataset. Tools in the Multidimensional Analysis toolset of the Image Analyst toolbox are designed to work directly on multidimensional rasters and can identify the 3D nature of the data. 3D geostatistical layers store continuous 3D interpolation results and appear as 2D horizontal slices at a given elevation.  The current elevation can be changed with the range slider, and the layer will calculate and render the predicted values of the new elevation.  Rasters of interpolated predictions can be extracted at any elevation using the GA Layer To Rasters tool.  The GA Layer 3D To Multidimensional Raster tool automates the process of extracting rasters at multiple elevations and stores them as a multidimensional raster dataset.
 
         params: {"in_3d_geostat_layer": <Geostatistical Layer>, "out_multidimensional_raster": <Raster Dataset>, "cell_size": <Analysis Cell Size>, ...}
@@ -1155,7 +1157,8 @@ raster dataset. Tools in the Multidimensional Analysis toolset of the Image Anal
     def empirical_bayesian_kriging_3d(self, params):
         """Empirical Bayesian Kriging 3D
 
-Interpolates 3D points using Empirical Bayesian Kriging methodology. All points must have x-, y-, and z-coordinates and a measured value to be interpolated. The output is a 3D geostatistical layer that calculates and renders itself as a 2D transect at a given elevation. The elevation of the layer can be changed using the range slider, and the layer will update to show the interpolated predictions for the new elevation. 3D interpolation has the following potential applications:
+Interpolates 3D points using Empirical Bayesian Kriging methodology. All points must have x-, y-, and z-coordinates and a measured value to be interpolated. The output is a 3D geostatistical layer that calculates and renders itself as a 2D transect at a given elevation. The elevation of the layer can be changed using the range slider, and the layer will update to show the interpolated predictions for the new elevation. 3D interpolation has the following potential applications:
+
 Oceanographers can create maps of dissolved oxygen and salinity at various depths in the ocean.Atmospheric scientists can create models for pollution and greenhouse gasses throughout the atmosphere.Geologists can predict subsurface geologic properties such as mineral concentrations and porosity. Learn more about Empirical Bayesian Kriging 3D
 
         params: {"in_features": <Feature Layer>, "elevation_field": <Field>, "value_field": <Field>, ...}

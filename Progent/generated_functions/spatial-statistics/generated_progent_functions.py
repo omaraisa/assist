@@ -1450,7 +1450,7 @@ Calculates summary  statistics of one or more numeric fields using local neighbo
         analysis_fields = params.get("analysis_fields")
         local_summary_statistic = params.get("local_summary_statistic")
         include_focal_feature = params.get("include_focal_feature")
-        ignore_nulls = params.get("ignore_nulls")
+        ignore_Nones = params.get("ignore_Nones")
         neighborhood_type = params.get("neighborhood_type")
         distance_band = params.get("distance_band")
         number_of_neighbors = params.get("number_of_neighbors")
@@ -1465,7 +1465,7 @@ Calculates summary  statistics of one or more numeric fields using local neighbo
             output_path = arcpy.CreateUniqueName(output_path)
 
             # Execute Neighborhood Summary Statistics
-            arcpy.NeighborhoodSummaryStatistics(in_features, output_features, analysis_fields, local_summary_statistic, include_focal_feature, ignore_nulls, neighborhood_type, distance_band, number_of_neighbors, weights_matrix_file, local_weighting_scheme, kernel_bandwidth)
+            arcpy.NeighborhoodSummaryStatistics(in_features, output_features, analysis_fields, local_summary_statistic, include_focal_feature, ignore_Nones, neighborhood_type, distance_band, number_of_neighbors, weights_matrix_file, local_weighting_scheme, kernel_bandwidth)
 
             self._add_to_map(output_path)
             return {"success": True, "output_layer": output_name, "output_path": output_path}
@@ -2127,7 +2127,8 @@ Analyzes two variables for statistically significant relationships using local e
     def multiscale_geographically_weighted_regression_(mgwr)(self, params):
         """Multiscale Geographically Weighted Regression (MGWR)
 
-Performs Multiscale Geographically Weighted Regression (MGWR), which is a local form of linear regression that models spatially varying relationships. MGWR builds upon geographically weighted regression (GWR). It is a local regression model that allows the coefficients of the explanatory variables to vary across space. Each explanatory variable may operate at a different spatial scale. GWR does not account for this, but MGWR does by allowing a different neighborhood (bandwidth) for each explanatory variable. The neighborhood (bandwidth) of an explanatory variable determines the features that are used to estimate the coefficient of that explanatory variable in the linear regression model that is fit at a target feature. Learn more about how Multiscale Geographically Weighted Regression (MGWR)
+Performs Multiscale Geographically Weighted Regression (MGWR), which is a local form of linear regression that models spatially varying relationships. MGWR builds upon geographically weighted regression (GWR). It is a local regression model that allows the coefficients of the explanatory variables to vary across space. Each explanatory variable may operate at a different spatial scale. GWR does not account for this, but MGWR does by allowing a different neighborhood (bandwidth) for each explanatory variable. The neighborhood (bandwidth) of an explanatory variable determines the features that are used to estimate the coefficient of that explanatory variable in the linear regression model that is fit at a target feature. Learn more about how Multiscale Geographically Weighted Regression (MGWR)
+
 works
 
         params: {"in_features": <Feature Layer>, "dependent_variable": <Field>, "model_type": <String>, ...}
@@ -2341,7 +2342,8 @@ Models the presence of a phenomenon given known presence locations and explanato
     def spatial_association_between_zones(self, params):
         """Spatial Association Between Zones
 
-Measures the degree of spatial association between two regionalizations of the same study area in which each regionalization is composed of a set of categories, called zones.  The association between the regionalizations is determined by the area overlap between zones of each regionalization. The association is highest when each zone of one regionalization closely corresponds to a zone of the other regionalization.  Similarly, spatial association is lowest when the zones of one regionalization have large overlap with many different zones of the other regionalization.   The primary output of the tool is a global measure of spatial association between the categorical variables: a single number ranging from 0 (no correspondence) to 1 (perfect spatial alignment of zones). Optionally, this global association can be calculated and visualized for specific zones of either regionalization or for specific combinations of zones between regionalizations. For example, you can use this tool to compare two sets of categorical zones, such as the crop type and soil drainage class of an agricultural area to measure how closely particular crops correspond to a specific class of soil drainage. However, you can also use this tool to measure the degree of change of the same categorical zones over time.  For example, climate zones from 1990 can be compared to climate zones from 2020 to measure how much the climate zones changed over three decades. Using optional outputs, you can determine how each individual climate zone changed, such as whether arid climate zones expanded into areas that were
+Measures the degree of spatial association between two regionalizations of the same study area in which each regionalization is composed of a set of categories, called zones.  The association between the regionalizations is determined by the area overlap between zones of each regionalization. The association is highest when each zone of one regionalization closely corresponds to a zone of the other regionalization.  Similarly, spatial association is lowest when the zones of one regionalization have large overlap with many different zones of the other regionalization.   The primary output of the tool is a global measure of spatial association between the categorical variables: a single number ranging from 0 (no correspondence) to 1 (perfect spatial alignment of zones). Optionally, this global association can be calculated and visualized for specific zones of either regionalization or for specific combinations of zones between regionalizations. For example, you can use this tool to compare two sets of categorical zones, such as the crop type and soil drainage class of an agricultural area to measure how closely particular crops correspond to a specific class of soil drainage. However, you can also use this tool to measure the degree of change of the same categorical zones over time.  For example, climate zones from 1990 can be compared to climate zones from 2020 to measure how much the climate zones changed over three decades. Using optional outputs, you can determine how each individual climate zone changed, such as whether arid climate zones expanded into areas that were
+
 previously semiarid. Learn more about how Spatial Association Between Zones works
 
         params: {"input_feature_or_raster": <Feature Layer; Raster Layer; Image Service>, "categorical_zone_field": <Field>, "overlay_feature_or_raster": <Feature Layer; Raster Layer; Image Service>, ...}

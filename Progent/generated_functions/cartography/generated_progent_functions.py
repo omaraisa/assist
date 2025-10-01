@@ -902,7 +902,8 @@ Derives centerlines from dual-line (double-line) features, such as road casings,
     def collapse_hydro_polygon(self, params):
         """Collapse Hydro Polygon
 
-Collapses or partially collapses hydro polygons to a 
+Collapses or partially collapses hydro polygons to a 
+
 centerline based on a collapse width.
 
         params: {"in_features": <Feature Layer>, "out_line_feature_class": <Feature Class>, "merge_adjacent_input_polygons": <Boolean>, ...}

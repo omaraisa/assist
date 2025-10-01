@@ -18,52 +18,52 @@ functions_declarations = {
                 "out_ga_layer": {
                         "type": "string",
                         "description": "The geostatistical layer produced. This layer is required output only if no output raster is requested.",
-                        "default": null
+                        "default": None
                 },
                 "out_raster": {
                         "type": "string",
                         "description": "The output raster. This raster is required output only if no output geostatistical layer is requested.",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size at which the output raster will be created.\r\nThis value can be explicitly set in the Environments by the  Cell Size parameter.If not set, it is the shorter of the width or the height of ...",
-                        "default": null
+                        "default": None
                 },
                 "in_barrier_features": {
                         "type": "string",
                         "description": "Absolute barrier features using non-Euclidean distances rather than line-of-sight distances.",
-                        "default": null
+                        "default": None
                 },
                 "bandwidth": {
                         "type": "string",
                         "description": "Used to specify the maximum distance at which data points are used for prediction. With increasing bandwidth, prediction bias increases and prediction variance decreases.",
-                        "default": null
+                        "default": None
                 },
                 "number_iterations": {
                         "type": "string",
                         "description": "The iteration count controls the accuracy of the numerical solution because the model solves the diffusion equation numerically. The larger this number, the more accurate the predictions, yet the long...",
-                        "default": null
+                        "default": None
                 },
                 "weight_field": {
                         "type": "string",
                         "description": "Used to emphasize an observation. The larger the weight, the more impact it has on the prediction. For coincident observations, assign the largest weight to the most reliable measurement.",
-                        "default": null
+                        "default": None
                 },
                 "in_additive_barrier_raster": {
                         "type": "string",
                         "description": "The travel distance from one raster cell to the next based on this formula:(average cost value in the neighboring cells) x (distance between cell centers)",
-                        "default": null
+                        "default": None
                 },
                 "in_cumulative_barrier_raster": {
                         "type": "string",
                         "description": "The travel distance from one raster cell to the next based on this formula:(difference between cost values in the neighboring cells) + (distance between cell centers)",
-                        "default": null
+                        "default": None
                 },
                 "in_flow_barrier_raster": {
                         "type": "string",
                         "description": "A flow barrier is used when interpolating data with preferential direction of data variation, based on this formula:Indicator (cost values in the to neighboring cell &gt; cost values in the from neigh...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -94,57 +94,57 @@ functions_declarations = {
                 "out_raster": {
                         "type": "string",
                         "description": "The output raster displaying the result of the interpolation. The default cell size will be the maximum of the cell sizes of the Input explanatory variable rasters. To use a different cell size, use t...",
-                        "default": null
+                        "default": None
                 },
                 "out_diagnostic_feature_class": {
                         "type": "string",
                         "description": "Output polygon feature class that shows the regions of each local model and contains fields with diagnostic information for the local models. For each subset, a polygon will be created that surrounds ...",
-                        "default": null
+                        "default": None
                 },
                 "measurement_error_field": {
                         "type": "string",
                         "description": "A field that specifies the measurement error for each point in the dependent variable features. For each point, the value of this field should correspond to one standard deviation of the measured valu...",
-                        "default": null
+                        "default": None
                 },
                 "min_cumulative_variance": {
                         "type": "string",
                         "description": "Defines the minimum cumulative percent of variance from the principal components of the explanatory variable rasters. Before building the regression model, the principal components of the explanatory ...",
-                        "default": null
+                        "default": None
                 },
                 "in_subset_features": {
                         "type": "string",
                         "description": "Polygon features defining where the local models will be calculated. The points inside each polygon will be used for the local models. This parameter is useful when you know that the values of the dep...",
-                        "default": null
+                        "default": None
                 },
                 "transformation_type": {
                         "type": "string",
                         "description": "Type of transformation to be applied to the input data.NONE\u2014Do not apply any transformation. This is the default.EMPIRICAL\u2014Multiplicative Skewing transformation with Empirical base function.LOGEMPIRIC...",
-                        "default": null
+                        "default": None
                 },
                 "semivariogram_model_type": {
                         "type": "string",
                         "description": "The semivariogram model that will be used for the interpolation.\r\nLearn more about the semivariogram models in EBK Regression Prediction\r\nEXPONENTIAL\u2014Exponential semivariogramNUGGET\u2014Nugget semivariogr...",
-                        "default": null
+                        "default": None
                 },
                 "max_local_points": {
                         "type": "string",
                         "description": "The input data will automatically be divided into subsets that do not have more than this number of points. If Subset polygon features are supplied, the value of this parameter will be ignored.",
-                        "default": null
+                        "default": None
                 },
                 "overlap_factor": {
                         "type": "string",
                         "description": "A factor representing the degree of overlap between local models (also called subsets). Each input point can fall into several subsets, and the overlap factor specifies the average number of subsets t...",
-                        "default": null
+                        "default": None
                 },
                 "number_simulations": {
                         "type": "string",
                         "description": "The number of simulated semivariograms of each local model. Using more simulations will make the model calculations more stable, but the model will take longer to calculate.",
-                        "default": null
+                        "default": None
                 },
                 "search_neighborhood": {
                         "type": "string",
                         "description": "Defines which surrounding points will be used to control the output. Standard is the default.The following are Search Neighborhood classes: SearchNeighborhoodStandardCircular and SearchNeighborhoodSmo...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -169,67 +169,67 @@ functions_declarations = {
                 "out_ga_layer": {
                         "type": "string",
                         "description": "The geostatistical layer produced. This layer is required output only if no output raster is requested.",
-                        "default": null
+                        "default": None
                 },
                 "out_raster": {
                         "type": "string",
                         "description": "The output raster. This raster is required output only if no output geostatistical layer is requested.",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size at which the output raster will be created.This value can be explicitly set in the Environments by the  Cell Size parameter.If not set, it is the shorter of the width or the height of th...",
-                        "default": null
+                        "default": None
                 },
                 "transformation_type": {
                         "type": "string",
                         "description": "Type of transformation to be applied to the input data.NONE\u2014Do not apply any transformation. This is the default.EMPIRICAL\u2014Multiplicative Skewing transformation with Empirical base function.LOGEMPIRIC...",
-                        "default": null
+                        "default": None
                 },
                 "max_local_points": {
                         "type": "string",
                         "description": "The input data will automatically be divided into groups that do not have more than this number of points.",
-                        "default": null
+                        "default": None
                 },
                 "overlap_factor": {
                         "type": "string",
                         "description": "A factor representing the degree of overlap between local models (also called subsets). Each input point can fall into several subsets, and the overlap factor specifies the average number of subsets t...",
-                        "default": null
+                        "default": None
                 },
                 "number_semivariograms": {
                         "type": "string",
                         "description": "The number of simulated semivariograms of each local model.",
-                        "default": null
+                        "default": None
                 },
                 "search_neighborhood": {
                         "type": "string",
                         "description": "Defines which surrounding points will be used to control the output. Standard Circular is the default.The following are Search Neighborhood classes: SearchNeighborhoodStandardCircular and SearchNeighb...",
-                        "default": null
+                        "default": None
                 },
                 "output_type": {
                         "type": "string",
                         "description": "Surface type to store the interpolation results.For more information about the output surface types, see What output surface types can the interpolation models generate?\r\nPREDICTION\u2014Prediction surface...",
-                        "default": null
+                        "default": None
                 },
                 "quantile_value": {
                         "type": "string",
                         "description": "The quantile value for which the output raster will be generated.",
-                        "default": null
+                        "default": None
                 },
                 "threshold_type": {
                         "type": "string",
                         "description": "Specifies whether to calculate the probability of exceeding or not exceeding the specified threshold.EXCEED\u2014Probability values exceed the threshold. This is the default.NOT_EXCEED\u2014Probability values w...",
-                        "default": null
+                        "default": None
                 },
                 "probability_threshold": {
                         "type": "string",
                         "description": "The probability threshold value. If left empty, the median (50th quantile) of the input data will be used.",
-                        "default": null
+                        "default": None
                 },
                 "semivariogram_model_type": {
                         "type": "string",
                         "description": "The semivariogram model that will be used for the interpolation.POWER\u2014Power semivariogramLINEAR\u2014Linear semivariogramTHIN_PLATE_SPLINE\u2014Thin Plate Spline semivariogramEXPONENTIAL\u2014Exponential semivariogr...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -260,77 +260,77 @@ functions_declarations = {
                 "elevation_units": {
                         "type": "string",
                         "description": "The units of the elevation field.If Shape.Z is provided as the elevation field, the units will automatically match the z-units of the vertical coordinate system.INCH\u2014Elevations are in U.S. survey inch...",
-                        "default": null
+                        "default": None
                 },
                 "measurement_error_field": {
                         "type": "string",
                         "description": "The field of the input features containing measurement error values for each point. The value should correspond to one standard deviation of the measured value of each point. Use this field if the mea...",
-                        "default": null
+                        "default": None
                 },
                 "semivariogram_model_type": {
                         "type": "string",
                         "description": "The semivariogram model that will be used for the interpolation.\r\nPOWER\u2014The Power semivariogram model will be used.LINEAR\u2014The Linear semivariogram model will be used.THIN_PLATE_SPLINE\u2014The Thin Plate S...",
-                        "default": null
+                        "default": None
                 },
                 "transformation_type": {
                         "type": "string",
                         "description": "The type of transformation that will be applied to the input features.NONE\u2014No transformation will be applied. This is the default.EMPIRICAL\u2014Multiplicative Skewing transformation with Empirical base fu...",
-                        "default": null
+                        "default": None
                 },
                 "subset_size": {
                         "type": "string",
                         "description": "The size of the subset. The input data will automatically be divided into subsets before processing. This parameter controls the number of points that will be in each subset.",
-                        "default": null
+                        "default": None
                 },
                 "overlap_factor": {
                         "type": "string",
                         "description": "A factor representing the degree of overlap between local models (also called subsets).Each input point can fall into several subsets, and the overlap factor specifies the average number of subsets in...",
-                        "default": null
+                        "default": None
                 },
                 "number_simulations": {
                         "type": "string",
                         "description": "The number of simulated semivariograms that will be used for each local model.Using more simulations will make the model calculations more stable, but the model will take longer to calculate.",
-                        "default": null
+                        "default": None
                 },
                 "trend_removal": {
                         "type": "string",
                         "description": "Specifies the order of trend removal in the vertical direction.For most 3D data, the values of the points change faster vertically than horizontally. Removing trend in the vertical direction will help...",
-                        "default": null
+                        "default": None
                 },
                 "elev_inflation_factor": {
                         "type": "string",
                         "description": "A constant value that is multiplied by the Elevation field value prior to subsetting and model estimation. For most 3D data, the values of the points change faster vertically than horizontally, and th...",
-                        "default": null
+                        "default": None
                 },
                 "search_neighborhood": {
                         "type": "string",
                         "description": "Specifies the number and orientation of the neighbors using the SearchNeighborhoodStandard3D class.\r\nStandard3D\r\n radius\u2014The length of the radius of the search neighborhood. nbrMax\u2014The maximum number ...",
-                        "default": null
+                        "default": None
                 },
                 "output_elevation": {
                         "type": "string",
                         "description": "The default elevation of the out_ga_layer parameter value.\r\nThe geostatistical layer will draw as a horizontal surface at a given elevation, and this parameter specifies this elevation. After it's cre...",
-                        "default": null
+                        "default": None
                 },
                 "output_type": {
                         "type": "string",
                         "description": "Surface type to store the interpolation results.For more information about output surface types, see What output surface types can the interpolation models generate.\r\nPREDICTION\u2014Prediction surfaces ar...",
-                        "default": null
+                        "default": None
                 },
                 "quantile_value": {
                         "type": "string",
                         "description": "The quantile value for which the output layer will be generated.",
-                        "default": null
+                        "default": None
                 },
                 "threshold_type": {
                         "type": "string",
                         "description": "Specifies whether to calculate the probability that a value exceeds or does not exceed the specified threshold.EXCEED\u2014The probability that the value exceeds the threshold will be calculated. This is t...",
-                        "default": null
+                        "default": None
                 },
                 "probability_threshold": {
                         "type": "string",
                         "description": "The probability threshold value. If no value is provided, the median (50th quantile) of the input data will be used.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -355,27 +355,27 @@ functions_declarations = {
                 "out_ga_layer": {
                         "type": "string",
                         "description": "The geostatistical layer produced. This layer is required output only if no output raster is requested.",
-                        "default": null
+                        "default": None
                 },
                 "out_raster": {
                         "type": "string",
                         "description": "The output raster. This raster is required output only if no output geostatistical layer is requested.",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size at which the output raster will be created.\r\nThis value can be explicitly set in the Environments by the  Cell Size parameter.If not set, it is the shorter of the width or the height of ...",
-                        "default": null
+                        "default": None
                 },
                 "power": {
                         "type": "string",
                         "description": "The order of the polynomial.",
-                        "default": null
+                        "default": None
                 },
                 "weight_field": {
                         "type": "string",
                         "description": "Used to emphasize an observation. The larger the weight, the more impact it has on the prediction. For coincident observations, assign the largest weight to the most reliable measurement.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -398,32 +398,32 @@ functions_declarations = {
                 "out_ga_layer": {
                         "type": "string",
                         "description": "The geostatistical layer produced. This layer is required output only if no output raster is requested.",
-                        "default": null
+                        "default": None
                 },
                 "out_raster": {
                         "type": "string",
                         "description": "The output raster. This raster is required output only if no output geostatistical layer is requested.",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size at which the output raster will be created.This value can be explicitly set in the Environments by the  Cell Size parameter.If not set, it is the shorter of the width or the height of th...",
-                        "default": null
+                        "default": None
                 },
                 "power": {
                         "type": "string",
                         "description": "The exponent of distance that controls the significance of surrounding points on the interpolated value. A higher power results in less influence from distant points.",
-                        "default": null
+                        "default": None
                 },
                 "search_neighborhood": {
                         "type": "string",
                         "description": "Defines which surrounding points will be used to control the output. Standard is the default.The following are Search Neighborhood classes: SearchNeighborhoodStandard, SearchNeighborhoodSmooth, Search...",
-                        "default": null
+                        "default": None
                 },
                 "weight_field": {
                         "type": "string",
                         "description": "Used to emphasize an observation. The larger the weight, the more impact it has on the prediction. For coincident observations, assign the largest weight to the most reliable measurement.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -450,52 +450,52 @@ functions_declarations = {
                 "power": {
                         "type": "string",
                         "description": "The power value that will be used to weight the values of neighboring features when calculating predictions. A higher power results in higher influence to closer points. The value must be between 1 an...",
-                        "default": null
+                        "default": None
                 },
                 "elev_inflation_factor": {
                         "type": "string",
                         "description": "A constant value that is multiplied to the z-coordinates of the input features prior to finding neighbors and calculating distances. For most 3D data, the values of the points change faster vertically...",
-                        "default": null
+                        "default": None
                 },
                 "out_cv_features": {
                         "type": "string",
                         "description": "A feature class of the cross validation statistics for each input point. The feature class will contain two scatter plots.",
-                        "default": null
+                        "default": None
                 },
                 "x_spacing": {
                         "type": "string",
                         "description": "The spacing between each gridded point in the x-dimension.\r\nThe default value creates 40 points along the output x-extent.",
-                        "default": null
+                        "default": None
                 },
                 "y_spacing": {
                         "type": "string",
                         "description": "The spacing between each gridded point in the y-dimension.\r\nThe default value creates 40 points along the output y-extent.",
-                        "default": null
+                        "default": None
                 },
                 "elevation_spacing": {
                         "type": "string",
                         "description": "The spacing between each gridded point in the elevation (z) dimension.\r\nThe default value creates 40 points along the output z-extent.",
-                        "default": null
+                        "default": None
                 },
                 "in_study_area": {
                         "type": "string",
                         "description": "The polygon features that represent the study area. Only points that are within the study area are saved in the output netCDF file.\r\nWhen visualized as a voxel layer, only voxels within the study area...",
-                        "default": null
+                        "default": None
                 },
                 "min_elev_raster": {
                         "type": "string",
                         "description": "The  elevation raster that will be used to clip the bottom of the voxel layer. Only voxels above this elevation raster will be assigned predictions. For example, if you use a ground elevation raster, ...",
-                        "default": null
+                        "default": None
                 },
                 "max_elev_raster": {
                         "type": "string",
                         "description": "The  elevation raster that will be used to clip the top of the voxel layer. Only voxels below this elevation raster will be assigned predictions. For example, if you use a ground elevation raster, the...",
-                        "default": null
+                        "default": None
                 },
                 "search_neighborhood": {
                         "type": "string",
                         "description": "Specifies the number and orientation of the neighbors using the SearchNeighborhoodStandard3D class.\r\nStandard3D\r\n radius\u2014The length of the radius of the search neighborhood. If no value is provided, a...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -519,47 +519,47 @@ functions_declarations = {
                 "out_ga_layer": {
                         "type": "string",
                         "description": "The geostatistical layer produced. This layer is required output only if no output raster is requested.",
-                        "default": null
+                        "default": None
                 },
                 "out_raster": {
                         "type": "string",
                         "description": "The output raster. This raster is required output only if no output geostatistical layer is requested.",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size at which the output raster will be created.This value can be explicitly set in the Environments by the  Cell Size parameter.If not set, it is the shorter of the width or the height of th...",
-                        "default": null
+                        "default": None
                 },
                 "in_barrier_features": {
                         "type": "string",
                         "description": "Absolute barrier features using non-Euclidean distances rather than line-of-sight distances.",
-                        "default": null
+                        "default": None
                 },
                 "kernel_function": {
                         "type": "string",
                         "description": "The kernel function used in the simulation.EXPONENTIAL\u2014 The function grows or decays proportionally.GAUSSIAN\u2014 Bell-shaped function that falls off quickly toward plus/minus infinity.QUARTIC\u2014 Fourth-ord...",
-                        "default": null
+                        "default": None
                 },
                 "bandwidth": {
                         "type": "string",
                         "description": "Used to specify the maximum distance at which data points are used for prediction. With increasing bandwidth, prediction bias increases and prediction variance decreases.",
-                        "default": null
+                        "default": None
                 },
                 "power": {
                         "type": "string",
                         "description": "Sets the order of the polynomial.",
-                        "default": null
+                        "default": None
                 },
                 "ridge": {
                         "type": "string",
                         "description": "Used for the numerical stabilization of the solution of the system of linear equations. It does not influence predictions in the case of regularly distributed data without barriers. Predictions for ar...",
-                        "default": null
+                        "default": None
                 },
                 "output_type": {
                         "type": "string",
                         "description": "Surface type to store the interpolation results.For more information about the output surface types, see What output surface types can the interpolation models generate?\r\n\r\nPREDICTION\u2014Prediction surfa...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -582,57 +582,57 @@ functions_declarations = {
                 "out_ga_layer": {
                         "type": "string",
                         "description": "The geostatistical layer produced. This layer is required output only if no output raster is requested.",
-                        "default": null
+                        "default": None
                 },
                 "out_raster": {
                         "type": "string",
                         "description": "The output raster. This raster is required output only if no output geostatistical layer is requested.",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size at which the output raster will be created.This value can be explicitly set in the Environments by the  Cell Size parameter.If not set, it is the shorter of the width or the height of th...",
-                        "default": null
+                        "default": None
                 },
                 "power": {
                         "type": "string",
                         "description": "The order of the polynomial.",
-                        "default": null
+                        "default": None
                 },
                 "search_neighborhood": {
                         "type": "string",
                         "description": "Defines which surrounding points will be used to control the output. Standard is the default.The following are Search Neighborhood classes: SearchNeighborhoodStandard, SearchNeighborhoodSmooth, Search...",
-                        "default": null
+                        "default": None
                 },
                 "kernel_function": {
                         "type": "string",
                         "description": "The kernel function used in the simulation.\r\n\r\nEXPONENTIAL\u2014The function grows or decays proportionally.GAUSSIAN\u2014Bell-shaped function that falls off quickly toward plus or minus infinity.QUARTIC\u2014Fourth...",
-                        "default": null
+                        "default": None
                 },
                 "bandwidth": {
                         "type": "string",
                         "description": "Used to specify the maximum distance at which data points are used for prediction. With increasing bandwidth, prediction bias increases and prediction variance decreases.",
-                        "default": null
+                        "default": None
                 },
                 "use_condition_number": {
                         "type": "string",
                         "description": "Option to control the creation of prediction and prediction standard errors where the predictions are unstable. This option is only available for polynomials of order 1, 2, and 3.NO_USE_CONDITION_NUMB...",
-                        "default": null
+                        "default": None
                 },
                 "condition_number": {
                         "type": "string",
                         "description": "Every invertible square matrix has a condition number that indicates how inaccurate the solution to the linear equations can be with a small change in the matrix coefficients (it can be due to impreci...",
-                        "default": null
+                        "default": None
                 },
                 "weight_field": {
                         "type": "string",
                         "description": "Used to emphasize an observation. The larger the weight, the more impact it has on the prediction. For coincident observations, assign the largest weight to the most reliable measurement.",
-                        "default": null
+                        "default": None
                 },
                 "output_type": {
                         "type": "string",
                         "description": "Surface type to store the interpolation results.For more information about the output surface types, see What output surface types can the interpolation models generate?\r\nPREDICTION\u2014Prediction surface...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -667,12 +667,12 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size at which the output raster will be created.This value can be explicitly set in the Environments by the  Cell Size parameter.If not set, it is the shorter of the width or the height of th...",
-                        "default": null
+                        "default": None
                 },
                 "out_surface_grid": {
                         "type": "string",
                         "description": "The prediction values in the output feature class are interpolated onto a raster using the Local polynomial interpolation method.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -702,37 +702,37 @@ functions_declarations = {
                 "x_spacing": {
                         "type": "string",
                         "description": "The spacing between each gridded point in the x-dimension.\r\nThe default value creates 40 points along the output x-extent.",
-                        "default": null
+                        "default": None
                 },
                 "y_spacing": {
                         "type": "string",
                         "description": "The spacing between each gridded point in the y-dimension.\r\nThe default value creates 40 points along the output y-extent.",
-                        "default": null
+                        "default": None
                 },
                 "elevation_spacing": {
                         "type": "string",
                         "description": "The spacing between each gridded point in the elevation (z) dimension.\r\nThe default value creates 40 points along the output z-extent.",
-                        "default": null
+                        "default": None
                 },
                 "elev_inflation_factor": {
                         "type": "string",
                         "description": "A constant value that is multiplied to the elevation (z-coordinates) of the input points prior to finding the nearest neighbor. Values larger than 1  will search farther horizontally than vertically t...",
-                        "default": null
+                        "default": None
                 },
                 "in_study_area": {
                         "type": "string",
                         "description": "The polygon features that represent the study area. Only points that are within the study area are saved in the output netCDF file.\r\nWhen visualized as a voxel layer, only voxels within the study area...",
-                        "default": null
+                        "default": None
                 },
                 "min_elev_raster": {
                         "type": "string",
                         "description": "The  elevation raster that will be used to clip the bottom of the voxel layer. Only voxels above this elevation raster will be assigned predictions. For example, if you use a ground elevation raster, ...",
-                        "default": null
+                        "default": None
                 },
                 "max_elev_raster": {
                         "type": "string",
                         "description": "The  elevation raster that will be used to clip the top of the voxel layer. Only voxels below this elevation raster will be assigned predictions. For example, if you use a ground elevation raster, the...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -756,32 +756,32 @@ functions_declarations = {
                 "out_ga_layer": {
                         "type": "string",
                         "description": "The geostatistical layer produced. This layer is required output only if no output raster is requested.",
-                        "default": null
+                        "default": None
                 },
                 "out_raster": {
                         "type": "string",
                         "description": "The output raster. This raster is required output only if no output geostatistical layer is requested.",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size at which the output raster will be created.\r\nThis value can be explicitly set in the Environments by the  Cell Size parameter.If not set, it is the shorter of the width or the height of ...",
-                        "default": null
+                        "default": None
                 },
                 "search_neighborhood": {
                         "type": "string",
                         "description": "Defines which surrounding points will be used to control the output. Standard is the default.The following are Search Neighborhood classes: SearchNeighborhoodStandard and SearchNeighborhoodStandardCir...",
-                        "default": null
+                        "default": None
                 },
                 "radial_basis_functions": {
                         "type": "string",
                         "description": "There are five radial basis functions available.THIN_PLATE_SPLINE\u2014Thin-plate spline functionSPLINE_WITH_TENSION\u2014 Spline with tension functionCOMPLETELY_REGULARIZED_SPLINE\u2014 Completely regularized splin...",
-                        "default": null
+                        "default": None
                 },
                 "small_scale_parameter": {
                         "type": "string",
                         "description": "Used to calculate the weights assigned to the points located in the moving window. Each of the radial basis functions has a parameter that controls the degree of small-scale variation of the surface. ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -831,27 +831,27 @@ functions_declarations = {
                 "selection_criteria": {
                         "type": "string",
                         "description": "Methods to densify a sampling network.STDERR\u2014Standard error of prediction criteriaSTDERR_THRESHOLD\u2014Standard error threshold criteriaQUARTILE_THRESHOLD\u2014 Lower quartile threshold criteriaQUARTILE_THRESH...",
-                        "default": null
+                        "default": None
                 },
                 "threshold": {
                         "type": "string",
                         "description": "The threshold value used to densify the sampling network.\r\nThis parameter is only applicable when Standard error threshold, Lower quartile threshold, or Upper quartile threshold selection criteria is ...",
-                        "default": null
+                        "default": None
                 },
                 "in_weight_raster": {
                         "type": "string",
                         "description": "A raster used to determine which locations to weight for  preference.",
-                        "default": null
+                        "default": None
                 },
                 "in_candidate_point_features": {
                         "type": "string",
                         "description": "Sample locations to pick from.",
-                        "default": null
+                        "default": None
                 },
                 "inhibition_distance": {
                         "type": "string",
                         "description": "Used to prevent any samples being placed within this distance from each other.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -879,12 +879,12 @@ functions_declarations = {
                 "out_raster_names_table": {
                         "type": "string",
                         "description": "Saves the names of the Input rasters to disc.",
-                        "default": null
+                        "default": None
                 },
                 "add_warning_field": {
                         "type": "string",
                         "description": "Records if input features are partially or completely covered by the Input rasters.ADD_WARNING_FIELD\u2014Warning field is added to the output table and populated with a P when a feature is partially cover...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -916,52 +916,52 @@ functions_declarations = {
                 "in_conditioning_features": {
                         "type": "string",
                         "description": "The features used to condition the realizations. If left blank, unconditional realizations are produced.",
-                        "default": null
+                        "default": None
                 },
                 "conditioning_field": {
                         "type": "string",
                         "description": "The field used to condition the realizations. If left blank, unconditional realizations are produced.",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size at which the output raster will be created.This value can be explicitly set in the Environments by the  Cell Size parameter.If not set, it is the shorter of the width or the height of th...",
-                        "default": null
+                        "default": None
                 },
                 "in_bounding_dataset": {
                         "type": "string",
                         "description": "Limits the analysis to these features' bounding polygon. If point features are entered, then a convex hull polygon is automatically created. Realizations are then performed within that polygon. If bou...",
-                        "default": null
+                        "default": None
                 },
                 "save_simulated_rasters": {
                         "type": "string",
                         "description": "Specifies whether or not the simulated rasters are saved to disk.\r\nSAVE_SIMULATIONS\u2014Indicates that the simulated rasters will be saved to disk.DO_NOT_SAVE_SIMULATIONS\u2014Indicates that the simulated rast...",
-                        "default": null
+                        "default": None
                 },
                 "quantile": {
                         "type": "string",
                         "description": "The quantile value for which the output raster will be generated.",
-                        "default": null
+                        "default": None
                 },
                 "threshold": {
                         "type": "string",
                         "description": "The threshold value for which the output raster will be generated, as the percentage of the number of times the set threshold was exceeded, on a cell-by-cell basis.",
-                        "default": null
+                        "default": None
                 },
                 "in_stats_polygons": {
                         "type": "string",
                         "description": "These polygons represent areas of interest for which summary statistics are calculated.\r\nIf in_stats_polygons are provided, the output polygon feature class will be saved in the location defined by ou...",
-                        "default": null
+                        "default": None
                 },
                 "raster_stat_type": {
                         "type": "string",
                         "description": "The simulated rasters are postprocessed on a cell-by-cell basis, and each selected statistics type is calculated and reported in an output raster.MIN\u2014Calculates the minimum (smallest value).MAX\u2014Calcul...",
-                        "default": null
+                        "default": None
                 },
                 "conditioning_measurement_error_field": {
                         "type": "string",
                         "description": "A field that specifies the measurement error for each input point in the conditioning features. For each conditioning feature, the value of this field should correspond to one standard deviation of th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -986,32 +986,32 @@ functions_declarations = {
                 "out_geostat_layer": {
                         "type": "string",
                         "description": "The output geostatistical layer of the interpolation result with highest rank. This interpolation result will have the value 1 in the RANK field of the output cross validation table.\r\nIf there are tie...",
-                        "default": null
+                        "default": None
                 },
                 "comparison_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to compare and rank the interpolation results.SINGLE\u2014A single cross validation statistic will be used to compare and rank results, such as highest prediction acc...",
-                        "default": null
+                        "default": None
                 },
                 "criterion": {
                         "type": "string",
                         "description": "Specifies the criterion that will be used to rank the interpolation results.\r\nACCURACY\u2014Results will be ranked by lowest root mean square error. This option measures how closely the cross validation pr...",
-                        "default": null
+                        "default": None
                 },
                 "criteria_hierarchycriteria1_tol_type1_tol_val1_criteria2_tol_type2_tol_val2": {
                         "type": "string",
                         "description": "The hierarchy of criteria that will be used for hierarchical sorting with tolerances. Provide multiple criteria in priority order with the first being most important.  The interpolation results are ra...",
-                        "default": null
+                        "default": None
                 },
                 "weighted_criteria1_weight1_criteria2_weight2": {
                         "type": "string",
                         "description": "The multiple criteria with weights that will be used to rank interpolation results.  For each row, provide a criterion and a weight.  The interpolation results will be ranked independently by each of ...",
-                        "default": null
+                        "default": None
                 },
                 "exclusion_criteria1_value1_criteria2_value2": {
                         "type": "string",
                         "description": "The criteria and associated values that will be used to exclude interpolation results from the comparison.  Excluded results will not receive ranks and will have the value No in the Included field of ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1030,7 +1030,7 @@ functions_declarations = {
                 "out_point_feature_class": {
                         "type": "string",
                         "description": "Stores the cross-validation statistics at each location in the geostatistical layer.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1052,17 +1052,17 @@ functions_declarations = {
                 "direction": {
                         "type": "string",
                         "description": "The direction of the trend.  Provide the value as degrees clockwise from north. For example, 0 corresponds to north, 90 to east, 180 to south, and 270 to west.  The value must be between 0 and 360.  T...",
-                        "default": null
+                        "default": None
                 },
                 "determine_direction": {
                         "type": "string",
                         "description": "Specifies whether the direction of the strongest trend will be determined by the tool. The direction of strongest trend is determined by finding the direction that maximizes the R-squared value for th...",
-                        "default": null
+                        "default": None
                 },
                 "order": {
                         "type": "string",
                         "description": "Specifies the order of the polynomial that will be fitted to the data values.1\u2014First order (linear) polynomial will be used.2\u2014Second order (quadratic) polynomial will be used.3\u2014Third order (cubic) pol...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1089,37 +1089,37 @@ functions_declarations = {
                 "out_geostat_layer": {
                         "type": "string",
                         "description": "The output geostatistical layer of the interpolation result with highest rank. This interpolation result will have the value 1 in the RANK field of the output cross validation table.\r\nIf there are tie...",
-                        "default": null
+                        "default": None
                 },
                 "interp_methods": {
                         "type": "string",
                         "description": "Specifies the interpolation methods that will be performed on the input features and value field.\r\nFor each method specified, 1 to 5 interpolation results will be generated. By default, all methods wi...",
-                        "default": null
+                        "default": None
                 },
                 "comparison_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to compare and rank the interpolation results.SINGLE\u2014A single cross validation statistic will be used to compare and rank results, such as highest prediction acc...",
-                        "default": null
+                        "default": None
                 },
                 "criterion": {
                         "type": "string",
                         "description": "Specifies the criterion that will be used to rank the interpolation results.\r\nACCURACY\u2014Results will be ranked by lowest root mean square error. This option measures how closely the cross validation pr...",
-                        "default": null
+                        "default": None
                 },
                 "criteria_hierarchycriteria1_tol_type1_tol_val1_criteria2_tol_type2_tol_val2": {
                         "type": "string",
                         "description": "The hierarchy of criteria that will be used for hierarchical sorting with tolerances. Provide multiple criteria in priority order with the first being most important.  The interpolation results are ra...",
-                        "default": null
+                        "default": None
                 },
                 "weighted_criteria1_weight1_criteria2_weight2": {
                         "type": "string",
                         "description": "The multiple criteria with weights that will be used to rank interpolation results.  For each row, provide a criterion and a weight.  The interpolation results will be ranked independently by each of ...",
-                        "default": null
+                        "default": None
                 },
                 "exclusion_criteria1_value1_criteria2_value2": {
                         "type": "string",
                         "description": "The criteria and associated values that will be used to exclude interpolation results from the comparison.  Excluded results will not receive ranks and will have the value No in the Included field of ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1143,17 +1143,17 @@ functions_declarations = {
                 "min_points_per_subset": {
                         "type": "string",
                         "description": "The minimum number of points that can be grouped into a subset. All subset polygons will contain at least this many points.",
-                        "default": null
+                        "default": None
                 },
                 "max_points_per_subset": {
                         "type": "string",
                         "description": "The maximum number of points that can be grouped into a subset.\r\nEach subset will always contain fewer than two times the min_points_per_subset regardless of the maximum number provided. This is becau...",
-                        "default": null
+                        "default": None
                 },
                 "coincident_points": {
                         "type": "string",
                         "description": "Specifies whether coincident points (points that are at the same location) are treated like a single point or as multiple individual points.If you intend to use the subset polygons as Subset polygon f...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1200,7 +1200,7 @@ functions_declarations = {
                 "shape_type": {
                         "type": "string",
                         "description": "Species the geometry of the neighborhood.ONE_SECTOR\u2014The neighborhood will be a single ellipse.FOUR_SECTORS\u2014 The neighborhood will be an ellipse divided into four sectors.FOUR_SECTORS_SHIFTED\u2014 The neig...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1233,42 +1233,42 @@ functions_declarations = {
                 "nugget_span_percents": {
                         "type": "string",
                         "description": "The percentage subtracted and added to the Nugget parameter to create a range for a subsequent random Nugget parameter selection.",
-                        "default": null
+                        "default": None
                 },
                 "nugget_calc_times": {
                         "type": "string",
                         "description": "Number of random Nugget values randomly sampled from the Nugget span.",
-                        "default": null
+                        "default": None
                 },
                 "partialsill_span_percents": {
                         "type": "string",
                         "description": "Percentage subtracted from and added to the Partial Sill parameter to create a range for a random Partial Sill selection.",
-                        "default": null
+                        "default": None
                 },
                 "partialsill_calc_times": {
                         "type": "string",
                         "description": "Number of Partial Sill values randomly sampled from the Partial Sill span.",
-                        "default": null
+                        "default": None
                 },
                 "range_span_percents": {
                         "type": "string",
                         "description": "Percentage subtracted and added to the Major Range parameter to create a range for a random Major Range selection.",
-                        "default": null
+                        "default": None
                 },
                 "range_calc_times": {
                         "type": "string",
                         "description": "Number of Major Range values randomly sampled from the Major Range span.",
-                        "default": null
+                        "default": None
                 },
                 "minrange_span_percents": {
                         "type": "string",
                         "description": "Percentage subtracted and added to the Minor Range parameter to create a range for a random Minor Range selection.",
-                        "default": null
+                        "default": None
                 },
                 "minrange_calc_times": {
                         "type": "string",
                         "description": "Number of Minor Range values randomly sampled from the Minor Range span.If Anisotropy has been set in the input geostatistical model source, a value is required.",
-                        "default": null
+                        "default": None
                 },
                 "out_table": {
                         "type": "string",
@@ -1297,17 +1297,17 @@ functions_declarations = {
                 "out_test_feature_class": {
                         "type": "string",
                         "description": "The subset of test features that will be created.",
-                        "default": null
+                        "default": None
                 },
                 "size_of_training_dataset": {
                         "type": "string",
                         "description": "The size of the output training feature class, entered either as a percentage of the input features or as an absolute number of features.",
-                        "default": null
+                        "default": None
                 },
                 "subset_size_units": {
                         "type": "string",
                         "description": "Specifies whether the subset size value will be used as a percentage of the input features or as an absolute number of features.PERCENTAGE_OF_INPUT\u2014 The subset size will be used as a percentage of the...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1334,7 +1334,7 @@ functions_declarations = {
                 "append_all_fields": {
                         "type": "string",
                         "description": "Determines whether all fields will be copied from the input features to the output feature class.ALL\u2014 All fields from the input features will be copied to the output feature class. This is the default...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1399,57 +1399,57 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output multidimensional raster.",
-                        "default": null
+                        "default": None
                 },
                 "explicit_only": {
                         "type": "string",
                         "description": "Specifies whether elevations will be provided as an explicit list or an iterator will be used.EXPLICIT_VALUES\u2014Elevation values will be provided as a list.NO_EXPLICIT_VALUES\u2014Elevation values will be pr...",
-                        "default": null
+                        "default": None
                 },
                 "min_elev": {
                         "type": "string",
                         "description": "The minimum elevation that will be used to start the iteration.",
-                        "default": null
+                        "default": None
                 },
                 "max_elev": {
                         "type": "string",
                         "description": "The maximum elevation that will be used to stop the iteration.",
-                        "default": null
+                        "default": None
                 },
                 "elev_interval": {
                         "type": "string",
                         "description": "The increment that the elevation will increase with each iteration.",
-                        "default": null
+                        "default": None
                 },
                 "elev_values": {
                         "type": "string",
                         "description": "The elevation values to export.",
-                        "default": null
+                        "default": None
                 },
                 "elev_units": {
                         "type": "string",
                         "description": "Specifies the measurement unit of the elevation values.INCH\u2014Elevations are in U.S. survey inches.FOOT\u2014Elevations are in U.S. survey feet.YARD\u2014Elevations are in U.S. survey yards.MILE_US\u2014Elevations are...",
-                        "default": null
+                        "default": None
                 },
                 "output_type": {
                         "type": "string",
                         "description": "Specifies the primary output type of the output multidimensional raster.  The Additional output types parameter can be used to specify additional variables in the output multidimensional raster.For mo...",
-                        "default": null
+                        "default": None
                 },
                 "quantile_probability_value": {
                         "type": "string",
                         "description": "If Output type is set to Quantile, use this parameter to enter the requested quantile. If Output type is set to Probability, use this parameter to enter the requested threshold value, and the probabil...",
-                        "default": null
+                        "default": None
                 },
                 "additional_outputsoutput_type_quantile_probability_value": {
                         "type": "string",
                         "description": "Specifies the output type and quantile or probability value for each additional output type. If multiple output types are provided, the output raster will be a multivariate raster dataset with a diffe...",
-                        "default": null
+                        "default": None
                 },
                 "build_transpose": {
                         "type": "string",
                         "description": "Specifies whether multidimensional transposes will be built on the output multidimensional raster.BUILD_TRANSPOSE\u2014Multidimensional transposes will be built on the output multidimensional raster.DO_NOT...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1480,77 +1480,77 @@ functions_declarations = {
                 "elevation_units": {
                         "type": "string",
                         "description": "The units of the elevation field.If Shape.Z is provided as the elevation field, the units will automatically match the z-units of the vertical coordinate system.INCH\u2014Elevations are in U.S. survey inch...",
-                        "default": null
+                        "default": None
                 },
                 "measurement_error_field": {
                         "type": "string",
                         "description": "The field of the input features containing measurement error values for each point. The value should correspond to one standard deviation of the measured value of each point. Use this field if the mea...",
-                        "default": null
+                        "default": None
                 },
                 "semivariogram_model_type": {
                         "type": "string",
                         "description": "The semivariogram model that will be used for the interpolation.\r\nPOWER\u2014The Power semivariogram model will be used.LINEAR\u2014The Linear semivariogram model will be used.THIN_PLATE_SPLINE\u2014The Thin Plate S...",
-                        "default": null
+                        "default": None
                 },
                 "transformation_type": {
                         "type": "string",
                         "description": "The type of transformation that will be applied to the input features.NONE\u2014No transformation will be applied. This is the default.EMPIRICAL\u2014Multiplicative Skewing transformation with Empirical base fu...",
-                        "default": null
+                        "default": None
                 },
                 "subset_size": {
                         "type": "string",
                         "description": "The size of the subset. The input data will automatically be divided into subsets before processing. This parameter controls the number of points that will be in each subset.",
-                        "default": null
+                        "default": None
                 },
                 "overlap_factor": {
                         "type": "string",
                         "description": "A factor representing the degree of overlap between local models (also called subsets).Each input point can fall into several subsets, and the overlap factor specifies the average number of subsets in...",
-                        "default": null
+                        "default": None
                 },
                 "number_simulations": {
                         "type": "string",
                         "description": "The number of simulated semivariograms that will be used for each local model.Using more simulations will make the model calculations more stable, but the model will take longer to calculate.",
-                        "default": null
+                        "default": None
                 },
                 "trend_removal": {
                         "type": "string",
                         "description": "Specifies the order of trend removal in the vertical direction.For most 3D data, the values of the points change faster vertically than horizontally. Removing trend in the vertical direction will help...",
-                        "default": null
+                        "default": None
                 },
                 "elev_inflation_factor": {
                         "type": "string",
                         "description": "A constant value that is multiplied by the Elevation field value prior to subsetting and model estimation. For most 3D data, the values of the points change faster vertically than horizontally, and th...",
-                        "default": null
+                        "default": None
                 },
                 "search_neighborhood": {
                         "type": "string",
                         "description": "Specifies the number and orientation of the neighbors using the SearchNeighborhoodStandard3D class.\r\nStandard3D\r\n radius\u2014The length of the radius of the search neighborhood. nbrMax\u2014The maximum number ...",
-                        "default": null
+                        "default": None
                 },
                 "output_elevation": {
                         "type": "string",
                         "description": "The default elevation of the out_ga_layer parameter value.\r\nThe geostatistical layer will draw as a horizontal surface at a given elevation, and this parameter specifies this elevation. After it's cre...",
-                        "default": null
+                        "default": None
                 },
                 "output_type": {
                         "type": "string",
                         "description": "Surface type to store the interpolation results.For more information about output surface types, see What output surface types can the interpolation models generate.\r\nPREDICTION\u2014Prediction surfaces ar...",
-                        "default": null
+                        "default": None
                 },
                 "quantile_value": {
                         "type": "string",
                         "description": "The quantile value for which the output layer will be generated.",
-                        "default": null
+                        "default": None
                 },
                 "threshold_type": {
                         "type": "string",
                         "description": "Specifies whether to calculate the probability that a value exceeds or does not exceed the specified threshold.EXCEED\u2014The probability that the value exceeds the threshold will be calculated. This is t...",
-                        "default": null
+                        "default": None
                 },
                 "probability_threshold": {
                         "type": "string",
                         "description": "The probability threshold value. If no value is provided, the median (50th quantile) of the input data will be used.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1575,47 +1575,47 @@ functions_declarations = {
                 "export_locations": {
                         "type": "string",
                         "description": "Specifies the locations to export from the in_3d_geostat_layers parameter value. If you choose the 3D_GRIDDED_POINTS option, you must provide values for the x_spacing, u_spacing, and elevation_spacing...",
-                        "default": null
+                        "default": None
                 },
                 "x_spacing": {
                         "type": "string",
                         "description": "The spacing between each gridded point in the x-dimension.\r\nThe default value creates 40 points along the output x-extent.",
-                        "default": null
+                        "default": None
                 },
                 "y_spacing": {
                         "type": "string",
                         "description": "The spacing between each gridded point in the y-dimension.\r\nThe default value creates 40 points along the output y-extent.",
-                        "default": null
+                        "default": None
                 },
                 "elevation_spacing": {
                         "type": "string",
                         "description": "The spacing between each gridded point in the elevation (z) dimension.\r\nThe default value creates 40 points along the output z-extent.",
-                        "default": null
+                        "default": None
                 },
                 "in_points_3d": {
                         "type": "string",
                         "description": "The 3D point features representing locations to export.\r\nThe point features must have their elevations stored in the Shape.Z geometry attribute.",
-                        "default": null
+                        "default": None
                 },
                 "output_variableslayer_name_output_type_quantile_probability_value": {
                         "type": "string",
                         "description": "Specifies the output types for the Input 3D geostatistical layers values. You can specify one or more output types for each of the layers or you can apply an output type to all input geostatistical la...",
-                        "default": null
+                        "default": None
                 },
                 "in_study_area": {
                         "type": "string",
                         "description": "The polygon features that represent the study area. Only points that are within the study area are saved in the output netCDF file.\r\nWhen visualized as a voxel layer, only voxels within the study area...",
-                        "default": null
+                        "default": None
                 },
                 "min_elev_raster": {
                         "type": "string",
                         "description": "The  elevation raster that will be used to clip the bottom of the voxel layer. Only voxels above this elevation raster will be assigned predictions. For example, if you use a ground elevation raster, ...",
-                        "default": null
+                        "default": None
                 },
                 "max_elev_raster": {
                         "type": "string",
                         "description": "The  elevation raster that will be used to clip the top of the voxel layer. Only voxels below this elevation raster will be assigned predictions. For example, if you use a ground elevation raster, the...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1642,27 +1642,27 @@ functions_declarations = {
                 "contour_quality": {
                         "type": "string",
                         "description": "Determines the smoothness of contour line representation.DRAFT\u2014 The default Draft quality presents a generalized version of isolines for faster display.PRESENTATION\u2014The Presentation option ensures mor...",
-                        "default": null
+                        "default": None
                 },
                 "classification_type": {
                         "type": "string",
                         "description": "Specifies how the contour breaks will be calculated.GEOMETRIC_INTERVAL\u2014Contour breaks are calculated based on geometric intervals.EQUAL_INTERVAL\u2014Contour breaks are calculated based on equal intervals....",
-                        "default": null
+                        "default": None
                 },
                 "classes_count": {
                         "type": "string",
                         "description": "Specify the number of classes in the output feature class.If contour_type is set to output filled contour polygons, the number of polygons created will equal the value specified in this parameter. If ...",
-                        "default": null
+                        "default": None
                 },
                 "classes_breaks": {
                         "type": "string",
                         "description": "The list of break values if the classification_type is set to Manual. The values should be passed as a list, and the values can be in any order.For contour output, these are the values of the contour ...",
-                        "default": null
+                        "default": None
                 },
                 "out_elevation": {
                         "type": "string",
                         "description": "For 3D interpolation models, you can export contours at any elevation. Use this parameter to specify the elevation that you want to export. If left empty, the elevation will be inherited from the inpu...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1686,17 +1686,17 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size at which the output raster will be created.This value can be explicitly set in the Environments by the  Cell Size parameter.If not set, it is the shorter of the width or the height of th...",
-                        "default": null
+                        "default": None
                 },
                 "points_per_block_horz": {
                         "type": "string",
                         "description": "The number of predictions for each cell in the horizontal direction for block interpolation. The default is 1.",
-                        "default": null
+                        "default": None
                 },
                 "points_per_block_vert": {
                         "type": "string",
                         "description": "The number of predictions for each cell in the vertical direction for block interpolation. The default is 1.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1719,7 +1719,7 @@ functions_declarations = {
                 "z_field": {
                         "type": "string",
                         "description": "If this field is left blank, predictions are made at the location points. If a field is selected, predictions are made at the location points, compared to their Z_value_field values, and a validation ...",
-                        "default": null
+                        "default": None
                 },
                 "out_feature_class": {
                         "type": "string",
@@ -1728,17 +1728,17 @@ functions_declarations = {
                 "append_all_fields": {
                         "type": "string",
                         "description": "Determines whether all fields will be copied from the input features to the output feature class.ALL\u2014 All fields from the input features will be copied to the output feature class. This is the default...",
-                        "default": null
+                        "default": None
                 },
                 "elevation_field": {
                         "type": "string",
                         "description": "The field containing the elevation of each input point. The parameter only applies to 3D geostatistical models. If the elevation values are stored as geometry attributes in Shape.Z, it is recommended ...",
-                        "default": null
+                        "default": None
                 },
                 "elevation_units": {
                         "type": "string",
                         "description": "The units of the elevation field. This parameter only applies to 3D geostatistical models. If Shape.Z is provided as the elevation field, the units will automatically match the Z-units of the vertical...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1762,37 +1762,37 @@ functions_declarations = {
                 "output_type": {
                         "type": "string",
                         "description": "The surface type of the output raster.For more information, see What output surface types can the interpolation models generate?PREDICTION\u2014A raster of predicted values.PREDICTION_STANDARD_ERROR\u2014A rast...",
-                        "default": null
+                        "default": None
                 },
                 "quantile_probability_value": {
                         "type": "string",
                         "description": "If the Output surface type is set to Quantile, use this parameter to enter the requested quantile. If the Output surface type is set to Probability, use this parameter to enter the requested threshold...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output rasters. This value will be shared by the Output raster and the Additional output rasters parameters.",
-                        "default": null
+                        "default": None
                 },
                 "points_per_block_horz": {
                         "type": "string",
                         "description": "The number of predictions for each cell in the horizontal direction for block interpolation. The default is 1.",
-                        "default": null
+                        "default": None
                 },
                 "points_per_block_vert": {
                         "type": "string",
                         "description": "The number of predictions for each cell in the vertical direction for block interpolation. The default is 1.",
-                        "default": null
+                        "default": None
                 },
                 "additional_rastersout_raster_output_type_quantile_probability_value": {
                         "type": "string",
                         "description": "Provide the name, output type, and quantile or probability value for each additional output raster. See the descriptions of parameters above for more information. These additional rasters will be save...",
-                        "default": null
+                        "default": None
                 },
                 "out_elevation": {
                         "type": "string",
                         "description": "For 3D interpolation models, you can export rasters at any elevation. Use this parameter to specify the elevation you want to export. If left empty, the elevation will be inherited from the input laye...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [

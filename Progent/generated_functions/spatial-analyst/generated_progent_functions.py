@@ -115,7 +115,7 @@ The value from a position raster is used to determine from which raster in a lis
             return {"success": False, "error": str(e)}
 
 
-    def set_null(self, params):
+    def set_None(self, params):
         """Set Null
 
 Set Null sets identified cell locations to NoData based on a specified criteria. It returns NoData if a conditional evaluation is true, and returns the value specified by another raster if it is false. Learn more about setting cell values to NoData with Set Null
@@ -3805,7 +3805,7 @@ Determines which values from the first input are contained in a set of other inp
             return {"success": False, "error": str(e)}
 
 
-    def is_null(self, params):
+    def is_None(self, params):
         """Is Null
 
 Determines which values from the input raster are NoData on a cell-by-cell basis. Returns a value of 1 if the input value is NoData and 0 for cells that are not.

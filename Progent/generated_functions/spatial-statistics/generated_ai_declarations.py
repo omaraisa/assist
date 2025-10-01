@@ -22,32 +22,32 @@ functions_declarations = {
                 "beginning_distance": {
                         "type": "string",
                         "description": "The distance at which the analysis of spatial autocorrelation and the distance from which to increment will start. The value provided for this parameter should be in the units of the Output Coordinate...",
-                        "default": null
+                        "default": None
                 },
                 "distance_increment": {
                         "type": "string",
                         "description": "The distance that will be increased after each iteration. The distance used in the analysis starts at the Beginning_Distance parameter value and increases by the amount specified in the Distance_Incre...",
-                        "default": null
+                        "default": None
                 },
                 "distance_method": {
                         "type": "string",
                         "description": "Specifies how distances will be calculated from each feature to neighboring features.            EUCLIDEAN\u2014The distances will be calculated using the straight-line distance between two points (as the ...",
-                        "default": null
+                        "default": None
                 },
                 "row_standardization": {
                         "type": "string",
                         "description": "Specifies whether spatial weights will be standardized. Row standardization is recommended whenever feature distribution is potentially biased due to sampling design or an imposed aggregation scheme.R...",
-                        "default": null
+                        "default": None
                 },
                 "output_table": {
                         "type": "string",
                         "description": "The table that will be created with each distance band and associated z-score result.",
-                        "default": null
+                        "default": None
                 },
                 "output_report_file": {
                         "type": "string",
                         "description": "The .pdf file that will be created containing a line graph summarizing results.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -87,27 +87,27 @@ functions_declarations = {
                 "distance_band_or_threshold_distance": {
                         "type": "string",
                         "description": "The cutoff distance for the inverse distance and fixed distance options. Features outside the specified cutoff for a target feature will be ignored in analyses for that feature. However, for ZONE_OF_I...",
-                        "default": null
+                        "default": None
                 },
                 "self_potential_field": {
                         "type": "string",
                         "description": "The field representing self potential, which is the distance or weight between a feature and itself.",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path to a file containing weights that define spatial, and potentially temporal, relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "apply_false_discovery_rate_fdr_correction": {
                         "type": "string",
                         "description": "Specifies whether statistical significance will be assessed based on the FDR correction.APPLY_FDR\u2014Statistical significance will be based on the FDR correction.NO_FDR\u2014Statistical significance will not ...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "An integer specifying the number of neighbors that will be included in the analysis.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -134,12 +134,12 @@ functions_declarations = {
                 "generate_report": {
                         "type": "string",
                         "description": "Specifies whether the tool will create a graphical summary of results.            \r\n            NO_REPORT\u2014No graphical summary will be created. This is the default.GENERATE_REPORT\u2014A graphical summary ...",
-                        "default": null
+                        "default": None
                 },
                 "area": {
                         "type": "string",
                         "description": "A numeric value representing the study area size. The default value is the area of the minimum enclosing rectangle that would encompass all features (or all selected features). Units should match thos...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -162,7 +162,7 @@ functions_declarations = {
                 "generate_report": {
                         "type": "string",
                         "description": "Specifies whether a graphical summary of result will be created as an .html file.\r\nNO_REPORT\u2014No graphical summary will be created. This is the default.GENERATE_REPORT\u2014A graphical summary will be creat...",
-                        "default": null
+                        "default": None
                 },
                 "conceptualization_of_spatial_relationships": {
                         "type": "string",
@@ -179,17 +179,17 @@ functions_declarations = {
                 "distance_band_or_threshold_distance": {
                         "type": "string",
                         "description": "Specifies a cutoff distance for the inverse distance and fixed distance options. Features outside the specified cutoff for a target feature are ignored in analyses for that feature. However, for ZONE_...",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path to a file containing weights that define spatial, and potentially temporal, relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "An integer specifying the number of neighbors that will be included in the analysis.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -219,42 +219,42 @@ functions_declarations = {
                 "compute_confidence_envelope": {
                         "type": "string",
                         "description": "The confidence envelope is calculated by randomly placing feature points (or feature values) in the study area. The number of points/values randomly placed is equal to the number of points in the feat...",
-                        "default": null
+                        "default": None
                 },
                 "display_results_graphically": {
                         "type": "string",
                         "description": "This parameter has no effect; it remains to support backward compatibility.NO_DISPLAY\u2014No graphical summary will be created (default).DISPLAY_IT\u2014A graphical summary will be created as a graph layer.",
-                        "default": null
+                        "default": None
                 },
                 "weight_field": {
                         "type": "string",
                         "description": "A numeric field with weights representing the number of features/events at each location.",
-                        "default": null
+                        "default": None
                 },
                 "beginning_distance": {
                         "type": "string",
                         "description": "The distance at which to start the cluster analysis and the distance from which to increment. The value entered for this parameter should be in the units of the Output Coordinate System.",
-                        "default": null
+                        "default": None
                 },
                 "distance_increment": {
                         "type": "string",
                         "description": "The distance to increment during each iteration. The distance used in the analysis starts at the Beginning_Distance and increments by the amount specified in the Distance_Increment. The value entered ...",
-                        "default": null
+                        "default": None
                 },
                 "boundary_correction_method": {
                         "type": "string",
                         "description": "Method to use to correct for underestimates in the number of neighbors for features near the edges of the study area.NONE\u2014No edge correction is applied. However, if the input feature class already has...",
-                        "default": null
+                        "default": None
                 },
                 "study_area_method": {
                         "type": "string",
                         "description": "Specifies the region to use for the study area. The K Function is sensitive to changes in study area size so careful selection of this value is important.MINIMUM_ENCLOSING_RECTANGLE\u2014Indicates that the...",
-                        "default": null
+                        "default": None
                 },
                 "study_area_feature_class": {
                         "type": "string",
                         "description": "Feature class that delineates the area over which the input feature class should be analyzed. Only specified if Study_Area_Method = \"USER_PROVIDED_STUDY_AREA_FEATURE_CLASS\".",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -278,7 +278,7 @@ functions_declarations = {
                 "generate_report": {
                         "type": "string",
                         "description": "Specifies whether a graphical summary of result will be created as an .html file.\r\nNO_REPORT\u2014No graphical summary will be created. This is the default.GENERATE_REPORT\u2014A graphical summary will be creat...",
-                        "default": null
+                        "default": None
                 },
                 "conceptualization_of_spatial_relationships": {
                         "type": "string",
@@ -295,17 +295,17 @@ functions_declarations = {
                 "distance_band_or_threshold_distance": {
                         "type": "string",
                         "description": "The cutoff distance for the various inverse distance and fixed distance options. Features outside the specified cutoff for a target feature are ignored in analyses for that feature. However, for ZONE_...",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path to a file containing weights that define spatial, and potentially temporal, relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "An integer specifying the number of neighbors that will be included in the analysis.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -347,27 +347,27 @@ functions_declarations = {
                 "distance_band_or_threshold_distance": {
                         "type": "string",
                         "description": "The cutoff distance for the inverse distance and fixed distance options. Features outside the specified cutoff for a target feature will be ignored in analyses for that feature. However, for ZONE_OF_I...",
-                        "default": null
+                        "default": None
                 },
                 "self_potential_field": {
                         "type": "string",
                         "description": "The field representing self potential, which is the distance or weight between a feature and itself.",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path to a file containing weights that define spatial, and potentially temporal, relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "apply_false_discovery_rate_fdr_correction": {
                         "type": "string",
                         "description": "Specifies whether statistical significance will be assessed based on the FDR correction.APPLY_FDR\u2014Statistical significance will be based on the FDR correction.NO_FDR\u2014Statistical significance will not ...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "An integer specifying the number of neighbors that will be included in the analysis.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -394,37 +394,37 @@ functions_declarations = {
                 "analysis_field": {
                         "type": "string",
                         "description": "The numeric field (number of incidents, crime rates, test scores, and so on) to be evaluated.",
-                        "default": null
+                        "default": None
                 },
                 "incident_data_aggregation_method": {
                         "type": "string",
                         "description": "The aggregation method to use to create weighted features for analysis from incident point data.\r\nCOUNT_INCIDENTS_WITHIN_FISHNET_POLYGONS\u2014A fishnet polygon mesh will overlay the incident point data  a...",
-                        "default": null
+                        "default": None
                 },
                 "bounding_polygons_defining_where_incidents_are_possible": {
                         "type": "string",
                         "description": "A polygon feature class defining where the incident Input_Features could possibly occur.",
-                        "default": null
+                        "default": None
                 },
                 "polygons_for_aggregating_incidents_into_counts": {
                         "type": "string",
                         "description": "The polygons to use to aggregate the incident Input_Features in order to get an incident count for each polygon feature.",
-                        "default": null
+                        "default": None
                 },
                 "density_surface": {
                         "type": "string",
                         "description": "The Density_Surface parameter is disabled; it\r\nremains as a tool parameter only to support backwards\r\ncompatibility.\r\nThe Kernel Density tool can be used if you would like a density surface visualizat...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The size of the grid cells used to aggregate the Input_Features.  When aggregating into a hexagon grid, this distance is used as the height to construct the hexagon polygons.",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The spatial extent of the analysis neighborhood.  This value determines which features are analyzed together in order to assess local clustering.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -463,27 +463,27 @@ functions_declarations = {
                 "distance_band_or_threshold_distance": {
                         "type": "string",
                         "description": "Specifies a cutoff distance for Inverse Distance and Fixed Distance options. Features outside the specified cutoff for a target feature are ignored in analyses for that feature. However, for Zone of I...",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path to a file containing weights that define spatial, and potentially temporal, relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "apply_false_discovery_rate_fdr_correction": {
                         "type": "string",
                         "description": "APPLY_FDR\u2014Statistical significance will be based on the False Discovery Rate correction for a 95 percent confidence level.NO_FDR\u2014Features with p-values less than 0.05 will appear in the COType field r...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_permutations": {
                         "type": "string",
                         "description": "The number of random permutations for the calculation of pseudo p-values. The default number of permutations is 499. \r\nIf you choose 0 permutations, the standard p-value is calculated.0\u2014Permutations a...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors to include in the analysis.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -510,37 +510,37 @@ functions_declarations = {
                 "analysis_field": {
                         "type": "string",
                         "description": "The numeric field (number of incidents, crime rates, test scores, and so on) to be evaluated.",
-                        "default": null
+                        "default": None
                 },
                 "incident_data_aggregation_method": {
                         "type": "string",
                         "description": "The aggregation method to use to create weighted features for analysis from incident point data.\r\nCOUNT_INCIDENTS_WITHIN_FISHNET_POLYGONS\u2014A fishnet polygon mesh will overlay the incident point data  a...",
-                        "default": null
+                        "default": None
                 },
                 "bounding_polygons_defining_where_incidents_are_possible": {
                         "type": "string",
                         "description": "A polygon feature class defining where the incident Input_Features could possibly occur.",
-                        "default": null
+                        "default": None
                 },
                 "polygons_for_aggregating_incidents_into_counts": {
                         "type": "string",
                         "description": "The polygons to use to aggregate the incident Input_Features in order to get an incident count for each polygon feature.",
-                        "default": null
+                        "default": None
                 },
                 "performance_adjustment": {
                         "type": "string",
                         "description": "This analysis utilizes permutations to create a reference distribution.  Choosing the number of permutations is a balance between precision and increased processing time. \r\nChoose your preference for ...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The size of the grid cells used to aggregate the Input_Features.  When aggregating into a hexagon grid, this distance is used as the height to construct the hexagon polygons.",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The spatial extent of the analysis neighborhood.  This value determines which features are analyzed together in order to assess local clustering.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -575,32 +575,32 @@ functions_declarations = {
                 "distance_features": {
                         "type": "string",
                         "description": "Automatically creates explanatory variables by calculating a distance from the provided features to the in_features values. Distances will be calculated from each of the input distance_features values...",
-                        "default": null
+                        "default": None
                 },
                 "prediction_locations": {
                         "type": "string",
                         "description": "A feature class containing features representing locations where estimates will be computed. Each feature in this dataset should contain values for all  the explanatory variables specified. The depend...",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_variables_to_matchfield_from_prediction_locations_field_from_input_features": {
                         "type": "string",
                         "description": "Matches the explanatory variables in the prediction_locations parameter to corresponding explanatory variables from the in_features parameter.",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_distance_matchingprediction_distance_features_input_explanatory_distance_features": {
                         "type": "string",
                         "description": "Matches the distance features specified for the features_to_predict parameter on the left to the corresponding distance features for the in_features parameter on the right.",
-                        "default": null
+                        "default": None
                 },
                 "output_predicted_features": {
                         "type": "string",
                         "description": "The output feature class that will receive dependent variable estimates for each prediction_location value.\r\n The output feature class that will receive dependent variable estimates for each Predictio...",
-                        "default": null
+                        "default": None
                 },
                 "output_trained_model": {
                         "type": "string",
                         "description": "An output model file that will save the trained model, which can be used later for prediction.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -626,7 +626,7 @@ functions_declarations = {
                 "generate_report": {
                         "type": "string",
                         "description": "Specifies whether a graphical summary of result will be created as an .html file.\r\nNO_REPORT\u2014No graphical summary will be created. This is the default.GENERATE_REPORT\u2014A graphical summary will be creat...",
-                        "default": null
+                        "default": None
                 },
                 "conceptualization_of_spatial_relationships": {
                         "type": "string",
@@ -643,17 +643,17 @@ functions_declarations = {
                 "distance_band_or_threshold_distance": {
                         "type": "string",
                         "description": "The cutoff distance for the various inverse distance and fixed distance options. Features outside the specified cutoff for a target feature are ignored in analyses for that feature. However, for ZONE_...",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path to a file containing weights that define spatial, and potentially temporal, relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "An integer specifying the number of neighbors that will be included in the analysis.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -679,82 +679,82 @@ functions_declarations = {
                 "append_to_input": {
                         "type": "string",
                         "description": "Specifies whether the results will be appended to the input data or provided as an output feature class or table.APPEND_TO_INPUT\u2014 The results will be appended to the input data. This option modifies t...",
-                        "default": null
+                        "default": None
                 },
                 "out_table": {
                         "type": "string",
                         "description": "The output features or table that will include the results.",
-                        "default": null
+                        "default": None
                 },
                 "index_preset": {
                         "type": "string",
                         "description": "Specifies the workflow that will be used when creating the index. The options represent common index creation workflows; each option sets default values for the preprocessing and index_method paramete...",
-                        "default": null
+                        "default": None
                 },
                 "preprocessing": {
                         "type": "string",
                         "description": "Specifies the method that will be used to convert \r\nthe input variables to a common scale.MINMAX\u2014 Variables will be scaled between 0 and 1 using the minimum and maximum values of each variable. This i...",
-                        "default": null
+                        "default": None
                 },
                 "pre_threshold_scaling": {
                         "type": "string",
                         "description": "Specifies the method that will be used to convert the input variables to a common scale prior to setting thresholds.\r\nTHRESHOLD_MINMAX\u2014Variables between 0 and 1 will be scaled using the minimum and ma...",
-                        "default": null
+                        "default": None
                 },
                 "pre_custom_zscorefield1_mean1_stdev1_field2_mean2_stdev2": {
                         "type": "string",
                         "description": "The custom mean value and custom standard deviation that will be used when standardizing each input variable. For each variable, provide the custom mean in the Mean column and the custom standard devi...",
-                        "default": null
+                        "default": None
                 },
                 "pre_min_maxfield1_min1_max1_field2_min2_max2": {
                         "type": "string",
                         "description": "The possible minimum and maximum values that will be used in the units of the variables. Each variable will be scaled between 0 and 1 based on the possible minimum and maximum values.",
-                        "default": null
+                        "default": None
                 },
                 "pre_thresholdsfield1_method1_threshold1_field2_method2_threshold2": {
                         "type": "string",
                         "description": "The threshold that determines whether a feature will be flagged. Specify the value in the units of the scaled variables and specify whether values above or below the threshold value will be flagged.",
-                        "default": null
+                        "default": None
                 },
                 "index_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to combine the scaled variables into a single value.\r\nSUM\u2014The values will be added.MEAN\u2014The arithmetic (additive) mean of the values will be calculated. This is ...",
-                        "default": null
+                        "default": None
                 },
                 "index_weightsfield1_weight1_field2_weight2": {
                         "type": "string",
                         "description": "The weights that will set the relative influence of each input variable on the index.\r\n Each weight has a default value of 1, meaning that each variable has equal contribution. Increase or decrease th...",
-                        "default": null
+                        "default": None
                 },
                 "out_index_name": {
                         "type": "string",
                         "description": "The name of the index. The value is used in the visualization of the outputs, such as field aliases and chart labels. The value is not used when the output (or appended input) is a shapefile.",
-                        "default": null
+                        "default": None
                 },
                 "out_index_reverse": {
                         "type": "string",
                         "description": "Specifies whether the output index values will be reversed in direction (for example, to treat high index values as low values).REVERSE\u2014 The index values will be reversed in direction.NO_REVERSE\u2014 The ...",
-                        "default": null
+                        "default": None
                 },
                 "post_min_max": {
                         "type": "string",
                         "description": "The minimum and maximum of the output index values. This scaling is applied after combining the scaled variables. If no values are provided, the output index is not scaled.",
-                        "default": null
+                        "default": None
                 },
                 "post_reclass": {
                         "type": "string",
                         "description": "Specifies the method that will be used to classify the output index. An additional output field will be provided for each selected option.EQINTERVAL\u2014Classes will be created by dividing the range of va...",
-                        "default": null
+                        "default": None
                 },
                 "post_num_classes": {
                         "type": "string",
                         "description": "The number of classes that will be used for the equal interval and quantile classification methods.",
-                        "default": null
+                        "default": None
                 },
                 "post_custom_classesmin1_max1_min2_max2": {
                         "type": "string",
                         "description": "The upper bounds and class values\r\nfor the custom classification method. For example, you can use this variable to classify an index containing values between 0 and 100 into classes representing low, ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -781,52 +781,52 @@ functions_declarations = {
                 "analysis_input_features": {
                         "type": "string",
                         "description": "The input features that were used in the analysis that produced the analysis result features.",
-                        "default": null
+                        "default": None
                 },
                 "uncertainty_measure": {
                         "type": "string",
                         "description": "Specifies how attribute uncertainty will be measured.MOE\u2014The input feature class of the original analysis contains a field with the symmetrical margin of error for each feature and that will be used.C...",
-                        "default": null
+                        "default": None
                 },
                 "moe_field": {
                         "type": "string",
                         "description": "The field containing the margin of error (MOE) of the analysis variable. The MOE is used to construct a symmetric distribution from which the simulated values will be generated.",
-                        "default": null
+                        "default": None
                 },
                 "confidence_bound_field": {
                         "type": "string",
                         "description": "The fields containing the lower and upper bounds for the analysis variable. Values will be generated between the lower and upper confidence bounds.",
-                        "default": null
+                        "default": None
                 },
                 "randomize_pct": {
                         "type": "string",
                         "description": "The percentage of the original attribute value that will be subtracted and added to the original value of the analysis variable to create a range of values for the simulations.",
-                        "default": null
+                        "default": None
                 },
                 "num_simulations": {
                         "type": "string",
                         "description": "The number of simulations that will be performed.",
-                        "default": null
+                        "default": None
                 },
                 "simulation_method": {
                         "type": "string",
                         "description": "Specifies the probability distribution that will be used to simulate data.\r\nNORMAL\u2014A normal distribution will be used. This is the default.UNIFORM\u2014A uniform distribution will be used.TRIANGULAR\u2014A tria...",
-                        "default": null
+                        "default": None
                 },
                 "output_workspace": {
                         "type": "string",
                         "description": "An existing workspace where the analysis results from each simulation will be stored. The workspace can be a folder or a geodatabase.",
-                        "default": null
+                        "default": None
                 },
                 "sim_data_limits": {
                         "type": "string",
                         "description": "The lower and upper limits for the simulated values. All simulated values will be within these limits. For example, for counts or percentages, use a lower limit of zero to ensure that there are no neg...",
-                        "default": null
+                        "default": None
                 },
                 "moe_conf_level": {
                         "type": "string",
                         "description": "The confidence level of the margins of error. For example, if the margins of error were created from 95 percent confidence intervals, provide a value of 95.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -854,72 +854,72 @@ functions_declarations = {
                 "number_of_zones": {
                         "type": "string",
                         "description": "The number of zones that will be created.",
-                        "default": null
+                        "default": None
                 },
                 "zone_building_criteria_targetvariable_sum_weight": {
                         "type": "string",
                         "description": "Specifies the variables that will be considered, as well as their target values and optional weights. The default weight is 1, and each variable contributes equally unless they are changed.",
-                        "default": null
+                        "default": None
                 },
                 "zone_building_criteriavariable_weight": {
                         "type": "string",
                         "description": "Specifies the variables that will be considered and, optionally, their weights. The default weight is 1, and each variable contributes equally unless changed.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_constraints": {
                         "type": "string",
                         "description": "Specifies how neighbors will be defined while the zones grow. Zones can only grow into new features that are neighbors of at least one of the features already in the zone. If the input features are po...",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path to a file containing spatial weights that define spatial and, optionally, temporal relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "zone_characteristics": {
                         "type": "string",
                         "description": "Specifies the characteristics of the zones that will be created.EQUAL_AREA\u2014 Zones with total area as similar as possible will be created.COMPACTNESS\u2014Zones with more closely-packed (compact) features w...",
-                        "default": null
+                        "default": None
                 },
                 "attribute_to_considervariable_function": {
                         "type": "string",
                         "description": "Specifies attributes and statistics to consider in the selection of final zones. You can homogenize attributes based on their sum, average, median, or variance. For example, if you are creating zones ...",
-                        "default": null
+                        "default": None
                 },
                 "distance_to_consider": {
                         "type": "string",
                         "description": "The feature class that will be used to homogenize the total distance per zone. The distance is calculated from each of the input features to the closest feature provided in this parameter. This distan...",
-                        "default": null
+                        "default": None
                 },
                 "categorial_variable": {
                         "type": "string",
                         "description": "The categorical variable to be considered for zone proportions.",
-                        "default": null
+                        "default": None
                 },
                 "proportion_method": {
                         "type": "string",
                         "description": "Specifies the type of proportion that will be maintained based on the chosen categorical variable.MAINTAIN_WITHIN_PROPORTION\u2014Each zone will maintain the same proportions as the overall study area for ...",
-                        "default": null
+                        "default": None
                 },
                 "population_size": {
                         "type": "string",
                         "description": "The number of randomly generated initial seeds. For larger datasets, increasing this number will increase the search space and the probability of finding a better solution. The default is 100.",
-                        "default": null
+                        "default": None
                 },
                 "number_generations": {
                         "type": "string",
                         "description": "The number of times the zone search process will be repeated. For larger datasets, increasing the number is recommended to find an optimal solution. The default is 50 generations.",
-                        "default": null
+                        "default": None
                 },
                 "mutation_factor": {
                         "type": "string",
                         "description": "The probability that an individual's seed values will be mutated to a new set of seeds. Mutation increases the search space by introducing variability of the possible solutions in every generation and...",
-                        "default": null
+                        "default": None
                 },
                 "output_convergence_table": {
                         "type": "string",
                         "description": "The table containing the total fitness score for the best solution found in every generation as well as the fitness score for the individual zone constraints.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -943,82 +943,82 @@ functions_declarations = {
                 "append_to_input": {
                         "type": "string",
                         "description": "Specifies whether the results will be appended to the input data or provided as an output feature class or table.APPEND_TO_INPUT\u2014 The results will be appended to the input data. This option modifies t...",
-                        "default": null
+                        "default": None
                 },
                 "out_table": {
                         "type": "string",
                         "description": "The output features or table that will include the results.",
-                        "default": null
+                        "default": None
                 },
                 "index_preset": {
                         "type": "string",
                         "description": "Specifies the workflow that will be used when creating the index. The options represent common index creation workflows; each option sets default values for the preprocessing and index_method paramete...",
-                        "default": null
+                        "default": None
                 },
                 "preprocessing": {
                         "type": "string",
                         "description": "Specifies the method that will be used to convert \r\nthe input variables to a common scale.MINMAX\u2014 Variables will be scaled between 0 and 1 using the minimum and maximum values of each variable. This i...",
-                        "default": null
+                        "default": None
                 },
                 "pre_threshold_scaling": {
                         "type": "string",
                         "description": "Specifies the method that will be used to convert the input variables to a common scale prior to setting thresholds.\r\nTHRESHOLD_MINMAX\u2014Variables between 0 and 1 will be scaled using the minimum and ma...",
-                        "default": null
+                        "default": None
                 },
                 "pre_custom_zscorefield1_mean1_stdev1_field2_mean2_stdev2": {
                         "type": "string",
                         "description": "The custom mean value and custom standard deviation that will be used when standardizing each input variable. For each variable, provide the custom mean in the Mean column and the custom standard devi...",
-                        "default": null
+                        "default": None
                 },
                 "pre_min_maxfield1_min1_max1_field2_min2_max2": {
                         "type": "string",
                         "description": "The possible minimum and maximum values that will be used in the units of the variables. Each variable will be scaled between 0 and 1 based on the possible minimum and maximum values.",
-                        "default": null
+                        "default": None
                 },
                 "pre_thresholdsfield1_method1_threshold1_field2_method2_threshold2": {
                         "type": "string",
                         "description": "The threshold that determines whether a feature will be flagged. Specify the value in the units of the scaled variables and specify whether values above or below the threshold value will be flagged.",
-                        "default": null
+                        "default": None
                 },
                 "index_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to combine the scaled variables into a single value.\r\nSUM\u2014The values will be added.MEAN\u2014The arithmetic (additive) mean of the values will be calculated. This is ...",
-                        "default": null
+                        "default": None
                 },
                 "index_weightsfield1_weight1_field2_weight2": {
                         "type": "string",
                         "description": "The weights that will set the relative influence of each input variable on the index.\r\n Each weight has a default value of 1, meaning that each variable has equal contribution. Increase or decrease th...",
-                        "default": null
+                        "default": None
                 },
                 "out_index_name": {
                         "type": "string",
                         "description": "The name of the index. The value is used in the visualization of the outputs, such as field aliases and chart labels. The value is not used when the output (or appended input) is a shapefile.",
-                        "default": null
+                        "default": None
                 },
                 "out_index_reverse": {
                         "type": "string",
                         "description": "Specifies whether the output index values will be reversed in direction (for example, to treat high index values as low values).REVERSE\u2014 The index values will be reversed in direction.NO_REVERSE\u2014 The ...",
-                        "default": null
+                        "default": None
                 },
                 "post_min_max": {
                         "type": "string",
                         "description": "The minimum and maximum of the output index values. This scaling is applied after combining the scaled variables. If no values are provided, the output index is not scaled.",
-                        "default": null
+                        "default": None
                 },
                 "post_reclass": {
                         "type": "string",
                         "description": "Specifies the method that will be used to classify the output index. An additional output field will be provided for each selected option.EQINTERVAL\u2014Classes will be created by dividing the range of va...",
-                        "default": null
+                        "default": None
                 },
                 "post_num_classes": {
                         "type": "string",
                         "description": "The number of classes that will be used for the equal interval and quantile classification methods.",
-                        "default": null
+                        "default": None
                 },
                 "post_custom_classesmin1_max1_min2_max2": {
                         "type": "string",
                         "description": "The upper bounds and class values\r\nfor the custom classification method. For example, you can use this variable to classify an index containing values between 0 and 100 into classes representing low, ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1057,27 +1057,27 @@ functions_declarations = {
                 "distance_band_or_threshold_distance": {
                         "type": "string",
                         "description": "Specifies a cutoff distance for Inverse Distance and Fixed Distance options. Features outside the specified cutoff for a target feature are ignored in analyses for that feature. However, for Zone of I...",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path to a file containing weights that define spatial, and potentially temporal, relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "apply_false_discovery_rate_fdr_correction": {
                         "type": "string",
                         "description": "APPLY_FDR\u2014Statistical significance will be based on the False Discovery Rate correction for a 95 percent confidence level.NO_FDR\u2014Features with p-values less than 0.05 will appear in the COType field r...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_permutations": {
                         "type": "string",
                         "description": "The number of random permutations for the calculation of pseudo p-values. The default number of permutations is 499. \r\nIf you choose 0 permutations, the standard p-value is calculated.0\u2014Permutations a...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors to include in the analysis.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1112,7 +1112,7 @@ functions_declarations = {
                 "search_distance": {
                         "type": "string",
                         "description": "The maximum distance that will be considered.For the cluster_method parameter's DBSCAN option, the min_features_cluster parameter value must be found within this distance for cluster membership. Indiv...",
-                        "default": null
+                        "default": None
                 },
                 "cluster_sensitivity": {
                         "type": "string",
@@ -1168,27 +1168,27 @@ functions_declarations = {
                 "distance_band_or_threshold_distance": {
                         "type": "string",
                         "description": "The cutoff distance for the inverse distance and fixed distance options. Features outside the specified cutoff for a target feature will be ignored in analyses for that feature. However, for ZONE_OF_I...",
-                        "default": null
+                        "default": None
                 },
                 "self_potential_field": {
                         "type": "string",
                         "description": "The field representing self potential, which is the distance or weight between a feature and itself.",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path to a file containing weights that define spatial, and potentially temporal, relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "apply_false_discovery_rate_fdr_correction": {
                         "type": "string",
                         "description": "Specifies whether statistical significance will be assessed based on the FDR correction.APPLY_FDR\u2014Statistical significance will be based on the FDR correction.NO_FDR\u2014Statistical significance will not ...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "An integer specifying the number of neighbors that will be included in the analysis.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1219,32 +1219,32 @@ functions_declarations = {
                 "num_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors around each feature that will be used for distance weighting. Distance weighting is one component of the overall similarity, and any features with matching significance levels ...",
-                        "default": null
+                        "default": None
                 },
                 "num_perms": {
                         "type": "string",
                         "description": "The number of permutations that will be used to estimate the expected similarity and kappa values. A larger number of simulations will increase the precision of the estimates but will also increase ca...",
-                        "default": null
+                        "default": None
                 },
                 "weighting_method": {
                         "type": "string",
                         "description": "Specifies how similarity weights between significance level categories will be defined.  Similarity weights are numbers between 0 and 1 that define the categories of one result that are expected to ma...",
-                        "default": null
+                        "default": None
                 },
                 "similarity_weights": {
                         "type": "string",
                         "description": "The custom similarity weights between significance level categories.  \r\nThe weights are values between 0 and 1 and indicate how similar to consider the two categories. A value of 0 indicates the categ...",
-                        "default": null
+                        "default": None
                 },
                 "in_weights_table": {
                         "type": "string",
                         "description": "The table containing custom similarity weights for each combination of hot spot significance level categories. The table must contain CATEGORY1, CATEGORY2, and WEIGHT fields. Provide the significance ...",
-                        "default": null
+                        "default": None
                 },
                 "exclude_nonsig_features": {
                         "type": "string",
                         "description": "Specifies whether pairs of features will be excluded from the comparisons if both hot spot results are nonsignificant. If excluded, conditional similarity and kappa values will be calculated that comp...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1272,27 +1272,27 @@ functions_declarations = {
                 "clustering_method": {
                         "type": "string",
                         "description": "Specifies the clustering algorithm that will be used.The K_MEANS and K_MEDOIDS options generally produce similar results. However, K_MEDOIDS is more robust to noise and outliers in the in_features par...",
-                        "default": null
+                        "default": None
                 },
                 "initialization_method": {
                         "type": "string",
                         "description": "Specifies how initial seeds to grow clusters are obtained.   If you indicate you want three clusters, for example, the analysis will begin with three seeds.            OPTIMIZED_SEED_LOCATIONS\u2014Seed  f...",
-                        "default": null
+                        "default": None
                 },
                 "initialization_field": {
                         "type": "string",
                         "description": "The numeric field identifying seed features.  Features with a value of 1 for this field will be used to grow clusters.  Each seed results in a cluster, so at least two seed features must be provided.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_clusters": {
                         "type": "string",
                         "description": "The number of clusters that will be created.  If you leave this parameter empty,  the tool will evaluate the optimal number of clusters by computing a pseudo F-statistic for clustering solutions with ...",
-                        "default": null
+                        "default": None
                 },
                 "output_table": {
                         "type": "string",
                         "description": "The table containing the pseudo  F-statistic for clustering solutions 2 through 30,  calculated to evaluate the optimal number of clusters. The chart created from this table can be accessed in the sta...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1316,37 +1316,37 @@ functions_declarations = {
                 "analysis_field": {
                         "type": "string",
                         "description": "The numeric field (number of incidents, crime rates, test scores, and so on) to be evaluated.",
-                        "default": null
+                        "default": None
                 },
                 "incident_data_aggregation_method": {
                         "type": "string",
                         "description": "The aggregation method to use to create weighted features for analysis from incident point data.\r\nCOUNT_INCIDENTS_WITHIN_FISHNET_POLYGONS\u2014A fishnet polygon mesh will overlay the incident point data  a...",
-                        "default": null
+                        "default": None
                 },
                 "bounding_polygons_defining_where_incidents_are_possible": {
                         "type": "string",
                         "description": "A polygon feature class defining where the incident Input_Features could possibly occur.",
-                        "default": null
+                        "default": None
                 },
                 "polygons_for_aggregating_incidents_into_counts": {
                         "type": "string",
                         "description": "The polygons to use to aggregate the incident Input_Features in order to get an incident count for each polygon feature.",
-                        "default": null
+                        "default": None
                 },
                 "density_surface": {
                         "type": "string",
                         "description": "The Density_Surface parameter is disabled; it\r\nremains as a tool parameter only to support backwards\r\ncompatibility.\r\nThe Kernel Density tool can be used if you would like a density surface visualizat...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The size of the grid cells used to aggregate the Input_Features.  When aggregating into a hexagon grid, this distance is used as the height to construct the hexagon polygons.",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The spatial extent of the analysis neighborhood.  This value determines which features are analyzed together in order to assess local clustering.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1369,37 +1369,37 @@ functions_declarations = {
                 "analysis_field": {
                         "type": "string",
                         "description": "The numeric field (number of incidents, crime rates, test scores, and so on) to be evaluated.",
-                        "default": null
+                        "default": None
                 },
                 "incident_data_aggregation_method": {
                         "type": "string",
                         "description": "The aggregation method to use to create weighted features for analysis from incident point data.\r\nCOUNT_INCIDENTS_WITHIN_FISHNET_POLYGONS\u2014A fishnet polygon mesh will overlay the incident point data  a...",
-                        "default": null
+                        "default": None
                 },
                 "bounding_polygons_defining_where_incidents_are_possible": {
                         "type": "string",
                         "description": "A polygon feature class defining where the incident Input_Features could possibly occur.",
-                        "default": null
+                        "default": None
                 },
                 "polygons_for_aggregating_incidents_into_counts": {
                         "type": "string",
                         "description": "The polygons to use to aggregate the incident Input_Features in order to get an incident count for each polygon feature.",
-                        "default": null
+                        "default": None
                 },
                 "performance_adjustment": {
                         "type": "string",
                         "description": "This analysis utilizes permutations to create a reference distribution.  Choosing the number of permutations is a balance between precision and increased processing time. \r\nChoose your preference for ...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The size of the grid cells used to aggregate the Input_Features.  When aggregating into a hexagon grid, this distance is used as the height to construct the hexagon polygons.",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The spatial extent of the analysis neighborhood.  This value determines which features are analyzed together in order to assess local clustering.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1446,7 +1446,7 @@ functions_declarations = {
                 "fields_to_append_to_output": {
                         "type": "string",
                         "description": "The fields to include with the Output_Features parameter. These fields are not used to determine similarity; they are only included in the  Output_Features parameter for reference.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1475,32 +1475,32 @@ functions_declarations = {
                 "n_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors that will be used to detect spatial outliers for each input point. For local outlier detection, the value must be at least 2, and all features within the neighborhood will be u...",
-                        "default": null
+                        "default": None
                 },
                 "percent_outlier": {
                         "type": "string",
                         "description": "The percent of locations that will be identified as spatial outliers by defining the threshold of the local outlier factor.  If no value is specified, a value is estimated at run time and is displayed...",
-                        "default": null
+                        "default": None
                 },
                 "output_raster": {
                         "type": "string",
                         "description": "The output raster containing the local\r\noutlier factors at each cell, which is calculated based on the spatial distribution of the input features. This parameter is only available with a Desktop Advan...",
-                        "default": null
+                        "default": None
                 },
                 "outlier_type": {
                         "type": "string",
                         "description": "Specifies the type of outlier that will be detected. A global outlier is a point that is far away from all other points in the feature class.  A local outlier is a point that is farther away from its ...",
-                        "default": null
+                        "default": None
                 },
                 "sensitivity": {
                         "type": "string",
                         "description": "Specifies the sensitivity level that will be used to detect global outliers. The higher the sensitivity, the more points that will be detected as outliers.The sensitivity value will determine the thre...",
-                        "default": null
+                        "default": None
                 },
                 "keep_type": {
                         "type": "string",
                         "description": "Specifies whether the output features will contain all input features or only features identified as spatial outliers.KEEP_OUTLIER\u2014The output features will only contain features identified as spatial ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1527,42 +1527,42 @@ functions_declarations = {
                 "size_constraints": {
                         "type": "string",
                         "description": "Specifies cluster size based on number of features per group or a target attribute value per group.NONE\u2014No cluster size constraints will be used.  This is the default.NUM_FEATURES\u2014A minimum and maximu...",
-                        "default": null
+                        "default": None
                 },
                 "constraint_field": {
                         "type": "string",
                         "description": "The attribute value to be summed per cluster.",
-                        "default": null
+                        "default": None
                 },
                 "min_constraint": {
                         "type": "string",
                         "description": "The minimum number of features per cluster or the minimum attribute value per cluster.\r\nThis must be a positive value.",
-                        "default": null
+                        "default": None
                 },
                 "max_constraint": {
                         "type": "string",
                         "description": "The maximum number of features per cluster or the maximum attribute value per cluster.  If a maximum constraint is set, the number_of_clusters parameter is disabled.\r\nThis must be a positive value.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_clusters": {
                         "type": "string",
                         "description": "The number of clusters to create.  If this parameter is empty,  the tool will evaluate the optimal number of clusters by computing a pseudo F-statistic value for clustering solutions with 2 through 30...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_constraints": {
                         "type": "string",
                         "description": "Specifies how spatial relationships among features will be defined.CONTIGUITY_EDGES_ONLY\u2014Clusters will contain contiguous polygon features. Only polygons that share an edge can be part of the same clu...",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path to a file containing spatial weights that define spatial, and potentially temporal, relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_permutations": {
                         "type": "string",
                         "description": "The number of random permutations \r\nfor the calculation of membership stability scores.  If 0 (zero) is chosen, probabilities will not be calculated. Calculating these probabilities uses permutations ...",
-                        "default": null
+                        "default": None
                 },
                 "output_table": {
                         "type": "string",
@@ -1595,17 +1595,17 @@ functions_declarations = {
                 "weight_field": {
                         "type": "string",
                         "description": "The numeric field used to weight distances in the origin-destination distance matrix.",
-                        "default": null
+                        "default": None
                 },
                 "self_potential_weight_field": {
                         "type": "string",
                         "description": "The field representing self-potential\u2014the distance or weight between a feature and itself.",
-                        "default": null
+                        "default": None
                 },
                 "case_field": {
                         "type": "string",
                         "description": "Field used to group features for separate central feature computations. The case field can be of integer, date, or string type.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1629,57 +1629,57 @@ functions_declarations = {
                 "append_all_fields": {
                         "type": "string",
                         "description": "Specifies whether all fields will be copied from the input features to the output feature class.ALL\u2014 All fields from the input features will be copied to the output feature class. This is the default....",
-                        "default": null
+                        "default": None
                 },
                 "min_autocorrelation": {
                         "type": "string",
                         "description": "The threshold value for including a spatial component.  The value is a proportion of the largest possible Moran's I value for the spatial weights, and a component must have a larger Moran's I value th...",
-                        "default": null
+                        "default": None
                 },
                 "max_components": {
                         "type": "string",
                         "description": "The maximum number of spatial components that will be created. The default is 15.",
-                        "default": null
+                        "default": None
                 },
                 "neighborhood_type": {
                         "type": "string",
                         "description": "Specifies how neighbors will be chosen for each input feature.  Neighboring features must be identified in order to decompose the spatial structure of the input features. \r\nDISTANCE_BAND\u2014Features with...",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The distance within which features will be included as neighbors. If no value is provided, one will be estimated during processing and included as a geoprocessing message. If the specified distance re...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors that will be included for each feature. The number does not include the focal feature. The default is 8.",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path and file name of the spatial weights matrix file (.swm) that defines the neighbors and weights between the input features.",
-                        "default": null
+                        "default": None
                 },
                 "local_weighting_scheme": {
                         "type": "string",
                         "description": "Specifies the weighting scheme that will be applied to neighboring features.  \r\nUNWEIGHTED\u2014Neighbors will not be weighted.  This is the default.BISQUARE\u2014Neighbors will be weighted using a bisquare ker...",
-                        "default": null
+                        "default": None
                 },
                 "kernel_bandwidth": {
                         "type": "string",
                         "description": "The bandwidth of the bisquare or Gaussian local weighting schemes. If no value is provided, one will be estimated during processing and included as a geoprocessing message.",
-                        "default": null
+                        "default": None
                 },
                 "out_swm": {
                         "type": "string",
                         "description": "The output spatial weights matrix file (.swm) of the neighbors and weights of all pairs of features.  If created, this file can be reused in tools that allow defining neighbors and weights with spatia...",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "The unique ID field of the output spatial weights matrix file. The field must be an integer and must have a unique value for each input feature.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1706,12 +1706,12 @@ functions_declarations = {
                 "weight_field": {
                         "type": "string",
                         "description": "The numeric field that will be used to weight locations according to their relative importance.",
-                        "default": null
+                        "default": None
                 },
                 "case_field": {
                         "type": "string",
                         "description": "The field that will be used to group features for separate directional distribution calculations. The case field can be of integer, date, or string type.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1735,17 +1735,17 @@ functions_declarations = {
                 "direction": {
                         "type": "string",
                         "description": "The direction of the trend.  Provide the value as degrees clockwise from north. For example, 0 corresponds to north, 90 to east, 180 to south, and 270 to west.  The value must be between 0 and 360.  T...",
-                        "default": null
+                        "default": None
                 },
                 "determine_direction": {
                         "type": "string",
                         "description": "Specifies whether the direction of the strongest trend will be determined by the tool. The direction of strongest trend is determined by finding the direction that maximizes the R-squared value for th...",
-                        "default": null
+                        "default": None
                 },
                 "order": {
                         "type": "string",
                         "description": "Specifies the order of the polynomial that will be fitted to the data values.1\u2014First order (linear) polynomial will be used.2\u2014Second order (quadratic) polynomial will be used.3\u2014Third order (cubic) pol...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1772,7 +1772,7 @@ functions_declarations = {
                 "case_field": {
                         "type": "string",
                         "description": "Field used to group features for separate directional mean calculations. The case field can be of integer, date, or string type.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1796,17 +1796,17 @@ functions_declarations = {
                 "weight_field": {
                         "type": "string",
                         "description": "The numeric field used to create a weighted mean center.",
-                        "default": null
+                        "default": None
                 },
                 "case_field": {
                         "type": "string",
                         "description": "Field used to group features for separate mean center calculations. The case field can be of integer, date, or string type.",
-                        "default": null
+                        "default": None
                 },
                 "dimension_field": {
                         "type": "string",
                         "description": "A numeric field containing attribute values from which an average value will be calculated.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1829,12 +1829,12 @@ functions_declarations = {
                 "weight_field": {
                         "type": "string",
                         "description": "The numeric field used to create a weighted median center.",
-                        "default": null
+                        "default": None
                 },
                 "case_field": {
                         "type": "string",
                         "description": "Field used to group features for separate median center calculations. The case field can be of integer, date, or string type.",
-                        "default": null
+                        "default": None
                 },
                 "attribute_field": {
                         "type": "string",
@@ -1862,52 +1862,52 @@ functions_declarations = {
                 "analysis_fields": {
                         "type": "string",
                         "description": "One or more fields that will be used to calculate local statistics. If no analysis fields are provided, only local statistics based on distances to neighbors will be calculated.",
-                        "default": null
+                        "default": None
                 },
                 "local_summary_statistic": {
                         "type": "string",
                         "description": "Specifies the local summary statistic that will be calculated for each analysis field.\r\nALL\u2014All local statistics will be calculated.  This is the default.MEAN\u2014The local mean (average) will be calculat...",
-                        "default": null
+                        "default": None
                 },
                 "include_focal_feature": {
                         "type": "string",
                         "description": "Specifies whether the focal feature will be included when calculating local statistics for each feature.INCLUDE_FOCAL\u2014The focal feature and all of its neighbors will be included when calculating local...",
-                        "default": null
+                        "default": None
                 },
-                "ignore_nulls": {
+                "ignore_Nones": {
                         "type": "string",
-                        "description": "Specifies whether null values in the analysis fields will be included or ignored in the calculations.IGNORE_NULLS\u2014Null values will be ignored in the local calculations.INCLUDE_NULLS\u2014Null values will b...",
-                        "default": null
+                        "description": "Specifies whether None values in the analysis fields will be included or ignored in the calculations.IGNORE_NULLS\u2014Null values will be ignored in the local calculations.INCLUDE_NULLS\u2014Null values will b...",
+                        "default": None
                 },
                 "neighborhood_type": {
                         "type": "string",
                         "description": "Specifies which features will be included as neighbors.  To calculate local statistics, neighboring features must be identified for each input feature, and these neighbors are used to calculate the lo...",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "All features within this distance will be included as neighbors. If no value is provided, one will be estimated during processing and included as a geoprocessing message.\r\nIf the specified distance re...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors that will be included for each local calculation. The number does not include the focal feature. If the focal feature is included in calculations, one additional neighbor will ...",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path and file name of the spatial weights matrix file that defines spatial, and potentially temporal, relationships among\r\nfeatures.",
-                        "default": null
+                        "default": None
                 },
                 "local_weighting_scheme": {
                         "type": "string",
                         "description": "Specifies the weighting scheme that will be applied to neighbors when calculating local statistics.  \r\nUNWEIGHTED\u2014Neighbors will not be weighted.  This is the default.BISQUARE\u2014Neighbors will be weight...",
-                        "default": null
+                        "default": None
                 },
                 "kernel_bandwidth": {
                         "type": "string",
                         "description": "The bandwidth of the bisquare or Gaussian local weighting schemes. If no value is provided, one will be estimated during processing and included as a geoprocessing message.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1934,12 +1934,12 @@ functions_declarations = {
                 "weight_field": {
                         "type": "string",
                         "description": "The numeric field used to weight locations according to their relative importance.",
-                        "default": null
+                        "default": None
                 },
                 "case_field": {
                         "type": "string",
                         "description": "The field used to group features for separate standard distance calculations. The case field can be of integer, date, or string type.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1971,37 +1971,37 @@ functions_declarations = {
                 "neighborhood_type": {
                         "type": "string",
                         "description": "Specifies how neighbors of each feature will be determined. The feature is always included in the neighborhood, and all neighborhood weights are normalized to sum to 1.DISTANCE_BAND\u2014Features within a ...",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The distance band that will be used to determine neighbors around the focal feature. If no value is provided, the distance will be the shortest distance such that each feature has at least one other n...",
-                        "default": null
+                        "default": None
                 },
                 "num_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors around each feature that will be included as neighbors.  The value does not include the feature.  For example, specifying 6 will use the feature and its six closest neighbors (...",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path and file name of the spatial weights matrix file that defines the neighbors and weights between\r\nfeatures.",
-                        "default": null
+                        "default": None
                 },
                 "local_weighting_scheme": {
                         "type": "string",
                         "description": "Specifies the weighting scheme that will be applied to neighbors when calculating spatial associations.  \r\nUNWEIGHTED\u2014Neighbors will not be weighted.  This is the default.BISQUARE\u2014Neighbors will be we...",
-                        "default": null
+                        "default": None
                 },
                 "kernel_bandwidth": {
                         "type": "string",
                         "description": "The bandwidth for the bisquare kernel.  The bandwidth defines how quickly the weights decrease with distance.  Larger bandwidths will provide comparatively larger weights to neighbors that are farther...",
-                        "default": null
+                        "default": None
                 },
                 "num_permutations": {
                         "type": "string",
                         "description": "Specifies the number of permutations that will be used to create reference distributions when calculating global and local p-values. All p-values are calculated using two-sided hypothesis tests.99\u2014The...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2038,87 +2038,87 @@ functions_declarations = {
                 "ps_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used for calculating the propensity scores of each observation. The propensity score of an observation is the likelihood (or probability) of receiving the observed ex...",
-                        "default": null
+                        "default": None
                 },
                 "balancing_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used for balancing the confounding variables. Each method estimates a set of balancing weights that removes the correlation between the confounding variables and the ...",
-                        "default": null
+                        "default": None
                 },
                 "enable_erf_popups": {
                         "type": "string",
                         "description": "Specifies whether pop-up charts that display the local ERF for the observation will be created for each observation.CREATE_POPUP\u2014Local ERF pop-up charts will be created on the output features or table...",
-                        "default": null
+                        "default": None
                 },
                 "out_erf_table": {
                         "type": "string",
                         "description": "A table containing values of the exposure-response function.\r\nThe table will contain 200 evenly spaced exposure values between the minimum and maximum exposure (after trimming) along with the estimate...",
-                        "default": null
+                        "default": None
                 },
                 "target_outcomes": {
                         "type": "string",
                         "description": "A list of target outcome values from which required changes in exposure to achieve the outcomes will be calculated for each observation. \r\nFor example, if the exposure variable is an air quality index...",
-                        "default": null
+                        "default": None
                 },
                 "target_exposures": {
                         "type": "string",
                         "description": "A list of target exposure values that will be used to calculate new outcomes for each observation. For each target exposure value, the tool estimates the new outcome value that the observation would r...",
-                        "default": null
+                        "default": None
                 },
                 "lower_exp_trim": {
                         "type": "string",
                         "description": "The lower quantile that will be used to trim the exposure variable. Any observations with exposure values below this quantile will be excluded from the analysis before estimating propensity scores. Th...",
-                        "default": null
+                        "default": None
                 },
                 "upper_exp_trim": {
                         "type": "string",
                         "description": "The upper quantile that will be used to trim the exposure variable. Any observations with exposure values above this quantile will be excluded from the analysis before estimating propensity scores. Th...",
-                        "default": null
+                        "default": None
                 },
                 "lower_ps_trim": {
                         "type": "string",
                         "description": "The lower quantile that will be used to trim the propensity scores. Any observations with propensity scores below this quantile will be excluded from the analysis before performing propensity score ma...",
-                        "default": null
+                        "default": None
                 },
                 "upper_ps_trim": {
                         "type": "string",
                         "description": "The upper quantile that will be used to trim the propensity scores. Any observations with propensity scores above this quantile will be excluded from the analysis before performing propensity score ma...",
-                        "default": null
+                        "default": None
                 },
                 "num_bins": {
                         "type": "string",
                         "description": "The number of exposure bins that will be used for propensity score matching. In matching, the exposure variable is divided into evenly spaced bins (equal intervals), and matching is performed within e...",
-                        "default": null
+                        "default": None
                 },
                 "scale": {
                         "type": "string",
                         "description": "The relative weight (sometimes called the scale) of the propensity score to the exposure variable that will be used when performing propensity score matching. Within each exposure bin, matches are det...",
-                        "default": null
+                        "default": None
                 },
                 "balance_type": {
                         "type": "string",
                         "description": "Specifies the method that will be used to determine whether the confounding variables are balanced. After estimating weights with propensity score matching or inverse propensity score weighting, weigh...",
-                        "default": null
+                        "default": None
                 },
                 "balance_threshold": {
                         "type": "string",
                         "description": "The threshold value that will be compared to the weighted correlations of the confounding variables to determine if they are balanced. The value must be between 0 and 1. A larger balance threshold ind...",
-                        "default": null
+                        "default": None
                 },
                 "bw_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to estimate the bandwidth of the exposure-response function.\r\nPLUG_IN\u2014A plug-in method will be used to estimate the bandwidth. This is the default.CV\u2014The bandwid...",
-                        "default": null
+                        "default": None
                 },
                 "bandwidth": {
                         "type": "string",
                         "description": "The bandwidth value of the exposure-response function when using a manual bandwidth.",
-                        "default": null
+                        "default": None
                 },
                 "create_bootstrap_ci": {
                         "type": "string",
                         "description": "Specifies whether 95 percent confidence intervals for the exposure-response function will be created using M-out-of-N bootstrapping.CREATE_CI\u2014Confidence intervals for the exposure-response function wi...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2148,37 +2148,37 @@ functions_declarations = {
                 "field_of_interest": {
                         "type": "string",
                         "description": "The field containing the category or categories  to be analyzed.",
-                        "default": null
+                        "default": None
                 },
                 "time_field_of_interest": {
                         "type": "string",
                         "description": "A date field with an optional  time stamp for each feature to analyze points using a space-time window.  Features near each other in space and time will be considered neighbors and will be  analyzed t...",
-                        "default": null
+                        "default": None
                 },
                 "category_of_interest": {
                         "type": "string",
                         "description": "The base category for the analysis.  The tool will identify, for each category_of_interest value, the degree to which the base category is attracted to or colocated with the neighboring_category param...",
-                        "default": null
+                        "default": None
                 },
                 "input_feature_for_comparison": {
                         "type": "string",
                         "description": "The input feature class containing the points with the categories that will be compared.",
-                        "default": null
+                        "default": None
                 },
                 "field_for_comparison": {
                         "type": "string",
                         "description": "The field from the input_feature_for_comparison parameter containing the category to be compared.",
-                        "default": null
+                        "default": None
                 },
                 "time_field_for_comparison": {
                         "type": "string",
                         "description": "A date field with a time stamp for each feature to analyze your points using a space-time window.  Features near each other in space and time will be considered neighbors and will be  analyzed togethe...",
-                        "default": null
+                        "default": None
                 },
                 "category_for_comparison": {
                         "type": "string",
                         "description": "The neighboring category for the analysis.  The tool will identify the degree to which the category_of_interest parameter value is attracted to or isolated from the  category_for_comparison value.",
-                        "default": null
+                        "default": None
                 },
                 "neighborhood_type": {
                         "type": "string",
@@ -2187,42 +2187,42 @@ functions_declarations = {
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors around each feature that will be used to test for local relationships between categories.  If no value is provided, the default of 8 is used.  The provided value must be large ...",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The neighborhood size is a constant or fixed distance for each feature.  All features within this distance will be used to test for local relationships between categories.  If no value is provided, th...",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path to a file containing weights that define spatial, and potentially temporal, relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "temporal_relationship_type": {
                         "type": "string",
                         "description": "Specifies how temporal relationships among features will be defined.\r\nBEFORE\u2014The time window will extend back in time for each of the in_features_of_interest values.  Neighboring features must have a ...",
-                        "default": null
+                        "default": None
                 },
                 "time_step_interval": {
                         "type": "string",
                         "description": "An integer and unit of measurement representing the number of time units composing the time window.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_permutations": {
                         "type": "string",
                         "description": "The number of permutations that will be used to create a reference distribution. Choosing the number of permutations is a balance between precision and increased processing time. Choose your preferenc...",
-                        "default": null
+                        "default": None
                 },
                 "local_weighting_scheme": {
                         "type": "string",
                         "description": "Specifies the kernel type that will be used to provide the spatial weighting. The kernel defines how each feature is related to other features within its neighborhood.BISQUARE\u2014Features will be weighte...",
-                        "default": null
+                        "default": None
                 },
                 "output_table": {
                         "type": "string",
                         "description": "A table that includes the global colocation quotients between all the categories in the \r\nField of Interest parameter and all the categories in the Field Containing Neighboring Category parameter.  Th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2255,12 +2255,12 @@ functions_declarations = {
                 "explanatory_variablesvariable_categorical": {
                         "type": "string",
                         "description": "A list of fields representing the explanatory variables that help predict the time to the event. Specify the variable as CATEGORICAL if it represents classes or categories such as material type or inc...",
-                        "default": null
+                        "default": None
                 },
                 "enable_survival_curve_popups": {
                         "type": "string",
                         "description": "Specifies whether pop-up charts will be generated for each output record. The pop-up charts show the baseline survival curve for each record and an additional time-to-event curve for censored observat...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2289,52 +2289,52 @@ functions_declarations = {
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "A file containing spatial weights that define the spatial relationships among your input features.  This file is used to assess spatial autocorrelation among regression residuals.  You can use the Gen...",
-                        "default": null
+                        "default": None
                 },
                 "output_report_file": {
                         "type": "string",
                         "description": "The report file contains tool results, including details about any models found that passed all the search criteria you entered.  This output file also contains diagnostics to help you fix common regr...",
-                        "default": null
+                        "default": None
                 },
                 "output_results_table": {
                         "type": "string",
                         "description": "The optional output table created containing the explanatory variables and diagnostics for all of the models within the Coefficient p-value \r\nand VIF value cutoffs.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_number_of_explanatory_variables": {
                         "type": "string",
                         "description": "All models with explanatory variables up to the value entered here will be assessed.  If, for example, the Minimum_Number_of_Explanatory_Variables is 2 and the Maximum_Number_of_Explanatory_Variables ...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_number_of_explanatory_variables": {
                         "type": "string",
                         "description": "This value represents the minimum number of explanatory variables for models evaluated.  If, for example, the Minimum_Number_of_Explanatory_Variables is 2 and the Maximum_Number_of_Explanatory_Variabl...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_acceptable_adj_r_squared": {
                         "type": "string",
                         "description": "This is the lowest Adjusted R-Squared value you consider a passing model.  If a model passes all of your other search criteria, but has an Adjusted R-Squared value smaller than the value entered here,...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_coefficient_p_value_cutoff": {
                         "type": "string",
                         "description": "For each model evaluated, OLS computes explanatory variable coefficient p-values.  The cutoff p-value you enter here represents the confidence level you require for all coefficients in the model in or...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_vif_value_cutoff": {
                         "type": "string",
                         "description": "This value reflects how much redundancy (multicollinearity) among model explanatory variables you will tolerate.  \r\n When the VIF (Variance Inflation Factor) value is higher than about 7.5, multicolli...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_acceptable_jarque_bera_p_value": {
                         "type": "string",
                         "description": "The p-value returned by the Jarque-Bera diagnostic test indicates whether the model residuals are normally distributed.  If the p-value is statistically significant (small),   \r\nthe model residuals ar...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_acceptable_spatial_autocorrelation_p_value": {
                         "type": "string",
                         "description": "For models that pass all of the other search criteria, the Exploratory Regression tool will check model residuals for spatial clustering using Global Moran's I.\r\n When the p-value for this diagnostic ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2370,17 +2370,17 @@ functions_declarations = {
                 "coefficient_output_table": {
                         "type": "string",
                         "description": "The full path to an optional table that will receive model coefficients, standardized coefficients, standard errors, and probabilities for each explanatory variable.",
-                        "default": null
+                        "default": None
                 },
                 "diagnostic_output_table": {
                         "type": "string",
                         "description": "The full path to an optional table that will receive model summary diagnostics.",
-                        "default": null
+                        "default": None
                 },
                 "output_report_file": {
                         "type": "string",
                         "description": "The path to the optional PDF file \r\nthe tool will create.  This report file includes model diagnostics, graphs, and notes to help you interpret the OLS results.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2406,192 +2406,192 @@ functions_declarations = {
                 "variable_predict": {
                         "type": "string",
                         "description": "The variable from the in_features parameter value containing the values to be used to train the model. This field contains known (training) values of the variable that will be used to predict at unkno...",
-                        "default": null
+                        "default": None
                 },
                 "treat_variable_as_categorical": {
                         "type": "string",
                         "description": "CATEGORICAL\u2014The variable_predict value is a categorical variable and classification will be performed.NUMERIC\u2014The variable_predict value is continuous and regression will be performed. This is the def...",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_variablesvariable_categorical": {
                         "type": "string",
                         "description": "A list of fields representing the explanatory variables that help predict the value or category of the variable_predict value. Use the treat_variable_as_categorical parameter for any variables that re...",
-                        "default": null
+                        "default": None
                 },
                 "distance_features": {
                         "type": "string",
                         "description": "The explanatory training distance features. Explanatory variables will be automatically created by calculating a distance from the provided features to the in_features values. Distances will be calcul...",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_rastersvariable_categorical": {
                         "type": "string",
                         "description": "The explanatory training variables extracted from rasters. Explanatory training variables will be automatically created by extracting raster cell values. For each feature in the in_features parameter,...",
-                        "default": null
+                        "default": None
                 },
                 "features_to_predict": {
                         "type": "string",
                         "description": "A feature class representing the locations where predictions will be made. This feature class must also contain any explanatory variables provided as fields that correspond to those used from the trai...",
-                        "default": null
+                        "default": None
                 },
                 "output_features": {
                         "type": "string",
                         "description": "The output feature class containing the prediction results.",
-                        "default": null
+                        "default": None
                 },
                 "output_raster": {
                         "type": "string",
                         "description": "The output raster containing the prediction results. The default cell size will be the maximum cell size of the raster inputs. To set a different cell size, use the Cell Size environment setting.",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_variable_matchingprediction_training": {
                         "type": "string",
                         "description": "A list of the explanatory_variables values specified from the in_features parameter on the right and corresponding fields from the features_to_predict parameter on the left,\r\nfor example, [[\"LandCover...",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_distance_matchingprediction_training": {
                         "type": "string",
                         "description": "A list of the distance_features values specified for the in_features parameter on the right and  corresponding feature sets from the features_to_predict parameter on the left. explanatory_distance_fea...",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_rasters_matchingprediction_training": {
                         "type": "string",
                         "description": "A list of the explanatory_rasters values specified for the in_features on the right and corresponding rasters from the features_to_predict parameter or output_raster parameter to be created on the lef...",
-                        "default": null
+                        "default": None
                 },
                 "output_trained_features": {
                         "type": "string",
                         "description": "The explanatory variables used for training (including sampled raster values and distance calculations), as well as the observed variable_predict field and accompanying predictions that will be used t...",
-                        "default": null
+                        "default": None
                 },
                 "output_importance_table": {
                         "type": "string",
                         "description": "The table that will contain information describing the importance of each explanatory variable (fields, distance features, and rasters) used to create the model.",
-                        "default": null
+                        "default": None
                 },
                 "use_raster_values": {
                         "type": "string",
                         "description": "Specifies how polygons will be treated when training the model\r\nif the in_features values are polygons with a categorical variable_predict value and only explanatory_rasters values have been provided....",
-                        "default": null
+                        "default": None
                 },
                 "number_of_trees": {
                         "type": "string",
                         "description": "The number of trees that will be created in the Forest-based and Gradient Boosted models. The default is 100. If the model_type parameter value is FOREST-BASED, more trees will generally result in mor...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_leaf_size": {
                         "type": "string",
                         "description": "The minimum number of observations required to keep a leaf (that is, the terminal node on a tree without further splits). \r\nThe default minimum for regression is 5 and the default for classification i...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_depth": {
                         "type": "string",
                         "description": "The maximum number of splits that will be made down a tree. Using a large maximum depth, more splits will be created, which may increase the chances of overfitting the model. If the model_type paramet...",
-                        "default": null
+                        "default": None
                 },
                 "sample_size": {
                         "type": "string",
                         "description": "The percentage of the in_features values that will be used for each decision tree. The default is 100 percent of the data. Samples for each tree are taken randomly from two-thirds of the data specifie...",
-                        "default": null
+                        "default": None
                 },
                 "random_variables": {
                         "type": "string",
                         "description": "The number of explanatory variables that will be used to create each decision tree.Each decision tree in the forest is created using a random subset of the specified explanatory variables. Increasing ...",
-                        "default": null
+                        "default": None
                 },
                 "percentage_for_training": {
                         "type": "string",
                         "description": "The percentage (between 10 percent and 50 percent) of \r\nthe in_features values that will be reserved as the test dataset for validation. The model will be trained without this random subset of data, a...",
-                        "default": null
+                        "default": None
                 },
                 "output_classification_table": {
                         "type": "string",
                         "description": "A confusion matrix that  summarizes the performance of the model created on the validation data. The matrix compares the model predicted categories for the validation data to the actual categories. Th...",
-                        "default": null
+                        "default": None
                 },
                 "output_validation_table": {
                         "type": "string",
                         "description": "A table that contains the \r\nR2 for each model if the variable_predict value is not categorical, or the accuracy of each model if the value is categorical. This table includes a bar chart of the distri...",
-                        "default": null
+                        "default": None
                 },
                 "compensate_sparse_categories": {
                         "type": "string",
                         "description": "Specifies whether each category in the training dataset, regardless of its frequency, will be represented in each tree.\r\nThis parameter is available when the model_type parameter value is FOREST-BASED...",
-                        "default": null
+                        "default": None
                 },
                 "number_validation_runs": {
                         "type": "string",
                         "description": "The number of iterations of the tool. The distribution of R-squared values or accuracies of all the models  can be displayed using the output_validation_table parameter. If  the prediction_type parame...",
-                        "default": null
+                        "default": None
                 },
                 "calculate_uncertainty": {
                         "type": "string",
                         "description": "Specifies whether prediction uncertainty will be calculated when training, predicting to features, or predicting to raster.\r\nThis parameter is available when the model_type parameter value  is FOREST-...",
-                        "default": null
+                        "default": None
                 },
                 "output_trained_model": {
                         "type": "string",
                         "description": "An output model file that will save the trained model, which can be used later for prediction.",
-                        "default": null
+                        "default": None
                 },
                 "model_type": {
                         "type": "string",
                         "description": "Specifies the method that will be used to create the model. \r\nFOREST-BASED\u2014A model will be created using an adaptation of the random forest algorithm. The model will use the votes from hundreds of dec...",
-                        "default": null
+                        "default": None
                 },
                 "reg_lambda": {
                         "type": "string",
                         "description": "A regularization term that reduces the model's sensitivity to individual features. Increasing this value will make the model more conservative and prevent overfitting the training data.  If the value ...",
-                        "default": null
+                        "default": None
                 },
                 "gamma": {
                         "type": "string",
                         "description": "A threshold for the minimum loss reduction needed to split trees.Potential splits are evaluated for their loss reduction. If the candidate split has a higher loss reduction than this threshold value, ...",
-                        "default": null
+                        "default": None
                 },
                 "eta": {
                         "type": "string",
                         "description": "A value that reduces the contribution of each tree to the final prediction. The value should be greater than 0 and less than or equal to 1. A lower learning rate prevents overfitting the model; howeve...",
-                        "default": null
+                        "default": None
                 },
                 "max_bins": {
                         "type": "string",
                         "description": "The number of bins that the training data will be divided into \r\nto search for the best splitting point. The value cannot be 1. The default is 0, which corresponds to the use of a greedy algorithm.  A...",
-                        "default": null
+                        "default": None
                 },
                 "optimize": {
                         "type": "string",
                         "description": "Specifies whether an optimization method will be used to find the set of hyperparameters that achieve optimal model performance.\r\nTRUE\u2014An optimization method will be used to find the set of hyperparam...",
-                        "default": null
+                        "default": None
                 },
                 "optimize_algorithm": {
                         "type": "string",
                         "description": "Specifies the optimization method that will be used to select and test search points to find the optimal set of hyperparameters. Search points are combinations of hyperparameters within the search spa...",
-                        "default": null
+                        "default": None
                 },
                 "optimize_target": {
                         "type": "string",
                         "description": "Specifies the objective function or value that will be minimized or maximized to find the optimal \r\nset of hyperparameters.R2\u2014The optimization method will maximize R2 to find the optimal set of hyperp...",
-                        "default": null
+                        "default": None
                 },
                 "num_search": {
                         "type": "string",
                         "description": "The number of search points within the search space specified by the model_param_setting parameter \r\nthat will be tested. This parameter is available when the optimize_algorithm parameter value is RAN...",
-                        "default": null
+                        "default": None
                 },
                 "model_param_setting": {
                         "type": "string",
                         "description": "A list of hyperparameters and their search spaces. Customize the search space of each hyperparameter by providing a lower bound, upper bound, and interval.\r\nThe lower bound and upper bound specify the...",
-                        "default": null
+                        "default": None
                 },
                 "output_param_tuning_table": {
                         "type": "string",
                         "description": "A table that contains the parameter settings and objective values for each optimization trial. The output includes a chart of all the trials and their objective values. This option is available when o...",
-                        "default": null
+                        "default": None
                 },
                 "include_probabilities": {
                         "type": "string",
                         "description": "For categorical variables to predict, specifies whether the probability of every category of the categorical variable or only the probability of the record's category will be predicted.\r\nFor example, ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2626,32 +2626,32 @@ functions_declarations = {
                 "distance_features": {
                         "type": "string",
                         "description": "Automatically creates explanatory variables by calculating a distance from the provided features to the in_features values. Distances will be calculated from each of the input distance_features values...",
-                        "default": null
+                        "default": None
                 },
                 "prediction_locations": {
                         "type": "string",
                         "description": "A feature class containing features representing locations where estimates will be computed. Each feature in this dataset should contain values for all  the explanatory variables specified. The depend...",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_variables_to_matchfield_from_prediction_locations_field_from_input_features": {
                         "type": "string",
                         "description": "Matches the explanatory variables in the prediction_locations parameter to corresponding explanatory variables from the in_features parameter.",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_distance_matchingprediction_distance_features_input_explanatory_distance_features": {
                         "type": "string",
                         "description": "Matches the distance features specified for the features_to_predict parameter on the left to the corresponding distance features for the in_features parameter on the right.",
-                        "default": null
+                        "default": None
                 },
                 "output_predicted_features": {
                         "type": "string",
                         "description": "The output feature class that will receive dependent variable estimates for each prediction_location value.\r\n The output feature class that will receive dependent variable estimates for each Predictio...",
-                        "default": null
+                        "default": None
                 },
                 "output_trained_model": {
                         "type": "string",
                         "description": "An output model file that will save the trained model, which can be used later for prediction.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2693,52 +2693,52 @@ functions_declarations = {
                 "impedance_temporal_cutoff": {
                         "type": "string",
                         "description": "The maximum impedance travel time allowed for neighbors of a feature. Any feature whose travel time  is longer than this value will not be used as a neighbor.  By default, no temporal cutoff is used.",
-                        "default": null
+                        "default": None
                 },
                 "impedance_cost_cutoff": {
                         "type": "string",
                         "description": "The maximum impedance cost allowed for neighbors of a feature. Any feature whose cost of travel is larger than this value will not be used as a neighbor.  By default, no cost cutoff is used.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_number_of_neighbors": {
                         "type": "string",
                         "description": "An integer reflecting the maximum number of neighbors  for each feature. The actual number of neighbors used for each feature may be smaller due to impedance cutoffs.",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The time of day traffic conditions will be considered in the analysis.  Traffic conditions can impact the distance that can be traveled over a given time.  If no date or time is provided, the analysis...",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time\r\nzone for the Time_of_Day parameter.\r\nLOCAL_TIME_AT_LOCATIONS\u2014The time zone in which the Input_Feature_Class is located will be used. This is\r\nthe default.UTC\u2014Coordinated universal ...",
-                        "default": null
+                        "default": None
                 },
                 "barriers": {
                         "type": "string",
                         "description": "The features that represent blocked intersections, road closures, accident sites, or other locations where travel is blocked along the network.",
-                        "default": null
+                        "default": None
                 },
                 "search_tolerance": {
                         "type": "string",
                         "description": "The maximum distance used to assign each input feature to a location on the network.  If any of the input points do not fall exactly on a line of the network, they will be assigned to the closest loca...",
-                        "default": null
+                        "default": None
                 },
                 "conceptualization_of_spatial_relationships": {
                         "type": "string",
                         "description": "Specifies how weights will be defined for each neighbor.            INVERSE\u2014Features farther in distance, time, or cost will have a smaller weight than features nearby. The weights decrease by their i...",
-                        "default": null
+                        "default": None
                 },
                 "exponent": {
                         "type": "string",
                         "description": "The exponent used when INVERSE option is specified for the Conceptualization_of_Spatial_Relationships parameter.  The weights assigned to each neighbor are calculated by taking the inverse distance, t...",
-                        "default": null
+                        "default": None
                 },
                 "row_standardization": {
                         "type": "string",
                         "description": "Specifies whether row standardization will be applied. Row standardization is recommended when the locations of the input points are potentially biased due to sampling design or an imposed aggregation...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2773,47 +2773,47 @@ functions_declarations = {
                 "distance_method": {
                         "type": "string",
                         "description": "Specifies how distances will be calculated from each feature to neighboring features.EUCLIDEAN\u2014The straight-line distance between two points (as the crow flies) will be calculated. This is the default...",
-                        "default": null
+                        "default": None
                 },
                 "exponent": {
                         "type": "string",
                         "description": "The value for inverse distance calculation. A typical value is 1 or 2.",
-                        "default": null
+                        "default": None
                 },
                 "threshold_distance": {
                         "type": "string",
                         "description": "The cutoff distance for the Conceptualization_of_Spatial_Relationships parameter's INVERSE_DISTANCE and FIXED_DISTANCE options. Enter this value using the units specified in the environment output coo...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "An integer reflecting either the minimum or the exact number of neighbors. When the Conceptualization_of_Spatial_Relationships parameter is set to K_NEAREST_NEIGHBORS, each feature will have exactly t...",
-                        "default": null
+                        "default": None
                 },
                 "row_standardization": {
                         "type": "string",
                         "description": "Specifies whether spatial weights will be standardized by row. Row standardization is recommended whenever feature distribution is potentially biased due to sampling design or to an imposed aggregatio...",
-                        "default": null
+                        "default": None
                 },
                 "input_table": {
                         "type": "string",
                         "description": "A table containing numeric weights relating every feature to every other feature in the input feature class. Required fields for the table are the Unique ID Field parameter value, NID (neighbor ID), a...",
-                        "default": null
+                        "default": None
                 },
                 "date_time_field": {
                         "type": "string",
                         "description": "A date field with a time stamp for each feature.",
-                        "default": null
+                        "default": None
                 },
                 "date_time_interval_type": {
                         "type": "string",
                         "description": "Specifies the units that will be used for measuring time.SECONDS\u2014The unit will be seconds.MINUTES\u2014The unit will be minutes.HOURS\u2014The unit will be hours.DAYS\u2014The unit will be days.WEEKS\u2014The unit will b...",
-                        "default": null
+                        "default": None
                 },
                 "date_time_interval_value": {
                         "type": "string",
                         "description": "An integer reflecting the number of time units comprising the time window.For example, if you choose HOURS for the Date_Time_Interval_Type parameter and specify 3 for the Date_Time_Interval_Value para...",
-                        "default": null
+                        "default": None
                 },
                 "use_z_values": {
                         "type": "string",
@@ -2863,82 +2863,82 @@ functions_declarations = {
                 "minimum_number_of_neighbors": {
                         "type": "string",
                         "description": "The minimum number of neighbors each feature will include in its calculations. It is recommended that you use at least 30 neighbors.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_number_of_neighbors": {
                         "type": "string",
                         "description": "The maximum number of neighbors (up to 1000) each feature will include in its calculations.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_search_distance": {
                         "type": "string",
                         "description": "The minimum neighborhood search distance.\r\nIt is recommended that you use a distance at which each feature has at least 30 neighbors.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_search_distance": {
                         "type": "string",
                         "description": "The maximum neighborhood search distance.\r\nIf a distance results in features with more than 1000 neighbors, the tool will use the first 1000 in calculations for the target feature.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors_increment": {
                         "type": "string",
                         "description": "The number of neighbors by which manual intervals will increase for each neighborhood test.",
-                        "default": null
+                        "default": None
                 },
                 "search_distance_increment": {
                         "type": "string",
                         "description": "The distance by which manual intervals will increase for each neighborhood test.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_increments": {
                         "type": "string",
                         "description": "The number of neighborhood sizes that will be tested starting with the minimum_number_of_neighbors or minimum_search_distance  parameter value.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "The closest number of neighbors (up to 1000) that will be considered for each feature. The number must be an integer between 2 and 1000.",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The spatial extent of the neighborhood.",
-                        "default": null
+                        "default": None
                 },
                 "prediction_locations": {
                         "type": "string",
                         "description": "A feature class containing features representing locations where estimates will be computed. Each feature in this dataset should contain values for all the explanatory variables specified. The depende...",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_variables_to_match": {
                         "type": "string",
                         "description": "The explanatory variables from the prediction_locations parameter that match corresponding explanatory variables from the in_features parameter.\r\n[[\"LandCover2000\", \"LandCover2010\"], [\"Income\", \"PerCa...",
-                        "default": null
+                        "default": None
                 },
                 "output_predicted_features": {
                         "type": "string",
                         "description": "The output feature class that will receive dependent variable estimates for each prediction_location value.",
-                        "default": null
+                        "default": None
                 },
                 "robust_prediction": {
                         "type": "string",
                         "description": "Specifies the features that will be used in prediction calculations.ROBUST\u2014Features with values more than three standard\r\ndeviations from the mean (value outliers) and features with\r\nweights of 0 (spa...",
-                        "default": null
+                        "default": None
                 },
                 "local_weighting_scheme": {
                         "type": "string",
                         "description": "Specifies the kernel type that will be used to provide the spatial weighting in the model. The kernel defines how each feature is related to other features within its neighborhood.BISQUARE\u2014A weight of...",
-                        "default": null
+                        "default": None
                 },
                 "coefficient_raster_workspace": {
                         "type": "string",
                         "description": "The workspace where the coefficient rasters will be created. When this workspace is provided, rasters are created for the intercept and every explanatory variable. This parameter is only available wit...",
-                        "default": null
+                        "default": None
                 },
                 "scale": {
                         "type": "string",
                         "description": "Specifies whether the values of the explanatory and dependent variables will be scaled to  have mean zero and standard deviation one before fitting the model.SCALE_DATA\u2014The values of the variables wil...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2974,32 +2974,32 @@ functions_declarations = {
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors around each feature (including the feature) that will be used to test for a local relationship between the variables. The number of neighbors must be between 30 and 1,000, and ...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_permutations": {
                         "type": "string",
                         "description": "Specifies the number of permutations that will be used to calculate the pseudo p-value for each feature. Choosing a number of permutations is a balance between precision in the pseudo p-value and incr...",
-                        "default": null
+                        "default": None
                 },
                 "enable_local_scatterplot_popups": {
                         "type": "string",
                         "description": "Specifies whether scatterplot pop-ups will be generated for each output feature. Each scatterplot displays the values of the explanatory (horizontal axis) and dependent (vertical axis) variables in th...",
-                        "default": null
+                        "default": None
                 },
                 "level_of_confidence": {
                         "type": "string",
                         "description": "Specifies a confidence level of the hypothesis test for significant relationships.90%\u2014The confidence level is 90 percent. This is the default.95%\u2014The confidence level is 95 percent. 99%\u2014The confidence...",
-                        "default": null
+                        "default": None
                 },
                 "apply_false_discovery_rate_fdr_correction": {
                         "type": "string",
                         "description": "Specifies whether False Discover Rate (FDR) correction will be applied to the pseudo p-values.APPLY_FDR\u2014Statistical significance will be based on the FDR correction. This is the default.NO_FDR\u2014Statist...",
-                        "default": null
+                        "default": None
                 },
                 "scaling_factor": {
                         "type": "string",
                         "description": "The level of sensitivity to subtle relationships between the variables. Larger values (closer to one) can detect relatively weak relationships, while smaller values (closer to zero) will only detect s...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3044,132 +3044,132 @@ functions_declarations = {
                 "minimum_number_of_neighbors": {
                         "type": "string",
                         "description": "The minimum number of neighbors that each feature will include in its calculation. \r\nIt is recommended that you use at least 30 neighbors.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_number_of_neighbors": {
                         "type": "string",
                         "description": "The maximum number of neighbors that each feature will include in its calculations.",
-                        "default": null
+                        "default": None
                 },
                 "distance_unit": {
                         "type": "string",
                         "description": "Specifies the unit of distance that will be used to measure the distances between features. FEETINT\u2014Distances will be measured in international feet.MILESINT\u2014Distances will be measured in statute mile...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_search_distance": {
                         "type": "string",
                         "description": "The minimum search distance that will be applied to every explanatory variable. It is recommended that you provide a minimum distance that includes at least 30 neighbors for each feature.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_search_distance": {
                         "type": "string",
                         "description": "The maximum neighborhood search distance that will be applied to all variables.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors_increment": {
                         "type": "string",
                         "description": "The number of neighbors by which manual intervals will increase for each neighborhood test.",
-                        "default": null
+                        "default": None
                 },
                 "search_distance_increment": {
                         "type": "string",
                         "description": "The distance by which manual intervals will increase for each neighborhood test.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_increments": {
                         "type": "string",
                         "description": "The number of neighborhood sizes to test when using manual intervals. The  first neighborhood size is the value of the minimum_number_of_neighbors or minimum_search_distance parameter.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors that will be used for the user-defined neighborhood type.",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The size of the distance band that will be used for the user-defined neighborhood type. All features within this distance will be included as neighbors in the local models.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors_golden": {
                         "type": "string",
                         "description": "The customized Golden Search options for individual explanatory variables. For each explanatory variable to be customized, provide the variable, the minimum number of neighbors, and the maximum number...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors_manual": {
                         "type": "string",
                         "description": "The customized  manual intervals options for individual explanatory variables. For each explanatory variable to be customized, provide the minimum number of neighbors, number of neighbors increment, a...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors_defined": {
                         "type": "string",
                         "description": "The customized user-defined options for individual explanatory variables. For each explanatory variable to be customized, provide the number of neighbors.",
-                        "default": null
+                        "default": None
                 },
                 "distance_golden": {
                         "type": "string",
                         "description": "The customized Golden Search options for individual explanatory variables. For each explanatory variable to be customized, provide the variable, the minimum search distance, and the maximum search dis...",
-                        "default": null
+                        "default": None
                 },
                 "distance_manual": {
                         "type": "string",
                         "description": "The customized manual intervals options for individual explanatory variables. For each variable to be customized, provide the variable, the minimum search distance, search distance increments, and num...",
-                        "default": null
+                        "default": None
                 },
                 "distance_defined": {
                         "type": "string",
                         "description": "The customized user-defined options  for individual explanatory variables. For each variable to be customized, provide the variable and the distance band in the columns.",
-                        "default": null
+                        "default": None
                 },
                 "prediction_locations": {
                         "type": "string",
                         "description": "A feature class with the locations where estimates will be computed. Each feature in this dataset should contain a value for every explanatory variables specified. The dependent variable for these fea...",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_variables_to_match": {
                         "type": "string",
                         "description": "The explanatory variables from the prediction locations that match corresponding explanatory variables from the input features.",
-                        "default": null
+                        "default": None
                 },
                 "output_predicted_features": {
                         "type": "string",
                         "description": "The output feature class that will receive dependent variable estimates for every prediction location.",
-                        "default": null
+                        "default": None
                 },
                 "robust_prediction": {
                         "type": "string",
                         "description": "Specifies the features that will be used in the prediction calculations.ROBUST\u2014Features with values greater than three standard deviations from the mean (value outliers) and features with weights of 0...",
-                        "default": null
+                        "default": None
                 },
                 "local_weighting_scheme": {
                         "type": "string",
                         "description": "Specifies the kernel type that will be used to provide the spatial weighting in the model. The kernel defines how each feature is related to other features within its neighborhood.\r\nBISQUARE\u2014A weight ...",
-                        "default": null
+                        "default": None
                 },
                 "output_table": {
                         "type": "string",
                         "description": "A table containing the output statistics of the MGWR model. A bar chart of estimated bandwidths or numbers of neighbors will be included with the output.",
-                        "default": null
+                        "default": None
                 },
                 "coefficient_raster_workspace": {
                         "type": "string",
                         "description": "The workspace where the coefficient rasters will be created. When this workspace is provided, rasters are created for the intercept and every explanatory variable.\r\nThis parameter is only available wi...",
-                        "default": null
+                        "default": None
                 },
                 "scale": {
                         "type": "string",
                         "description": "Specifies whether the values of the explanatory and dependent variables will be scaled to  have mean zero and standard deviation one prior to fitting the model.SCALE_DATA\u2014The values of the variables w...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors_gradient": {
                         "type": "string",
                         "description": "The customized Gradient Search options for individual explanatory variables. For each explanatory variable to be customized, provide the variable, the minimum number of neighbors, and the maximum numb...",
-                        "default": null
+                        "default": None
                 },
                 "distance_gradient": {
                         "type": "string",
                         "description": "The customized Gradient Search options for individual explanatory variables. For each explanatory variable to be customized, provide the variable, the minimum search distance, and the maximum search d...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3209,17 +3209,17 @@ functions_declarations = {
                 "coefficient_output_table": {
                         "type": "string",
                         "description": "The full path to an optional table that will receive model coefficients, standardized coefficients, standard errors, and probabilities for each explanatory variable.",
-                        "default": null
+                        "default": None
                 },
                 "diagnostic_output_table": {
                         "type": "string",
                         "description": "The full path to an optional table that will receive model summary diagnostics.",
-                        "default": null
+                        "default": None
                 },
                 "output_report_file": {
                         "type": "string",
                         "description": "The path to the optional PDF file \r\nthe tool will create.  This report file includes model diagnostics, graphs, and notes to help you interpret the OLS results.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3245,32 +3245,32 @@ functions_declarations = {
                 "features_to_predict": {
                         "type": "string",
                         "description": "The feature class representing locations where predictions will be made. This feature class must also contain any explanatory variables provided as fields that correspond to those used to train the in...",
-                        "default": null
+                        "default": None
                 },
                 "output_features": {
                         "type": "string",
                         "description": "The \r\n output feature class containing the prediction results.",
-                        "default": null
+                        "default": None
                 },
                 "output_raster": {
                         "type": "string",
                         "description": "The output raster containing the prediction results. The default cell size will be the maximum cell size of the input rasters.",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_variable_matchingpred1_train1_cat1_pred2_train2_cat2": {
                         "type": "string",
                         "description": "A list of the explanatory variables of the input model and corresponding fields of the input prediction features. For each explanatory variable in the Training column, provide the corresponding predic...",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_distance_matchingpred1_cat1_pred2_cat2": {
                         "type": "string",
                         "description": "A list of the explanatory distance features of the input model and corresponding prediction distance features. For each explanatory distance feature in the Training column, provide the corresponding p...",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_rasters_matchingpred1_train1_cat1_pred2_train2_cat2": {
                         "type": "string",
                         "description": "A list of the explanatory rasters of the input model and corresponding prediction rasters. For each explanatory raster in the Training column, provide the corresponding prediction raster in the Predic...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3289,147 +3289,147 @@ functions_declarations = {
                 "contains_background": {
                         "type": "string",
                         "description": "Specifies whether the input point features contain background points.\r\nIf the input points do not contain background points, the tool will generate background points\r\nusing cells in the explanatory tr...",
-                        "default": null
+                        "default": None
                 },
                 "presence_indicator_field": {
                         "type": "string",
                         "description": "The field from the input point features containing binary values that indicate each point as presence (1) or background (0). The field must be numeric.",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_variablesvariable_categorical": {
                         "type": "string",
                         "description": "A list of fields representing the explanatory variables that will help predict the probability of presence. You can specify whether each variable is categorical or numeric. Specify the CATEGORICAL opt...",
-                        "default": null
+                        "default": None
                 },
                 "distance_features": {
                         "type": "string",
                         "description": "A list of feature layers or feature classes that will be used to automatically create explanatory variables that represent the distance from the input point features to the nearest provided distance f...",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_rastersvariable_categorical": {
                         "type": "string",
                         "description": "A list of rasters that will be used to automatically create\r\nexplanatory training variables in the model whose values are\r\nextracted from rasters. For each feature (presence and background\r\npoints) in...",
-                        "default": null
+                        "default": None
                 },
                 "basis_expansion_functions": {
                         "type": "string",
                         "description": "Specifies the basis function that will be used to transform the provided explanatory variables for use in the model. If multiple basis functions are selected, the tool will produce multiple transforme...",
-                        "default": null
+                        "default": None
                 },
                 "number_knots": {
                         "type": "string",
                         "description": "The number of knots that will be used by the hinge and\r\nthreshold explanatory variable expansions.\r\nThe value controls how many thresholds are created, which are\r\nused to create multiple explanatory v...",
-                        "default": null
+                        "default": None
                 },
                 "study_area_type": {
                         "type": "string",
                         "description": "Specifies the type of study area that will be used to define where presence is possible when the input point features do not contain background points.CONVEX_HULL\u2014 The smallest convex polygon that enc...",
-                        "default": null
+                        "default": None
                 },
                 "study_area_polygon": {
                         "type": "string",
                         "description": "A feature class containing the polygons that define a custom study area. The input point features must be located within the custom study area covered by the polygon features. A study area can be comp...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_thinning": {
                         "type": "string",
                         "description": "Specifies whether spatial thinning will be applied to presence and background points before training the model.Spatial thinning helps to reduce sampling bias by removing\r\npoints and ensuring that rema...",
-                        "default": null
+                        "default": None
                 },
                 "thinning_distance_band": {
                         "type": "string",
                         "description": "The minimum distance between any two presence points or any two background points when spatial thinning is applied.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_iterations": {
                         "type": "string",
                         "description": "The number of runs that will be used to find the optimal spatial thinning solution, seeking to maintain as many presence and background points as possible while ensuring that no two presence or two ba...",
-                        "default": null
+                        "default": None
                 },
                 "relative_weight": {
                         "type": "string",
                         "description": "A value between 1 and 100 that specifies the relative\r\ninformation weight of presence points to background points. The\r\ndefault is 100.A higher value indicates that presence points are the primary\r\nso...",
-                        "default": null
+                        "default": None
                 },
                 "link_function": {
                         "type": "string",
                         "description": "Specifies the function that will convert the unbounded outputs of the model to a number between 0 and 1. This value can be interpreted as the probability of presence at the location. Each option conve...",
-                        "default": null
+                        "default": None
                 },
                 "presence_probability_cutoff": {
                         "type": "string",
                         "description": "A cutoff value between 0.01 and 0.99 that establishes which probabilities correspond with presence in the resulting classification. The cutoff value is used to help evaluate the model's performance us...",
-                        "default": null
+                        "default": None
                 },
                 "output_trained_features": {
                         "type": "string",
                         "description": "An output feature class that will contain all features and explanatory variables used in the training of the model.",
-                        "default": null
+                        "default": None
                 },
                 "output_trained_raster": {
                         "type": "string",
                         "description": "The output raster with cell values indicating the probability of presence using the selected link function.\r\nThe default cell size is the maximum of the cell sizes of the explanatory training rasters....",
-                        "default": null
+                        "default": None
                 },
                 "output_response_curve_table": {
                         "type": "string",
                         "description": "The output table that will contain diagnostics from the\r\ntraining model that indicate the effect of each explanatory\r\nvariable on the probability of presence after accounting for the\r\naverage effects ...",
-                        "default": null
+                        "default": None
                 },
                 "output_sensitivity_table": {
                         "type": "string",
                         "description": "The output table that will contain diagnostics of training model accuracy as the probability presence cutoff changes from 0 to 1.",
-                        "default": null
+                        "default": None
                 },
                 "features_to_predict": {
                         "type": "string",
                         "description": "The feature class representing locations where predictions will be\r\nmade. The feature class must contain any provided explanatory\r\nvariable fields that were used from the input point features. When us...",
-                        "default": null
+                        "default": None
                 },
                 "output_pred_features": {
                         "type": "string",
                         "description": "The output feature class that will contain the results of the prediction model applied to the input prediction features.",
-                        "default": null
+                        "default": None
                 },
                 "output_pred_raster": {
                         "type": "string",
                         "description": "The output raster containing the prediction results at each cell of the matched explanatory rasters.\r\nThe default cell size is the maximum of the cell sizes of the explanatory training rasters.",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_variable_matchingprediction_training": {
                         "type": "string",
                         "description": "The matching explanatory variable fields for the input point features and input prediction features.",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_distance_matchingprediction_training": {
                         "type": "string",
                         "description": "The matching distance features for the training and prediction.",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_rasters_matchingprediction_training": {
                         "type": "string",
                         "description": "The matching rasters for the training and prediction.",
-                        "default": null
+                        "default": None
                 },
                 "allow_predictions_outside_of_data_ranges": {
                         "type": "string",
                         "description": "ALLOWED\u2014The prediction will allow extrapolation beyond the range of values used in training. This is the default.NOT_ALLOWED\u2014The prediction will not allow extrapolation beyond the range of values used...",
-                        "default": null
+                        "default": None
                 },
                 "resampling_scheme": {
                         "type": "string",
                         "description": "Specifies the method that will be used to perform cross validation of the prediction model. Cross validation excludes a portion of the data during training of the model and uses it to test the model's...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_groups": {
                         "type": "string",
                         "description": "The number of groups that will be used in cross validation\r\nfor the random resampling scheme. A field in the\r\noutput trained features indicates the group that each point\r\nwas assigned to. The default ...",
-                        "default": null
+                        "default": None
                 },
                 "output_trained_model": {
                         "type": "string",
                         "description": "An output model file that will save the trained model, which can be used later for prediction.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3459,22 +3459,22 @@ functions_declarations = {
                 "output_features": {
                         "type": "string",
                         "description": "The output polygon features containing spatial association measures at all intersections of the input and overlay zones.\r\nThe output features can be used to measure the association between specific co...",
-                        "default": null
+                        "default": None
                 },
                 "output_raster": {
                         "type": "string",
                         "description": "The output raster containing spatial association measures\r\nbetween the input and overlay zones. The output raster will have three fields to indicate the spatial association measures for  intersections...",
-                        "default": null
+                        "default": None
                 },
                 "correspondence_overlay_to_input": {
                         "type": "string",
                         "description": "The output polygon features containing the correspondence measures of the overlay zones  within the input zones.\r\nThis output will have the same geometry as the input zones and can be used to identify...",
-                        "default": null
+                        "default": None
                 },
                 "correspondence_input_to_overlay": {
                         "type": "string",
                         "description": "The output polygon features containing the correspondence measures of the input zones  within the overlay zones.\r\nThis output will have the same geometry as the overlay zones and can be used to identi...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3511,32 +3511,32 @@ functions_declarations = {
                 "neighborhood_type": {
                         "type": "string",
                         "description": "Specifies how neighbors will be chosen for each input feature. To identify local spatial patterns, neighboring features must be identified for each input feature.DISTANCE_BAND\u2014Features within a specif...",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The distance within which features will be included as neighbors. If no value is provided, one will be estimated during processing and included as a geoprocessing message.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors that will be included as neighbors. The number does not include the focal feature. The default is 8.",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path and file name of the spatial weights matrix file that defines spatial relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "local_weighting_scheme": {
                         "type": "string",
                         "description": "Specifies the weighting scheme that will be applied to neighbors. Weights will always be row-standardized unless a spatial weights matrix file is provided.UNWEIGHTED\u2014Neighbors will be assigned a weigh...",
-                        "default": null
+                        "default": None
                 },
                 "kernel_bandwidth": {
                         "type": "string",
                         "description": "The bandwidth of the weighting kernel. If no value is provided, an adaptive kernel will be used. An adaptive kernel uses the maximum distance from a neighbor to a focal feature as the bandwidth.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3570,12 +3570,12 @@ functions_declarations = {
                 "in_swm": {
                         "type": "string",
                         "description": "The input .swm files that will be used as candidates for the SWM that best represents the spatial patterns (such as trends or clusters) of one or more numeric fields. If no files are provided, the too...",
-                        "default": null
+                        "default": None
                 },
                 "compare_only_inputs": {
                         "type": "string",
                         "description": "Specifies whether only the .swm files provided in the in_swm parameter will be tested or whether 28 additional neighborhoods will also be tested. The tool will use the SWM that creates spatial compone...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3604,27 +3604,27 @@ functions_declarations = {
                 "append_all_fields": {
                         "type": "string",
                         "description": "Specifies whether all fields will be copied from the input features to the output feature class.ALL\u2014 All fields from the input features will be copied to the output feature class. This is the default....",
-                        "default": null
+                        "default": None
                 },
                 "in_swm": {
                         "type": "string",
                         "description": "A list of input SWM files (.swm) that will be used as candidates for the SWM that will be used to create the spatial component explanatory variables. If no files are provided, the tool will test 28 di...",
-                        "default": null
+                        "default": None
                 },
                 "out_swm": {
                         "type": "string",
                         "description": "The output SWM file (.swm) of the neighbors and weights selected by the tool.  This parameter does not apply if you provide an input .swm file.",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "The unique ID field of the output .swm file. The field must be an integer and must have a unique value for each input feature.",
-                        "default": null
+                        "default": None
                 },
                 "compare_only_inputs": {
                         "type": "string",
                         "description": "Specifies whether only the .swm files provided in the in_swm parameter will be tested or whether 28 additional neighborhoods will also be tested. The tool will use the SWM that creates spatial compone...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3648,57 +3648,57 @@ functions_declarations = {
                 "append_all_fields": {
                         "type": "string",
                         "description": "Specifies whether all fields will be copied from the input features to the output feature class.ALL\u2014 All fields from the input features will be copied to the output feature class. This is the default....",
-                        "default": null
+                        "default": None
                 },
                 "min_autocorrelation": {
                         "type": "string",
                         "description": "The threshold value for including a spatial component.  The value is a proportion of the largest possible Moran's I value for the spatial weights, and a component must have a larger Moran's I value th...",
-                        "default": null
+                        "default": None
                 },
                 "max_components": {
                         "type": "string",
                         "description": "The maximum number of spatial components that will be created. The default is 15.",
-                        "default": null
+                        "default": None
                 },
                 "neighborhood_type": {
                         "type": "string",
                         "description": "Specifies how neighbors will be chosen for each input feature.  Neighboring features must be identified in order to decompose the spatial structure of the input features. \r\nDISTANCE_BAND\u2014Features with...",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The distance within which features will be included as neighbors. If no value is provided, one will be estimated during processing and included as a geoprocessing message. If the specified distance re...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors that will be included for each feature. The number does not include the focal feature. The default is 8.",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path and file name of the spatial weights matrix file (.swm) that defines the neighbors and weights between the input features.",
-                        "default": null
+                        "default": None
                 },
                 "local_weighting_scheme": {
                         "type": "string",
                         "description": "Specifies the weighting scheme that will be applied to neighboring features.  \r\nUNWEIGHTED\u2014Neighbors will not be weighted.  This is the default.BISQUARE\u2014Neighbors will be weighted using a bisquare ker...",
-                        "default": null
+                        "default": None
                 },
                 "kernel_bandwidth": {
                         "type": "string",
                         "description": "The bandwidth of the bisquare or Gaussian local weighting schemes. If no value is provided, one will be estimated during processing and included as a geoprocessing message.",
-                        "default": null
+                        "default": None
                 },
                 "out_swm": {
                         "type": "string",
                         "description": "The output spatial weights matrix file (.swm) of the neighbors and weights of all pairs of features.  If created, this file can be reused in tools that allow defining neighbors and weights with spatia...",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "The unique ID field of the output spatial weights matrix file. The field must be an integer and must have a unique value for each input feature.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3725,27 +3725,27 @@ functions_declarations = {
                 "append_all_fields": {
                         "type": "string",
                         "description": "Specifies whether all fields will be copied from the input features to the output feature class.ALL\u2014 All fields from the input features will be copied to the output feature class. This is the default....",
-                        "default": null
+                        "default": None
                 },
                 "in_swm": {
                         "type": "string",
                         "description": "A list of input SWM files (.swm) that will be used as candidates for the SWM that will be used to filter the spatial autocorrelation from the input field. The SWM that most effectively filters spatial...",
-                        "default": null
+                        "default": None
                 },
                 "out_swm": {
                         "type": "string",
                         "description": "The output SWM file (.swm) of the neighbors and weights selected by the tool.",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "The unique ID field of the output .swm file. The field must be an integer and must have a unique value for each input feature.",
-                        "default": null
+                        "default": None
                 },
                 "compare_only_inputs": {
                         "type": "string",
                         "description": "Specifies whether only the .swm files provided in the in_swm parameter will be tested or whether 28 additional neighborhoods will also be tested. The tool will use the SWM that creates spatial compone...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3792,17 +3792,17 @@ functions_declarations = {
                 "append_to_input": {
                         "type": "string",
                         "description": "Specifies whether fields will be appended to the input dataset or saved to an output table or feature class.\r\nAPPEND\u2014  Fields will be appended to the input features. This modifies the input data.NO_AP...",
-                        "default": null
+                        "default": None
                 },
                 "out_table": {
                         "type": "string",
                         "description": "The output table or feature class containing the rates and additional fields to help evaluate the rates.",
-                        "default": null
+                        "default": None
                 },
                 "rate_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to calculate rates.\r\nCRUDE_RATE\u2014The rates will be calculated by dividing the count field values by the population field values. This is the default.GLOBAL_EMPIRI...",
-                        "default": null
+                        "default": None
                 },
                 "probability_distribution": {
                         "type": "string",
@@ -3811,32 +3811,32 @@ functions_declarations = {
                 "neighborhood_type": {
                         "type": "string",
                         "description": "Specifies the method that will be used to identify the neighbors of each feature.\r\nDISTANCE_BAND\u2014A threshold distance is applied to identify neighbors. Every feature that is within the threshold dista...",
-                        "default": null
+                        "default": None
                 },
                 "distance_band": {
                         "type": "string",
                         "description": "The distance from each feature that will be used to search for neighbors. All features within this distance will be included as neighbors.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "The number of neighbors that will be included in a feature's neighborhood.",
-                        "default": null
+                        "default": None
                 },
                 "weights_matrix_file": {
                         "type": "string",
                         "description": "The path and file name of the spatial weights matrix file that defines the spatial relationships among features.",
-                        "default": null
+                        "default": None
                 },
                 "local_weighting_scheme": {
                         "type": "string",
                         "description": "Specifies the weighting scheme that will be applied to neighbors when calculating local statistics.UNWEIGHTED\u2014 Neighbors will not be weighted. This is the default.BISQUARE\u2014Neighbors will be weighted u...",
-                        "default": null
+                        "default": None
                 },
                 "kernel_bandwidth": {
                         "type": "string",
                         "description": "The bandwidth of the bisquare or Gaussian local weighting schemes.\r\nIf no value is provided, one will be estimated during processing and included as a geoprocessing message.",
-                        "default": null
+                        "default": None
                 },
                 "rate_multiplier": {
                         "type": "string",
@@ -3883,17 +3883,17 @@ functions_declarations = {
                 "img_width": {
                         "type": "string",
                         "description": "The width, in pixels, of each image attachment.",
-                        "default": null
+                        "default": None
                 },
                 "img_height": {
                         "type": "string",
                         "description": "The height, in pixels, of each image attachment.",
-                        "default": null
+                        "default": None
                 },
                 "rotate_x_axis_labels": {
                         "type": "string",
                         "description": "Specifies whether the x-axis labels will be rotated.ROTATE\u2014The x-axis labels will be rotated 20 degrees.NO_ROTATE\u2014The x-axis labels will not be rotated. This is the default.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3943,7 +3943,7 @@ functions_declarations = {
                 "output_data": {
                         "type": "string",
                         "description": "The output table or feature class containing the resulting components of the dimension reduction.",
-                        "default": null
+                        "default": None
                 },
                 "fields": {
                         "type": "string",
@@ -3952,52 +3952,52 @@ functions_declarations = {
                 "method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to reduce the dimensions of the analysis fields.PCA\u2014The analysis fields will be partitioned into components that each maintain the maximum proportion of the tota...",
-                        "default": null
+                        "default": None
                 },
                 "scale": {
                         "type": "string",
                         "description": "Specifies whether the values of each analysis will be scaled to have a variance equal to one. This scaling ensures that each analysis field is given equal priority in the components. Scaling also remo...",
-                        "default": null
+                        "default": None
                 },
                 "categorical_field": {
                         "type": "string",
                         "description": "The field representing the categorical variable for LDA.  The components will maintain the maximum amount of information needed to classify each input record into these categories.",
-                        "default": null
+                        "default": None
                 },
                 "min_variance": {
                         "type": "string",
                         "description": "The minimum percent of total variance  of the analysis fields that must be maintained in the components.\r\nThe total variance depends on whether the analysis fields were scaled using the scale paramete...",
-                        "default": null
+                        "default": None
                 },
                 "min_components": {
                         "type": "string",
                         "description": "The minimum number of components.",
-                        "default": null
+                        "default": None
                 },
                 "append_fields": {
                         "type": "string",
                         "description": "Specifies whether all fields from the input table or features will be copied and appended to the output table or feature class. The fields provided in the fields parameter will be copied to the output...",
-                        "default": null
+                        "default": None
                 },
                 "output_eigenvalues_table": {
                         "type": "string",
                         "description": "The output table containing the eigenvalues of each component.\r\nThe values of the eigenvectors are rescaled to have unit norm (the sum of squared values equals one).",
-                        "default": null
+                        "default": None
                 },
                 "output_eigenvectors_table": {
                         "type": "string",
                         "description": "The output table containing the eigenvectors of each component.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_permutations": {
                         "type": "string",
                         "description": "The number of permutations that will be used when determining the optimal number of components.  The default value is 0, which indicates that no permutation test will be performed.\r\nThe provided value...",
-                        "default": null
+                        "default": None
                 },
                 "append_to_input": {
                         "type": "string",
                         "description": "Specifies whether the component fields will be appended to the input dataset or saved to an output table or feature class. If you append the fields to the input, the output coordinate system environme...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4044,22 +4044,22 @@ functions_declarations = {
                 "variable_predictvar1_desc1_unit1_var2_desc2_unit2": {
                         "type": "string",
                         "description": "The name, description, and unit of the variable that will be predicted at new locations.",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_variablesvar1_desc1_unit1_var2_desc2_unit2": {
                         "type": "string",
                         "description": "The name, description, and unit\r\nof the explanatory variables that will be used to train the input model.",
-                        "default": null
+                        "default": None
                 },
                 "distance_featuresvar1_desc1_unit1_var2_desc2_unit2": {
                         "type": "string",
                         "description": "The name, description, and unit\r\nof the explanatory training distance features that will be used to train the input model.",
-                        "default": null
+                        "default": None
                 },
                 "explanatory_rastersvar1_desc1_unit1_var2_desc2_unit2": {
                         "type": "string",
                         "description": "The name, description, and unit\r\nof the explanatory training rasters that will be used to train the input model.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4085,42 +4085,42 @@ functions_declarations = {
                 "group_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to group records into different time series. \r\nSmoothing is performed independently for each time series.LOCATION\u2014Features at the same location will be grouped i...",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies the smoothing method that will be used.\r\nBACKWARD\u2014The smoothed value is the average of the record and the values within the time window before it. This is the default.CENTERED\u2014The smoothed v...",
-                        "default": null
+                        "default": None
                 },
                 "time_window": {
                         "type": "string",
                         "description": "The length of the time window. The value can be provided in seconds, minutes, hours, days, weeks, months, or years. For backward, forward, and centered moving averages, the value and unit must be prov...",
-                        "default": null
+                        "default": None
                 },
                 "append_to_input": {
                         "type": "string",
                         "description": "Specifies whether the output fields will be appended to the input dataset or saved as a new output table or feature class. If you append the fields to the input, the output coordinate system environme...",
-                        "default": null
+                        "default": None
                 },
                 "output_features": {
                         "type": "string",
                         "description": "The output features containing the smoothed values as well as fields for the time window and number of neighbors.",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "The integer or text field containing a unique ID for each time series. All records with the same value of this field are part of the same time series.",
-                        "default": null
+                        "default": None
                 },
                 "apply_shorter_window": {
                         "type": "string",
                         "description": "Specifies whether the time window will be shortened at the beginning and end of each time series.APPLY_SHORTER_WINDOW\u2014The time window will be shortened at the start and end of the time series so that ...",
-                        "default": null
+                        "default": None
                 },
                 "enable_time_series_popups": {
                         "type": "string",
                         "description": "Specifies whether the output features or table will include pop-up charts showing the original and smoothed values of the time series.CREATE_POPUP\u2014The output will include pop-up charts. This is the de...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4148,22 +4148,22 @@ functions_declarations = {
                 "expression_type": {
                         "type": "string",
                         "description": "Specifies the type of expression that will be used.PYTHON3\u2014The Python expression type will be used.ARCADE\u2014The Arcade expression type will be used.SQL\u2014The SQL expression type will be used.VB\u2014The VBScri...",
-                        "default": null
+                        "default": None
                 },
                 "code_block": {
                         "type": "string",
                         "description": "A block of code that will be used for complex Python or VBScript expressions.",
-                        "default": null
+                        "default": None
                 },
                 "field_type": {
                         "type": "string",
                         "description": "Specifies the field type of the new field. This parameter is only used when the field name does not exist in the input table.If\r\nthe field is of type text, the field will have a length of 512,\r\nunless...",
-                        "default": null
+                        "default": None
                 },
                 "enforce_domains": {
                         "type": "string",
                         "description": "Specifies whether field domain rules will be enforced.ENFORCE_DOMAINS\u2014Field domain rules will be enforced.NO_ENFORCE_DOMAINS\u2014Field domain rules will not be enforced. This is the default.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4187,22 +4187,22 @@ functions_declarations = {
                 "length_unit": {
                         "type": "string",
                         "description": "Specifies the unit that will be used to calculate length.\r\nKILOMETERS\u2014The length unit will be kilometers.METERS\u2014The length unit will be meters.MILES_INT\u2014The length unit will be statute miles.NAUTICAL_...",
-                        "default": null
+                        "default": None
                 },
                 "area_unit": {
                         "type": "string",
                         "description": "Specifies the unit that will be used to calculate area.\r\nSQUARE_KILOMETERS\u2014The area unit will be square kilometers.HECTARES\u2014The area unit will be hectares.SQUARE_METERS\u2014The area unit will be square me...",
-                        "default": null
+                        "default": None
                 },
                 "coordinate_system": {
                         "type": "string",
                         "description": "The coordinate system in which the coordinates, length, and area will be calculated. The coordinate system of the input features is used by default.",
-                        "default": null
+                        "default": None
                 },
                 "coordinate_format": {
                         "type": "string",
                         "description": "Specifies the coordinate format in which the x- and y-coordinates will be calculated. The coordinate format matching the input features' spatial reference units is used by default. \r\nSeveral coordinat...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [

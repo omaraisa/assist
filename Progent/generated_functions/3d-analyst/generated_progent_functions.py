@@ -540,7 +540,8 @@ Creates a multipatch feature from the portion of an integrated mesh that overlap
     def extract_power_lines_from_point_cloud(self, params):
         """Extract Power Lines From Point Cloud
 
-Extracts 3D line features modeling power lines 
+Extracts 3D line features modeling power lines 
+
 from classified point cloud data.
 
         params: {"in_point_cloud": <LAS Dataset Layer>, "class_codes": <Long>, "out_3d_lines": <Feature Class>, ...}
@@ -587,7 +588,8 @@ from classified point cloud data.
     def extract_rails_from_point_cloud(self, params):
         """Extract Rails From Point Cloud
 
-Extracts rail track lines and center lines from classified 
+Extracts rail track lines and center lines from classified 
+
 railroad tracks in a LAS dataset, point cloud scene layer package, or I3S point cloud layer.
 
         params: {"in_point_cloud": <LAS Dataset Layer; Scene Layer>, "class_codes": <Long>, "out_3d_lines": <Feature Class>, ...}

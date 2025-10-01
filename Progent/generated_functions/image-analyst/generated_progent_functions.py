@@ -3030,14 +3030,22 @@ Converts the input synthetic aperture radar (SAR) reflectivity into physical uni
     def apply_radiometric_terrain_flattening(self, params):
         """Apply Radiometric Terrain Flattening
 
-Corrects the input synthetic aperture radar (SAR) data for radiometric distortions due to topography. Due to the side-looking nature of SAR sensors,
-features facing the sensor appear artificially brighter and
-features facing away from the sensor appear artificially
-darker. Radiometric terrain flattening normalizes the backscatter
-values so that value variations will be due to surface scattering
-properties. Radiometric terrain flattening is necessary to
-obtain meaningful backscatter that can be
-related directly to the surface scattering properties of features
+Corrects the input synthetic aperture radar (SAR) data for radiometric distortions due to topography. Due to the side-looking nature of SAR sensors,
+
+features facing the sensor appear artificially brighter and
+
+features facing away from the sensor appear artificially
+
+darker. Radiometric terrain flattening normalizes the backscatter
+
+values so that value variations will be due to surface scattering
+
+properties. Radiometric terrain flattening is necessary to
+
+obtain meaningful backscatter that can be
+
+related directly to the surface scattering properties of features
+
 in a SAR image over any terrain.
 
         params: {"in_radar_data": <Raster Dataset; Raster Layer>, "out_radar_data": <Raster Dataset>, "in_dem_raster": <Mosaic Layer; Raster Layer>, ...}
@@ -3224,8 +3232,10 @@ Corrects the input synthetic aperture radar (SAR) data for speckle,  which is a 
     def download_orbit_file(self, params):
         """Download Orbit File
 
-Downloads the updated orbit  files for Sentinel-1 synthetic aperture radar (SAR) data. This tool uses the orbit type to make a call to the orbit website. Using the SAR metadata, it identifies the appropriate orbit state vector (OSV) file and downloads it to the input SAR data directory. Three types of OSVs are available for a Sentinel-1 product: predicted, restituted, and precise. Predicted OSVs are provided with the Sentinel-1 Level 1 ground range detected (GRD)
-and single look complex (SLC)
+Downloads the updated orbit  files for Sentinel-1 synthetic aperture radar (SAR) data. This tool uses the orbit type to make a call to the orbit website. Using the SAR metadata, it identifies the appropriate orbit state vector (OSV) file and downloads it to the input SAR data directory. Three types of OSVs are available for a Sentinel-1 product: predicted, restituted, and precise. Predicted OSVs are provided with the Sentinel-1 Level 1 ground range detected (GRD)
+
+and single look complex (SLC)
+
  auxiliary products. Restituted OSVs are available through the European Space Agency (ESA) within 3 hours of image acquisition. Precise OSVs are available through ESA within 3 weeks of image acquisition. Sentinel-1 OSV files are downloaded from the Copernicus Data Space Ecosystem.
 
         params: {"in_radar_data": <Raster Dataset; Raster Layer>, "orbit_type": <String>, "username": <String>, ...}
@@ -3368,7 +3378,8 @@ Corrects backscatter disturbances caused by thermal noise in the input synthetic
     def compute_sar_indices(self, params):
         """Compute SAR Indices
 
-Computes various SAR indices for synthetic aperture radar (SAR) data, such as 
+Computes various SAR indices for synthetic aperture radar (SAR) data, such as 
+
 Radar Vegetation Index (RVI), Radar Forest Degradation Index (RFDI), and Canopy Structure Index (CSI). The formulas used for these indices depend on the polarizations available in the input radar dataset.
 
         params: {"in_radar_data": <Raster Dataset; Raster Layer>, "out_raster": <Raster Dataset>, "index": <String>, ...}

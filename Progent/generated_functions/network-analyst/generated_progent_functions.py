@@ -41,7 +41,7 @@ Adds a field to a sublayer of a network analysis layer.
         field_scale = params.get("field_scale")
         field_length = params.get("field_length")
         field_alias = params.get("field_alias")
-        field_is_nullable = params.get("field_is_nullable")
+        field_is_Noneable = params.get("field_is_Noneable")
 
             # Generate output name and path
             output_name = f"{in_network_analysis_layer.replace(' ', '_')}_Add_Field_To_Analysis_Layer"
@@ -50,7 +50,7 @@ Adds a field to a sublayer of a network analysis layer.
             output_path = arcpy.CreateUniqueName(output_path)
 
             # Execute Add Field To Analysis Layer
-            arcpy.AddFieldToAnalysisLayer(in_network_analysis_layer, sub_layer, field_name, field_type, field_precision, field_scale, field_length, field_alias, field_is_nullable)
+            arcpy.AddFieldToAnalysisLayer(in_network_analysis_layer, sub_layer, field_name, field_type, field_precision, field_scale, field_length, field_alias, field_is_Noneable)
 
             self._add_to_map(output_path)
             return {"success": True, "output_layer": output_name, "output_path": output_path}
@@ -234,7 +234,8 @@ Locates input features on a network and adds fields  to the input features that 
     def copy_network_analysis_layer(self, params):
         """Copy Network Analysis Layer
 
-Copies a network analysis layer 
+Copies a network analysis layer 
+
 to a duplicate layer. The new layer will have the same analysis settings and network data source as the original layer and a copy of the original layer's analysis data.
 
         params: {"in_network_analysis_layer": <Network Analyst Layer>, "out_layer_name": <String>}
@@ -1036,7 +1037,8 @@ Creates a network dataset layer from a network  dataset. A network dataset is op
     def integrate(self, params):
         """Integrate
 
-Analyzes the coordinate locations of feature vertices among features in one or more feature classes. Those that fall within a specified distance of one another are assumed to represent the same location and are assigned a common coordinate value (in other words, they are colocated). The tool also adds vertices where feature vertices are within the x,y tolerance of an edge and where line segments intersect. Integrate performs
+Analyzes the coordinate locations of feature vertices among features in one or more feature classes. Those that fall within a specified distance of one another are assumed to represent the same location and are assigned a common coordinate value (in other words, they are colocated). The tool also adds vertices where feature vertices are within the x,y tolerance of an edge and where line segments intersect. Integrate performs
+
 the following processing tasks: Vertices within the x,y tolerance of one another will be assigned the same coordinate location.When a vertex of one feature is within the x,y tolerance of an edge of any other feature, a new vertex will be inserted on the edge.When line segments intersect, a vertex will be inserted at the point of intersection for each feature involved in the intersection. An alternate tool is available for vector data integration. See the Pairwise Integrate documentation for details.
 
         params: {"in_featuresfeature_layer_long": <Value Table>, "cluster_tolerance": <Linear Unit>}

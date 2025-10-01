@@ -18,7 +18,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -41,7 +41,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression used to select a subset of records.  For more information on SQL syntax, see SQL reference for elements used in query expressions.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -91,7 +91,7 @@ functions_declarations = {
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates as well as the distance a coordinate can move in x or y (or both). Set the value higher for data with less coordinate accuracy and lower for dat...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -123,7 +123,7 @@ functions_declarations = {
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Set the value higher for data that has less coordinate a...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -148,7 +148,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -171,12 +171,12 @@ functions_declarations = {
                 "add_comparison_matrix": {
                         "type": "string",
                         "description": "Specifies whether the out_table parameter value will contain the pairwise comparison matrix.ADD_MATRIX\u2014The output table will contain both the pairwise comparison matrix and the calculated weights. Thi...",
-                        "default": null
+                        "default": None
                 },
                 "comparison_matrix": {
                         "type": "string",
                         "description": "The pairwise comparison matrix that will be used when calculating the weights.\r\nDefine the pairwise comparisons by doing one of the following:Provide a file containing a valid comparison matrix.Specif...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -199,7 +199,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -226,12 +226,12 @@ functions_declarations = {
                 "join_attributes": {
                         "type": "string",
                         "description": "Specifies the attributes that will be transferred to the output feature class.ALL\u2014All the attributes from the input features will be transferred to the output feature class. This is the default. NO_FI...",
-                        "default": null
+                        "default": None
                 },
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both).Caution:  Changing this parameter's value may cause failu...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -259,7 +259,7 @@ functions_declarations = {
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Caution:  Changing this parameter's value may cause fail...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -287,12 +287,12 @@ functions_declarations = {
                 "keep_borders": {
                         "type": "string",
                         "description": "Specifies whether the boundary of the update polygon features will be kept.BORDERS\u2014The outside border of the update_features parameter value will be kept in the out_feature_class parameter value. This...",
-                        "default": null
+                        "default": None
                 },
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Caution:  Changing this parameter's value may cause fail...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -316,17 +316,17 @@ functions_declarations = {
                 "join_attributes": {
                         "type": "string",
                         "description": "Specifies the attributes from the input features that will be transferred to the output feature class.ALL\u2014All the attributes from the input features will be transferred to the output feature class. Th...",
-                        "default": null
+                        "default": None
                 },
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both).Caution:  Changing this parameter's value may cause failu...",
-                        "default": null
+                        "default": None
                 },
                 "output_type": {
                         "type": "string",
                         "description": "Specifies the type of intersections that will be returned.INPUT\u2014The intersections returned will be the same geometry type as the input features with the lowest dimension geometry. If all inputs are po...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -361,17 +361,17 @@ functions_declarations = {
                 "estimation_features": {
                         "type": "string",
                         "description": "The input point or polyline features that will be used to estimate the percent of the input polygon apportion fields to apportion to the target polygon.  This is the amount of the point or line within...",
-                        "default": null
+                        "default": None
                 },
                 "weight_field": {
                         "type": "string",
                         "description": "A numeric field from the target polygon layer that  will be used to adjust which target polygons receive larger apportioned values from the input polygons' fields to apportion. Targets with higher wei...",
-                        "default": null
+                        "default": None
                 },
                 "maintain_geometries": {
                         "type": "string",
                         "description": "Specifies whether the output feature class will maintain the original geometries of the target polygon layer. MAINTAIN_GEOMETRIES\u2014The output feature class will maintain the original geometries of the ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -397,12 +397,12 @@ functions_declarations = {
                 "min_overlap_count": {
                         "type": "string",
                         "description": "Limits the output to only locations that meet or exceed the specified number of overlaps. The default value is 1.",
-                        "default": null
+                        "default": None
                 },
                 "out_overlap_table": {
                         "type": "string",
                         "description": "The output table containing records for each individual overlapping geometry.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -429,17 +429,17 @@ functions_declarations = {
                 "join_attributes": {
                         "type": "string",
                         "description": "Specifies how attributes will be transferred to the output feature class.ALL\u2014All the attributes (including FIDs) from the input features, as well as the identity features, will be transferred to the o...",
-                        "default": null
+                        "default": None
                 },
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Caution:  Changing this parameter's value may cause fail...",
-                        "default": null
+                        "default": None
                 },
                 "relationship": {
                         "type": "string",
                         "description": "Specifies whether additional spatial relationships between the in_features and identity_features parameter values will be written to the output. This only applies when the geometry type of the in_feat...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -467,37 +467,37 @@ functions_declarations = {
                 "join_operation": {
                         "type": "string",
                         "description": "The operation that will join the target features and join features in the output feature class if multiple join features are found that have the same spatial relationship with a single target feature....",
-                        "default": null
+                        "default": None
                 },
                 "join_type": {
                         "type": "string",
                         "description": "Specifies whether all target features will be maintained in the output feature class (an outer join) or only those that have the specified spatial relationship with the join features (an inner join).K...",
-                        "default": null
+                        "default": None
                 },
                 "field_mapping": {
                         "type": "string",
                         "description": "The fields that will\r\nbe included in the output feature class with their respective properties and\r\nsource fields. The output includes all fields from the join and\r\ntarget features by default. Use the...",
-                        "default": null
+                        "default": None
                 },
                 "match_option": {
                         "type": "string",
                         "description": "Specifies the criteria that will be used to match rows.INTERSECT\u2014The features in the join features will be matched if they intersect a target  feature. This is the default. Specify the distance in the...",
-                        "default": null
+                        "default": None
                 },
                 "search_radius": {
                         "type": "string",
                         "description": "Join features within this distance of a target feature will be considered for the spatial join. A search radius is only valid when the spatial relationship is specified (the match_option parameter is ...",
-                        "default": null
+                        "default": None
                 },
                 "distance_field_name": {
                         "type": "string",
                         "description": "The name of the field that contains the distance between the target feature and the closest join feature. This field will be added to the output feature class. This parameter is only valid when the sp...",
-                        "default": null
+                        "default": None
                 },
                 "match_fieldsjoin_field_target_field": {
                         "type": "string",
                         "description": "Pairs of fields from the join features and target features that will be used for attribute matching. Only the records from the join features that share match field values with the target features will...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -521,17 +521,17 @@ functions_declarations = {
                 "join_attributes": {
                         "type": "string",
                         "description": "Specifies which attributes from the input features will be transferred to the output feature class.ALL\u2014All the attributes from the input features will be transferred to the output feature class. This ...",
-                        "default": null
+                        "default": None
                 },
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Caution:  Changing this parameter's value may cause fail...",
-                        "default": null
+                        "default": None
                 },
                 "gaps": {
                         "type": "string",
                         "description": "Specifies whether a feature will be created for areas in the output that are completely enclosed by polygons.Gaps are areas in the output feature class that are completely enclosed by other polygons (...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -554,7 +554,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -577,22 +577,22 @@ functions_declarations = {
                 "dissolve_field": {
                         "type": "string",
                         "description": "The field or fields on which features will be aggregated.",
-                        "default": null
+                        "default": None
                 },
                 "statistics_fieldsfield_statistic_type": {
                         "type": "string",
                         "description": "Specifies the field or fields containing the attribute values that will be used to calculate the specified statistic. Multiple statistic and field combinations can be specified. Null values are exclud...",
-                        "default": null
+                        "default": None
                 },
                 "multi_part": {
                         "type": "string",
                         "description": "Specifies whether multipart features will be included in the output.MULTI_PART\u2014Multipart features will be included in the output. This is the default.SINGLE_PART\u2014Multipart features will not be include...",
-                        "default": null
+                        "default": None
                 },
                 "concatenation_separator": {
                         "type": "string",
                         "description": "A character or characters that will be used to concatenate values when the CONCATENATION option is used for the statistics_fields parameter. By default, the tool will concatenate values without a sepa...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -611,7 +611,7 @@ functions_declarations = {
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The distance that determines the range in which feature vertices are made coincident. To minimize undesired movement of vertices, the x,y tolerance should be small. If no value is provided, the x,y to...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -637,7 +637,7 @@ functions_declarations = {
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates as well as the distance a coordinate can move in x or y (or both). Set the value higher for data with less coordinate accuracy and lower for dat...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -665,22 +665,22 @@ functions_declarations = {
                 "dissolve_option": {
                         "type": "string",
                         "description": "Specifies the type of dissolve operation that will be performed to remove buffer overlap.NONE\u2014An individual buffer for each feature will be maintained, regardless of overlap. This is the default. ALL\u2014...",
-                        "default": null
+                        "default": None
                 },
                 "dissolve_field": {
                         "type": "string",
                         "description": "The list of fields from the input features on which the output buffers will be dissolved. Any buffers sharing attribute values in the listed fields (carried over from the input features) will be disso...",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies whether the planar or geodesic method will be used to create the buffers.PLANAR\u2014If the input features are in a projected coordinate system, Euclidean buffers will be created. If the input fe...",
-                        "default": null
+                        "default": None
                 },
                 "max_deviation": {
                         "type": "string",
                         "description": "The maximum distance the output buffer boundary will deviate from the true buffer boundary. While the true boundary of the buffer is a curve, the output boundary will be densified. Use this parameter ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -708,7 +708,7 @@ functions_declarations = {
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Caution:  Changing this parameter's value may cause fail...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -732,7 +732,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -759,27 +759,27 @@ functions_declarations = {
                 "line_side": {
                         "type": "string",
                         "description": "Specifies the sides of the input features that will be buffered. This parameter is only supported for polygon and line features.FULL\u2014For lines, buffers will be generated on both sides of the line. For...",
-                        "default": null
+                        "default": None
                 },
                 "line_end_type": {
                         "type": "string",
                         "description": "Specifies the shape of the buffer at the end of line input features. This parameter is not valid for polygon input features.ROUND\u2014The ends of the buffer will be round, in the shape of a half circle. T...",
-                        "default": null
+                        "default": None
                 },
                 "dissolve_option": {
                         "type": "string",
                         "description": "Specifies the type of dissolve that will be performed to remove buffer overlap.NONE\u2014An individual buffer for each feature will be maintained, regardless of overlap. This is the default. ALL\u2014All buffer...",
-                        "default": null
+                        "default": None
                 },
                 "dissolve_field": {
                         "type": "string",
                         "description": "The list of fields from the input features on which the output buffers will be dissolved. Any buffers sharing attribute values in the listed fields (carried over from the input features) will be disso...",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies whether the planar or geodesic method will be used to create the buffers.PLANAR\u2014If the input features are in a projected coordinate system, Euclidean buffers will be created. If the input fe...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -803,37 +803,37 @@ functions_declarations = {
                 "search_radius": {
                         "type": "string",
                         "description": "The radius that will be used to search for near features. If no value is specified, all near features will be considered. If a distance but no unit or unknown is specified, the units of the coordinate...",
-                        "default": null
+                        "default": None
                 },
                 "location": {
                         "type": "string",
                         "description": "Specifies whether x- and y-coordinates of the closest location of the near feature will be written to the NEAR_X and NEAR_Y fields.NO_LOCATION\u2014 Location information will not be written. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "angle": {
                         "type": "string",
                         "description": "Specifies whether the near angle will be calculated and written to the NEAR_ANGLE field in the output table. A near angle measures direction of the line connecting an input feature to its nearest feat...",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies whether a shortest path on a spheroid (geodesic) or a flat earth (planar) distance method will be used. It is recommended that you use the GEODESIC method for data stored in a coordinate sys...",
-                        "default": null
+                        "default": None
                 },
                 "field_namesproperty_fieldname": {
                         "type": "string",
                         "description": "The names of the attribute fields that will be added during processing.If this parameter is not used or any fields that will be added are excluded from this parameter, the default field names will be ...",
-                        "default": null
+                        "default": None
                 },
                 "distance_unit": {
                         "type": "string",
                         "description": "Specifies the unit of measurement for the NEAR_DIST field. When no unit of measurement is specified, the values in the NEAR_DIST field will be in the linear unit of the input feature's coordinate syst...",
-                        "default": null
+                        "default": None
                 },
                 "match_fieldsinput_field_near_field": {
                         "type": "string",
                         "description": "The pairs of fields from the input features and near features that will be used for attribute matching. Only the near features that share match field values with the input features will be used in the...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -856,7 +856,7 @@ functions_declarations = {
                 "fields_to_copy": {
                         "type": "string",
                         "description": "Specifies which fields from the input features will be transferred to the output feature class.ONLY_FID\u2014Only the FID field from the input features will be transferred to the output feature class. This...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -883,27 +883,27 @@ functions_declarations = {
                 "origin_group_field": {
                         "type": "string",
                         "description": "The attribute field from the input origin features that will be used for grouping. Features that have the same group field value between origins and destinations will be connected with a link.",
-                        "default": null
+                        "default": None
                 },
                 "destination_group_field": {
                         "type": "string",
                         "description": "The attribute field from the input destination features that will be used for grouping. Features that have the same group field value between origins and destinations will be connected with a link.",
-                        "default": null
+                        "default": None
                 },
                 "line_type": {
                         "type": "string",
                         "description": "Specifies whether a shortest path on a spheroid (geodesic) or a  Cartesian projected earth (planar) will be used when generating the output links. Geodesic lines will have a slight curve when their le...",
-                        "default": null
+                        "default": None
                 },
                 "num_nearest": {
                         "type": "string",
                         "description": "The maximum number of links that will be generated per origin feature to the nearest destination features. If no number is specified, the tool will generate links between all origin and destination fe...",
-                        "default": null
+                        "default": None
                 },
                 "search_distance": {
                         "type": "string",
                         "description": "The maximum distance between an origin and destination feature that will produce a link feature  in the output. The unit of the search distance is specified in the distance unit parameter. If no searc...",
-                        "default": null
+                        "default": None
                 },
                 "distance_unit": {
                         "type": "string",
@@ -912,12 +912,12 @@ functions_declarations = {
                 "aggregate_links": {
                         "type": "string",
                         "description": "Specifies whether overlapping links will be aggregated.AGGREGATE_OVERLAPPING\u2014Overlapping links will be aggregated if the starting point coordinates are the same.NO_AGGREGATE\u2014Overlapping links will not...",
-                        "default": null
+                        "default": None
                 },
                 "sum_fields": {
                         "type": "string",
                         "description": "Specifies the field or fields containing the attribute values that will be used to calculate the specified statistic. Multiple statistic and field combinations can be specified. Null values are exclud...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -942,32 +942,32 @@ functions_declarations = {
                 "in_fields": {
                         "type": "string",
                         "description": "The input attribute field or fields that will be used to identify unique polygons or polygon groups and represent them in the output.",
-                        "default": null
+                        "default": None
                 },
                 "area_overlap": {
                         "type": "string",
                         "description": "Specifies whether overlapping relationships will  be analyzed and included in the output.  \r\nNO_AREA_OVERLAP\u2014Overlapping relationships will not be analyzed or included in the output. This is the defau...",
-                        "default": null
+                        "default": None
                 },
                 "both_sides": {
                         "type": "string",
                         "description": "Specifies whether both sides of neighbor relationships will be included in the output.BOTH_SIDES\u2014 For a pair of neighboring polygons, both neighboring information of one polygon being the source and t...",
-                        "default": null
+                        "default": None
                 },
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance between coordinates before they will be considered equal. By default, this is the x,y tolerance of the input  features.Caution:  Changing this parameter's value may cause failure ...",
-                        "default": null
+                        "default": None
                 },
                 "out_linear_units": {
                         "type": "string",
                         "description": "Specifies the units that will be used to report the total  length of the coincident edge between neighboring polygons. The default is the input feature units.UNKNOWN\u2014The length unit will be unknown.KI...",
-                        "default": null
+                        "default": None
                 },
                 "out_area_units": {
                         "type": "string",
                         "description": "Specifies the units that will be used to report the area overlap of neighboring polygons.  The default is the input feature units. \r\nThis parameter is only enabled when the area_overlap parameter is s...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -994,22 +994,22 @@ functions_declarations = {
                 "buffer_unit": {
                         "type": "string",
                         "description": "Specifies the linear unit that will be used with the distance values.Default\u2014The linear unit of the input features' spatial reference will be used. If the Output Coordinate System geoprocessing enviro...",
-                        "default": null
+                        "default": None
                 },
                 "dissolve_option": {
                         "type": "string",
                         "description": "Specifies whether buffers will be dissolved to resemble rings around the input features.ALL\u2014Buffers will be dissolved to resemble rings around the input features that do not overlap (think of these as...",
-                        "default": null
+                        "default": None
                 },
                 "outside_polygons_only": {
                         "type": "string",
                         "description": "Specifies whether the buffers will cover the input features. This parameter is valid only for polygon input features.FULL\u2014Buffers will overlap or cover the input features. This is the default.OUTSIDE_...",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies the method used to create the buffer.\r\nPLANAR\u2014Buffers will be created using a Euclidean buffer method. This is the default when the input has a projected coordinate system.GEODESIC\u2014Buffers w...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1037,22 +1037,22 @@ functions_declarations = {
                 "line_caps": {
                         "type": "string",
                         "description": "Specifies the type of caps (ends) of the input features that will be buffered. This parameter is only supported for point and polygon features.SQUARE\u2014The output buffer will have a square cap around th...",
-                        "default": null
+                        "default": None
                 },
                 "line_joins": {
                         "type": "string",
                         "description": "Specifies the shape of the buffer at corners where two segments join. This parameter is  only supported for line and polygon features.\r\nMITER\u2014The output buffer feature will be a square or sharp shape ...",
-                        "default": null
+                        "default": None
                 },
                 "miter_limit": {
                         "type": "string",
                         "description": "Where line segments meet at a sharp angle and the line_joins parameter value has been specified as MITER, this parameter can be used to control how sharp corners in buffer output come to a point. In s...",
-                        "default": null
+                        "default": None
                 },
                 "max_deviation": {
                         "type": "string",
                         "description": "The maximum distance the output buffer boundary will deviate from the true buffer boundary. While the true boundary of the buffer is a curve, the output boundary will be densified. Use this parameter ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1080,42 +1080,42 @@ functions_declarations = {
                 "search_radius": {
                         "type": "string",
                         "description": "The radius that will be used to search for near features. If no value is specified, all near features will be considered. If a distance but no unit or unknown is specified, the units of the coordinate...",
-                        "default": null
+                        "default": None
                 },
                 "location": {
                         "type": "string",
                         "description": "Specifies whether x- and y-coordinates of the input feature's location and closest location of the near feature will be written to the FROM_X, FROM_Y, NEAR_X, and NEAR_Y fields.NO_LOCATION\u2014 Locations ...",
-                        "default": null
+                        "default": None
                 },
                 "angle": {
                         "type": "string",
                         "description": "Specifies whether the near angle will be calculated and written to the  NEAR_ANGLE field in the output table. A near angle measures direction of the line connecting an input feature to its nearest fea...",
-                        "default": null
+                        "default": None
                 },
                 "closest": {
                         "type": "string",
                         "description": "Specifies whether only the closest near feature will be written to the output table.CLOSEST\u2014Only the closest near feature will be written to the output table. This is the default.ALL\u2014Multiple near fea...",
-                        "default": null
+                        "default": None
                 },
                 "closest_count": {
                         "type": "string",
                         "description": "Limits the number of near features reported for each input feature. This parameter is ignored if the closest parameter  is set to CLOSEST.",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies whether a shortest path on a spheroid (geodesic) or a flat earth (planar) distance method will be used. It is recommended that you use the GEODESIC method for data stored in a coordinate sys...",
-                        "default": null
+                        "default": None
                 },
                 "distance_unit": {
                         "type": "string",
                         "description": "Specifies the unit of measurement for the NEAR_DIST field. When no unit of measurement is specified, the values in the NEAR_DIST field will be in the linear unit of the input feature's coordinate syst...",
-                        "default": null
+                        "default": None
                 },
                 "match_fieldsinput_field_near_field": {
                         "type": "string",
                         "description": "The pairs of fields from the input features and near features that will be used for attribute matching. Only the near features that share match field values with the input features will be used in the...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1139,7 +1139,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1170,22 +1170,22 @@ functions_declarations = {
                 "class_fields": {
                         "type": "string",
                         "description": "The attribute field or fields used to define classes.",
-                        "default": null
+                        "default": None
                 },
                 "sum_fields": {
                         "type": "string",
                         "description": "The fields that will be summed from the in_class_features parameter.",
-                        "default": null
+                        "default": None
                 },
                 "xy_tolerance": {
                         "type": "string",
                         "description": "The distance that determines the range in which features or their vertices are considered equal. By default, this is the x,y tolerance of the in_zone_features parameter value.\r\nCaution:  Changing this...",
-                        "default": null
+                        "default": None
                 },
                 "out_units": {
                         "type": "string",
                         "description": "Specifies the units that will be used to calculate area or length measurements. Setting output units when the \r\ninput class features are points is not supported.UNKNOWN\u2014The units will be unknown.KILOM...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1214,42 +1214,42 @@ functions_declarations = {
                 "keep_all_polygons": {
                         "type": "string",
                         "description": "Specifies whether all input polygons or only those intersecting or containing at least one  input summary feature will be copied to the output feature class.KEEP_ALL\u2014All input polygons will be copied ...",
-                        "default": null
+                        "default": None
                 },
                 "sum_fieldssummary_field_statistic_type": {
                         "type": "string",
                         "description": "A list of attribute  field names from the input summary features, as well as statistical summary types that will be calculated for those attribute fields for all points in each polygon. Summary fields...",
-                        "default": null
+                        "default": None
                 },
                 "sum_shape": {
                         "type": "string",
                         "description": "Specifies whether attributes for the number of points, length of lines, and area of polygon features summarized in each input polygon will be added to the output feature class.ADD_SHAPE_SUM\u2014Shape summ...",
-                        "default": null
+                        "default": None
                 },
                 "shape_unit": {
                         "type": "string",
                         "description": "Specifies the unit that will be used when calculating shape summary\r\nattributes. If the input summary features are points, no shape unit is necessary, since only the count of points in each input poly...",
-                        "default": null
+                        "default": None
                 },
                 "group_field": {
                         "type": "string",
                         "description": "An attribute field from the input summary features that will be used for grouping. Features that have the same group field value will be combined and summarized with other features with the same group...",
-                        "default": null
+                        "default": None
                 },
                 "add_min_maj": {
                         "type": "string",
                         "description": "Specifies whether minority and majority fields will be added to the output. This parameter allows you to determine which group field value is the minority (least dominant) and the majority (most domin...",
-                        "default": null
+                        "default": None
                 },
                 "add_group_percent": {
                         "type": "string",
                         "description": "Specifies whether a percentage attribute field will be added to the output. This parameter allows you to determine the percentage of each attribute value in each group.This parameter is enabled if you...",
-                        "default": null
+                        "default": None
                 },
                 "out_group_table": {
                         "type": "string",
                         "description": "An output table that includes summary fields for each group of summary features for each input polygon. The table will have the following attribute fields:Join_ID\u2014An ID corresponding to an ID field ad...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1277,12 +1277,12 @@ functions_declarations = {
                 "case_field": {
                         "type": "string",
                         "description": "The field or fields in the input that will be used to calculate statistics separately for each unique attribute value (or combination of attribute values when multiple fields are specified).",
-                        "default": null
+                        "default": None
                 },
                 "concatenation_separator": {
                         "type": "string",
                         "description": "A character or characters that will be used to concatenate values when the CONCATENATION option is used for the statistics_fields parameter. By default, the tool will concatenate values without a sepa...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1310,17 +1310,17 @@ functions_declarations = {
                 "buffer_type": {
                         "type": "string",
                         "description": "Input point features must have an associated boundary polygon to enrich. When connected to ArcGIS Online, travel mode options are dynamically populated. Input line features can only use Straight Line ...",
-                        "default": null
+                        "default": None
                 },
                 "distance": {
                         "type": "string",
                         "description": "Determines the distance or size of an area to enrich (for example, a 1-mile buffer or 5-minute walk time). Units correspond to the buffer type. The default value is 1.",
-                        "default": null
+                        "default": None
                 },
                 "unit": {
                         "type": "string",
                         "description": "The units associated with the distance or time parameter.Miles\u2014MilesYards\u2014YardsFeet\u2014FeetKilometers\u2014KilometersMeters\u2014MetersHours\u2014HoursMinutes\u2014MinutesSeconds\u2014Seconds",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1356,57 +1356,57 @@ functions_declarations = {
                 "distance_units": {
                         "type": "string",
                         "description": "Specifies the unit that will be used for the distance values.\r\nMILES\u2014The units will be miles.KILOMETERS\u2014The units will be kilometers.FEET\u2014The units will be feet.YARDS\u2014The units will be yards.METERS\u2014Th...",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The date or time when traffic conditions will be considered during travel time. Traffic conditions, especially in urbanized areas, can significantly impact the area covered within a specified travel t...",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that will be used for the specified time of day. Time zones can be specified in local time or coordinated universal time (UTC).\r\n\r\nGEOLOCAL\u2014The time of day refers to the local ...",
-                        "default": null
+                        "default": None
                 },
                 "keep_all_polygons": {
                         "type": "string",
                         "description": "Specifies whether all buffers of the input features or only those intersecting or containing at least one input summary feature will be copied to the output feature class.KEEP_ALL\u2014All buffers will be ...",
-                        "default": null
+                        "default": None
                 },
                 "sum_fieldssummary_field_statistic_type": {
                         "type": "string",
                         "description": "A list of attribute  field names from the input summary features and statistical summary types that will be calculated for those attribute fields for all points within each input feature buffer. Summa...",
-                        "default": null
+                        "default": None
                 },
                 "sum_shape": {
                         "type": "string",
                         "description": "Specifies whether attributes for the number of points, length of lines, and area of polygon features summarized in each input feature buffer (shape summary attributes) will be added to the output feat...",
-                        "default": null
+                        "default": None
                 },
                 "shape_unit": {
                         "type": "string",
                         "description": "Specifies the unit that will be used when calculating shape summary\r\nattributes. If the input summary features are points, no shape unit is necessary, since only the count of points within each input ...",
-                        "default": null
+                        "default": None
                 },
                 "group_field": {
                         "type": "string",
                         "description": "The attribute field from the input summary features that will be used for grouping. Features that have the same group field value will be combined and summarized with other features with the same grou...",
-                        "default": null
+                        "default": None
                 },
                 "add_min_maj": {
                         "type": "string",
                         "description": "Specifies whether minority (least dominant) and majority (most dominant) group field values within each input feature buffer will be added to the output. This parameter is enabled if you specified a g...",
-                        "default": null
+                        "default": None
                 },
                 "add_group_percent": {
                         "type": "string",
                         "description": "Specifies whether a percentage of each attribute value in each group will be added to the output. This parameter allows you to determine the percentage of each attribute value in each group. This para...",
-                        "default": null
+                        "default": None
                 },
                 "output_grouped_table": {
                         "type": "string",
                         "description": "An output table that includes summary fields for each group of summary features for each input feature buffer. If a group field is specified, the output grouped table is required.The table will have t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1436,7 +1436,7 @@ functions_declarations = {
                 "summary_fields": {
                         "type": "string",
                         "description": "The attribute field(s) to sum and add to the output table. Values will be summed for each unique combination of frequency fields. Null values are excluded from this calculation.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [

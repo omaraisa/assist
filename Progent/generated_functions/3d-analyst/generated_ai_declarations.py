@@ -18,7 +18,7 @@ functions_declarations = {
                 "grid_size": {
                         "type": "string",
                         "description": "The resolution that will be used to construct the closed multipatch features.\r\nThis value is defined using the linear units of the input feature's spatial reference.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -45,12 +45,12 @@ functions_declarations = {
                 "max_sample_distance": {
                         "type": "string",
                         "description": "The regular sampling distance of the polygon's boundary that will be used to establish monotonicity along the river banks.",
-                        "default": null
+                        "default": None
                 },
                 "simplification_tolerance": {
                         "type": "string",
                         "description": "The z-range that will be used to simplify the resulting river boundary line.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -74,32 +74,32 @@ functions_declarations = {
                 "point_placement": {
                         "type": "string",
                         "description": "Specifies the method that will be used to sample the points along the 3D line features.PERCENTAGE\u2014The percentage parameter value will be used to place points along the features by percentage.DISTANCE\u2014...",
-                        "default": null
+                        "default": None
                 },
                 "distance": {
                         "type": "string",
                         "description": "The interval from the beginning of the feature \r\nat which points will be placed.This parameter is active when the point_placement parameter is set to DISTANCE_FIELD.",
-                        "default": null
+                        "default": None
                 },
                 "percentage": {
                         "type": "string",
                         "description": "The percentage from the beginning of the feature at which points will be placed. For example, if a percentage of 40 is used, \r\npoints will be placed at 40 percent and 80 percent of the feature's dista...",
-                        "default": null
+                        "default": None
                 },
                 "include_end_points": {
                         "type": "string",
                         "description": "Specifies whether additional points will be included at the start point and end point of the feature.END_POINTS\u2014Additional points will be included at the start point and end point of the feature.NO_EN...",
-                        "default": null
+                        "default": None
                 },
                 "add_chainage_fields": {
                         "type": "string",
                         "description": "Specifies whether the accumulated distance and sequence fields will be added to the output.ADD_CHAINAGE\u2014The accumulated distance (ORIG_LEN) and sequence (ORIG_SEQ) fields will be added to the output. ...",
-                        "default": null
+                        "default": None
                 },
                 "distance_field": {
                         "type": "string",
                         "description": "A field from the input features that will be used to place output points.If the field is a numeric type, the field value will be used to place points at that interval.If the field is a string type, th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -166,27 +166,27 @@ functions_declarations = {
                 "z_factor": {
                         "type": "string",
                         "description": "The factor by which z-values will be multiplied. This is typically used to convert z linear units to match x,y linear units. The default is 1, which leaves elevation values unchanged. This parameter i...",
-                        "default": null
+                        "default": None
                 },
                 "input_coordinate_system": {
                         "type": "string",
                         "description": "The coordinate system of the input data. The default is an Unknown Coordinate System. If specified, the output may or may not be projected into a different coordinate system. This depends the whether ...",
-                        "default": null
+                        "default": None
                 },
                 "average_point_spacing": {
                         "type": "string",
                         "description": "The average planimetric distance between points of the input. This parameter is only used when the output geometry is set to MULTIPOINT, and its function is to provide a means for grouping the points ...",
-                        "default": null
+                        "default": None
                 },
                 "file_suffix": {
                         "type": "string",
                         "description": "The suffix of the files that will be imported from an input folder. This parameter is required when a folder is specified as input.",
-                        "default": null
+                        "default": None
                 },
                 "decimal_separator": {
                         "type": "string",
                         "description": "The decimal character that will be used in the text file to differentiate the integer of a number from its fractional part.\t\t\t\t\tDECIMAL_POINT\u2014A point will be used as the decimal character. This is the...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -215,27 +215,27 @@ functions_declarations = {
                 "format": {
                         "type": "string",
                         "description": "Specifies the format of the ASCII file being created.GENERATE\u2014Writes output in the GENERATE format. This is the default.XYZ\u2014Writes XYZ information of input features. One file will be created for each ...",
-                        "default": null
+                        "default": None
                 },
                 "delimiter": {
                         "type": "string",
                         "description": "Specifies the delimiter that will indicate the separation of entries in the columns of the text file table.SPACE\u2014A space will be used to delimit field values. This is the default.COMMA\u2014A comma will be...",
-                        "default": null
+                        "default": None
                 },
                 "decimal_format": {
                         "type": "string",
                         "description": "Specifies the method that will determine the number of significant digits stored in the output files.AUTOMATIC\u2014The number of significant digits needed to preserve the available precision, while removi...",
-                        "default": null
+                        "default": None
                 },
                 "digits_after_decimal": {
                         "type": "string",
                         "description": "The number of digits written after the decimal for floating-point values written to the output files. This parameter is used when the Decimal Notation parameter is set to Specified Number (decimal_for...",
-                        "default": null
+                        "default": None
                 },
                 "decimal_separator": {
                         "type": "string",
                         "description": "Specifies the decimal character that will differentiate the integer of a number from its fractional part.DECIMAL_POINT\u2014A point is used as the decimal character. This is the default.DECIMAL_COMMA\u2014A com...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -263,7 +263,7 @@ functions_declarations = {
                 "to_height_field": {
                         "type": "string",
                         "description": "An optional second height field used for lines. When using two height fields, each line will start at the first height and end at the second (sloped).",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -291,17 +291,17 @@ functions_declarations = {
                 "in_existing_fields": {
                         "type": "string",
                         "description": "Specifies whether the output feature class will include the attribute fields of the input feature class. This parameter is not considered when the in_leaf_shapes parameter is used. INCLUDE_EXISTING_FI...",
-                        "default": null
+                        "default": None
                 },
                 "in_include_reports": {
                         "type": "string",
                         "description": "Depending on how the rule package has been authored, it may contain logic that generates one or more reports as the models are created. These reports can contain a variety of information about the fea...",
-                        "default": null
+                        "default": None
                 },
                 "in_leaf_shapes": {
                         "type": "string",
                         "description": "Specifies whether each input feature will be convert to a single, merged multipatch feature or become a set of many features that can be points, line, or multipatches.CityEngine rule packages construc...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -325,17 +325,17 @@ functions_declarations = {
                 "root_per_feature": {
                         "type": "string",
                         "description": "Indicates whether to produce one feature per file or one feature for every root node in the  file. This option only applies to VRML models.ONE_ROOT_ONE_FEATURE\u2014The generated output will contain one fe...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The coordinate system of the input data. For the majority of formats, this is unknown. Only the GeoVRML format stores its coordinate system, and its default will be obtained from the first file in the...",
-                        "default": null
+                        "default": None
                 },
                 "y_is_up": {
                         "type": "string",
                         "description": "Identifies the axis that defines the vertical orientation of the input files.Z_IS_UP\u2014Indicates that z is up. This is the default.Y_IS_UP\u2014Indicated that y is up.",
-                        "default": null
+                        "default": None
                 },
                 "file_suffix": {
                         "type": "string",
@@ -344,12 +344,12 @@ functions_declarations = {
                 "in_featureclass": {
                         "type": "string",
                         "description": "The point features whose coordinates define the real-world position of the input files. Each input file will be matched to its corresponding point based on the file names stored in the Symbol Field. T...",
-                        "default": null
+                        "default": None
                 },
                 "symbol_field": {
                         "type": "string",
                         "description": "The field in the point features containing the name of the 3D file associated with each point.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -373,12 +373,12 @@ functions_declarations = {
                 "group_field": {
                         "type": "string",
                         "description": "The input feature's text field that will be used to merge multiple input features into the same output feature.  The resulting output's remaining attributes will be inherited from one of the input rec...",
-                        "default": null
+                        "default": None
                 },
                 "disable_materials": {
                         "type": "string",
                         "description": "Specifies whether color and texture properties will be maintained when exporting a 3D layer to a multipatch feature class.DISABLE_COLORS_AND_TEXTURES\u2014Colors and textures will not be stored as part of ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -405,17 +405,17 @@ functions_declarations = {
                 "level_of_detail": {
                         "type": "string",
                         "description": "Specifies the level of detail that will be used to generate the rooftop in the building models. Each building will extend from the rooftop to the surrounding ground level.\r\nLOD1.2\u2014The building rooftop...",
-                        "default": null
+                        "default": None
                 },
                 "smoothness_level": {
                         "type": "string",
                         "description": "A value between 0.0 and 1.0 that impacts the extent to which details in the building will be preserved or generalized. A higher value will result in a more simplified output, and a smaller value will ...",
-                        "default": null
+                        "default": None
                 },
                 "extraction_accuracy": {
                         "type": "string",
                         "description": "Specifies the broader accuracy of the resulting building model.\r\nLOW\u2014A broader tolerance for the resulting 3D models will be used, which may lose some details in the building. This option has the shor...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -451,22 +451,22 @@ functions_declarations = {
                 "maximum_triangle_area": {
                         "type": "string",
                         "description": "The maximum area of the subdivided mesh triangles. The input mesh triangles are subdivided to optimize the quality of the output.",
-                        "default": null
+                        "default": None
                 },
                 "cluster_distance": {
                         "type": "string",
                         "description": "The distance that will be used to cluster the points within each object group. When no value is specified, the point_distance_threshold parameter value will be used as the clustering distance.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_cluster_area": {
                         "type": "string",
                         "description": "The minimum surface area of the mesh triangles that are within the specified proximity from  a given object cluster. Any mesh object  cluster that is smaller than the specified value will be ignored. ...",
-                        "default": null
+                        "default": None
                 },
                 "boundary": {
                         "type": "string",
                         "description": "A boundary that represents the 2D area that will be processed.\r\nWhen the expected data is in a subset of the integrated mesh, providing a boundary feature can optimize performance of the tool by limit...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -519,57 +519,57 @@ functions_declarations = {
                 "point_tolerance": {
                         "type": "string",
                         "description": "The distance used to establish the points that belong to a given power line. The default is 80 centimeters.",
-                        "default": null
+                        "default": None
                 },
                 "separation_distance": {
                         "type": "string",
                         "description": "The distance apart points must be to determine if they belong to different power lines. The default is 1 meter.",
-                        "default": null
+                        "default": None
                 },
                 "max_sampling_gap": {
                         "type": "string",
                         "description": "The largest gap that can exist in a given span\r\nof a power line. The catenary curve being modeled from a set of power line points will be extended by this distance to find other points that fit the sa...",
-                        "default": null
+                        "default": None
                 },
                 "line_tolerance": {
                         "type": "string",
                         "description": "The distance that will be used to establish the accuracy of the output power line. A larger distance will result in the creation of less vertices per line, yielding a more coarse representation of the...",
-                        "default": null
+                        "default": None
                 },
                 "wind_correction": {
                         "type": "string",
                         "description": "Specifies whether the output power lines will be adjusted for the influence of wind. When wind correction is applied, it can be used to either improve the fitting of wind modified points or model the ...",
-                        "default": null
+                        "default": None
                 },
                 "min_wind_span": {
                         "type": "string",
                         "description": "The shortest distance a power line span can be to apply wind correction when generating the output power line. The default is 60 meters.",
-                        "default": null
+                        "default": None
                 },
                 "max_wind_deviation": {
                         "type": "string",
                         "description": "The maximum angle that the wind is expected to deviate a given power line.\r\nThe default is 10 degrees.",
-                        "default": null
+                        "default": None
                 },
                 "end_point_search_radius": {
                         "type": "string",
                         "description": "The distance that will be used to identify a common suspension point for power line segments connected to the same distribution pole or transmission tower. The default is 10 meters.",
-                        "default": null
+                        "default": None
                 },
                 "min_length": {
                         "type": "string",
                         "description": "The shortest wire length that can be used to determine the presence of a common end point. The default is 5 meters.",
-                        "default": null
+                        "default": None
                 },
                 "eliminate_wind": {
                         "type": "string",
                         "description": "Specifies how wind correction will be applied to the output power lines. Wind correction will only be applied for catenary curves that span a distance longer than the value specified in the min_wind_s...",
-                        "default": null
+                        "default": None
                 },
                 "min_line_length": {
                         "type": "string",
                         "description": "The minimum 3D length of the output wires. Lines that have a length shorter than the value specified for this parameter will be omitted from the output.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -597,67 +597,67 @@ functions_declarations = {
                 "rail_standard": {
                         "type": "string",
                         "description": "Specifies the rail standard that will be used. The standard describes the measurements of the track gauge and rail thickness. The specification will impact the algorithm that will be used for extracti...",
-                        "default": null
+                        "default": None
                 },
                 "out_3d_centerlines": {
                         "type": "string",
                         "description": "The output 3D center line that represents the middle of the rail track.",
-                        "default": null
+                        "default": None
                 },
                 "track_gauge": {
                         "type": "string",
                         "description": "The track gauge that describes the inner distance between the two rails of a railway track. The default is 1435 millimeters, which corresponds to the US 115 RE standard, but this value will be updated...",
-                        "default": null
+                        "default": None
                 },
                 "rail_thickness": {
                         "type": "string",
                         "description": "The width of the top part of each rail. The default value  is 66.675 millimeters, which corresponds to the US 115 RE standard, but this value will be updated to match the specified rail standard.",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_smoothing_kernel_distance": {
                         "type": "string",
                         "description": "The x,y distance that will be used to apply a weighted average-based smoothing function in the horizontal direction onto the output rail lines. This parameter will help to overcome the distortions of ...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_smoothing_kernel_distance": {
                         "type": "string",
                         "description": "The z-distance that will be used to apply a weighted average-based smoothing function in the vertical direction onto the output rail lines. This parameter will help to overcome the distortions of inco...",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_rail_tolerance": {
                         "type": "string",
                         "description": "The distance that will be used in the x,y direction to identify points that belong to the same rail in a given track. The default is 10 centimeters.",
-                        "default": null
+                        "default": None
                 },
                 "vertical_rail_tolerance": {
                         "type": "string",
                         "description": "The distance that will be used in the z-direction to identify points that belong to the same rail in a given track. The default is 3 centimeters.",
-                        "default": null
+                        "default": None
                 },
                 "centerline_alignment_tolerance": {
                         "type": "string",
                         "description": "The tolerance distance that will be used to align the centerline feature between the rails of a given track. The default is 50 millimeters.",
-                        "default": null
+                        "default": None
                 },
                 "rail_crown_detection_radius": {
                         "type": "string",
                         "description": "The search radius that will be used to identify continuous points that define the rail crown, which is the topmost portion of a given rail track. The default is 20 meters.",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_simplification_tolerance": {
                         "type": "string",
                         "description": "The distance that will be used to simplify the output rail line in the x,y direction. The horizontal position of the simplified rail will not deviate from the original by more than this amount. The de...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_simplification_tolerance": {
                         "type": "string",
                         "description": "The distance that will be used to simplify the output rail line in the z-direction. The height of the simplified rail will not deviate from the original by more than this amount. The default is 2 mill...",
-                        "default": null
+                        "default": None
                 },
                 "min_line_length": {
                         "type": "string",
                         "description": "The minimum three-dimensional length that a detected line must have to be included in the output line features. Any detected line that is shorter than this length will be ignored. The default is 1 met...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -689,27 +689,27 @@ functions_declarations = {
                 "point_selection": {
                         "type": "string",
                         "description": "Specifies the LAS points that will be used to define the building rooftop.BUILDING_CLASSIFIED_POINTS\u2014LAS points assigned a class code value of 6 will be used. This is the default.LAYER_FILTERED_POINTS...",
-                        "default": null
+                        "default": None
                 },
                 "simplification": {
                         "type": "string",
                         "description": "A z-tolerance value that will be used to simplify the rooftop geometry. This value defines the maximum deviation of the output rooftop model from the TIN surface created using the LAS points.",
-                        "default": null
+                        "default": None
                 },
                 "sampling_resolution": {
                         "type": "string",
                         "description": "The binning size used to thin the point cloud before constructing the rooftop surface.",
-                        "default": null
+                        "default": None
                 },
                 "min_height_field": {
                         "type": "string",
                         "description": "The numeric field containing the minimum height of the points that will be used to define the rooftop.  Any numeric field can be specified. Points that are lower than the value in this field will be i...",
-                        "default": null
+                        "default": None
                 },
                 "max_height_field": {
                         "type": "string",
                         "description": "The numeric field containing the maximum height of the points that will be used to define the rooftop.  Any numeric field can be specified. Points that are higher than the value in this field will be ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -734,7 +734,7 @@ functions_declarations = {
                 "group_field": {
                         "type": "string",
                         "description": "The field that will be used for combining multipatch features so that they \r\ncontribute to the same footprint polygon.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -828,17 +828,17 @@ functions_declarations = {
                 "alignment_feature": {
                         "type": "string",
                         "description": "The line feature that will be used to align the orientation of the regularized polygons. Each polygon will only be aligned to one line feature.",
-                        "default": null
+                        "default": None
                 },
                 "alignment_tolerance": {
                         "type": "string",
                         "description": "The maximum distance threshold that will be used for finding the nearest alignment feature. For example, a value of 20 meters means the nearest line that is within 20 meters will be used to align the ...",
-                        "default": null
+                        "default": None
                 },
                 "tolerance_type": {
                         "type": "string",
                         "description": "Specifies how tolerance will be applied when the method parameter is set to CIRCLE.DISTANCE\u2014The tolerance will represent the maximum distance from the boundary of the feature being processed. This is ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -872,27 +872,27 @@ functions_declarations = {
                 "max_strip_size": {
                         "type": "string",
                         "description": "Controls the maximum number of points used to create an individual triangle strip. Note that each multipatch is usually composed of multiple strips. The default value is 1,024.",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The factor by which z-values will be multiplied. This is typically used to convert z linear units to match x,y linear units. The default is 1, which leaves elevation values unchanged. This parameter i...",
-                        "default": null
+                        "default": None
                 },
                 "area_field": {
                         "type": "string",
                         "description": "The name of the output field containing the planimetric, or 2D, area of the resulting multipatches.",
-                        "default": null
+                        "default": None
                 },
                 "surface_area_field": {
                         "type": "string",
                         "description": "The name of the output field containing the 3D area of the resulting multipatches. This area takes the surface undulations into consideration and is always larger than the planimetric area unless the ...",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_level_resolution": {
                         "type": "string",
                         "description": "The z-tolerance or window-size resolution of the terrain pyramid level that will be used. The default is 0, or full resolution.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -920,32 +920,32 @@ functions_declarations = {
                 "sample_distance": {
                         "type": "string",
                         "description": "The spacing at which z-values will be interpolated. By default, this is a raster dataset's cell size or a triangulated surface's natural densification.",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The factor by which z-values will be multiplied. This is typically used to convert z linear units to match x,y linear units. The default is 1, which leaves elevation values unchanged. This parameter i...",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies the interpolation method that will be used to determine elevation values for the output features. The available options depend on the surface type.\r\nBILINEAR\u2014The value of the query point wil...",
-                        "default": null
+                        "default": None
                 },
                 "vertices_only": {
                         "type": "string",
                         "description": "Specifies whether the interpolation will only occur along the vertices of an input feature, ignoring the sample distance option.DENSIFY\u2014Interpolation will occur using the sampling distance. This is th...",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_level_resolution": {
                         "type": "string",
                         "description": "The z-tolerance or window-size resolution of the terrain pyramid level that will be used. The default is 0, or full resolution.",
-                        "default": null
+                        "default": None
                 },
                 "preserve_features": {
                         "type": "string",
                         "description": "Specifies whether features with one or more vertices that fall outside the raster's data area will be retained in the output. This parameter is only available when the input surface is a raster and th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -969,12 +969,12 @@ functions_declarations = {
                 "method": {
                         "type": "string",
                         "description": "Interpolation method used in determining information about the surface. The available options depend on the data type of the input surface:BILINEAR\u2014An interpolation method  exclusive to the raster sur...",
-                        "default": null
+                        "default": None
                 },
                 "status_field": {
                         "type": "string",
                         "description": "An existing numeric field that will be populated with values to reflect whether the feature's vertices were successfully updated.  A value of 1 would be specified for updated features and 0 for featur...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1020,42 +1020,42 @@ functions_declarations = {
                 "apply_hard_limit": {
                         "type": "string",
                         "description": "Specifies use of absolute z minimum and maximum to find outliers. \r\nAPPLY_HARD_LIMIT\u2014Use the absolute z minimum and maximum to find outliers.NO_APPLY_HARD_LIMIT\u2014Do not use the absolute z minimum and m...",
-                        "default": null
+                        "default": None
                 },
                 "absolute_z_min": {
                         "type": "string",
                         "description": "If hard limits are applied, any point with an elevation below this value will be considered an outlier.  The default is 0.",
-                        "default": null
+                        "default": None
                 },
                 "absolute_z_max": {
                         "type": "string",
                         "description": "If hard limits are applied, any point with an elevation above this value will be considered an outlier.   The default is 0.",
-                        "default": null
+                        "default": None
                 },
                 "apply_comparison_filter": {
                         "type": "string",
                         "description": "The comparison filter consists of three parameters for determining outliers: z_tolerance, slope_tolerance, and exceed_tolerance_ratio.APPLY_COMPARISON_FILTER\u2014Use the three comparison parameters (z_tol...",
-                        "default": null
+                        "default": None
                 },
                 "z_tolerance": {
                         "type": "string",
                         "description": "Compares z-values of neighboring points if the comparison filter is applied.   The default is 0.",
-                        "default": null
+                        "default": None
                 },
                 "slope_tolerance": {
                         "type": "string",
                         "description": "The threshold of slope variance between consecutive points that will be used to identify outlier points. Slope is expressed as a percentage, with the default being 150.",
-                        "default": null
+                        "default": None
                 },
                 "exceed_tolerance_ratio": {
                         "type": "string",
                         "description": "Defines the criteria for determining each outlier point as a function of the ratio of points in its natural neighborhood that  must exceed the specified comparison filters. For example, the default va...",
-                        "default": null
+                        "default": None
                 },
                 "outlier_cap": {
                         "type": "string",
                         "description": "The maximum number of outlier points that can be written to the output. Once this value is reached, no further outliers are sought.   The default is 2,500.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1078,17 +1078,17 @@ functions_declarations = {
                 "class_breaks_table": {
                         "type": "string",
                         "description": "A table containing the classification breaks that will be used to define the aspect ranges in the output feature class.",
-                        "default": null
+                        "default": None
                 },
                 "aspect_field": {
                         "type": "string",
                         "description": "The field containing aspect code values.",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_level_resolution": {
                         "type": "string",
                         "description": "The z-tolerance or window-size resolution of the terrain pyramid level that will be used. The default is 0, or full resolution.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1115,37 +1115,37 @@ functions_declarations = {
                 "base_contour": {
                         "type": "string",
                         "description": "Defines the starting Z value from which the contour interval is either added or subtracted to delineate contours. The default value is 0.0.",
-                        "default": null
+                        "default": None
                 },
                 "contour_field": {
                         "type": "string",
                         "description": "The field that stores  the contour value associated with each line in the output feature class.",
-                        "default": null
+                        "default": None
                 },
                 "contour_field_precision": {
                         "type": "string",
                         "description": "The precision of the contour field. Zero specifies an integer, and the numbers 1\u20139 indicate how many decimal places the field will contain. By default, the field will be an integer (0).",
-                        "default": null
+                        "default": None
                 },
                 "index_interval": {
                         "type": "string",
                         "description": "Index contours are commonly used as a cartographic aid for assisting in the visualization of contour lines. The index interval is typically five times larger than the contour interval. Use of this par...",
-                        "default": null
+                        "default": None
                 },
                 "index_interval_field": {
                         "type": "string",
                         "description": "The name of the field used to identify index contours. This will only be used if the index_interval is defined. By default, the field name is Index.",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The factor by which z-values will be multiplied. This is typically used to convert z linear units to match x,y linear units. The default is 1, which leaves elevation values unchanged. This parameter i...",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_level_resolution": {
                         "type": "string",
                         "description": "The z-tolerance or window-size resolution of the terrain pyramid level that will be used. The default is 0, or full resolution.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1169,27 +1169,27 @@ functions_declarations = {
                 "units": {
                         "type": "string",
                         "description": "The units of measure to be used in calculating slope.PERCENT\u2014Slope is expressed as a percentage value. This is the default.DEGREE\u2014Slope is expressed as the angle of inclination from a horizontal plane...",
-                        "default": null
+                        "default": None
                 },
                 "class_breaks_table": {
                         "type": "string",
                         "description": "A table containing classification breaks that will be used to group the output features. The first column of this table will indicate the break point, whereas the second will provide the classificatio...",
-                        "default": null
+                        "default": None
                 },
                 "slope_field": {
                         "type": "string",
                         "description": "The field containing slope values.",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The factor by which z-values will be multiplied. This is typically used to convert z linear units to match x,y linear units. The default is 1, which leaves elevation values unchanged. This parameter i...",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_level_resolution": {
                         "type": "string",
                         "description": "The z-tolerance or window-size resolution of the terrain pyramid level that will be used. The default is 0, or full resolution.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1216,32 +1216,32 @@ functions_declarations = {
                 "observer_height_field": {
                         "type": "string",
                         "description": "The source of the height values for the observer points obtained  from its attribute table.A default Observer Height Field field is selected from among the options listed below  by order of priority. ...",
-                        "default": null
+                        "default": None
                 },
                 "target_height_field": {
                         "type": "string",
                         "description": "The height field for the target.    A default Target Height Field field is selected from among the options listed below  by order of priority. If multiple fields exist, and the desired field does not ...",
-                        "default": null
+                        "default": None
                 },
                 "join_field": {
                         "type": "string",
                         "description": "The join field is used to match observers to specific targets.   &lt;None&gt;\u2014No Z values will be assigned to the resulting sight line features.",
-                        "default": null
+                        "default": None
                 },
                 "sample_distance": {
                         "type": "string",
                         "description": "The distance between samples when the target is either a line or polygon feature class.   The Sampling Distance units  are interpreted in the XY units of the output feature class.",
-                        "default": null
+                        "default": None
                 },
                 "output_the_direction": {
                         "type": "string",
                         "description": "Specifies whether to add direction attributes to the output sight lines.  Two additional fields will be added and populated to indicate direction: AZIMUTH and VERT_ANGLE (vertical angle).NOT_OUTPUT_TH...",
-                        "default": null
+                        "default": None
                 },
                 "sampling_method": {
                         "type": "string",
                         "description": "Specifies how the sampling distance will be used to establish sight lines along the target feature.2D_DISTANCE\u2014The distance will be evaluated in two-dimensional Cartesian space. This is the default.3D...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1269,92 +1269,92 @@ functions_declarations = {
                 "out_agl_raster": {
                         "type": "string",
                         "description": "The output above ground level (AGL) raster.The AGL result is a raster in which each cell value is the minimum height that must be added to a cell that is not visible to make it visible by at least one...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_type": {
                         "type": "string",
                         "description": "Specifies the type of visibility analysis that will be performed, either determining how visible each cell is to the observers or identifying the observers that are visible for each surface location.F...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_error": {
                         "type": "string",
                         "description": "The amount of uncertainty (the root mean square [RMS] error) in the surface elevation values. It is a floating-point value representing the expected error of the input elevation values. When this para...",
-                        "default": null
+                        "default": None
                 },
                 "out_observer_region_relationship_table": {
                         "type": "string",
                         "description": "The output table for identifying the regions that are visible to each observer. This table can be related to the input observer feature class and the output visibility raster for identifying the regio...",
-                        "default": null
+                        "default": None
                 },
                 "refractivity_coefficient": {
                         "type": "string",
                         "description": "The coefficient of the refraction of visible light in air.The default value is 0.13.",
-                        "default": null
+                        "default": None
                 },
                 "surface_offset": {
                         "type": "string",
                         "description": "A vertical distance that will be added to the z-value of each cell as it is considered for visibility. It must be a positive integer or floating-point value.You can select a field in the input observe...",
-                        "default": null
+                        "default": None
                 },
                 "observer_elevation": {
                         "type": "string",
                         "description": "The surface elevations of the observer points or vertices.You can select a field in the input observers dataset, or you can specify a numerical value.When this parameter is not specified, the observer...",
-                        "default": null
+                        "default": None
                 },
                 "observer_offset": {
                         "type": "string",
                         "description": "A vertical distance that will be added to the observer elevation. It must be a positive integer or floating-point value.You can select a field in the input observers dataset, or you can specify a nume...",
-                        "default": null
+                        "default": None
                 },
                 "inner_radius": {
                         "type": "string",
                         "description": "The start distance from which visibility will be determined. Cells closer than this distance will not be visible in the output but can still block visibility of the cells between inner radius and oute...",
-                        "default": null
+                        "default": None
                 },
                 "inner_radius_is_3d": {
                         "type": "string",
                         "description": "Specifies the type of distance that will be used for the inner radius parameter.GROUND\u2014The inner radius will be interpreted as a 2D distance. This is the default.3D\u2014The inner radius will be interprete...",
-                        "default": null
+                        "default": None
                 },
                 "outer_radius": {
                         "type": "string",
                         "description": "The maximum distance from which visibility will be determined. Cells beyond this distance will be excluded from the analysis.You can select a field in the input observers dataset, or you can specify a...",
-                        "default": null
+                        "default": None
                 },
                 "outer_radius_is_3d": {
                         "type": "string",
                         "description": "Specifies the type of distance that will be used for the outer radius parameter.GROUND\u2014The outer radius will be interpreted as a 2D distance. This is the default.3D\u2014The outer radius will be interprete...",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_start_angle": {
                         "type": "string",
                         "description": "The start angle of the horizontal scan range. Provide the value in degrees from 0 to 360 with 0 oriented to north. The value can be integer or floating point. The default value is 0.You can select a f...",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_end_angle": {
                         "type": "string",
                         "description": "The end angle of the horizontal scan range. Provide the value in degrees from 0 to 360 with 0 oriented to north. The value can be integer or floating point. The default value is 360.You can select a f...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_upper_angle": {
                         "type": "string",
                         "description": "The upper vertical angle limit of the scan relative to the horizontal plane. Provide the value in degrees from above -90 up to and including 90. The value can be integer or floating point. The default...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_lower_angle": {
                         "type": "string",
                         "description": "The lower vertical angle limit of the scan relative to the horizontal plane. Provide the value in degrees from -90 up to but not including 90. The value can be integer or floating point. The default v...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to calculate visibility. This parameter allows you to decide on performance level.ALL_SIGHTLINES\u2014A sightline will be run to every cell on the raster to establish...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_target_device": {
                         "type": "string",
                         "description": "Specifies the device that will be used to perform the calculation.GPU_THEN_CPU\u2014If a compatible GPU is found, it will be used to perform the calculation. Otherwise, the CPU will be used. This is the de...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1378,7 +1378,7 @@ functions_declarations = {
                 "visible_field": {
                         "type": "string",
                         "description": "The name of the field that will store the visibility results.  A resulting value of 0 indicates that the sight line's start and end points are not visible to one another.   A value of 1 indicates that...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1405,37 +1405,37 @@ functions_declarations = {
                 "out_obstruction_feature_class": {
                         "type": "string",
                         "description": "An optional point feature class identifying the location of the first obstruction on  the observer's sight line  to its target.",
-                        "default": null
+                        "default": None
                 },
                 "use_curvature": {
                         "type": "string",
                         "description": "Specifies whether the earth's curvature will be taken into consideration for the line-of-sight analysis.   For this parameter to be enabled, the surface must have a defined spatial reference in projec...",
-                        "default": null
+                        "default": None
                 },
                 "use_refraction": {
                         "type": "string",
                         "description": "Specifies whether atmospheric refraction will be taken into consideration when generating a  line of sight  from a functional surface. This parameter does not apply if multipatch features are used.REF...",
-                        "default": null
+                        "default": None
                 },
                 "refraction_factor": {
                         "type": "string",
                         "description": "The value that will be used as the refraction factor. The default value is 0.13.",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_level_resolution": {
                         "type": "string",
                         "description": "The z-tolerance or window-size resolution of the terrain pyramid level that will be used. The default value is 0, which is full resolution.",
-                        "default": null
+                        "default": None
                 },
                 "in_features": {
                         "type": "string",
                         "description": "A multipatch feature that may define additional obstructing elements, such as buildings.  Refraction options are not honored for this input.",
-                        "default": null
+                        "default": None
                 },
                 "output_graphing_attributes": {
                         "type": "string",
                         "description": "Specifies whether the output sight line attributes will include additional fields with information that can be used in a profile graph.The values in these fields provide the  information for generatin...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1463,22 +1463,22 @@ functions_declarations = {
                 "z_factor": {
                         "type": "string",
                         "description": "The number of ground x,y units in one surface z-unit.The z-factor adjusts the units of measure for the z-units when they are different from the x,y units of the input surface. The z-values of the inpu...",
-                        "default": null
+                        "default": None
                 },
                 "curvature_correction": {
                         "type": "string",
                         "description": "Specifies whether correction for the earth's curvature will be applied.FLAT_EARTH\u2014No curvature correction will be applied. This is the default.CURVED_EARTH\u2014Curvature correction will be applied.",
-                        "default": null
+                        "default": None
                 },
                 "refractivity_coefficient": {
                         "type": "string",
                         "description": "The coefficient of the refraction of visible light in air.The default value is 0.13.",
-                        "default": null
+                        "default": None
                 },
                 "out_agl_raster": {
                         "type": "string",
                         "description": "The output above ground level (AGL) raster.The AGL result is a raster where each cell value is the minimum height that must be added to an otherwise nonvisible cell to make it visible by at least one ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1502,102 +1502,102 @@ functions_declarations = {
                 "in_surface": {
                         "type": "string",
                         "description": "The topographic surface that will be used to define the horizon. If no surface is provided, a virtual surface\r\nwill be used, defined by the  virtual_surface_radius and  virtual_surface_elevation param...",
-                        "default": null
+                        "default": None
                 },
                 "virtual_surface_radius": {
                         "type": "string",
                         "description": "The radius of the virtual surface that will be used  to define the horizon when no input surface is provided. The default is 1,000 meters.",
-                        "default": null
+                        "default": None
                 },
                 "virtual_surface_elevation": {
                         "type": "string",
                         "description": "The elevation of the virtual surface that will be used to define the horizon in lieu of an actual surface. This parameter is ignored if an actual surface is provided. The default is 0.",
-                        "default": null
+                        "default": None
                 },
                 "in_features": {
                         "type": "string",
                         "description": "The features that will be used to determine the skyline. If no features are specified, the skyline will consist\r\nsolely of the horizon line as defined by the topographic or virtual surface.",
-                        "default": null
+                        "default": None
                 },
                 "feature_lod": {
                         "type": "string",
                         "description": "Specifies the level of detail at which each feature will be examined.FULL_DETAIL\u2014Every edge in the feature will be considered in the skyline analysis (only edges of triangles and exterior rings are co...",
-                        "default": null
+                        "default": None
                 },
                 "from_azimuth_value_or_field": {
                         "type": "string",
                         "description": "The direction from which the skyline analysis will start. This value is a  geometric angle in degrees in the range of -360\u00b0 to 360\u00b0. The default is 0\u00b0, which is due north. Angular values increment in ...",
-                        "default": null
+                        "default": None
                 },
                 "to_azimuth_value_or_field": {
                         "type": "string",
                         "description": "The direction at which the skyline analysis will complete. This value is a  geometric angle in degrees in the range of -360\u00b0 to 360\u00b0.  The analysis starts from the observer point and increments from t...",
-                        "default": null
+                        "default": None
                 },
                 "azimuth_increment_value_or_field": {
                         "type": "string",
                         "description": "The angular interval, in degrees, at which the horizon will be evaluated while conducting the skyline analysis between the from_azimuth_value_or_field and to_azimuth_value_or_field parameter values. T...",
-                        "default": null
+                        "default": None
                 },
                 "max_horizon_radius": {
                         "type": "string",
                         "description": "The maximum distance from the observer location that a horizon will be sought. A value of zero indicates that no limit will be imposed.  The default is 0.",
-                        "default": null
+                        "default": None
                 },
                 "segment_skyline": {
                         "type": "string",
                         "description": "Specifies whether the resulting skyline will have one feature for each observer point or each observer's skyline will be segmented by the unique elements that contribute to the skyline. This parameter...",
-                        "default": null
+                        "default": None
                 },
                 "scale_to_percent": {
                         "type": "string",
                         "description": "The percent of the original vertical angle (angle above the horizon or angle of elevation) or elevation each skyline vertex will be placed. If a value of 0 or 100 is used, scaling will not occur. The ...",
-                        "default": null
+                        "default": None
                 },
                 "scale_according_to": {
                         "type": "string",
                         "description": "Specifies how scaling will be performed.VERTICAL_ANGLE\u2014Scaling will be performed based on the vertical angle of each vertex relative to the observer point. This is the default.ELEVATION\u2014Scaling will b...",
-                        "default": null
+                        "default": None
                 },
                 "scale_method": {
                         "type": "string",
                         "description": "Specifies the vertex that will be used for scale calculation.SKYLINE_MAXIMUM\u2014Vertices will be scaled relative to the vertical angle (or elevation) of the vertex with the highest vertical angle (or ele...",
-                        "default": null
+                        "default": None
                 },
                 "use_curvature": {
                         "type": "string",
                         "description": "Specifies whether the curvature of the earth will be used when generating the ridgeline from a functional surface. This parameter is only available when a raster surface is specified for the in_surfac...",
-                        "default": null
+                        "default": None
                 },
                 "use_refraction": {
                         "type": "string",
                         "description": "Specifies whether atmospheric refraction will be applied when generating the ridgeline from a functional surface. This option is only available when a raster surface is specified for the in_surface pa...",
-                        "default": null
+                        "default": None
                 },
                 "refraction_factor": {
                         "type": "string",
                         "description": "The refraction coefficient that will be used if atmospheric refraction is applied. The default is 0.13.",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_level_resolution": {
                         "type": "string",
                         "description": "The z-tolerance or window-size resolution of the terrain pyramid level that will be used. The default is 0, or full resolution.",
-                        "default": null
+                        "default": None
                 },
                 "create_silhouettes": {
                         "type": "string",
                         "description": "Specifies whether output features will represent skylines defining the barrier between the input data and the open sky or silhouettes representing the facade of observable input features. This option ...",
-                        "default": null
+                        "default": None
                 },
                 "apply_max_radius_to_features": {
                         "type": "string",
                         "description": "Specifies whether the max_horizon_radius parameter value will be applied to the input features.NO_APPLY_MAX_RADIUS_TO_FEATURES\u2014The radius will not apply to the input features. This is the default.APPL...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_offset": {
                         "type": "string",
                         "description": "The height offset in z-units that will be applied to each observer when determining its skyline. The offset can be defined by a numeric value that is applied to all observers or by a numeric field in ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1624,27 +1624,27 @@ functions_declarations = {
                 "min_radius_value_or_field": {
                         "type": "string",
                         "description": "The minimum radius that the triangle edges will be extended from the observer point. For example, value of 10 meters means that all output barrier features will extend at least 10 meters from their po...",
-                        "default": null
+                        "default": None
                 },
                 "max_radius_value_or_field": {
                         "type": "string",
                         "description": "The maximum radius that the triangle edges will be extended from the observer point. The default is 0, meaning no maximum distance is enforced.",
-                        "default": null
+                        "default": None
                 },
                 "closed": {
                         "type": "string",
                         "description": "Specifies whether a skirt and a base will be added to the skyline barrier so that the resulting multipatch will appear to be a closed solid.NO_CLOSED\u2014No skirt or base will be added to the multipatch; ...",
-                        "default": null
+                        "default": None
                 },
                 "base_elevation": {
                         "type": "string",
                         "description": "The elevation of the base of the closed multipatch. This parameter is ignored if the closed parameter is set to NO_CLOSED.   The default is 0.",
-                        "default": null
+                        "default": None
                 },
                 "project_to_plane": {
                         "type": "string",
                         "description": "Specifies whether the front (nearer to the observer) and back (farther from the observer) ends of the barrier should each be projected onto a vertical plane. This is typically set to PROJECT_TO_PLANE ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1668,27 +1668,27 @@ functions_declarations = {
                 "base_visibility_angle": {
                         "type": "string",
                         "description": "The baseline vertical angle that will be used to calculate the percentage of visible sky. Zero is the horizon, 90 is straight up, and -90 is straight down. The default is 0.",
-                        "default": null
+                        "default": None
                 },
                 "additional_fields": {
                         "type": "string",
                         "description": "Specifies whether additional fields will be included in the angles table.NO_ADDITIONAL_FIELDS\u2014Additional fields will not be included. This is the default.ADDITIONAL_FIELDS\u2014Additional fields will be in...",
-                        "default": null
+                        "default": None
                 },
                 "out_angles_table": {
                         "type": "string",
                         "description": "The table that will be created for outputting the horizontal and vertical angles from the observer point to each of the vertices on the skyline.",
-                        "default": null
+                        "default": None
                 },
                 "out_graph": {
                         "type": "string",
                         "description": "This parameter is not supported.",
-                        "default": null
+                        "default": None
                 },
                 "out_image_file": {
                         "type": "string",
                         "description": "The image of the polar chart depicting the radial view of the visible skyline.\r\nThe image can be created in PNG, JPG, JPEG, or SVG format.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1715,37 +1715,37 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster.",
-                        "default": null
+                        "default": None
                 },
                 "start_time": {
                         "type": "string",
                         "description": "The date and time sun position calculations will begin. The default value is the date and time the tool is initialized.",
-                        "default": null
+                        "default": None
                 },
                 "end_time": {
                         "type": "string",
                         "description": "The date and time sun position calculations will end. The time_interval parameter is used to iteratively evaluate each day from the start time to the end time. For this reason, the end time cannot be ...",
-                        "default": null
+                        "default": None
                 },
                 "time_interval": {
                         "type": "string",
                         "description": "The interval that will be used to calculate sun positions from the start date and time to the end \r\ndate and time.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that corresponds to the specified input times that will be used to determine the relative position of the sun.UTC\u2014The time zone will be UTC.Dateline_Standard_Time\u2014The time zone...",
-                        "default": null
+                        "default": None
                 },
                 "dst": {
                         "type": "string",
                         "description": "Specifies whether the input times will be adjusted for daylight saving time.\r\nDST\u2014The input times will be adjusted for daylight saving time.NO_DST\u2014The input times will not be adjusted for daylight sav...",
-                        "default": null
+                        "default": None
                 },
                 "max_shadow_length": {
                         "type": "string",
                         "description": "The maximum distance that a shadow will be cast from an input feature during calculation.\r\nConsider defining this value when the sun position has a low altitude angle, as the resulting shadows will be...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1773,27 +1773,27 @@ functions_declarations = {
                 "adjusted_for_dst": {
                         "type": "string",
                         "description": "Specifies whether the time value will be adjusted for daylight saving time (DST).ADJUSTED_FOR_DST\u2014The time value will be adjusted for DST.NOT_ADJUSTED_FOR_DST\u2014The time value will not be adjusted for D...",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "The time zone in which the participating input is located. The default setting is the time zone to which the operating system is set.UTC\u2014The time zone will be UTC.Dateline_Standard_Time\u2014The time zone ...",
-                        "default": null
+                        "default": None
                 },
                 "end_date_and_time": {
                         "type": "string",
                         "description": "The final date and time that will be used for calculating sun position. A time can be specified without a date, in which case the end date will be the same as the start date. If a date is provided, a ...",
-                        "default": null
+                        "default": None
                 },
                 "iteration_interval": {
                         "type": "string",
                         "description": "The value that will be used to define the iteration of time from the start date.",
-                        "default": null
+                        "default": None
                 },
                 "iteration_unit": {
                         "type": "string",
                         "description": "Specifies the unit that will define the iteration value applied to the start_date_and_time parameter value.DAYS\u2014The iteration value will represent days. This is the default.HOURS\u2014The iteration value w...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1821,22 +1821,22 @@ functions_declarations = {
                 "z_factor": {
                         "type": "string",
                         "description": "The number of ground x,y units in one surface z-unit.The z-factor adjusts the units of measure for the z-units when they are different from the x,y units of the input surface. The z-values of the inpu...",
-                        "default": null
+                        "default": None
                 },
                 "curvature_correction": {
                         "type": "string",
                         "description": "Specifies whether correction for the earth's curvature will be applied.FLAT_EARTH\u2014No curvature correction will be applied. This is the default.CURVED_EARTH\u2014Curvature correction will be applied.",
-                        "default": null
+                        "default": None
                 },
                 "refractivity_coefficient": {
                         "type": "string",
                         "description": "The coefficient of the refraction of visible light in air.The default value is 0.13.",
-                        "default": null
+                        "default": None
                 },
                 "out_agl_raster": {
                         "type": "string",
                         "description": "The output above ground level (AGL) raster.The AGL result is a raster where each cell value is the minimum height that must be added to an otherwise nonvisible cell to make it visible by at least one ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1864,77 +1864,77 @@ functions_declarations = {
                 "out_agl_raster": {
                         "type": "string",
                         "description": "The output above-ground-level (AGL) raster.The AGL result is a raster where each cell value is the minimum height that must be added to an otherwise nonvisible cell to make it visible by at least one ...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_type": {
                         "type": "string",
                         "description": "The visibility analysis type.FREQUENCY\u2014The output records the number of times that each cell location in the input surface raster can be seen by the input observation locations (as points, or as verti...",
-                        "default": null
+                        "default": None
                 },
                 "nonvisible_cell_value": {
                         "type": "string",
                         "description": "Value assigned to non-visible cells.ZERO\u20140 is assigned to nonvisible cells. This is the default.NODATA\u2014NoData is assigned to nonvisible cells.",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "Number of ground x,y units in one surface z unit.The z-factor adjusts the units of measure for the z units when they are different from the x,y units of the input surface. The z-values of the input su...",
-                        "default": null
+                        "default": None
                 },
                 "curvature_correction": {
                         "type": "string",
                         "description": "Specifies whether correction for the earth's curvature will be applied.FLAT_EARTH\u2014No curvature correction will be applied. This is the default.CURVED_EARTH\u2014Curvature correction will be applied.",
-                        "default": null
+                        "default": None
                 },
                 "refractivity_coefficient": {
                         "type": "string",
                         "description": "The coefficient of the refraction of visible light in air.The default value is 0.13.",
-                        "default": null
+                        "default": None
                 },
                 "surface_offset": {
                         "type": "string",
                         "description": "A vertical distance that will be added to the z-value of each cell as it is considered for visibility. It must be a positive integer or floating-point value.You can select a field in the input observe...",
-                        "default": null
+                        "default": None
                 },
                 "observer_elevation": {
                         "type": "string",
                         "description": "The surface elevations of the observer points or vertices.You can select a field in the input observers dataset, or you can specify a numerical value.By default, a numerical field SPOT is used if it e...",
-                        "default": null
+                        "default": None
                 },
                 "observer_offset": {
                         "type": "string",
                         "description": "A vertical distance that will be added to the observer elevation. It must be a positive integer or floating-point value.You can select a field in the input observers dataset, or you can specify a nume...",
-                        "default": null
+                        "default": None
                 },
                 "inner_radius": {
                         "type": "string",
                         "description": "The start distance from which visibility will be determined. Cells closer than this distance will not be visible in the output but can still block visibility of the cells between inner radius and oute...",
-                        "default": null
+                        "default": None
                 },
                 "outer_radius": {
                         "type": "string",
                         "description": "The maximum distance from which visibility will be determined. Cells beyond this distance will be excluded from the analysis.It can be a positive or negative integer or floating point value. If it is ...",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_start_angle": {
                         "type": "string",
                         "description": "The start angle of the horizontal scan range. Provide the value in degrees from 0 to 360 with 0 oriented to north. The value can be integer or floating point. The default value is 0.You can select a f...",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_end_angle": {
                         "type": "string",
                         "description": "The end angle of the horizontal scan range. Provide the value in degrees from 0 to 360 with 0 oriented to north. The value can be integer or floating point. The default value is 360.You can select a f...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_upper_angle": {
                         "type": "string",
                         "description": "The upper vertical angle limit of the scan relative to the horizontal plane. Provide the value in degrees from above -90 up to and including 90. The value can be integer or floating point. The default...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_lower_angle": {
                         "type": "string",
                         "description": "The lower vertical angle limit of the scan relative to the horizontal plane. Provide the value in degrees from -90 up to but not including 90. The value can be integer or floating point. The default v...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [

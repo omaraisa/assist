@@ -14,12 +14,12 @@ functions_declarations = {
                 "multipatch_materials": {
                         "type": "string",
                         "description": "Note:This parameter is no longer supported. The option to\r\ncontrol whether multipatch materials were used was removed to\r\nimprove this tool's usability. Materials will always be used when\r\nthey are av...",
-                        "default": null
+                        "default": None
                 },
                 "formats": {
                         "type": "string",
                         "description": "Specifies the 3D formats that will be associated with the multipatch features. Each input feature will be duplicated for each selected format. The available options depend on the codecs installed on t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -45,7 +45,7 @@ functions_declarations = {
                 "name_field": {
                         "type": "string",
                         "description": "The text field in the input feature's attribute table that contains the name to be used for each output folder. If no name field is provided, the output folder will be named after the object ID of the...",
-                        "default": null
+                        "default": None
                 },
                 "overwrite": {
                         "type": "string",
@@ -74,27 +74,27 @@ functions_declarations = {
                 "update": {
                         "type": "string",
                         "description": "Specifies how an existing 3D object feature class will be updated.REPLACE_ALL\u2014All existing features in the 3D object feature class will be removed and only the 3D models that are specified as input wi...",
-                        "default": null
+                        "default": None
                 },
                 "translate": {
                         "type": "string",
                         "description": "The x- and y-coordinate offset that will be applied to the imported models.",
-                        "default": null
+                        "default": None
                 },
                 "elevation": {
                         "type": "string",
                         "description": "The height offset that will be applied to the imported models.",
-                        "default": null
+                        "default": None
                 },
                 "scale": {
                         "type": "string",
                         "description": "The scale factor that will be used to resize the 3D models being imported.",
-                        "default": null
+                        "default": None
                 },
                 "rotate": {
                         "type": "string",
                         "description": "The degree rotation angle \r\nthat will be applied to the imported models. Rotation is applied with the assumption of  zero degrees (0\u00b0) representing north and angular values incrementing in the clockwi...",
-                        "default": null
+                        "default": None
                 },
                 "y_is_up": {
                         "type": "string",
@@ -118,12 +118,12 @@ functions_declarations = {
                 "multipatch_materials": {
                         "type": "string",
                         "description": "Note:This parameter is no longer supported. The option to\r\ncontrol whether multipatch materials were used was removed to\r\nimprove this tool's usability. Materials will always be used when\r\nthey are av...",
-                        "default": null
+                        "default": None
                 },
                 "formats": {
                         "type": "string",
                         "description": "Specifies the 3D model formats referenced by the 3D object feature layer that will be removed. Only the formats that have been linked to the input features can be specified.FMT3D_DAE\u2014The COLLADA forma...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -141,7 +141,7 @@ functions_declarations = {
                 "preserve_history": {
                         "type": "string",
                         "description": "Specifies whether records that are not from the current moment will be preserved.If the table or feature class is versioned, the history table or feature will become enabled.For nonversioned data, a t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -176,7 +176,7 @@ functions_declarations = {
                 "trim_before_date": {
                         "type": "string",
                         "description": "Archive records older than this date and time will be deleted. The date and time must be in UTC. If no date is provided, all archive records will be deleted.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -211,7 +211,7 @@ functions_declarations = {
                 "in_working_folder": {
                         "type": "string",
                         "description": "A folder or workspace where attachment files are centralized. By specifying a working folder, the paths in the in_match_path_field parameter value can be the short names of files relative to the worki...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -276,17 +276,17 @@ functions_declarations = {
                 "subdirectory_field": {
                         "type": "string",
                         "description": "A field from the in_dataset   \r\nparameter value that    will be used to create subdirectory names.",
-                        "default": null
+                        "default": None
                 },
                 "name_format": {
                         "type": "string",
                         "description": "Specifies the format that will be used for naming exported attachments.ORIGINAL\u2014The output file names will use the original file names stored in the geodatabase.REPLACE\u2014The output file names will use ...",
-                        "default": null
+                        "default": None
                 },
                 "name_fields": {
                         "type": "string",
                         "description": "The fields from the in_dataset parameter value that will be used to rename the exported attachments. If multiple fields are specified, the output files will use the field values concatenated with an u...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -317,17 +317,17 @@ functions_declarations = {
                 "in_file_filter": {
                         "type": "string",
                         "description": "A data filter that will be used to limit the files considered for matching. Wild cards (*) can be used for more flexible filtering options. Multiple filters delimited by semicolons are also supported....",
-                        "default": null
+                        "default": None
                 },
                 "in_use_relative_paths": {
                         "type": "string",
                         "description": "Specifies whether the output match table field FILENAME will contain full paths or only the file names.\r\nRELATIVE\u2014The field will contain only the file names (relative paths). This is the default.ABSOL...",
-                        "default": null
+                        "default": None
                 },
                 "match_pattern": {
                         "type": "string",
                         "description": "Specifies the type of match pattern that will be used to match file names with the specified key_field parameter value.\r\nEXACT\u2014File names that are an exact match to the values in the key field will be...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -360,7 +360,7 @@ functions_declarations = {
                 "in_match_name_field": {
                         "type": "string",
                         "description": "A field from the match table that contains the names of the attachments that will be removed from the in_dataset parameter value's records. If no name field is specified, all attachments will be remov...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -406,62 +406,62 @@ functions_declarations = {
                 "is_editable": {
                         "type": "string",
                         "description": "Specifies whether the attribute value can be edited. Attribute rules can be configured to either block or allow editors to edit the attribute values of the field being calculated.\r\nThis parameter is o...",
-                        "default": null
+                        "default": None
                 },
                 "triggering_events": {
                         "type": "string",
                         "description": "Specifies the editing events that will trigger the attribute rule to take effect. This parameter is valid for calculation and constraint rule types only. At least one triggering event must be provided...",
-                        "default": null
+                        "default": None
                 },
                 "error_number": {
                         "type": "string",
                         "description": "An error number that will be returned when this rule is violated. This value is not required to be unique, so the same custom error number may be returned for multiple rules. This parameter is require...",
-                        "default": null
+                        "default": None
                 },
                 "error_message": {
                         "type": "string",
                         "description": "An error message that will be returned when this rule is violated. It is recommended that you use a descriptive message to help the editor understand the violation when it occurs. The message is limit...",
-                        "default": null
+                        "default": None
                 },
                 "description": {
                         "type": "string",
                         "description": "The description of the new attribute rule. The description is limited to 256 characters.",
-                        "default": null
+                        "default": None
                 },
                 "subtype": {
                         "type": "string",
                         "description": "The subtype or subtypes to which the rule will be applied.",
-                        "default": null
+                        "default": None
                 },
                 "field": {
                         "type": "string",
                         "description": "The name of an existing field to which the rule will be applied. This parameter is only applicable for the calculation attribute rule type.",
-                        "default": null
+                        "default": None
                 },
                 "exclude_from_client_evaluation": {
                         "type": "string",
                         "description": "Specifies whether the application will evaluate the rule locally before applying the edits to the workspace. Not all clients have the capability to run all of the available rules, so authors can exclu...",
-                        "default": null
+                        "default": None
                 },
                 "batch": {
                         "type": "string",
                         "description": "Specifies whether the rule evaluation will be run in batch mode.BATCH\u2014The rule evaluation will be run in batch mode at a later time by running validate.NOT_BATCH\u2014The rule evaluation will not be run in...",
-                        "default": null
+                        "default": None
                 },
                 "severity": {
                         "type": "string",
                         "description": "The severity of the error. A value within the range of 1 through 5 can be provided to define the severity of the rule. A value of 1 is high, being the most severe, and a value of 5 is low, being the l...",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "A set of tags that identify the rule (for searching and indexing) as a way to map to a functional requirement in a data model.\r\nTo enter multiple tags, use a semicolon delimiter, for example, Tag1;Tag...",
-                        "default": null
+                        "default": None
                 },
                 "triggering_fields": {
                         "type": "string",
                         "description": "The fields that will trigger an attribute rule to run when an editing event occurs during an update trigger for calculation and constraint attribute rules. If no fields are specified, all fields will ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -486,47 +486,47 @@ functions_declarations = {
                 "description": {
                         "type": "string",
                         "description": "The description of the attribute rule.To keep the existing value of the description, leave this parameter empty. To clear the existing value of the description, use the RESET keyword. RESET\u2014The existi...",
-                        "default": null
+                        "default": None
                 },
                 "error_number": {
                         "type": "string",
                         "description": "The error number of the attribute rule.To keep the existing error number value, leave this parameter empty. To clear the existing error number value  for a calculation rule, use the RESET keyword. Err...",
-                        "default": null
+                        "default": None
                 },
                 "error_message": {
                         "type": "string",
                         "description": "The error message of the attribute rule.To keep the existing error message value, leave this parameter empty. To clear the existing error message value  for a calculation rule, use the RESET keyword. ...",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "The tags for the attribute rule.The new values will replace all existing tags; to keep any current tags, include them in this list. For multiple tags, use a semicolon delimiter, for example, Tag1;Tag2...",
-                        "default": null
+                        "default": None
                 },
                 "triggering_events": {
                         "type": "string",
                         "description": "Specifies the editing events that will trigger the attribute rule to take effect. Triggering events are only applicable for constraint rules and immediate calculation rules.The new values will replace...",
-                        "default": null
+                        "default": None
                 },
                 "script_expression": {
                         "type": "string",
                         "description": "An ArcGIS Arcade expression that defines the rule. \r\nTo keep the existing expression, leave this parameter empty. If an expression is provided for this parameter, it will replace the existing Arcade e...",
-                        "default": null
+                        "default": None
                 },
                 "exclude_from_client_evaluation": {
                         "type": "string",
                         "description": "Specifies whether the application will evaluate the rule locally before applying the edits to the workspace.  The default for this parameter corresponds to the existing value set for the rule. That is...",
-                        "default": null
+                        "default": None
                 },
                 "triggering_fields": {
                         "type": "string",
                         "description": "A list of fields that will trigger an attribute rule to run when an editing event occurs during an update trigger for calculation and constraint attribute rules. If no fields are specified, all fields...",
-                        "default": null
+                        "default": None
                 },
                 "subtype": {
                         "type": "string",
                         "description": "The subtype or subtypes to which the rule will be applied.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -549,7 +549,7 @@ functions_declarations = {
                 "type": {
                         "type": "string",
                         "description": "Specifies the type of attribute rules that will be deleted.CALCULATION\u2014Calculation rules will be deleted.CONSTRAINT\u2014Constraint rules will be deleted.VALIDATION\u2014Validation rules will be deleted.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -572,7 +572,7 @@ functions_declarations = {
                 "type": {
                         "type": "string",
                         "description": "Specifies the type of attribute rules to disable. The tool will verify that the type of rule specified in this parameter matches the rule type specified. If they do not match, the rule will not be dis...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -595,7 +595,7 @@ functions_declarations = {
                 "type": {
                         "type": "string",
                         "description": "Specifies the type of attribute rules to enable. The tool will verify that the type of rule specified  in this parameter matches the rule type specified. If they do not match, the rule will not be ena...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -618,12 +618,12 @@ functions_declarations = {
                 "extent": {
                         "type": "string",
                         "description": "The extent to be evaluated. If there is a selection in the map, only selected features within the specified extent will be evaluated.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minim...",
-                        "default": null
+                        "default": None
                 },
                 "run_async": {
                         "type": "string",
                         "description": "Specifies whether the evaluation will run synchronously or asynchronously. \r\nThis parameter is only supported when the input workspace is a feature service.ASYNC\u2014The evaluation will run asynchronously...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -705,17 +705,17 @@ functions_declarations = {
                 "input_item_types": {
                         "type": "string",
                         "description": "Specifies the item types that will be added to the catalog dataset from any  input workspaces. All supported item types will be  added by default.BIM_FILE_WORKSPACE\u2014BIM file workspaces will be added.B...",
-                        "default": null
+                        "default": None
                 },
                 "include_subfolders": {
                         "type": "string",
                         "description": "Specifies whether the contents of folders or workspaces specified in the input_items parameter value will be recursively searched and added to the catalog dataset. This parameter is not applicable to ...",
-                        "default": null
+                        "default": None
                 },
                 "footprint_type": {
                         "type": "string",
                         "description": "Specifies whether the reference item's footprint will be the full extent or a convex hull representing the smallest convex polygon for all features.ENVELOPE\u2014The footprint will be a rectangle covering ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -734,27 +734,27 @@ functions_declarations = {
                 "input_portal_itemtypes": {
                         "type": "string",
                         "description": "Specifies the item types that will be added to the catalog dataset from the portal. All supported item types will be added by default.FEATURE_SERVICE\u2014Feature layers will be added. This option does not...",
-                        "default": null
+                        "default": None
                 },
                 "content": {
                         "type": "string",
                         "description": "Specifies the collection in the active portal from which items will be added to the catalog dataset.MY_CONTENT\u2014 Items from your My Content collection will be added. This is the default.MY_GROUPS\u2014Items...",
-                        "default": null
+                        "default": None
                 },
                 "portal_folders": {
                         "type": "string",
                         "description": "The portal folders from which items will be added to the catalog dataset.",
-                        "default": null
+                        "default": None
                 },
                 "portal_groups": {
                         "type": "string",
                         "description": "The portal groups from which items will be added to the catalog dataset.",
-                        "default": null
+                        "default": None
                 },
                 "access_level": {
                         "type": "string",
                         "description": "Specifies the sharing level that portal items must have to be added to the catalog dataset.PUBLIC\u2014 Items that are shared with the public will be added to the catalog dataset. This is the default.ORG\u2014I...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -776,27 +776,27 @@ functions_declarations = {
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the catalog dataset.",
-                        "default": null
+                        "default": None
                 },
                 "template": {
                         "type": "string",
                         "description": "The feature class or table that will be used as a template to define the attribute fields of the new catalog dataset.",
-                        "default": null
+                        "default": None
                 },
                 "has_z": {
                         "type": "string",
                         "description": "Specifies whether the catalog dataset will contain elevation values (z-values).DISABLED\u2014The output catalog dataset will not contain z-values. This is the default.ENABLED\u2014The output catalog dataset wil...",
-                        "default": null
+                        "default": None
                 },
                 "out_alias": {
                         "type": "string",
                         "description": "The alias name of the catalog dataset.",
-                        "default": null
+                        "default": None
                 },
                 "config_keyword": {
                         "type": "string",
                         "description": "The configuration keyword determines the storage parameters of the database table.\r\nThe configuration keyword applies to enterprise data only.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -827,27 +827,27 @@ functions_declarations = {
                 "match_fieldssource_field_target_field": {
                         "type": "string",
                         "description": "The match fields from the update and base features. If specified, each pair of fields are compared for match candidates to help determine the right match.",
-                        "default": null
+                        "default": None
                 },
                 "out_match_table": {
                         "type": "string",
                         "description": "The output table containing complete feature matching information.",
-                        "default": null
+                        "default": None
                 },
                 "change_tolerance": {
                         "type": "string",
                         "description": "The distance used to determine if there is a spatial change.   All matched update features and base features are compared to this tolerance. If any portions of the update  or the base features fall ou...",
-                        "default": null
+                        "default": None
                 },
                 "compare_fieldssource_field_target_field": {
                         "type": "string",
                         "description": "The fields that will determine if there is an attribute change between the matched update and base features.",
-                        "default": null
+                        "default": None
                 },
                 "compare_line_direction": {
                         "type": "string",
                         "description": "Specifies whether line directions will be compared for matched features.NO_COMPARE_DIRECTION\u2014Line directions will not be compared for matched features. This is the default.COMPARE_DIRECTION\u2014Line direc...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -876,47 +876,47 @@ functions_declarations = {
                 "compare_type": {
                         "type": "string",
                         "description": "Specifies the comparison type that will be used.ALL\u2014All properties of the feature classes will be compared. This is the default.GEOMETRY_ONLY\u2014Only the geometries of the feature classes will be compare...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_options": {
                         "type": "string",
                         "description": "Specifies the properties that will not be compared.IGNORE_M\u2014Measure properties will not be compared.IGNORE_Z\u2014Elevation properties will not be compared.IGNORE_POINTID\u2014Point ID properties will not be co...",
-                        "default": null
+                        "default": None
                 },
                 "xy_tolerance": {
                         "type": "string",
                         "description": "The distance that will determine the range in which features will be considered equal. To minimize error, the parameter value should be as small as possible. By default, the compare tolerance is the x...",
-                        "default": null
+                        "default": None
                 },
                 "m_tolerance": {
                         "type": "string",
                         "description": "The minimum distance between measures before they will be considered equal.",
-                        "default": null
+                        "default": None
                 },
                 "z_tolerance": {
                         "type": "string",
                         "description": "The minimum distance between z-coordinates before they will be considered equal.",
-                        "default": null
+                        "default": None
                 },
                 "attribute_tolerancesfield_tolerance": {
                         "type": "string",
                         "description": "The numeric value that will determine the range in which attribute values are considered equal. This parameter only applies to numeric field types.",
-                        "default": null
+                        "default": None
                 },
                 "omit_field": {
                         "type": "string",
                         "description": "The field or fields that will be omitted during comparison. The field definitions and the tabular values for these fields will be ignored.",
-                        "default": null
+                        "default": None
                 },
                 "continue_compare": {
                         "type": "string",
                         "description": "Specifies whether the comparison will continue after encountering the first difference between the inputs.NO_CONTINUE_COMPARE\u2014The tool will stop after encountering the first difference. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "out_compare_file": {
                         "type": "string",
                         "description": "The output file that will contain all similarities and differences between the  inputs. This file is a comma-delimited text file that can be viewed and used as a table in ArcGIS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -940,17 +940,17 @@ functions_declarations = {
                 "file_type": {
                         "type": "string",
                         "description": "Specifies the type of comparison that will be used for the files. ASCII\u2014The files will be compared using ASCII characters. This is the default.BINARY\u2014The files will be compared using a binary compare.",
-                        "default": null
+                        "default": None
                 },
                 "continue_compare": {
                         "type": "string",
                         "description": "Specifies whether the comparison will continue after encountering the first difference between the inputs.NO_CONTINUE_COMPARE\u2014The tool will stop after encountering the first difference. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "out_compare_file": {
                         "type": "string",
                         "description": "The output file that will contain all similarities and differences between the  inputs. This file is a comma-delimited text file that can be viewed and used as a table in ArcGIS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -973,37 +973,37 @@ functions_declarations = {
                 "compare_type": {
                         "type": "string",
                         "description": "Specifies the type of rasters that will be compared.RASTER_DATASET\u2014Two raster datasets will be compared. GDB_RASTER_DATASET\u2014Two raster datasets in a geodatabase will be compared. MOSAIC_DATASET\u2014Two mo...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_option": {
                         "type": "string",
                         "description": "Specifies the properties that will be ignored in the comparison.BandCount\u2014The number of bands will be ignored.Extent\u2014The extent will be ignored.Columns And Rows\u2014The number of columns and rows will be ...",
-                        "default": null
+                        "default": None
                 },
                 "continue_compare": {
                         "type": "string",
                         "description": "Specifies whether the comparison will continue after encountering the first difference between the inputs.NO_CONTINUE_COMPARE\u2014The tool will stop after encountering the first difference. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "out_compare_file": {
                         "type": "string",
                         "description": "The output file that will contain all similarities and differences between the  inputs. This file is a comma-delimited text file that can be viewed and used as a table in ArcGIS.",
-                        "default": null
+                        "default": None
                 },
                 "parameter_tolerancesparameter_tolerance_type": {
                         "type": "string",
                         "description": "The tolerances that determine the range in which values will be considered equal.\r\nThe same tolerance can be applied to all parameters, or  different tolerances can be applied to individual\r\nparameter...",
-                        "default": null
+                        "default": None
                 },
                 "attribute_tolerancesfield_tolerance": {
                         "type": "string",
                         "description": "The numeric value that will determine the range in which attribute values are considered equal. This parameter only applies to numeric field types.",
-                        "default": null
+                        "default": None
                 },
                 "omit_field": {
                         "type": "string",
                         "description": "The field or fields that will be omitted during comparison. The field definitions and the tabular values for these fields will be ignored.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1030,32 +1030,32 @@ functions_declarations = {
                 "compare_type": {
                         "type": "string",
                         "description": "Specifies the comparison type that will be used.ALL\u2014All properties will be compared. This is the default.ATTRIBUTES_ONLY\u2014Only the attributes and their values will be compared.SCHEMA_ONLY\u2014Only the sche...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_options": {
                         "type": "string",
                         "description": "Specifies the table properties that will not be compared.IGNORE_EXTENSION_PROPERTIES\u2014Extension properties will not be compared.IGNORE_SUBTYPES\u2014Subtypes will not be compared.IGNORE_RELATIONSHIPCLASSES\u2014...",
-                        "default": null
+                        "default": None
                 },
                 "attribute_tolerancesfield_tolerance": {
                         "type": "string",
                         "description": "The numeric value that will determine the range in which attribute values are considered equal. This parameter only applies to numeric field types.",
-                        "default": null
+                        "default": None
                 },
                 "omit_field": {
                         "type": "string",
                         "description": "The field or fields that will be omitted during comparison. The field definitions and the tabular values for these fields will be ignored.",
-                        "default": null
+                        "default": None
                 },
                 "continue_compare": {
                         "type": "string",
                         "description": "Specifies whether the comparison will continue after encountering the first difference between the inputs.NO_CONTINUE_COMPARE\u2014The tool will stop after encountering the first difference. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "out_compare_file": {
                         "type": "string",
                         "description": "The output file that will contain all similarities and differences between the  inputs. This file is a comma-delimited text file that can be viewed and used as a table in ArcGIS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1079,17 +1079,17 @@ functions_declarations = {
                 "compare_type": {
                         "type": "string",
                         "description": "Specifies the comparison type that will be used.ALL\u2014All properties will be compared. This is the default. PROPERTIES_ONLY\u2014Both geometry and TIN tag values, if any, that are assigned to nodes and trian...",
-                        "default": null
+                        "default": None
                 },
                 "continue_compare": {
                         "type": "string",
                         "description": "Specifies whether the comparison will continue after encountering the first difference between the inputs.NO_CONTINUE_COMPARE\u2014The tool will stop after encountering the first difference. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "out_compare_file": {
                         "type": "string",
                         "description": "The output file that will contain all similarities and differences between the  inputs. This file is a comma-delimited text file that can be viewed and used as a table in ArcGIS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1112,22 +1112,22 @@ functions_declarations = {
                 "match_options": {
                         "type": "string",
                         "description": "Specifies whether field names or domain value descriptions will be matched.MATCH_FIELDS\u2014Field names will be matched based on similarity between the source and\r\ntarget fields.MATCH_VALUES\u2014Attribute dom...",
-                        "default": null
+                        "default": None
                 },
                 "mapping_table": {
                         "type": "string",
                         "description": "A table that will be used to perform substring matching for datasets, values, and attribute domain coded value descriptions. Use the table to create matches or block them.",
-                        "default": null
+                        "default": None
                 },
                 "calc_stats": {
                         "type": "string",
                         "description": "Specifies whether the count and percentage of filled-in values will be calculated for fields in the source schema.CALC_STATS\u2014The count and percentage of filled-in values will be calculated.NO_STATS\u2014No...",
-                        "default": null
+                        "default": None
                 },
                 "match_subtypes": {
                         "type": "string",
                         "description": "Specifies whether separate data mapping workbooks will be created by subtype if they exist.MATCH_SUBTYPES\u2014Separate data mapping workbooks will be created for each match if they exist. The class name w...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1235,7 +1235,7 @@ functions_declarations = {
                 "out_geodatabase": {
                         "type": "string",
                         "description": "The geodatabase that will host the child replica. Geodata services are used to represent remote geodatabases. The geodatabase can be an enterprise or file geodatabase. For two-way and one-way-child-to...",
-                        "default": null
+                        "default": None
                 },
                 "out_name": {
                         "type": "string",
@@ -1244,67 +1244,67 @@ functions_declarations = {
                 "access_type": {
                         "type": "string",
                         "description": "Specifies the type of replica access.FULL\u2014Complex types such as topologies, are supported and the data must be versioned. This is the default.SIMPLE\u2014The data on the child is not versioned and must be ...",
-                        "default": null
+                        "default": None
                 },
                 "initial_data_sender": {
                         "type": "string",
                         "description": "Specifies which replica will send changes when in disconnected mode. If you are working in a connected mode, this parameter is inconsequential. This ensures that the relative replica will not send upd...",
-                        "default": null
+                        "default": None
                 },
                 "expand_feature_classes_and_tables": {
                         "type": "string",
                         "description": "Specifies whether expanded feature classes and tables\u2014such as those in networks, topologies, or relationship classes\u2014will be added.USE_DEFAULTS\u2014The expanded feature classes and tables related to the f...",
-                        "default": null
+                        "default": None
                 },
                 "reuse_schema": {
                         "type": "string",
                         "description": "Specifies whether a geodatabase that contains the schema of the data to be replicated will be reused. This reduces the amount of time required to replicate the data. This parameter is only available f...",
-                        "default": null
+                        "default": None
                 },
                 "get_related_data": {
                         "type": "string",
                         "description": "Specifies whether rows related to rows existing in the replica will be replicated. For example, a feature (f1) is inside the replication filter and a related feature (f2) from another class is outside...",
-                        "default": null
+                        "default": None
                 },
                 "geometry_features": {
                         "type": "string",
                         "description": "The features that will be used to define the area to replicate.",
-                        "default": null
+                        "default": None
                 },
                 "archiving": {
                         "type": "string",
                         "description": "Specifies whether the archive class will be used to track changes instead of the versioning delta tables. This is only available for one-way replicas.ARCHIVING\u2014Archiving will be used to track changes....",
-                        "default": null
+                        "default": None
                 },
                 "register_existing_data": {
                         "type": "string",
                         "description": "Specifies whether existing \r\ndata in the child geodatabase will be used to register the replica datasets. The datasets in the child geodatabase must have the same names as the datasets in the parent g...",
-                        "default": null
+                        "default": None
                 },
                 "out_type": {
                         "type": "string",
                         "description": "Specifies the output type of the data that will be replicated.\r\nGEODATABASE\u2014The data will be replicated to an existing geodatabase. This is the default.XML_FILE\u2014The data will be replicated to an XML w...",
-                        "default": null
+                        "default": None
                 },
                 "out_xml": {
                         "type": "string",
                         "description": "The name and location of the .xml file that will be created. \r\nThis parameter is required if the out_type parameter is set to XML_FILE.",
-                        "default": null
+                        "default": None
                 },
                 "all_records_for_tables": {
                         "type": "string",
                         "description": "Specifies whether all records or only the schema will be copied to the child geodatabase for tables that do not have filters applied (such as selections or definition queries).Tables with applied filt...",
-                        "default": null
+                        "default": None
                 },
                 "out_filegdb_folder_path": {
                         "type": "string",
                         "description": "The location of the file  geodatabase that will be created to host the child replica. This parameter is required if the out_type parameter is set to NEW_FILE_GEODATABASE and is only valid for one-way ...",
-                        "default": null
+                        "default": None
                 },
                 "out_filegdb_name": {
                         "type": "string",
                         "description": "The name of the file  geodatabase that will be created to host the child replica. This parameter is required if the out_type parameter is set to NEW_FILE_GEODATABASE and is only valid for one-way and ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1340,42 +1340,42 @@ functions_declarations = {
                 "access_type": {
                         "type": "string",
                         "description": "Specifies the type of replica access.FULL\u2014Complex types such as topologies, are supported and the data must be versioned. This is the default.SIMPLE\u2014The data on the child is not versioned and must be ...",
-                        "default": null
+                        "default": None
                 },
                 "initial_data_sender": {
                         "type": "string",
                         "description": "Specifies which replica will send changes when in disconnected mode. If you are working in a connected mode, this parameter is inconsequential. This ensures that the relative replica will not send upd...",
-                        "default": null
+                        "default": None
                 },
                 "expand_feature_classes_and_tables": {
                         "type": "string",
                         "description": "Specifies whether expanded feature classes and tables\u2014such as those in networks, topologies, or relationship classes\u2014will be added.USE_DEFAULTS\u2014The expanded feature classes and tables related to the f...",
-                        "default": null
+                        "default": None
                 },
                 "reuse_schema": {
                         "type": "string",
                         "description": "Specifies whether a geodatabase that contains the schema of the data to be replicated will be reused. This reduces the amount of time required to replicate the data. This parameter is only available f...",
-                        "default": null
+                        "default": None
                 },
                 "get_related_data": {
                         "type": "string",
                         "description": "Specifies whether rows related to rows existing in the replica will be replicated. For example, a feature (f1) is inside the replication filter and a related feature (f2) from another class is outside...",
-                        "default": null
+                        "default": None
                 },
                 "geometry_features": {
                         "type": "string",
                         "description": "The features that will be used to define the area to replicate.",
-                        "default": null
+                        "default": None
                 },
                 "archiving": {
                         "type": "string",
                         "description": "Specifies whether the archive class will be used to track changes instead of the versioning delta tables. This is only available for one-way replicas.ARCHIVING\u2014Archiving will be used to track changes....",
-                        "default": null
+                        "default": None
                 },
                 "all_records_for_tables": {
                         "type": "string",
                         "description": "Specifies whether all records or only the schema will be copied to the child geodatabase for tables that do not have filters applied (such as selections or definition queries).Tables with applied filt...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1511,17 +1511,17 @@ functions_declarations = {
                 "output_acknowledgement_file": {
                         "type": "string",
                         "description": "The file that will contain the acknowledgement message. When importing data changes, you can also export a message to acknowledge the import of a data change message. This parameter is only supported ...",
-                        "default": null
+                        "default": None
                 },
                 "conflict_policy": {
                         "type": "string",
                         "description": "Specifies how conflicts will be resolved when they are encountered while importing a data change message.MANUAL\u2014Conflicts must be manually resolved in the versioning reconcile environment. IN_FAVOR_OF...",
-                        "default": null
+                        "default": None
                 },
                 "conflict_definition": {
                         "type": "string",
                         "description": "Specifies whether the conditions required for a conflict to occur will be detected by object (row) or by attribute (column).BY_OBJECT\u2014Conflicts will be detected by row.BY_ATTRIBUTE\u2014Conflicts will be d...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1679,27 +1679,27 @@ functions_declarations = {
                 "new_domain_name": {
                         "type": "string",
                         "description": "The new name of the domain.",
-                        "default": null
+                        "default": None
                 },
                 "new_domain_description": {
                         "type": "string",
                         "description": "The new description of the domain.",
-                        "default": null
+                        "default": None
                 },
                 "split_policy": {
                         "type": "string",
                         "description": "Specifies the split policy that will used for the domain. The behavior of an attribute's values when a feature is split is controlled by its split policy.\r\nDEFAULT\u2014The attributes of the two resulting ...",
-                        "default": null
+                        "default": None
                 },
                 "merge_policy": {
                         "type": "string",
                         "description": "Specifies the merge policy that will be used for the domain. When two features are merged into a single feature, merge policies will control attribute values in the new feature.\r\nThis parameter is onl...",
-                        "default": null
+                        "default": None
                 },
                 "new_domain_owner": {
                         "type": "string",
                         "description": "The name of the database user that the domain ownership will be transferred to.\r\nEnsure that the new domain owner exists in the database; the tool does not check the validity of the owner name specifi...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1726,7 +1726,7 @@ functions_declarations = {
                 "subtype_code": {
                         "type": "string",
                         "description": "The subtype code that will be assigned a domain.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1750,27 +1750,27 @@ functions_declarations = {
                 "domain_description": {
                         "type": "string",
                         "description": "The description of the domain that will be created.",
-                        "default": null
+                        "default": None
                 },
                 "field_type": {
                         "type": "string",
                         "description": "Specifies the type of attribute domain that will be created. Attribute domains are rules that describe the accepted values of a field type. Specify a field type that matches the data type of the field...",
-                        "default": null
+                        "default": None
                 },
                 "domain_type": {
                         "type": "string",
                         "description": "Specifies the domain type that will be created.CODED\u2014A coded type domain will be created that contains a valid set of values for an attribute. This is the default. For example, a coded value domain ca...",
-                        "default": null
+                        "default": None
                 },
                 "split_policy": {
                         "type": "string",
                         "description": "Specifies the split policy that will be used for the created domain. The behavior of an attribute's values when a feature that is split is controlled by its split policy.DEFAULT\u2014The attributes of the ...",
-                        "default": null
+                        "default": None
                 },
                 "merge_policy": {
                         "type": "string",
                         "description": "Specifies the merge policy that will be used for the created domain. When two features are merged into a single feature, merge policies control attribute values in the new feature.DEFAULT\u2014The attribut...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1846,7 +1846,7 @@ functions_declarations = {
                 "configuration_keyword": {
                         "type": "string",
                         "description": "For geodatabase tables, the custom storage keywords for creating the table.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1872,7 +1872,7 @@ functions_declarations = {
                 "subtype_code": {
                         "type": "string",
                         "description": "The subtype code(s) that will no longer be associated with an attribute domain.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1963,12 +1963,12 @@ functions_declarations = {
                 "domain_description": {
                         "type": "string",
                         "description": "The description of the domain that will be created or updated. Domain descriptions of existing domains are not updated.",
-                        "default": null
+                        "default": None
                 },
                 "update_option": {
                         "type": "string",
                         "description": "Specifies how the domain will be updated when you're using an existing domain.APPEND\u2014The values from the input table will be appended to the existing domain values. This is the default.REPLACE\u2014The exi...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2003,22 +2003,22 @@ functions_declarations = {
                 "bin_type": {
                         "type": "string",
                         "description": "Specifies the type of binning that will be enabled. If you are using SAP HANA data, only the SQUARE, FLAT_HEXAGON, and POINTY_HEXAGON options are supported.  If you are using Snowflake or Redshift dat...",
-                        "default": null
+                        "default": None
                 },
                 "bin_coord_sys": {
                         "type": "string",
                         "description": "The coordinate systems that will be used to visualize the aggregated output feature layer.\r\nYou can specify up to two coordinate systems to visualize the output layer. By default, the coordinate syste...",
-                        "default": null
+                        "default": None
                 },
                 "summary_statsfield_statistic_type": {
                         "type": "string",
                         "description": "Specifies the statistics that will be summarized and stored in the bin cache. Statistics are used to symbolize bins and provide aggregate information for all the features in a bin.\r\nOne summary statis...",
-                        "default": null
+                        "default": None
                 },
                 "generate_static_cache": {
                         "type": "string",
                         "description": "Specifies whether a static cache\r\nof the aggregated results will be generated or visualizations will be aggregated on the fly. The cache is not necessarily created for all levels of detail.STATIC_CACH...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2036,22 +2036,22 @@ functions_declarations = {
                 "bin_type": {
                         "type": "string",
                         "description": "Specifies the type of feature binning visualization that will be enabled.FLAT_HEXAGON\u2014The flat hexagon binning scheme, also known as flat geohex or flat hexbinning, will be enabled. The tiles are a te...",
-                        "default": null
+                        "default": None
                 },
                 "max_lod": {
                         "type": "string",
                         "description": "Specifies the maximum level of detail that will be used for the cache.Tiling schemes are a continuum of scale ranges. Depending on the map, you may want to forego caching of some of the extremely larg...",
-                        "default": null
+                        "default": None
                 },
                 "add_cache_statisticsfield_statistic_type": {
                         "type": "string",
                         "description": "Specifies the statistics that will be summarized and stored in the bin cache. Statistics are used to symbolize bins and provide aggregate information for all the features in a bin.\r\nOne summary statis...",
-                        "default": null
+                        "default": None
                 },
                 "delete_cache_statistics": {
                         "type": "string",
                         "description": "The summary statistic that will be deleted from the cache. You cannot delete the default COUNT summary statistic.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2077,22 +2077,22 @@ functions_declarations = {
                 "create_single_class": {
                         "type": "string",
                         "description": "Specifies how annotation features will be added to the output feature class.ONE_CLASS_ONLY\u2014All annotation features will be aggregated into one annotation class in the output feature class.CREATE_CLASS...",
-                        "default": null
+                        "default": None
                 },
                 "require_symbol_from_table": {
                         "type": "string",
                         "description": "Specifies how symbols can be selected for newly created annotation features.REQUIRE_SYMBOL\u2014Only the list of symbols in the symbol collection of the output feature class can be used when creating annot...",
-                        "default": null
+                        "default": None
                 },
                 "create_annotation_when_feature_added": {
                         "type": "string",
                         "description": "Specifies whether feature-linked annotation will be created when a feature is added.AUTO_CREATE\u2014Feature-linked annotation will be created using the label engine when a linked feature is added. The is ...",
-                        "default": null
+                        "default": None
                 },
                 "update_annotation_when_feature_modified": {
                         "type": "string",
                         "description": "Specifies whether feature-linked annotation will be updated when a linked feature changes.AUTO_UPDATE\u2014Feature-linked annotation will be updated using the label engine when a linked feature changes. Th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2116,57 +2116,57 @@ functions_declarations = {
                 "geometry_type": {
                         "type": "string",
                         "description": "Specifies the geometry type of the output feature class.POINT\u2014The geometry type will be point. MULTIPOINT\u2014The geometry type will be multipoint. POLYGON\u2014The geometry type will be polygon. POLYLINE\u2014The ...",
-                        "default": null
+                        "default": None
                 },
                 "template": {
                         "type": "string",
                         "description": "An existing  dataset or a list of datasets used as templates to define the attribute fields of the new feature class.",
-                        "default": null
+                        "default": None
                 },
                 "has_m": {
                         "type": "string",
                         "description": "Specifies whether the feature class will have  linear measurement values (m-values).DISABLED\u2014The output feature class will not have m-values. This is the default.ENABLED\u2014The output feature class will ...",
-                        "default": null
+                        "default": None
                 },
                 "has_z": {
                         "type": "string",
                         "description": "Specifies whether the feature class will have  elevation values (z-values).DISABLED\u2014The output feature class will not have z-values. This is the default.ENABLED\u2014The output feature class will have z-va...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the output feature dataset. You can specify the spatial reference in the following ways: Enter the path to a .prj file, such as C:/workspace/watershed.prj. Reference a feature...",
-                        "default": null
+                        "default": None
                 },
                 "config_keyword": {
                         "type": "string",
                         "description": "The configuration keyword applies to enterprise geodatabase data only. It determines the storage parameters of the database table.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_grid_1": {
                         "type": "string",
                         "description": "This parameter is not supported.  Any value provided will be ignored.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_grid_2": {
                         "type": "string",
                         "description": "This parameter is not supported.  Any value provided will be ignored.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_grid_3": {
                         "type": "string",
                         "description": "This parameter is not supported.  Any value provided will be ignored.",
-                        "default": null
+                        "default": None
                 },
                 "out_alias": {
                         "type": "string",
                         "description": "The alternate name for the output feature class that will be created.",
-                        "default": null
+                        "default": None
                 },
                 "oid_type": {
                         "type": "string",
                         "description": "Specifies whether the output Object ID field will be 32 bit or 64 bit.SAME_AS_TEMPLATE\u2014The output Object ID field type (32 bit or 64 bit) will be the same as the Object ID field of the first template ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2189,32 +2189,32 @@ functions_declarations = {
                 "geometry_type": {
                         "type": "string",
                         "description": "Specifies the geometry type of the feature class. This parameter is only relevant for those geometry types that store dimensionality metadata, such as ST_Geometry in PostgreSQL, PostGIS Geometry, and ...",
-                        "default": null
+                        "default": None
                 },
                 "template": {
                         "type": "string",
                         "description": "An existing feature class or list of feature classes with fields and attribute schema that will be used to define the fields in the output feature class.",
-                        "default": null
+                        "default": None
                 },
                 "has_m": {
                         "type": "string",
                         "description": "Specifies whether the feature class will have  linear measurement values (m-values).DISABLED\u2014The output feature class will not have m-values. This is the default.ENABLED\u2014The output feature class will ...",
-                        "default": null
+                        "default": None
                 },
                 "has_z": {
                         "type": "string",
                         "description": "Specifies whether the feature class will have  elevation values (z-values).DISABLED\u2014The output feature class will not have z-values. This is the default.ENABLED\u2014The output feature class will have z-va...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the output feature dataset. You can specify the spatial reference in the following ways: Enter the path to a .prj file, such as C:/workspace/watershed.prj. Reference a feature...",
-                        "default": null
+                        "default": None
                 },
                 "config_keyword": {
                         "type": "string",
                         "description": "Specifies the default storage parameters (configurations) for geodatabases in a relational database management system (RDBMS). This setting is applicable only when using enterprise geodatabase tables....",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2233,7 +2233,7 @@ functions_declarations = {
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The distance that determines the range in which feature vertices are made coincident. To minimize undesired movement of vertices, the x,y tolerance should be small. If no value is provided, the x,y to...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2251,7 +2251,7 @@ functions_declarations = {
                 "store_extent": {
                         "type": "string",
                         "description": "Specifies whether the extent will be stored for feature classes that are not registered.  This parameter is only supported when the input feature class is an unregistered spatial table in a database o...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2269,7 +2269,7 @@ functions_declarations = {
                 "split_model": {
                         "type": "string",
                         "description": "Specifies the split model that will be applied to the input feature class.\r\nDELETE_INSERT_INSERT\u2014The original feature will be deleted, and both parts of the split feature will be inserted as new featu...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2300,22 +2300,22 @@ functions_declarations = {
                 "reverse_sign": {
                         "type": "string",
                         "description": "Specifies whether features will be inverted along the z-axis.REVERSE\u2014The sign of z-values will be inverted causing the feature to flip upside down.NO_REVERSE\u2014The sign of z-values will not be inverted;...",
-                        "default": null
+                        "default": None
                 },
                 "adjust_value": {
                         "type": "string",
                         "description": "A numeric value or field from the input features that will be used to adjust the z of each vertex in the input features.   A positive value will shift the feature higher, while a negative number will ...",
-                        "default": null
+                        "default": None
                 },
                 "from_units": {
                         "type": "string",
                         "description": "Specifies the existing units of the z-values. This parameter is used in conjunction with the to_units parameter.  MILLIMETERS\u2014The units will be millimeters.CENTIMETERS\u2014The units will be centimeters.ME...",
-                        "default": null
+                        "default": None
                 },
                 "to_units": {
                         "type": "string",
                         "description": "Specifies the units that existing z-values will be converted to.\r\n\r\nMILLIMETERS\u2014The units will be millimeters.CENTIMETERS\u2014The units will be centimeters.METERS\u2014The units will be meters.INCHES\u2014The units...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2349,7 +2349,7 @@ functions_declarations = {
                 "distance_units": {
                         "type": "string",
                         "description": "Specifies the units that will be used for the distance_field parameter.METERS\u2014The units will be meters.KILOMETERS\u2014The units will be kilometers.MILES\u2014The units will be miles.NAUTICAL_MILES\u2014The units wi...",
-                        "default": null
+                        "default": None
                 },
                 "bearing_field": {
                         "type": "string",
@@ -2358,27 +2358,27 @@ functions_declarations = {
                 "bearing_units": {
                         "type": "string",
                         "description": "Specifies the units of the bearing_field parameter values. DEGREES\u2014 The units will be decimal degrees. This is the default.MILS\u2014The units will be mils.RADS\u2014The units will be radians.GRADS\u2014The units wi...",
-                        "default": null
+                        "default": None
                 },
                 "line_type": {
                         "type": "string",
                         "description": "Specifies the type of line that will be constructed.GEODESIC\u2014 A type of geodetic line that most accurately represents the shortest distance between any two points on the surface of the earth will be c...",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "A field in the input table. This field and the values are included in the output and can be used to join the output features with the records in the input table.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the output feature class. A spatial reference can be specified as any of the following: \r\n The path to a .prj file, such as C:/workspace/watershed.prj The path to a feature cl...",
-                        "default": null
+                        "default": None
                 },
                 "attributes": {
                         "type": "string",
                         "description": "Specifies whether the remaining input fields will be added to the output feature class.NO_ATTRIBUTES\u2014The remaining input fields will not be added to the output feature class. This is the default.ATTRI...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2405,22 +2405,22 @@ functions_declarations = {
                 "length_unit": {
                         "type": "string",
                         "description": "Specifies the unit that will be used to calculate length.\r\nKILOMETERS\u2014The length unit will be kilometers.METERS\u2014The length unit will be meters.MILES_INT\u2014The length unit will be statute miles.NAUTICAL_...",
-                        "default": null
+                        "default": None
                 },
                 "area_unit": {
                         "type": "string",
                         "description": "Specifies the unit that will be used to calculate area.\r\nSQUARE_KILOMETERS\u2014The area unit will be square kilometers.HECTARES\u2014The area unit will be hectares.SQUARE_METERS\u2014The area unit will be square me...",
-                        "default": null
+                        "default": None
                 },
                 "coordinate_system": {
                         "type": "string",
                         "description": "The coordinate system in which the coordinates, length, and area will be calculated. The coordinate system of the input features is used by default.",
-                        "default": null
+                        "default": None
                 },
                 "coordinate_format": {
                         "type": "string",
                         "description": "Specifies the coordinate format in which the x- and y-coordinates will be calculated. The coordinate format matching the input features' spatial reference units is used by default. \r\nSeveral coordinat...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2439,12 +2439,12 @@ functions_declarations = {
                 "out_table": {
                         "type": "string",
                         "description": "The report (as a table) of the problems discovered.",
-                        "default": null
+                        "default": None
                 },
                 "validation_method": {
                         "type": "string",
                         "description": "Specifies the geometry validation method that will be used to identify geometry problems.ESRI\u2014The Esri geometry validation method will be used. This is the default.OGC\u2014The   OGC geometry validation me...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2466,22 +2466,22 @@ functions_declarations = {
                 "config_keyword": {
                         "type": "string",
                         "description": "Geodatabase configuration keyword to be applied if the output is a geodatabase.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_grid_1": {
                         "type": "string",
                         "description": "This parameter has been deprecated in ArcGIS Pro.  Any value you enter is ignored.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_grid_2": {
                         "type": "string",
                         "description": "This parameter has been deprecated in ArcGIS Pro.  Any value you enter is ignored.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_grid_3": {
                         "type": "string",
                         "description": "This parameter has been deprecated in ArcGIS Pro.  Any value you enter is ignored.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2540,7 +2540,7 @@ functions_declarations = {
                 "single_envelope": {
                         "type": "string",
                         "description": "Specifies whether to use one envelope for each entire multipart feature or one envelope per part of a multipart feature. This parameter will affect the results of multipart input features only.SINGLEP...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2563,12 +2563,12 @@ functions_declarations = {
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates, and the distance a coordinate can move in X, Y, or both during spatial computation. The default XY tolerance is set to 0.001 meter or its equiv...",
-                        "default": null
+                        "default": None
                 },
                 "attributes": {
                         "type": "string",
                         "description": "Specifies whether to preserve or omit the input attributes in the output feature class.ATTRIBUTES\u2014Preserves the input attributes in the output features. This is the default.NO_ATTRIBUTES\u2014Omits the inp...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2591,7 +2591,7 @@ functions_declarations = {
                 "point_location": {
                         "type": "string",
                         "description": "Specifies whether an output point will be located within the input feature or at the centroid of the input feature.CENTROID\u2014The output point will be located at the centroid of the input feature. The o...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2614,17 +2614,17 @@ functions_declarations = {
                 "cluster_tolerance": {
                         "type": "string",
                         "description": "The minimum distance separating all feature coordinates, and the distance a coordinate can move in X, Y, or both during spatial computation. The default XY tolerance is set to 0.001 meter or its equiv...",
-                        "default": null
+                        "default": None
                 },
                 "attributes": {
                         "type": "string",
                         "description": "Note:This parameter is no longer supported. The parameter remains for backward compatibility of scripts and models. See the Usage section for more information.",
-                        "default": null
+                        "default": None
                 },
                 "label_features": {
                         "type": "string",
                         "description": "The optional input point features that contain the attributes to be transferred to the output polygon features.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2647,7 +2647,7 @@ functions_declarations = {
                 "point_location": {
                         "type": "string",
                         "description": "Specifies where an output point will be created.ALL\u2014A point will be created at each input feature vertex. This is the default. MID\u2014A point will be created at the midpoint, not necessarily a vertex, of...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2674,7 +2674,7 @@ functions_declarations = {
                 "distance": {
                         "type": "string",
                         "description": "The distance between vertices along the output geodesic segment.  The default value is 50 kilometers.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2698,22 +2698,22 @@ functions_declarations = {
                 "geometry_type": {
                         "type": "string",
                         "description": "Specifies what type of minimum bounding geometry the output polygons will represent.RECTANGLE_BY_AREA\u2014The rectangle of the smallest area enclosing an input feature. This is the default.RECTANGLE_BY_WI...",
-                        "default": null
+                        "default": None
                 },
                 "group_option": {
                         "type": "string",
                         "description": "Specifies how the input features will be grouped; each group will be enclosed with one output polygon.NONE\u2014Input features will not be grouped. This is the default. This option is not available for poi...",
-                        "default": null
+                        "default": None
                 },
                 "group_field": {
                         "type": "string",
                         "description": "The field or fields in the input features that will be used to group features, when LIST is specified as group_option. At least one group field is required for LIST option. All features that have the ...",
-                        "default": null
+                        "default": None
                 },
                 "mbg_fields_option": {
                         "type": "string",
                         "description": "Specifies whether to add the geometric attributes in the output feature class or omit them in the output feature class.NO_MBG_FIELDS\u2014Omits any input attributes in the output feature class. This is the...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2754,32 +2754,32 @@ functions_declarations = {
                 "line_field": {
                         "type": "string",
                         "description": "The field that will be used to identify unique attribute values so line features can be constructed using points of the same values.If no field is specified, lines will be constructed without using un...",
-                        "default": null
+                        "default": None
                 },
                 "sort_field": {
                         "type": "string",
                         "description": "The field that will be used to sort the order of the points.If no field is specified, points used to create output line features will be sorted in the order they are found. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "close_line": {
                         "type": "string",
                         "description": "Specifies whether the output line features will be closed.CLOSE\u2014For a\r\ncontinuous line, an extra segment connecting the last point with\r\nthe first point will be included to form a closed line. For\r\ntw...",
-                        "default": null
+                        "default": None
                 },
                 "line_construction_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to construct the line\r\nfeatures.\r\nCONTINUOUS\u2014Line features will be created by connecting points continuously. This is the default.TWO_POINT\u2014Line features will be...",
-                        "default": null
+                        "default": None
                 },
                 "attribute_source": {
                         "type": "string",
                         "description": "Specifies how the specified attributes will be\r\ntransferred.\r\nNONE\u2014No attributes will be transferred. This is the default.BOTH_ENDS\u2014The attributes from the start and end points of the line will be tra...",
-                        "default": null
+                        "default": None
                 },
                 "transfer_fields": {
                         "type": "string",
                         "description": "The fields containing values that will be transferred from the source points to the output lines. If no fields are selected, no attributes will be transferred.If the Attribute_Source parameter value i...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2802,7 +2802,7 @@ functions_declarations = {
                 "neighbor_option": {
                         "type": "string",
                         "description": "Specifies whether polygon neighboring relationships will be identified and stored in the output.IDENTIFY_NEIGHBORS\u2014Polygon neighboring relationships will be identified and stored in the output. If dif...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2818,15 +2818,15 @@ functions_declarations = {
                         "type": "string",
                         "description": "The feature class or layer that will be processed.License:A Desktop Basic license only allows shapefiles and feature classes stored in a file geodatabase, GeoPackage, or SpatiaLite database as valid i..."
                 },
-                "delete_null": {
+                "delete_None": {
                         "type": "string",
-                        "description": "Specifies whether features with null geometries will be deleted.DELETE_NULL\u2014 Features with null geometry will be deleted from the input. This is the default.KEEP_NULL\u2014 Features with null geometry will...",
-                        "default": null
+                        "description": "Specifies whether features with None geometries will be deleted.DELETE_NULL\u2014 Features with None geometry will be deleted from the input. This is the default.KEEP_NULL\u2014 Features with None geometry will...",
+                        "default": None
                 },
                 "validation_method": {
                         "type": "string",
                         "description": "Specifies the geometry validation method that will be used to identify geometry problems.ESRI\u2014The Esri geometry validation method will be used. This is the default.OGC\u2014The   OGC geometry validation me...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2852,7 +2852,7 @@ functions_declarations = {
                 "search_radius": {
                         "type": "string",
                         "description": "The distance that will be used to split lines by their proximity to point features. Points within the search distance to an input line will be used to split those lines at the nearest location to the ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2898,27 +2898,27 @@ functions_declarations = {
                 "num_areas": {
                         "type": "string",
                         "description": "The number of areas into which the polygon will be divided if the NUMBER_OF_EQUAL_PARTS subdivision method is specified.",
-                        "default": null
+                        "default": None
                 },
                 "target_area": {
                         "type": "string",
                         "description": "The area of the equal parts\r\nif the EQUAL_AREAS subdivision method is specified.\r\nIf the target_area is larger than the area of the input polygon, the polygon will not be subdivided.",
-                        "default": null
+                        "default": None
                 },
                 "target_width": {
                         "type": "string",
                         "description": "This parameter is not yet supported.",
-                        "default": null
+                        "default": None
                 },
                 "split_angle": {
                         "type": "string",
                         "description": "The angle that will be used to draw the lines that divide the polygon.\r\nThe default is 0.",
-                        "default": null
+                        "default": None
                 },
                 "subdivision_type": {
                         "type": "string",
                         "description": "Specifies how the polygons will be divided.STRIPS\u2014 Polygons will be divided into strips. This is the default.STACKED_BLOCKS\u2014Polygons will be divided into stacked blocks.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2962,37 +2962,37 @@ functions_declarations = {
                 "azimuth_field": {
                         "type": "string",
                         "description": "A numerical field in the input table containing azimuth angle values for the major axis rotations of the output ellipses.\r\nThe values are measured clockwise from north.",
-                        "default": null
+                        "default": None
                 },
                 "azimuth_units": {
                         "type": "string",
                         "description": "Specifies the units that will be used for the azimuth_field parameter.DEGREES\u2014 The units will be decimal degrees. This is the default.MILS\u2014The units will be mils.RADS\u2014The units will be radians.GRADS\u2014T...",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "A field in the input table. This field and the values are included in the output and can be used to join the output features with the records in the input table.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the output feature class. A spatial reference can be specified as any of the following: \r\n The path to a .prj file, such as C:/workspace/watershed.prj The path to a feature cl...",
-                        "default": null
+                        "default": None
                 },
                 "attributes": {
                         "type": "string",
                         "description": "Specifies whether the remaining input fields will be added to the output feature class.NO_ATTRIBUTES\u2014The remaining input fields will not be added to the output feature class. This is the default.ATTRI...",
-                        "default": null
+                        "default": None
                 },
                 "geometry_type": {
                         "type": "string",
                         "description": "Specifies the geometry type for the output feature class.LINE\u2014An output polyline feature class will be created. This is the default.POLYGON\u2014An output polygon feature class will be created.",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies whether  the ellipse will be generated based on geodesic or planar measurements.GEODESIC\u2014A geodesic ellipse will be generated. The ellipse will accurately represent the shape on the surface ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3020,17 +3020,17 @@ functions_declarations = {
                 "dissolve_field": {
                         "type": "string",
                         "description": "The field or fields on which features will be aggregated. If no fields are specified, the tool will dissolve all features together.",
-                        "default": null
+                        "default": None
                 },
                 "statistics_fieldsfield_statistic_type": {
                         "type": "string",
                         "description": "Specifies the field or fields containing the attribute values that will be used to calculate the specified statistic. Multiple statistic and field combinations can be specified. Null values are exclud...",
-                        "default": null
+                        "default": None
                 },
                 "concatenation_separator": {
                         "type": "string",
                         "description": "A character or characters that will be used to concatenate values when the CONCATENATION option is used for the statistics_fields parameter. By default, the tool will concatenate values without a sepa...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3061,12 +3061,12 @@ functions_declarations = {
                 "z_field": {
                         "type": "string",
                         "description": "The field in the input table that contains the z-coordinates.",
-                        "default": null
+                        "default": None
                 },
                 "coordinate_system": {
                         "type": "string",
                         "description": "The coordinate system of the x- and y-coordinates. This will be the coordinate system of the output feature class.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3107,22 +3107,22 @@ functions_declarations = {
                 "line_type": {
                         "type": "string",
                         "description": "Specifies the type of line that will be constructed.GEODESIC\u2014 A type of geodetic line that most accurately represents the shortest distance between any two points on the surface of the earth will be c...",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "A field in the input table. This field and the values are included in the output and can be used to join the output features with the records in the input table.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the output feature class. A spatial reference can be specified as any of the following: \r\n The path to a .prj file, such as C:/workspace/watershed.prj The path to a feature cl...",
-                        "default": null
+                        "default": None
                 },
                 "attributes": {
                         "type": "string",
                         "description": "Specifies whether the remaining input fields will be added to the output feature class.NO_ATTRIBUTES\u2014The remaining input fields will not be added to the output feature class. This is the default.ATTRI...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3153,37 +3153,37 @@ functions_declarations = {
                 "field_precision": {
                         "type": "string",
                         "description": "The number of digits that can be stored in the field. All digits are counted regardless of which side of the decimal they are on.This parameter is only applicable to numeric field types.If the input t...",
-                        "default": null
+                        "default": None
                 },
                 "field_scale": {
                         "type": "string",
                         "description": "The number of decimal places stored in a field.This parameter is only applicable to fields of type float or double.If the input table is in a file geodatabase, the field scale value will be ignored.",
-                        "default": null
+                        "default": None
                 },
                 "field_length": {
                         "type": "string",
                         "description": "The length of the field. This sets the maximum number of allowable characters for each record of the field. If no field length is provided, a length of 255 will be used.This parameter is only applicab...",
-                        "default": null
+                        "default": None
                 },
                 "field_alias": {
                         "type": "string",
                         "description": "The alternate name for the field. This name is used to describe cryptic field names. This parameter only applies to geodatabases.",
-                        "default": null
+                        "default": None
                 },
-                "field_is_nullable": {
+                "field_is_Noneable": {
                         "type": "string",
-                        "description": "Specifies whether the field can contain null values. Null values are different from zero or empty fields and are only supported for fields in a geodatabase.NULLABLE\u2014The field can contain null values. ...",
-                        "default": null
+                        "description": "Specifies whether the field can contain None values. Null values are different from zero or empty fields and are only supported for fields in a geodatabase.NULLABLE\u2014The field can contain None values. ...",
+                        "default": None
                 },
                 "field_is_required": {
                         "type": "string",
                         "description": "Specifies whether the field being created is a required field for the table. Required fields are only supported in a geodatabase.NON_REQUIRED\u2014The field is not a required field. This is the default. RE...",
-                        "default": null
+                        "default": None
                 },
                 "field_domain": {
                         "type": "string",
                         "description": "Constrains the values allowed in any particular attribute for a table, feature class, or subtype in a geodatabase. You must specify the name of an existing domain for it to be applied to the field.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3203,7 +3203,7 @@ functions_declarations = {
                 "template": {
                         "type": "string",
                         "description": "The feature classes or tables that will be used as a template to define the attribute fields to add.\r\n Fields from the inputs specified by this parameter will be added to the in_table value in additio...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3225,32 +3225,32 @@ functions_declarations = {
                 "new_field_name": {
                         "type": "string",
                         "description": "The new name for the field.",
-                        "default": null
+                        "default": None
                 },
                 "new_field_alias": {
                         "type": "string",
                         "description": "The new  field alias for the field.",
-                        "default": null
+                        "default": None
                 },
                 "field_type": {
                         "type": "string",
                         "description": "Specifies the new  field type for the field.\r\nThis parameter is only applicable if the input table is empty (does not contain records).SHORT\u2014The field type will be short. Short fields support whole nu...",
-                        "default": null
+                        "default": None
                 },
                 "field_length": {
                         "type": "string",
                         "description": "The new length of the field. This sets the maximum number of allowable characters for each record of the field. This parameter is only applicable to fields of type TEXT or BLOB. If the table is empty,...",
-                        "default": null
+                        "default": None
                 },
-                "field_is_nullable": {
+                "field_is_Noneable": {
                         "type": "string",
-                        "description": "Specifies whether the field can contain null values.  Null values are only supported for fields in a geodatabase. This parameter is only applicable if the input table is empty (does not contain record...",
-                        "default": null
+                        "description": "Specifies whether the field can contain None values.  Null values are only supported for fields in a geodatabase. This parameter is only applicable if the input table is empty (does not contain record...",
+                        "default": None
                 },
                 "clear_field_alias": {
                         "type": "string",
-                        "description": "Specifies whether the alias for the input field will be cleared. The new_field_alias parameter must be empty to clear the alias of the field.CLEAR_ALIAS\u2014The field alias will be cleared (set to null).D...",
-                        "default": null
+                        "description": "Specifies whether the alias for the input field will be cleared. The new_field_alias parameter must be empty to clear the alias of the field.CLEAR_ALIAS\u2014The field alias will be cleared (set to None).D...",
+                        "default": None
                 }
         },
         "required": [
@@ -3286,17 +3286,17 @@ functions_declarations = {
                 "default_value": {
                         "type": "string",
                         "description": "The default value to be added to each new table or feature class. The value entered must match the data type of the field.",
-                        "default": null
+                        "default": None
                 },
                 "subtype_code": {
                         "type": "string",
                         "description": "The subtypes that can participate in the default value.",
-                        "default": null
+                        "default": None
                 },
                 "clear_value": {
                         "type": "string",
                         "description": "Specifies whether the default value for either the field or the subtype will be cleared. To clear the default value, the default_value parameter must be passed in as an empty string. To clear the defa...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3323,37 +3323,37 @@ functions_declarations = {
                 "script_file": {
                         "type": "string",
                         "description": "A Python file that stores multiline Python functions to perform calculations for the out_table parameter fields.",
-                        "default": null
+                        "default": None
                 },
                 "output_field_name": {
                         "type": "string",
                         "description": "The field name from the definition table that contains the target field names for the output table.",
-                        "default": null
+                        "default": None
                 },
                 "source_field_name": {
                         "type": "string",
                         "description": "The field name from the definition table that contains the source field names from the input table.",
-                        "default": null
+                        "default": None
                 },
                 "output_field_type": {
                         "type": "string",
                         "description": "The field in the Output Schema Definition Table parameter value that defines the data types for the output table. The field is expected to be of Text type. The field in the field_definition_table para...",
-                        "default": null
+                        "default": None
                 },
                 "output_field_decimals_or_length": {
                         "type": "string",
                         "description": "The field name from the  definition table that defines the number of decimals or the length of the field for the output fields.",
-                        "default": null
+                        "default": None
                 },
                 "output_field_alias": {
                         "type": "string",
                         "description": "The field name from the  definition table that defines the alias names for the fields of the output table.",
-                        "default": null
+                        "default": None
                 },
                 "output_field_script": {
                         "type": "string",
                         "description": "The field name from the definition table that defines the calculations for the output fields.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3381,22 +3381,22 @@ functions_declarations = {
                 "expression_type": {
                         "type": "string",
                         "description": "Specifies the type of expression that will be used.PYTHON3\u2014The Python expression type will be used.ARCADE\u2014The Arcade expression type will be used.SQL\u2014The SQL expression type will be used.VB\u2014The VBScri...",
-                        "default": null
+                        "default": None
                 },
                 "code_block": {
                         "type": "string",
                         "description": "A block of code that will be used for complex Python or VBScript expressions.",
-                        "default": null
+                        "default": None
                 },
                 "field_type": {
                         "type": "string",
                         "description": "Specifies the field type of the new field. This parameter is only used when the field name does not exist in the input table.If\r\nthe field is of type text, the field will have a length of 512,\r\nunless...",
-                        "default": null
+                        "default": None
                 },
                 "enforce_domains": {
                         "type": "string",
                         "description": "Specifies whether field domain rules will be enforced.ENFORCE_DOMAINS\u2014Field domain rules will be enforced.NO_ENFORCE_DOMAINS\u2014Field domain rules will not be enforced. This is the default.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3420,12 +3420,12 @@ functions_declarations = {
                 "code_block": {
                         "type": "string",
                         "description": "A block of code that will be used for complex expressions. A function cannot be used to return multiple values.",
-                        "default": null
+                        "default": None
                 },
                 "enforce_domains": {
                         "type": "string",
                         "description": "Specifies whether field domain rules will be enforced.ENFORCE_DOMAINS\u2014Field domain rules will be enforced.NO_ENFORCE_DOMAINS\u2014Field domain rules will not be enforced. This is the default.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3448,7 +3448,7 @@ functions_declarations = {
                 "method": {
                         "type": "string",
                         "description": "Specifies whether the fields specified by the drop_field parameter will be deleted or kept.DELETE_FIELDS\u2014The fields specified by the drop_field parameter will be deleted. This is the default.KEEP_FIEL...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3520,12 +3520,12 @@ functions_declarations = {
                 "allow_export": {
                         "type": "string",
                         "description": "Specifies whether the export of  vector data will be  allowed.DENY_EXPORT\u2014Vector data cannot be exported with the data license file (.sdlic) installed. This is the default.ALLOW_EXPORT\u2014 Vector data ca...",
-                        "default": null
+                        "default": None
                 },
                 "exp_date": {
                         "type": "string",
                         "description": "The expiration date  of the data license file,   after which  the file geodatabase\u2019s contents can no longer be displayed.  The default value is empty (blank), which means the data license file will ne...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3585,7 +3585,7 @@ functions_declarations = {
                 "config_keyword": {
                         "type": "string",
                         "description": "The configuration keyword defining how the data will store once uncompressed",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3607,7 +3607,7 @@ functions_declarations = {
                 "out_version": {
                         "type": "string",
                         "description": "Specifies the ArcGIS version for the new geodatabase.CURRENT\u2014A geodatabase compatible with the currently installed version of ArcGIS will be created. This is the default.10.0\u2014A geodatabase compatible ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3630,42 +3630,42 @@ functions_declarations = {
                 "schema_type": {
                         "type": "string",
                         "description": "Specifies whether the fields of the input datasets must match the fields of the target dataset for data to be appended.TEST\u2014Fields of the input datasets must match the fields of the target dataset. An...",
-                        "default": null
+                        "default": None
                 },
                 "field_mapping": {
                         "type": "string",
                         "description": "The field map parameter controls the transfer or mapping of fields from the input datasets to the target dataset. It can only be used when the schema_type parameter is set to NO_TEST.Because the input...",
-                        "default": null
+                        "default": None
                 },
                 "subtype": {
                         "type": "string",
                         "description": "The subtype description that will be assigned to all new data that is appended to the target dataset.",
-                        "default": null
+                        "default": None
                 },
                 "expression": {
                         "type": "string",
                         "description": "The SQL expression that will be used to select a subset of the input datasets' records.  If multiple input datasets are specified, they will all be evaluated using the expression. If no records match ...",
-                        "default": null
+                        "default": None
                 },
                 "match_fieldstarget_field_input_field": {
                         "type": "string",
                         "description": "The fields from the input datasets that will be used to match to the target dataset. If the values of these fields match, records from the input datasets will update the corresponding records of the t...",
-                        "default": null
+                        "default": None
                 },
                 "update_geometry": {
                         "type": "string",
                         "description": "Specifies whether geometry in the target dataset will be updated with geometry from the input datasets if the match_fields parameter field values match.UPDATE_GEOMETRY\u2014Geometry in the target dataset w...",
-                        "default": null
+                        "default": None
                 },
                 "enforce_domains": {
                         "type": "string",
                         "description": "Specifies whether field domain rules will be enforced.ENFORCE_DOMAINS\u2014Field domain rules will be enforced.NO_ENFORCE_DOMAINS\u2014Field domain rules will not be enforced. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "feature_service_mode": {
                         "type": "string",
                         "description": "Specifies whether performance will be optimized when the target dataset is an ArcGIS Online or ArcGIS Enterprise  feature service. This parameter is only active when the target dataset supports optimi...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3688,12 +3688,12 @@ functions_declarations = {
                 "data_type": {
                         "type": "string",
                         "description": "The type of the data on disk that will be copied. This parameter is only necessary in the event of a name conflict\r\nbetween two different data types. For example, a geodatabase can\r\ncontain\r\na relatio...",
-                        "default": null
+                        "default": None
                 },
                 "associated_datafrom_name_data_type_to_name_config_keyword": {
                         "type": "string",
                         "description": "When the input has associated data,  this parameter can be used to control the associated output data's name and config keyword.from_name\u2014The data associated with the input data, which will also be co...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3716,22 +3716,22 @@ functions_declarations = {
                 "service_provider": {
                         "type": "string",
                         "description": "Specifies the cloud service provider that will be used.AWS\u2014The cloud service provider will be Amazon Web Services (AWS). AWS offers a comprehensive suite of\r\ncloud-based machine learning and AI servic...",
-                        "default": null
+                        "default": None
                 },
                 "connection_parameters": {
                         "type": "string",
                         "description": "The connection parameters that will be added to the output connection file. The keys and values are unique for each service provider.Key\u2014The name of the connection parameter key.Value\u2014The value of the...",
-                        "default": null
+                        "default": None
                 },
                 "secret_param_key": {
                         "type": "string",
                         "description": "The key whose value contains sensitive information, such as API keys or authentication tokens.",
-                        "default": null
+                        "default": None
                 },
                 "secret_param_value": {
                         "type": "string",
                         "description": "The secret access key string to authenticate the connection.\r\nCaution:This is sensitive information and should only be shared with trusted service providers. The key provided is stored in the Windows ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3773,7 +3773,7 @@ functions_declarations = {
                 "data_type": {
                         "type": "string",
                         "description": "The type of data on disk to be deleted.This parameter is only necessary in the event of a name conflict\r\nbetween two different data types. For example, a geodatabase can\r\ncontain\r\na relationship class...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3795,17 +3795,17 @@ functions_declarations = {
                 "xy_tolerance": {
                         "type": "string",
                         "description": "The x,y tolerance that will be applied to each vertex when evaluating whether there is an identical vertex in another feature.",
-                        "default": null
+                        "default": None
                 },
                 "z_tolerance": {
                         "type": "string",
                         "description": "The z-tolerance that will be applied to each vertex when evaluating whether there is an identical vertex in another feature.",
-                        "default": null
+                        "default": None
                 },
                 "out_mapping_table": {
                         "type": "string",
                         "description": "An optional output table that will include the object ID values of all records from the input that have a duplicate, matched with the object ID values of the representative record that was retained.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3863,62 +3863,62 @@ functions_declarations = {
                 "extract_type": {
                         "type": "string",
                         "description": "Specifies whether the schema and rows of the data or only the schema will be extracted.\r\nDATA\u2014The schema and rows will be extracted. This is the default.SCHEMA_ONLY\u2014Only the schema will be extracted.",
-                        "default": null
+                        "default": None
                 },
                 "out_type": {
                         "type": "string",
                         "description": "Specifies the output type the data will be extracted to.\r\nGEODATABASE\u2014The data will be extracted to an existing geodatabase. This is the default.XML_FILE\u2014The data will be extracted to an XML workspace...",
-                        "default": null
+                        "default": None
                 },
                 "out_geodatabase": {
                         "type": "string",
                         "description": "The geodatabase that will contain the extracted data when the out_type parameter is set to GEODATABASE.",
-                        "default": null
+                        "default": None
                 },
                 "out_xml": {
                         "type": "string",
                         "description": "The name and location of the .xml file that will be created when the out_type parameter is set to XML_FILE.",
-                        "default": null
+                        "default": None
                 },
                 "out_folder_path": {
                         "type": "string",
                         "description": "The location of the file or mobile  geodatabase that will be created for the extracted data. This parameter is required when the out_type parameter is set to NEW_FILE_GEODATABASE or NEW_MOBILE_GEODATA...",
-                        "default": null
+                        "default": None
                 },
                 "out_name": {
                         "type": "string",
                         "description": "The name of the file  or mobile geodatabase that will be created for the extracted data. This parameter is required when the out_type parameter is set to NEW_FILE_GEODATABASE or NEW_MOBILE_GEODATABASE...",
-                        "default": null
+                        "default": None
                 },
                 "expand_feature_classes_and_tables": {
                         "type": "string",
                         "description": "Specifies whether expanded feature classes and tables\u2014such as those in networks, topologies, or relationship classes\u2014will be added.USE_DEFAULTS\u2014The expanded feature classes and tables related to the f...",
-                        "default": null
+                        "default": None
                 },
                 "reuse_schema": {
                         "type": "string",
                         "description": "Specifies whether a geodatabase that contains the schema of the data to be extracted will be reused. Reusing the schema reduces the amount of time required to extract the data.\t\t\t\t\t\tDO_NOT_REUSE\u2014The s...",
-                        "default": null
+                        "default": None
                 },
                 "get_related_data": {
                         "type": "string",
                         "description": "Specifies whether rows related to rows existing in the data will be extracted. For example, a feature (f1) is inside the geometry filter and a related feature (f2) from another class is outside the fi...",
-                        "default": null
+                        "default": None
                 },
                 "extract_using_geometry_features": {
                         "type": "string",
                         "description": "The features that will be used to define the area to extract.",
-                        "default": null
+                        "default": None
                 },
                 "geometry_filter_type": {
                         "type": "string",
                         "description": "Specifies the spatial relationship between the extract_using_geometry_features and in_data parameter values and how that relationship will be filtered. The spatial relationship is applied to data in a...",
-                        "default": null
+                        "default": None
                 },
                 "all_records_for_tables": {
                         "type": "string",
                         "description": "Specifies whether all records or only the schema will be extracted for tables that do not have filters applied (such as selections or definition queries).\t\t\t\t\t\tTables with applied filters will be hono...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3944,17 +3944,17 @@ functions_declarations = {
                 "xy_tolerance": {
                         "type": "string",
                         "description": "The x,y tolerance that will be applied to each vertex when evaluating whether there is an identical vertex in another feature.This parameter is enabled when the fields parameter value includes the Sha...",
-                        "default": null
+                        "default": None
                 },
                 "z_tolerance": {
                         "type": "string",
                         "description": "The z-tolerance that will be applied to each vertex when evaluating whether there is an identical vertex in another feature.This parameter is enabled when the fields parameter value includes the Shape...",
-                        "default": null
+                        "default": None
                 },
                 "output_record_option": {
                         "type": "string",
                         "description": "Specifies whether only duplicated records will be included in the output table.ALL\u2014All input records will have corresponding records in the output table. This is the default.ONLY_DUPLICATES\u2014Only dupli...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3978,17 +3978,17 @@ functions_declarations = {
                 "field_mappings": {
                         "type": "string",
                         "description": "Use the field map to reconcile schema differences and match attribute fields between multiple datasets.\r\nThe output includes all fields from the input\r\ndatasets by default.Use the field map to add, de...",
-                        "default": null
+                        "default": None
                 },
                 "add_source": {
                         "type": "string",
                         "description": "Specifies whether source information will be added to the output dataset in a new MERGE_SRC text field. The values in the MERGE_SRC  field will indicate the input dataset path or layer name that is th...",
-                        "default": null
+                        "default": None
                 },
                 "field_match_mode": {
                         "type": "string",
                         "description": "Specifies how fields from the input dataset will be transferred to the output datasetAUTOMATIC\u2014Fields of the same name will be automatically mapped together in the output. Fields that are unique to th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4038,7 +4038,7 @@ functions_declarations = {
                 "spatial_sort_method": {
                         "type": "string",
                         "description": "Specifies how features will be spatially sorted. The sort method is only enabled when the Shape field is designated as one of the sort fields.UR\u2014Sorting will start at the upper right corner. This is t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4062,7 +4062,7 @@ functions_declarations = {
                 "file_filter": {
                         "type": "string",
                         "description": "A file pattern filter that will limit the number of files that need to be copied, such as .tif, .crf, and similar image file types.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4085,27 +4085,27 @@ functions_declarations = {
                 "folder": {
                         "type": "string",
                         "description": "The name of an existing folder or a new folder on the portal.",
-                        "default": null
+                        "default": None
                 },
                 "summary": {
                         "type": "string",
                         "description": "A short description of the item.",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "The keywords or terms that describe the item. Separate individual tags with a comma.",
-                        "default": null
+                        "default": None
                 },
                 "sharing_level": {
                         "type": "string",
                         "description": "Specifies the sharing level of the item.OWNER\u2014Only the owner of the item will have access.ORGANIZATION\u2014All members of the organization will have accessEVERYONE\u2014Everyone, including people outside the o...",
-                        "default": null
+                        "default": None
                 },
                 "groups": {
                         "type": "string",
                         "description": "The groups with which the item will be shared.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4128,27 +4128,27 @@ functions_declarations = {
                 "dissolve_field": {
                         "type": "string",
                         "description": "The field or fields on which features will be aggregated. If no fields are specified, the tool will dissolve all features together.",
-                        "default": null
+                        "default": None
                 },
                 "statistics_fieldsfield_statistic_type": {
                         "type": "string",
                         "description": "Specifies the field or fields containing the attribute values that will be used to calculate the specified statistic. Multiple statistic and field combinations can be specified. Null values are exclud...",
-                        "default": null
+                        "default": None
                 },
                 "multi_part": {
                         "type": "string",
                         "description": "Specifies whether multipart features will be allowed in the output feature class.MULTI_PART\u2014Multipart features will be allowed in the output feature class. This is the default. SINGLE_PART\u2014Multipart f...",
-                        "default": null
+                        "default": None
                 },
                 "unsplit_lines": {
                         "type": "string",
                         "description": "Specifies how line features will be dissolved.DISSOLVE_LINES\u2014Lines will be dissolved into a single feature. This is the default. UNSPLIT_LINES\u2014Lines will only be dissolved when two lines have an end v...",
-                        "default": null
+                        "default": None
                 },
                 "concatenation_separator": {
                         "type": "string",
                         "description": "A character or characters that will be used to concatenate values when the CONCATENATION option is used for the statistics_fields parameter. By default, the tool will concatenate values without a sepa...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4171,17 +4171,17 @@ functions_declarations = {
                 "selection": {
                         "type": "string",
                         "description": "Specifies whether the selected polygon will be merged with a polygon with the longest shared border or the largest area.LENGTH\u2014The selected polygon will be merged with the neighboring polygon with the...",
-                        "default": null
+                        "default": None
                 },
                 "ex_where_clause": {
                         "type": "string",
                         "description": "An SQL expression that will be used to identify features that will not be altered. For more information on SQL syntax, see the SQL reference for elements used in query expressions help topic.",
-                        "default": null
+                        "default": None
                 },
                 "ex_features": {
                         "type": "string",
                         "description": "An input polyline or polygon feature class or layer that defines polygon boundaries, or portions thereof, that will not be eliminated.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4204,22 +4204,22 @@ functions_declarations = {
                 "condition": {
                         "type": "string",
                         "description": "Specifies how the parts to be eliminated will be determined. AREA\u2014Parts with an area less than that specified will be eliminated.PERCENT\u2014Parts with a percent of the total outer area less than that spe...",
-                        "default": null
+                        "default": None
                 },
                 "part_area": {
                         "type": "string",
                         "description": "Eliminate parts smaller than this area.",
-                        "default": null
+                        "default": None
                 },
                 "part_area_percent": {
                         "type": "string",
                         "description": "Eliminate parts smaller than this percentage of a feature's total outer area.",
-                        "default": null
+                        "default": None
                 },
                 "part_option": {
                         "type": "string",
                         "description": "Determines what parts can be eliminated.CONTAINED_ONLY\u2014Only parts totally contained by other parts can be eliminated. This is the default. ANY\u2014Any parts can be eliminated.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4242,22 +4242,22 @@ functions_declarations = {
                 "in_datasets": {
                         "type": "string",
                         "description": "The names of the datasets that will be analyzed. An individual dataset or a Python list of datasets can be used. Dataset names use paths relative to the input workspace; full paths are not valid input...",
-                        "default": null
+                        "default": None
                 },
                 "analyze_base": {
                         "type": "string",
                         "description": "Specifies whether the selected dataset base tables will be analyzed.This parameter only applies to geodatabases. If the input workspace is a database, this parameter will be ignored.ANALYZE_BASE\u2014 Stat...",
-                        "default": null
+                        "default": None
                 },
                 "analyze_delta": {
                         "type": "string",
                         "description": "Specifies whether the selected dataset delta tables will be analyzed.This parameter only applies to geodatabases that contain traditional versions. If the input workspace is a database or does not par...",
-                        "default": null
+                        "default": None
                 },
                 "analyze_archive": {
                         "type": "string",
                         "description": "Specifies whether the selected dataset archive tables will be analyzed.This parameter only applies to geodatabases that contain archive-enabled datasets. If the input workspace is a database, this par...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4280,12 +4280,12 @@ functions_declarations = {
                 "view": {
                         "type": "string",
                         "description": "Specifies the user's view privileges.AS_IS\u2014No changes will be made to the user's existing view privileges. If the user has view privileges, they will continue to have view privileges. If the user does...",
-                        "default": null
+                        "default": None
                 },
                 "edit": {
                         "type": "string",
                         "description": "Specifies the user's edit privileges.AS_IS\u2014 No changes will be made to the user's existing edit privileges. If the user has edit privileges, they will continue to have edit privileges. If the user doe...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4321,12 +4321,12 @@ functions_declarations = {
                 "log_file_pool_size": {
                         "type": "string",
                         "description": "The number of tables included in the pool that the geodatabase will use if a pool of session-based log file tables owned by the geodatabase administrator is used.",
-                        "default": null
+                        "default": None
                 },
                 "use_tempdb": {
                         "type": "string",
                         "description": "This parameter is no longer applicable in any supported ArcGIS release.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4349,12 +4349,12 @@ functions_declarations = {
                 "seq_start_id": {
                         "type": "string",
                         "description": "The starting number of the sequence. If you do not provide a starting number, the sequence starts with 1. If you do provide a starting number, it must be greater than 0.",
-                        "default": null
+                        "default": None
                 },
                 "seq_inc_value": {
                         "type": "string",
                         "description": "Describes how the sequence numbers will increment. For example, if the sequence starts at 10 and the increment value is 5, the next value in the sequence is 15, and the next value after that is 20. If...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4373,7 +4373,7 @@ functions_declarations = {
                 "user_authentication_type": {
                         "type": "string",
                         "description": "Specifies the authentication type for the user. If you specify OPERATING_SYSTEM_USER, an operating system login must already exist for the user you will create. Operating system users are only support...",
-                        "default": null
+                        "default": None
                 },
                 "user_name": {
                         "type": "string",
@@ -4382,17 +4382,17 @@ functions_declarations = {
                 "user_password": {
                         "type": "string",
                         "description": "The password for the new user. The password policy of the underlying database is enforced.If you  create a database user for an operating system login, no input is required.",
-                        "default": null
+                        "default": None
                 },
                 "role": {
                         "type": "string",
                         "description": "The name of the existing database role to which the new user will be added.",
-                        "default": null
+                        "default": None
                 },
                 "tablespace_name": {
                         "type": "string",
                         "description": "The name of the tablespace that will be used as the default tablespace for the new user in an Oracle database. You can specify a preconfigured tablespace, or, if the tablespace does not exist,  it wil...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4415,42 +4415,42 @@ functions_declarations = {
                 "database_name": {
                         "type": "string",
                         "description": "The name of the database.This parameter is valid for PostgreSQL and SQL Server. You can provide either the name of an existing, preconfigured database or a name for a database that the tool will creat...",
-                        "default": null
+                        "default": None
                 },
                 "account_authentication": {
                         "type": "string",
                         "description": "Specifies the type of authentication that will be used for the database connection.OPERATING_SYSTEM_AUTH\u2014Operating system authentication will be used. The login information that you provide for the co...",
-                        "default": null
+                        "default": None
                 },
                 "database_admin": {
                         "type": "string",
                         "description": "The database administrator user for database authentication. For Oracle, use the sys user. For PostgreSQL, specify a user with superuser status. For SQL Server, specify any member of the sysadmin fixe...",
-                        "default": null
+                        "default": None
                 },
                 "database_admin_password": {
                         "type": "string",
                         "description": "The database administrator password for database authentication.",
-                        "default": null
+                        "default": None
                 },
                 "sde_schema": {
                         "type": "string",
                         "description": "This parameter is only relevant to SQL Server and specifies whether the geodatabase will be created in the schema of a user named sde or in the dbo schema in the database. If creating a dbo-schema geo...",
-                        "default": null
+                        "default": None
                 },
                 "gdb_admin_name": {
                         "type": "string",
                         "description": "The name of the geodatabase administrator user.If you are using PostgreSQL, this value must be sde. \r\nIf the sde login role does not exist, this tool will create it and grant it superuser status in th...",
-                        "default": null
+                        "default": None
                 },
                 "gdb_admin_password": {
                         "type": "string",
                         "description": "The password for the geodatabase administrator user. If  the geodatabase administrator user exists in the database management system, the password you provide must match the existing password.\r\nIf the...",
-                        "default": null
+                        "default": None
                 },
                 "tablespace_name": {
                         "type": "string",
                         "description": "The name of the tablespace.This parameter is only valid for Oracle and PostgreSQL database management system types. For Oracle, do one of the following: Provide the name of an existing tablespace. Thi...",
-                        "default": null
+                        "default": None
                 },
                 "authorization_file": {
                         "type": "string",
@@ -4459,7 +4459,7 @@ functions_declarations = {
                 "spatial_type": {
                         "type": "string",
                         "description": "Specifies the spatial type that will be used. This is only applicable to PostgreSQL databases.ST_GEOMETRY\u2014The ST_Geometry spatial type will be used. This is the default.POSTGIS\u2014The PostGIS spatial typ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4483,12 +4483,12 @@ functions_declarations = {
                 "grant_revoke": {
                         "type": "string",
                         "description": "Specifies whether the role will be added to a  user or list of users\r\nor a user or list of users will be removed from the role.GRANT\u2014The role will be granted to the specified user or users, making the...",
-                        "default": null
+                        "default": None
                 },
                 "user_name": {
                         "type": "string",
                         "description": "The name of the user whose role membership will change. To specify multiple users, type the user names separated by commas (no spaces).",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4560,12 +4560,12 @@ functions_declarations = {
                 "target_version": {
                         "type": "string",
                         "description": "The geodatabase version with the delta tables that will be checked for inconsistencies. If no version is specified, all versions are processed.",
-                        "default": null
+                        "default": None
                 },
                 "input_tables": {
                         "type": "string",
                         "description": "A single table or  a text file containing a\r\nlist of versioned tables with the associated delta tables to be checked for inconsistencies. Use fully-qualified table names in the text file, and place on...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4673,7 +4673,7 @@ functions_declarations = {
                 "delta_only": {
                         "type": "string",
                         "description": "Indicates how the indexes will be rebuilt on the selected datasets. This option has no effect if in_datasets is empty.This option only applies to geodatabases. If the input workspace is a database, th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4692,27 +4692,27 @@ functions_declarations = {
                 "in_object_id_field": {
                         "type": "string",
                         "description": "The field that will be used as the ObjectID field. When using an existing field from the input datasets, an integer data type is required. If an existing field is not used, an ObjectID field will be c...",
-                        "default": null
+                        "default": None
                 },
                 "in_shape_field": {
                         "type": "string",
                         "description": "The field that identifies the shape of the features. If the input dataset contains a spatial data type column, include this field during the registration process.",
-                        "default": null
+                        "default": None
                 },
                 "in_geometry_type": {
                         "type": "string",
                         "description": "Specifies the geometry type. If the in_shape_field parameter value is provided, you must specify a geometry type. If the dataset being registered contains existing features, the geometry type specifie...",
-                        "default": null
+                        "default": None
                 },
                 "in_spatial_reference": {
                         "type": "string",
                         "description": "If the in_shape_field parameter value is provided and the table is empty, specify the coordinate system to be used for features.  If the dataset being registered contains existing features, the coordi...",
-                        "default": null
+                        "default": None
                 },
                 "in_extent": {
                         "type": "string",
                         "description": "If the in_shape_field parameter value is provided, specify the allowable coordinate range for x,y coordinates in the following order: \"XMin YMin XMax YMax\". If the dataset being registered contains ex...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4734,32 +4734,32 @@ functions_declarations = {
                 "geometry_type": {
                         "type": "string",
                         "description": "Specifies the geometry type of the feature class. This parameter is only relevant for those geometry types that store dimensionality metadata, such as ST_Geometry in PostgreSQL, PostGIS Geometry, and ...",
-                        "default": null
+                        "default": None
                 },
                 "template": {
                         "type": "string",
                         "description": "An existing feature class or list of feature classes with fields and attribute schema that will be used to define the fields in the output feature class.",
-                        "default": null
+                        "default": None
                 },
                 "has_m": {
                         "type": "string",
                         "description": "Specifies whether the feature class will have  linear measurement values (m-values).DISABLED\u2014The output feature class will not have m-values. This is the default.ENABLED\u2014The output feature class will ...",
-                        "default": null
+                        "default": None
                 },
                 "has_z": {
                         "type": "string",
                         "description": "Specifies whether the feature class will have  elevation values (z-values).DISABLED\u2014The output feature class will not have z-values. This is the default.ENABLED\u2014The output feature class will have z-va...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the output feature dataset. You can specify the spatial reference in the following ways: Enter the path to a .prj file, such as C:/workspace/watershed.prj. Reference a feature...",
-                        "default": null
+                        "default": None
                 },
                 "config_keyword": {
                         "type": "string",
                         "description": "Specifies the default storage parameters (configurations) for geodatabases in a relational database management system (RDBMS). This setting is applicable only when using enterprise geodatabase tables....",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4782,12 +4782,12 @@ functions_declarations = {
                 "template": {
                         "type": "string",
                         "description": "An existing dataset or list of datasets with fields and attribute schema that will be used to define the fields in the output table.",
-                        "default": null
+                        "default": None
                 },
                 "config_keyword": {
                         "type": "string",
                         "description": "Specifies the default storage parameters (configurations) for geodatabases in a relational database management system (RDBMS). This setting is applicable only when using enterprise geodatabase tables....",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4851,12 +4851,12 @@ functions_declarations = {
                 "target_version": {
                         "type": "string",
                         "description": "The geodatabase version to be repaired. If no version is specified, all versions are processed.",
-                        "default": null
+                        "default": None
                 },
                 "input_tables": {
                         "type": "string",
                         "description": "A single table or  a text file containing a\r\nlist of versioned tables with the associated delta tables to be repaired. Use fully-qualified table names in the text file, and place one table name per li...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4951,17 +4951,17 @@ functions_declarations = {
                 "index_name": {
                         "type": "string",
                         "description": "The name of the new index. An index name is necessary when adding an index to geodatabase feature classes and tables. For other types of input, the name is ignored.",
-                        "default": null
+                        "default": None
                 },
                 "unique": {
                         "type": "string",
                         "description": "Specifies whether the values in the index are unique.NON_UNIQUE\u2014No values in the index are unique. This is the default.UNIQUE\u2014All values in the index are unique.",
-                        "default": null
+                        "default": None
                 },
                 "ascending": {
                         "type": "string",
                         "description": "Specifies whether values will be indexed in ascending order.NON_ASCENDING\u2014Values will not be indexed in ascending order. This is the default. ASCENDING\u2014Values will be indexed in ascending order.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4984,12 +4984,12 @@ functions_declarations = {
                 "index_name": {
                         "type": "string",
                         "description": "The name of the index that will be created. For SQL Server, SQLite, and mobile geodatabases, this parameter will be ignored.",
-                        "default": null
+                        "default": None
                 },
                 "catalog_name": {
                         "type": "string",
                         "description": "The existing full-text catalog name. This parameter is only applicable for SQL Server. When the SQL Server database has a default full-text catalog defined, the tool will use the default catalog, and ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5008,17 +5008,17 @@ functions_declarations = {
                 "spatial_grid_1": {
                         "type": "string",
                         "description": "This parameter has been deprecated in ArcGIS Pro.  Any value you enter will be ignored.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_grid_2": {
                         "type": "string",
                         "description": "This parameter has been deprecated in ArcGIS Pro.  Any value you enter will be ignored.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_grid_3": {
                         "type": "string",
                         "description": "This parameter has been deprecated in ArcGIS Pro.  Any value you enter will be ignored.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5079,22 +5079,22 @@ functions_declarations = {
                 "join_type": {
                         "type": "string",
                         "description": "Specifies whether only records in the input that match a record in the join table will be included in the output or all records in the input layer or table view will be included.KEEP_ALL\u2014All records i...",
-                        "default": null
+                        "default": None
                 },
                 "index_join_fields": {
                         "type": "string",
                         "description": "Specifies whether table attribute indexes will be added to the input field and join field.INDEX_JOIN_FIELDS\u2014Both fields will be indexed.  If the table has an existing index, a new index will not be ad...",
-                        "default": null
+                        "default": None
                 },
                 "rebuild_index": {
                         "type": "string",
                         "description": "Specifies whether the indexes of the input field and join field will be removed and rebuilt.REBUILD_INDEX\u2014 Existing indexes will be removed and a new index will be added.NO_REBUILD_INDEX\u2014 Existing ind...",
-                        "default": null
+                        "default": None
                 },
                 "join_operation": {
                         "type": "string",
                         "description": "Specifies whether the join will be a one-to-many join or a one-to-first join when the data has a one-to-many cardinality.One-to-many join operations are supported when the input and join table are in ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5131,7 +5131,7 @@ functions_declarations = {
                 "cardinality": {
                         "type": "string",
                         "description": "Specifies the cardinality of the relationship. ONE_TO_ONE\u2014The relationship between the input table and related table will be one to one. For example, one record in the input table will have only one m...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5157,42 +5157,42 @@ functions_declarations = {
                 "join_operation": {
                         "type": "string",
                         "description": "This parameter is not supported. All joins will be performed as a one-to-one join. If you are using positional arguments in Python, use a None type, an empty string (\"\" or ''), or the JOIN_ONE_TO_ONE ...",
-                        "default": null
+                        "default": None
                 },
                 "join_type": {
                         "type": "string",
                         "description": "Specifies whether only target features with a spatial relationship with a join feature (known as an inner join) will be preserved or all target features will be preserved, even without a spatial relat...",
-                        "default": null
+                        "default": None
                 },
                 "field_mapping": {
                         "type": "string",
                         "description": "The fields that will be temporarily joined to the target dataset with their respective properties and source fields. All fields from the join dataset will be included by default. Use the field map to ...",
-                        "default": null
+                        "default": None
                 },
                 "match_option": {
                         "type": "string",
                         "description": "Specifies the criteria that will be used to match rows.INTERSECT\u2014The features in the join features will be matched if they intersect a target  feature. This is the default. Specify the distance in the...",
-                        "default": null
+                        "default": None
                 },
                 "search_radius": {
                         "type": "string",
                         "description": "Join features within this distance of a target feature will be considered for the spatial join. A search radius is only valid when the spatial relationship is specified (the match_option parameter is ...",
-                        "default": null
+                        "default": None
                 },
                 "distance_field_name": {
                         "type": "string",
                         "description": "The name of the field that contains the distance between the target feature and the closest join feature. This field will be added to the join. This parameter is only valid when the spatial relationsh...",
-                        "default": null
+                        "default": None
                 },
                 "permanent_join": {
                         "type": "string",
                         "description": "Specifies whether fields from the join feature class will be temporarily added to the layer or permanently added to the target feature class.NO_PERMANENT_FIELDS\u2014The fields from the join feature class ...",
-                        "default": null
+                        "default": None
                 },
                 "match_fieldsjoin_field_target_field": {
                         "type": "string",
                         "description": "Pairs of fields from the join features and target features that will be used for attribute matching. Only the records from the join features that share match field values with the target features will...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5223,22 +5223,22 @@ functions_declarations = {
                 "fields": {
                         "type": "string",
                         "description": "The fields from the join table that will be transferred to the input table based on a join between the input table and the join table.",
-                        "default": null
+                        "default": None
                 },
                 "fm_option": {
                         "type": "string",
                         "description": "Specifies how joining fields and field types will be transferred to the output.NOT_USE_FM\u2014Fields and field types from the joined table will be transferred to the output. This is the default.USE_FM\u2014The...",
-                        "default": null
+                        "default": None
                 },
                 "field_mapping": {
                         "type": "string",
                         "description": "The fields that will be joined to the input table with their respective properties and source fields. All fields from the join table will be included by default. Use the field map to add, delete, rena...",
-                        "default": null
+                        "default": None
                 },
                 "index_join_fields": {
                         "type": "string",
                         "description": "Specifies whether attribute indexes will be added or replaced for the input field and join field.NO_INDEXES\u2014Attribute indexes will not be added. This is the default.NEW_INDEXES\u2014An attribute index will...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5259,7 +5259,7 @@ functions_declarations = {
                 "join_name": {
                         "type": "string",
                         "description": "The name of the join to be removed.If no name is provided, the tool will remove all joins from the input.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5307,7 +5307,7 @@ functions_declarations = {
                 "output_msg": {
                         "type": "string",
                         "description": "The output table containing the validation messages in a tabular form.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5328,17 +5328,17 @@ functions_declarations = {
                 "in_files": {
                         "type": "string",
                         "description": "Inputs that can include any combination of .las files, .zlas files, LAS datasets, and  folders containing  .las or  .zlas data. When a LAS dataset is specified as input, all  .las and .zlas files that...",
-                        "default": null
+                        "default": None
                 },
                 "folder_recursion": {
                         "type": "string",
                         "description": "Specifies whether lidar files residing in the subdirectories of an input folder will be added to the LAS dataset.\t\t\t\t\tNO_RECURSION\u2014Only lidar files residing in an input folder will be added to the LAS...",
-                        "default": null
+                        "default": None
                 },
                 "in_surface_constraintsin_feature_class_height_field_sf_type": {
                         "type": "string",
                         "description": "The features that will be referenced by the LAS dataset when generating a triangulated surface. Each feature must have the following properties defined:              in_feature_class\u2014The feature  to b...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5356,12 +5356,12 @@ functions_declarations = {
                 "point_selection_method": {
                         "type": "string",
                         "description": "Specifies how the point in each binned region will be selected to construct the pyramid. This parameter is disabled if the LAS dataset contains a pyramid.Z_MIN\u2014The point with the lowest z-value will b...",
-                        "default": null
+                        "default": None
                 },
                 "class_codes_weights": {
                         "type": "string",
                         "description": "The weights assigned to each class code that determine which points are retained in each thinning region.\r\nThis parameter is only enabled when the Class Code Weights option is specified in the Point S...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5383,27 +5383,27 @@ functions_declarations = {
                 "folder_recursion": {
                         "type": "string",
                         "description": "Specifies whether lidar files residing in the subdirectories of an input folder will be added to the LAS dataset.\t\t\t\t\tNO_RECURSION\u2014Only lidar files residing in an input folder will be added to the LAS...",
-                        "default": null
+                        "default": None
                 },
                 "in_surface_constraintsin_feature_class_height_field_sf_type": {
                         "type": "string",
                         "description": "The features that will be referenced by the LAS dataset when generating a triangulated surface. Each feature must have the following properties defined:              in_feature_class\u2014The feature  to b...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the  LAS dataset. If no spatial reference is explicitly assigned, the LAS dataset will use the coordinate system of the first input .las file. If the input files do not contai...",
-                        "default": null
+                        "default": None
                 },
                 "compute_stats": {
                         "type": "string",
                         "description": "Specifies whether statistics for the .las files will be computed and a spatial index generated for the LAS dataset.   The presence of statistics allows the LAS dataset layer's filtering and symbology ...",
-                        "default": null
+                        "default": None
                 },
                 "relative_paths": {
                         "type": "string",
                         "description": "Specifies whether lidar files and surface constraint features will be referenced by the LAS dataset through relative or absolute paths.  Using relative paths may be convenient for cases in which the L...",
-                        "default": null
+                        "default": None
                 },
                 "create_las_prj": {
                         "type": "string",
@@ -5412,17 +5412,17 @@ functions_declarations = {
                 "extent": {
                         "type": "string",
                         "description": "The processing extent will be used to select a subset of .las files from the list of files and folders in the input parameter value. Any .las files that fall entirely outside of this extent will be ex...",
-                        "default": null
+                        "default": None
                 },
                 "boundary": {
                         "type": "string",
                         "description": "The polygon features whose boundary will be used to select a subset of .las files from the list of files and folders in the input parameter. Any .las files that fall entirely outside of the polygon fe...",
-                        "default": null
+                        "default": None
                 },
                 "add_only_contained_files": {
                         "type": "string",
                         "description": "Specifies whether the .las files that will be added to the LAS dataset must be fully or partially contained by either the processing extent, the processing boundary polygon, or the intersection of bot...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5442,27 +5442,27 @@ functions_declarations = {
                 "calculation_type": {
                         "type": "string",
                         "description": "Specifies whether statistics will be calculated for all lidar files or only for those that do not have statistics:\r\nSKIP_EXISTING_STATS\u2014LAS files with up-to-date statistics will be skipped, and statis...",
-                        "default": null
+                        "default": None
                 },
                 "out_file": {
                         "type": "string",
                         "description": "The output text file that will contain the  summary of the LAS dataset statistics.",
-                        "default": null
+                        "default": None
                 },
                 "summary_level": {
                         "type": "string",
                         "description": "Specify the type of summary contained in the report.\r\nDATASET\u2014The report will summarize statistics for the entire LAS dataset. This is the default.LAS_FILES\u2014The report will summarize statistics for th...",
-                        "default": null
+                        "default": None
                 },
                 "delimiter": {
                         "type": "string",
                         "description": "The delimiter that will be used to indicate the separation of entries in the columns of the text file table.\t\t\t\t\tSPACE\u2014A space will be used to delimit field values. This is the default.COMMA\u2014A comma w...",
-                        "default": null
+                        "default": None
                 },
                 "decimal_separator": {
                         "type": "string",
                         "description": "The decimal character that will be used in the text file to differentiate the integer of a number from its fractional part.\t\t\t\t\tDECIMAL_POINT\u2014A point will be used as the decimal character. This is the...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5484,17 +5484,17 @@ functions_declarations = {
                 "method": {
                         "type": "string",
                         "description": "Specifies the type of statistics that will be collected about the LAS points in each cell of the output raster.\r\nPULSE_COUNT\u2014The number of last return points will be collected.POINT_COUNT\u2014The number o...",
-                        "default": null
+                        "default": None
                 },
                 "sampling_type": {
                         "type": "string",
                         "description": "Specifies how the Sampling Value parameter will be interpreted to define the output raster's cell size.\t\t\t\t\tOBSERVATIONS\u2014The Sampling Value will define the number of columns or rows in the output rast...",
-                        "default": null
+                        "default": None
                 },
                 "sampling_value": {
                         "type": "string",
                         "description": "The value used in conjunction with the Sampling Type parameter to define the output raster's cell size.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5521,27 +5521,27 @@ functions_declarations = {
                 "geographic_transform": {
                         "type": "string",
                         "description": "This method can be used for converting data between two geographic coordinate systems or datums. This optional parameter may be required if the input and output coordinate systems have different datum...",
-                        "default": null
+                        "default": None
                 },
                 "compression": {
                         "type": "string",
                         "description": "Specifies whether the output file will be written using the compressed ZLAS format or the uncompressed LAS format. \r\nSAME_AS_INPUT\u2014The output will be written using the same compression as the input fi...",
-                        "default": null
+                        "default": None
                 },
                 "las_options": {
                         "type": "string",
                         "description": "Specifies the operations that will be performed on the .las files.REARRANGE\u2014The points will be rearranged. Rearranging points can improve how the output data will be processed when retrieving its poin...",
-                        "default": null
+                        "default": None
                 },
                 "name_modifier": {
                         "type": "string",
                         "description": "Modifies the output file names by adding characters to the beginning and end of their existing file names.",
-                        "default": null
+                        "default": None
                 },
                 "out_las_dataset": {
                         "type": "string",
                         "description": "The LAS dataset that will reference the newly created .las or .zlas files. This parameter provides a way to further interact with the output files. Relative paths will be used to reference the output ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5561,17 +5561,17 @@ functions_declarations = {
                 "in_files": {
                         "type": "string",
                         "description": "The name of the LAS files or folders containing LAS files whose reference will be removed from the LAS dataset.",
-                        "default": null
+                        "default": None
                 },
                 "in_surface_constraints": {
                         "type": "string",
                         "description": "The name of the surface constraint features that will be removed from the LAS dataset.",
-                        "default": null
+                        "default": None
                 },
                 "delete_pyramid": {
                         "type": "string",
                         "description": "Specifies whether the LAS dataset's display pyramid will be deleted.DELETE_PYRAMID\u2014The LAS dataset's display pyramid will be deleted.NO_DELETE_PYRAMID\u2014The LAS dataset's display pyramid will not be del...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5593,12 +5593,12 @@ functions_declarations = {
                 "symbology_fieldsfield_type_source_field_target_field": {
                         "type": "string",
                         "description": "The fields from the input layer that match the symbology fields used in the symbology layer. Symbology fields contain three properties:Field type\u2014The field type: symbology value, normalization, or oth...",
-                        "default": null
+                        "default": None
                 },
                 "update_symbology": {
                         "type": "string",
                         "description": "Specifies whether symbology ranges will be updated.DEFAULT\u2014Symbology ranges will be updated, except in the following situations:When the input layer is emptyWhen the symbology layer uses class breaks ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5617,37 +5617,37 @@ functions_declarations = {
                 "method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to generate the definition query.MATCH_SELECTION\u2014The input table's ObjectID field (or GlobalID field if present) will be used to generate the query with values p...",
-                        "default": null
+                        "default": None
                 },
                 "field": {
                         "type": "string",
                         "description": "The field in the table or table view that will be used to generate values for the query. Accepted field types are Short, Long, Text, and GUID.This parameter is required when the method parameter is se...",
-                        "default": null
+                        "default": None
                 },
                 "query_name": {
                         "type": "string",
                         "description": "The unique name of the query that will be generated.",
-                        "default": null
+                        "default": None
                 },
                 "invert_where_clause": {
                         "type": "string",
                         "description": "Specifies whether the generated definition query (where clause) will be inverted and include all unselected values or include all selected values of the input table.INVERT\u2014The where clause will be inv...",
-                        "default": null
+                        "default": None
                 },
                 "append_active_query": {
                         "type": "string",
                         "description": "Specifies whether the generated definition query  will be appended to the active queryThis parameter is available when a layer or table has an active definition query and the method parameter is set t...",
-                        "default": null
+                        "default": None
                 },
                 "overwrite_where_clause": {
                         "type": "string",
                         "description": "Specifies whether the definition query can be modified using the where_clause parameter before it is generated.OVERWRITE\u2014The query can be modified before it is generated.NOT_OVERWRITE\u2014The query cannot...",
-                        "default": null
+                        "default": None
                 },
                 "where_clause": {
                         "type": "string",
                         "description": "The definition query that will override the other parameter values.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5681,42 +5681,42 @@ functions_declarations = {
                 "statisticsstatistic_type_field": {
                         "type": "string",
                         "description": "Specifies the numeric field or fields containing the attribute values that will be used to calculate the specified statistic. Multiple statistic and field combinations can be specified. Null values ar...",
-                        "default": null
+                        "default": None
                 },
                 "oid_fields": {
                         "type": "string",
                         "description": "The unique identifier fields that will be used to\r\nuniquely identify each row in the table.",
-                        "default": null
+                        "default": None
                 },
                 "shape_type": {
                         "type": "string",
                         "description": "Specifies the shape type of the query layer. Only those records from the result set of the query that match the specified shape type will be used in the output query layer. By default, the shape type ...",
-                        "default": null
+                        "default": None
                 },
                 "srid": {
                         "type": "string",
                         "description": "The spatial reference identifier (SRID) value for queries that return geometry. Only those records from the result set of the query that match the specified SRID value will be used in the output query...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The coordinate system that will be used by the output query layer. \r\nBy default, the spatial reference of the first record in the result set will be used. This parameter is ignored if the result set o...",
-                        "default": null
+                        "default": None
                 },
                 "m_values": {
                         "type": "string",
                         "description": "Specifies whether the output layer will include linear measurements (m-values).INCLUDE_M_VALUES\u2014The layer will include m-values.DO_NOT_INCLUDE_M_VALUES\u2014The layer will not include m-values. This is the...",
-                        "default": null
+                        "default": None
                 },
                 "z_values": {
                         "type": "string",
                         "description": "Specifies whether the output layer will include elevation values (z-values).INCLUDE_Z_VALUES\u2014The layer will include z-values.DO_NOT_INCLUDE_Z_VALUES\u2014The layer will not include z-values. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent of the layer.  The extent must include all features in the table.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPL...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5746,17 +5746,17 @@ functions_declarations = {
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the output feature dataset.To control other aspects of the spatial reference, such as the x,y-, z-, and m-domains, resolutions, and tolerances, set the appropriate geoprocessi...",
-                        "default": null
+                        "default": None
                 },
                 "identifier": {
                         "type": "string",
                         "description": "A unique building identifier that will be added to all output feature classes. The identifier allows you to add unique names to each building to be used at a later time.",
-                        "default": null
+                        "default": None
                 },
                 "include_floorplan": {
                         "type": "string",
                         "description": "Specifies whether the output dataset will include the floorplan feature classes.INCLUDE_FLOORPLAN\u2014The output dataset will include the floorplan feature classes. This is the default.EXCLUDE_FLOORPLAN\u2014T...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5780,17 +5780,17 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression used to select a subset of features.  For more information on SQL syntax  see the help topic SQL reference for query expressions used in ArcGIS.\r\n\r\nIf the input is a layer with an ex...",
-                        "default": null
+                        "default": None
                 },
                 "workspace": {
                         "type": "string",
                         "description": "Legacy:This parameter is not used.In ArcGIS Desktop, output field names are validated based on this workspace. In ArcGIS Pro, this tool does not support changing the field names because layers do\r\nnot...",
-                        "default": null
+                        "default": None
                 },
                 "field_info": {
                         "type": "string",
                         "description": "The fields from the input features that will be included in the output layer. You can remove input fields by making them not visible, and you can set numeric fields to have a ratio split policy. Renam...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5809,47 +5809,47 @@ functions_declarations = {
                 "template": {
                         "type": "string",
                         "description": "The output extent of the image layer.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equal to the visible display.Lay...",
-                        "default": null
+                        "default": None
                 },
                 "band_indexid": {
                         "type": "string",
                         "description": "The bands that will be exported for the layer. If no bands are specified, all the bands will be used in the output.",
-                        "default": null
+                        "default": None
                 },
                 "mosaic_method": {
                         "type": "string",
                         "description": "The mosaic method defines how the mosaic is created from different rasters.SEAMLINE\u2014Smooth transitions between images using seamlines.NORTH_WEST\u2014Display imagery that is closest to the northwest corner...",
-                        "default": null
+                        "default": None
                 },
                 "order_field": {
                         "type": "string",
                         "description": "The default field to use to order the rasters when the mosaic method is By_Attribute. The list of fields is defined as those in the service table that are of type metadata and are integer (for example...",
-                        "default": null
+                        "default": None
                 },
                 "order_base_value": {
                         "type": "string",
                         "description": "The images are sorted based on the difference between this input value and the attribute value in the specified field.",
-                        "default": null
+                        "default": None
                 },
                 "lock_rasterid": {
                         "type": "string",
                         "description": "The raster ID or raster name to which the service should be locked, such that only the specified rasters are displayed. If left blank (undefined), it will be similar to the system default. Multiple ID...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size for the output image service layer.",
-                        "default": null
+                        "default": None
                 },
                 "where_clause": {
                         "type": "string",
                         "description": "Define a query using SQL.",
-                        "default": null
+                        "default": None
                 },
                 "processing_template": {
                         "type": "string",
                         "description": "The raster function processing template that can be applied on the output image service layer.\r\nNone\u2014No processing template.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5871,42 +5871,42 @@ functions_declarations = {
                 "class_code": {
                         "type": "string",
                         "description": "Specifies the classification codes that will be used to filter LAS points. All class codes will be selected by default.0\u2014Never processed by a classification method1\u2014Processed by a classification metho...",
-                        "default": null
+                        "default": None
                 },
                 "return_values": {
                         "type": "string",
                         "description": "Specifies the ordinal pulse return values that will be used to filter LAS points. All returns will be used when no value is specified. Return information is only available for LAS point clouds collect...",
-                        "default": null
+                        "default": None
                 },
                 "no_flag": {
                         "type": "string",
                         "description": "Specifies whether data points that do not have classification flags assigned will be included for display and analysis.INCLUDE_UNFLAGGED\u2014Unflagged points will be included. This is the default.EXCLUDE_...",
-                        "default": null
+                        "default": None
                 },
                 "synthetic": {
                         "type": "string",
                         "description": "Specifies whether data points flagged as synthetic will be included. Synthetic points refer to LAS points that originated from a data source other than a lidar scanner.INCLUDE_SYNTHETIC\u2014Synthetic poin...",
-                        "default": null
+                        "default": None
                 },
                 "keypoint": {
                         "type": "string",
                         "description": "Specifies whether data points flagged as model key points will be included. Model key points refer to LAS points that are significant for modeling the object they are associated with. INCLUDE_KEYPOINT...",
-                        "default": null
+                        "default": None
                 },
                 "withheld": {
                         "type": "string",
                         "description": "Specifies whether data points flagged as withheld will be included. Withheld points represent erroneous or undesired measurements captured in the LAS points.INCLUDE_WITHHELD\u2014Withheld points will be in...",
-                        "default": null
+                        "default": None
                 },
                 "surface_constraints": {
                         "type": "string",
                         "description": "The name of the surface constraint features that will be enabled in the layer. All constraints are enabled by default.",
-                        "default": null
+                        "default": None
                 },
                 "overlap": {
                         "type": "string",
                         "description": "Specifies whether data points flagged as overlap will be included. Overlap points refer to points collected in overlapping scans that typically have a larger scan angle. Filtering overlap points can h...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5929,57 +5929,57 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "Define a query using SQL.",
-                        "default": null
+                        "default": None
                 },
                 "template": {
                         "type": "string",
                         "description": "The output extent can be specified by defining the four coordinates or by using the extent of an existing layer.\r\nMAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to a...",
-                        "default": null
+                        "default": None
                 },
                 "band_indexid": {
                         "type": "string",
                         "description": "The bands that will be exported for the layer. If no bands are specified, all the bands will be used in the output.",
-                        "default": null
+                        "default": None
                 },
                 "mosaic_method": {
                         "type": "string",
                         "description": "Choose the mosaic method. The mosaic method defines how the layer is created\r\nfrom different rasters in the mosaic dataset.CLOSEST_TO_CENTER\u2014Sorts rasters based on an order where\r\nrasters that have th...",
-                        "default": null
+                        "default": None
                 },
                 "order_field": {
                         "type": "string",
                         "description": "Choose the order field. When the mosaic method is BY_ATTRIBUTE, the default field to use when ordering rasters needs to be set. The list of fields is defined as those in the service table that are of ...",
-                        "default": null
+                        "default": None
                 },
                 "order_base_value": {
                         "type": "string",
                         "description": "The order base value.\r\nThe images are sorted based on the difference between this value and the attribute value in the specified field.",
-                        "default": null
+                        "default": None
                 },
                 "lock_rasterid": {
                         "type": "string",
                         "description": "The Raster ID or raster name to which the service should be locked so that only the specified rasters are displayed. If left undefined, it will be similar to the system default. Multiple IDs can be de...",
-                        "default": null
+                        "default": None
                 },
                 "sort_order": {
                         "type": "string",
                         "description": "Choose whether the sort order is ascending or descending.\r\nASCENDING\u2014The sort order will be ascending. This is the default.DESCENDING\u2014The sort order will be descending.",
-                        "default": null
+                        "default": None
                 },
                 "mosaic_operator": {
                         "type": "string",
                         "description": "Choose the mosaic operator to use. When two or more rasters have the same sort priority, this parameter is used to further refine the sort order.FIRST\u2014The first raster in the list will be on top. This...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output mosaic layer.",
-                        "default": null
+                        "default": None
                 },
                 "processing_template": {
                         "type": "string",
                         "description": "The raster function processing template that can be applied on the output mosaic layer.\r\nNone\u2014No processing template.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6006,42 +6006,42 @@ functions_declarations = {
                 "oid_fields": {
                         "type": "string",
                         "description": "One or more fields from the SELECT statement SELECT list that will generate a dynamic, unique row identifier.",
-                        "default": null
+                        "default": None
                 },
                 "shape_type": {
                         "type": "string",
                         "description": "Specifies the shape type of the query layer. Only those records from the result set of the query that match the specified shape type will be used in the output query layer. Tool validation will attemp...",
-                        "default": null
+                        "default": None
                 },
                 "srid": {
                         "type": "string",
                         "description": "The spatial reference identifier (SRID) value for queries that return geometry. Only those records from the result set of the query that match the specified SRID value will be used in the output query...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The coordinate system that will be used by the output query layer. \r\nTool validation will attempt to set this property based on the first record in the result set. This can be changed before running t...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_properties": {
                         "type": "string",
                         "description": "Specifies how the spatial properties for the layer will be defined.\r\n During the validation process, dimensionality, geometry type, spatial reference, SRID, and unique\r\nidentifier properties will be s...",
-                        "default": null
+                        "default": None
                 },
                 "m_values": {
                         "type": "string",
                         "description": "Specifies whether the layer will have  m-values.INCLUDE_M_VALUES\u2014The layer will have m-values.DO_NOT_INCLUDE_M_VALUES\u2014The layer will not have m-values. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "z_values": {
                         "type": "string",
                         "description": "Specifies whether the layer will have z-values.INCLUDE_Z_VALUES\u2014The layer will have z-values.DO_NOT_INCLUDE_Z_VALUES\u2014The layer will not have z-values. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "The extent of the layer. This parameter is only used if the Define the spatial properties of the\r\nlayer parameter is checked (spatial_properties = DEFINE_SPATIAL_PROPERTIES in Python). The extent must...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6069,17 +6069,17 @@ functions_declarations = {
                 "in_key_field": {
                         "type": "string",
                         "description": "A field or combination of fields that will be used to uniquely identify a row in the query. This parameter is used only when the in_key_field_option parameter is set to  USE_KEY_FIELDS.",
-                        "default": null
+                        "default": None
                 },
                 "in_field_alias": {
                         "type": "string",
                         "description": "The fields that will be included in the layer or table view. If an alias is set for a field, this is the name that appears. If no fields are specified, all fields from all tables are included. If a Sh...",
-                        "default": null
+                        "default": None
                 },
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression used to select a subset of records.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6103,17 +6103,17 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "Define a query using SQL.",
-                        "default": null
+                        "default": None
                 },
                 "envelope": {
                         "type": "string",
                         "description": "The output extent can be specified by defining the four coordinates or by using the extent of an existing layer.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all...",
-                        "default": null
+                        "default": None
                 },
                 "band_index": {
                         "type": "string",
                         "description": "The bands that will be exported for the layer. If no bands are specified, all the bands will be used in the output.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6154,17 +6154,17 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression used to select a subset of features.  For more information on SQL syntax  see the help topic SQL reference for query expressions used in ArcGIS.",
-                        "default": null
+                        "default": None
                 },
                 "workspace": {
                         "type": "string",
                         "description": "This parameter is not used.In ArcGIS Desktop, output field names are validated based on this workspace. In ArcGIS Pro, this tool does not support changing the field names because table views do\r\nnot s...",
-                        "default": null
+                        "default": None
                 },
                 "field_info": {
                         "type": "string",
                         "description": "The fields from the input table that will be included in the output layer. You can remove input fields by setting them to not visible. Renaming fields and the use of split policies are not supported.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6201,12 +6201,12 @@ functions_declarations = {
                 "template": {
                         "type": "string",
                         "description": "The output extent of the WCS layer.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equal to the visible display.Layer...",
-                        "default": null
+                        "default": None
                 },
                 "band_index": {
                         "type": "string",
                         "description": "The bands that will be exported for the layer. If no bands are specified, all the bands will be used in the output.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6236,12 +6236,12 @@ functions_declarations = {
                 "spatial_reference": {
                         "type": "string",
                         "description": "The coordinate system  of the coordinates specified in the in_x_field and in_y_field parameters. This will be the output event layer's coordinate system.",
-                        "default": null
+                        "default": None
                 },
                 "in_z_field": {
                         "type": "string",
                         "description": "The field in the input table that contains the z-coordinates.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6289,12 +6289,12 @@ functions_declarations = {
                 "is_relative_path": {
                         "type": "string",
                         "description": "Specifies whether the output layer  file will store a relative path to the source data stored on disk or an absolute path.\r\nABSOLUTE\u2014The output layer file will store an absolute path to the source dat...",
-                        "default": null
+                        "default": None
                 },
                 "version": {
                         "type": "string",
                         "description": "Specifies the version of the output layer file. \r\nLegacy: This parameter is no longer supported. It remains only for the backward compatibility of scripts and models.Layer files created in a particula...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6313,17 +6313,17 @@ functions_declarations = {
                 "selection_type": {
                         "type": "string",
                         "description": "Specifies how the selection will be applied and what to do if a selection already exists.NEW_SELECTION\u2014The resulting selection will replace the current selection. This is the default. ADD_TO_SELECTION...",
-                        "default": null
+                        "default": None
                 },
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression used to select a subset of records.",
-                        "default": null
+                        "default": None
                 },
                 "invert_where_clause": {
                         "type": "string",
                         "description": "Specifies whether the expression will be used as is, or the opposite of the expression will be used.NON_INVERT\u2014The query will be used as is. This is the default.INVERT\u2014The opposite of the query will b...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6341,27 +6341,27 @@ functions_declarations = {
                 "overlap_type": {
                         "type": "string",
                         "description": "Specifies the spatial relationship that will be evaluated.INTERSECT\u2014The features in the input layer will be selected if they intersect a selecting feature. This is the default. INTERSECT_3D\u2014The featur...",
-                        "default": null
+                        "default": None
                 },
                 "select_features": {
                         "type": "string",
                         "description": "The features in the Input Features parameter will be selected based on their relationship to the features from this layer or feature class.",
-                        "default": null
+                        "default": None
                 },
                 "search_distance": {
                         "type": "string",
                         "description": "The distance that will be searched. This parameter is only valid if the overlap_type  parameter is set to INTERSECT, INTERSECT_3D, WITHIN_A_DISTANCE, WITHIN_A_DISTANCE_3D, WITHIN_A_DISTANCE_GEODESIC, ...",
-                        "default": null
+                        "default": None
                 },
                 "selection_type": {
                         "type": "string",
                         "description": "Specifies how the selection will be applied to the input and how it will be combined with an existing selection.  This tool does not include an option to clear an existing selection; use the  Select L...",
-                        "default": null
+                        "default": None
                 },
                 "invert_spatial_relationship": {
                         "type": "string",
                         "description": "Specifies whether the spatial relationship evaluation result or the opposite result will be used.  For example, this parameter can be used to get a list of features that do not intersect or are not wi...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6387,42 +6387,42 @@ functions_declarations = {
                 "summary": {
                         "type": "string",
                         "description": "The summary of  the package.  The summary is displayed in the item information of the package on ArcGIS Online or ArcGIS Enterprise.",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "The tags used to describe and identify the  package.  Separate multiple tags with a comma.",
-                        "default": null
+                        "default": None
                 },
                 "credits": {
                         "type": "string",
                         "description": "The credits for the package. This is generally the name of the organization that is given credit for authoring and providing the content for the package.",
-                        "default": null
+                        "default": None
                 },
                 "public": {
                         "type": "string",
                         "description": "Specifies whether the input package will be shared  with and available to the public. EVERYBODY\u2014 The input package will be shared with the public. Anyone can access and see it. MYGROUPS\u2014  The input pa...",
-                        "default": null
+                        "default": None
                 },
                 "groupsgroup_name": {
                         "type": "string",
                         "description": "The  groups the package will be shared with.",
-                        "default": null
+                        "default": None
                 },
                 "organization": {
                         "type": "string",
                         "description": "Specifies whether the input package will be available within your organization only or shared publicly with everyone.\r\nEVERYBODY\u2014 The package will be shared with the public. Anyone can access and see ...",
-                        "default": null
+                        "default": None
                 },
                 "publish_web_layer": {
                         "type": "string",
                         "description": "Specifies whether the package will be published as a web layer to your portal. Only tile packages, vector tile packages, and scene layer packages are supported.FALSE\u2014The package will be uploaded witho...",
-                        "default": null
+                        "default": None
                 },
                 "portal_folder": {
                         "type": "string",
                         "description": "An existing folder or the name of a new folder on the portal for the package. If a web layer is published, it is stored in this folder.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6446,42 +6446,42 @@ functions_declarations = {
                 "convert_data": {
                         "type": "string",
                         "description": "Specifies whether input layers will be converted to a file geodatabase or preserved in their original format.CONVERT\u2014 Data will be converted to a file geodatabase. This option does not apply to enterp...",
-                        "default": null
+                        "default": None
                 },
                 "convert_arcsde_data": {
                         "type": "string",
                         "description": "Specifies whether input enterprise geodatabase layers will be converted to a file geodatabase or preserved in their original format. CONVERT_ARCSDE\u2014 Enterprise geodatabase data will be converted to a ...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used to select or clip features.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equ...",
-                        "default": null
+                        "default": None
                 },
                 "apply_extent_to_arcsde": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to all layers or to enterprise geodatabase layers only.ALL\u2014 The specified extent will be applied to all layers. This is the default.ARCSDE_ONLY\u2014T...",
-                        "default": null
+                        "default": None
                 },
                 "schema_only": {
                         "type": "string",
                         "description": "Specifies whether only the schema of the input layers will be consolidated or packaged.ALL\u2014 All features and records will be consolidated or packaged. This is the default.SCHEMA_ONLY\u2014 Only the schema ...",
-                        "default": null
+                        "default": None
                 },
                 "select_related_rows": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to related data sources.KEEP_ONLY_RELATED_ROWS\u2014Only related data corresponding to records within the specified\r\nextent will be consolidated.KEEP_...",
-                        "default": null
+                        "default": None
                 },
                 "preserve_sqlite": {
                         "type": "string",
                         "description": "Specifies whether mobile geodatabase data will be preserved in the output or written to file geodatabase format. If the input data is a mobile geodatabase network dataset, the output will be a mobile ...",
-                        "default": null
+                        "default": None
                 },
                 "exclude_network_dataset": {
                         "type": "string",
                         "description": "For network analysis layers, specifies whether the network dataset will also be consolidated.INCLUDE_NETWORK_DATASET\u2014The network dataset will be included and consolidated. This is the default.EXCLUDE_...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6504,7 +6504,7 @@ functions_declarations = {
                 "copy_arcsde_locator": {
                         "type": "string",
                         "description": "This parameter has no effect in ArcGIS Pro.  It remains only to support backward compatibility.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6527,37 +6527,37 @@ functions_declarations = {
                 "convert_data": {
                         "type": "string",
                         "description": "Specifies whether input layers will be converted to a file geodatabase or preserved in their original format.CONVERT\u2014 Data will be converted to a file geodatabase. This option does not apply to enterp...",
-                        "default": null
+                        "default": None
                 },
                 "convert_arcsde_data": {
                         "type": "string",
                         "description": "Specifies whether input enterprise geodatabase layers will be converted to a file geodatabase or preserved in their original format. CONVERT_ARCSDE\u2014 Enterprise geodatabase data will be converted to a ...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used to select or clip features.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equ...",
-                        "default": null
+                        "default": None
                 },
                 "apply_extent_to_arcsde": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to all layers or to enterprise geodatabase layers only.ALL\u2014 The specified extent will be applied to all layers. This is the default.ARCSDE_ONLY\u2014T...",
-                        "default": null
+                        "default": None
                 },
                 "preserve_sqlite": {
                         "type": "string",
                         "description": "Specifies whether input mobile geodatabase data will be preserved as mobile geodatabase in the output. If the input data is a mobile geodatabase network dataset, the output will always be mobile geoda...",
-                        "default": null
+                        "default": None
                 },
                 "select_related_rows": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to related data sources.KEEP_ONLY_RELATED_ROWS\u2014Only related data corresponding to records within the specified\r\nextent will be consolidated.KEEP_...",
-                        "default": null
+                        "default": None
                 },
                 "consolidate_to_one_fgdb": {
                         "type": "string",
                         "description": "Specifies whether map layers will be consolidated to a single file geodatabase or to multiple file geodatabases based on the number of unique data sources in the input map.SINGLE_OUTPUT_WORKSPACE\u2014All ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6580,37 +6580,37 @@ functions_declarations = {
                 "sharing_internal": {
                         "type": "string",
                         "description": "Specifies whether the project and all data will be consolidated into a single folder (for sharing outside your organization) or  referenced to network data (for sharing within your organization).INTER...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used to select or clip features.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equ...",
-                        "default": null
+                        "default": None
                 },
                 "apply_extent_to_enterprise_geo": {
                         "type": "string",
                         "description": "Specifies whether the extent will be applied to all layers or to enterprise geodatabase layers only.ALL\u2014 The extent will be applied to all layers. This is the default.ENTERPRISE_ONLY\u2014The extent will b...",
-                        "default": null
+                        "default": None
                 },
                 "package_as_template": {
                         "type": "string",
                         "description": "Specifies whether the project\r\nwill be consolidated as a template or a regular project. Templates can include maps, layouts, connections to databases and servers, and so on.  A project template allows...",
-                        "default": null
+                        "default": None
                 },
                 "preserve_sqlite": {
                         "type": "string",
                         "description": "Specifies whether mobile geodatabases will be preserved or converted to file geodatabases.Note:This parameter applies only to mobile geodatabases (.geodatabase) used primarily for offline workflows in...",
-                        "default": null
+                        "default": None
                 },
                 "version": {
                         "type": "string",
                         "description": "Specifies the ArcGIS Pro version to which objects such as projects, maps, and layers will be persisted. Saving to an earlier version  is useful if the project will be used with earlier versions of Arc...",
-                        "default": null
+                        "default": None
                 },
                 "select_related_rows": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to related data sources.KEEP_ONLY_RELATED_ROWS\u2014Only related data corresponding to records within the specified\r\nextent will be consolidated.KEEP_...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6645,47 +6645,47 @@ functions_declarations = {
                 "service_file": {
                         "type": "string",
                         "description": "The name of the map service or the .xml files that will be used for the tiling scheme. This parameter is required only when the \r\n service_type parameter is set to EXISTING.",
-                        "default": null
+                        "default": None
                 },
                 "summary": {
                         "type": "string",
                         "description": "The summary information that will be added to the properties of the package.",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "The tag information that will be added to the properties of the package. Multiple tags can be added, separated by a comma or semicolon.",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used to select or clip features.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equ...",
-                        "default": null
+                        "default": None
                 },
                 "compression_quality": {
                         "type": "string",
                         "description": "A value between 1 and 100 for the JPEG compression quality. The\r\ndefault value is 75 for JPEG tile format and zero for other\r\nformats.Compression is supported only for JPEG and mixed formats. A higher...",
-                        "default": null
+                        "default": None
                 },
                 "package_type": {
                         "type": "string",
                         "description": "Specifies the type of tile package that will be created.\r\ntpk\u2014A  .tpk file will be created. Tiles will be stored using Compact storage format. This format is supported across ArcGIS.tpkx\u2014A .tpkx file ...",
-                        "default": null
+                        "default": None
                 },
                 "min_level_of_detail": {
                         "type": "string",
                         "description": "The integer representation corresponding to the number of scales used to define a cache tiling scheme. This scale value defines the level at which the cache tiles begin to be available and generated i...",
-                        "default": null
+                        "default": None
                 },
                 "area_of_interest": {
                         "type": "string",
                         "description": "A feature set that constrains where tiles will be created. Use an area of interest to create  tiles for irregularly shaped areas or multipart features. The areas outside the bounding box of area of in...",
-                        "default": null
+                        "default": None
                 },
                 "create_multiple_packages": {
                         "type": "string",
                         "description": "Specifies whether a single large tile package or multiple small tile packages will be generated. This parameter is not available when the parallelProcessingFactor  environment variable is 0 or when th...",
-                        "default": null
+                        "default": None
                 },
                 "output_folder": {
                         "type": "string",
@@ -6716,82 +6716,82 @@ functions_declarations = {
                 "in_locator": {
                         "type": "string",
                         "description": "One or more locators (.loc) that will be included in the mobile map package.Note:Locators have the following restrictions:The locator cannot have an unknown coordinate system.The locator or any partic...",
-                        "default": null
+                        "default": None
                 },
                 "area_of_interest": {
                         "type": "string",
                         "description": "A polygon layer that defines the AOI. Only those features that intersect this value will be included in the mobile map package.",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used to select or clip features.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equ...",
-                        "default": null
+                        "default": None
                 },
                 "clip_features": {
                         "type": "string",
                         "description": "Specifies whether the geometry of the output features will be clipped to the specified area_of_interest or extent parameter value, or remain unaltered.CLIP\u2014The geometry of the features will be clipped...",
-                        "default": null
+                        "default": None
                 },
                 "title": {
                         "type": "string",
                         "description": "The title information that will be added to the properties of the package.",
-                        "default": null
+                        "default": None
                 },
                 "summary": {
                         "type": "string",
                         "description": "The text that will be used as the output package's summary property.",
-                        "default": null
+                        "default": None
                 },
                 "description": {
                         "type": "string",
                         "description": "The description information that will be added to the properties of the package.",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "The tag information that will be added to the properties of the package. Multiple tags can be added, separated by a comma or semicolon.",
-                        "default": null
+                        "default": None
                 },
                 "credits": {
                         "type": "string",
                         "description": "The credit information that will be added to the properties of the package.",
-                        "default": null
+                        "default": None
                 },
                 "use_limitations": {
                         "type": "string",
                         "description": "The use limitations that will be added to the properties of the package.",
-                        "default": null
+                        "default": None
                 },
                 "enable_map_expiration": {
                         "type": "string",
                         "description": "Specifies whether a time-out will be enabled on the mobile map package.ENABLE_MAP_EXPIRATION\u2014A time-out will be enabled on the mobile map package.DISABLE_MAP_EXPIRATION\u2014A time-out will not be enabled ...",
-                        "default": null
+                        "default": None
                 },
                 "map_expiration_type": {
                         "type": "string",
                         "description": "Specifies the type of access a user will have to the expired mobile map package.ALLOW_TO_OPEN\u2014A user of the package will be warned that the map has expired but will be allowed to open it. This is the ...",
-                        "default": null
+                        "default": None
                 },
                 "expiration_date": {
                         "type": "string",
                         "description": "The date the mobile map package will expire.License:This optional parameter is only available with the Publisher extension.",
-                        "default": null
+                        "default": None
                 },
                 "expiration_message": {
                         "type": "string",
                         "description": "A text message that will display when an expired map is accessed.\r\nLicense:This optional parameter is only available with the Publisher extension.",
-                        "default": null
+                        "default": None
                 },
                 "select_related_rows": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to related data sources.KEEP_ONLY_RELATED_ROWS\u2014Only related data corresponding to records within the specified\r\nextent will be consolidated.KEEP_...",
-                        "default": null
+                        "default": None
                 },
                 "reference_online_content": {
                         "type": "string",
                         "description": "Specifies whether service layers will be referenced in the package.INCLUDE_SERVICE_LAYERS\u2014Service layers will be referenced in the mobile package.EXCLUDE_SERVICE_LAYERS\u2014Service layers will not be refe...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6814,92 +6814,92 @@ functions_declarations = {
                 "in_locator": {
                         "type": "string",
                         "description": "One or more locators (.loc file) that will be included in the mobile scene package.\r\nNote:Locators have the following restrictions:The locator cannot have an unknown coordinate system.The locator or a...",
-                        "default": null
+                        "default": None
                 },
                 "area_of_interest": {
                         "type": "string",
                         "description": "A polygon layer that defines the area of interest. Only those features that intersect the area of interest will be included in the mobile scene package.",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used to select or clip features.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equ...",
-                        "default": null
+                        "default": None
                 },
                 "clip_features": {
                         "type": "string",
                         "description": "Specifies whether the output features will be clipped to the given area of interest or extent.\r\nChecked\u2014The geometry of the features will be clipped to the given area of interest or extent.Unchecked\u2014F...",
-                        "default": null
+                        "default": None
                 },
                 "title": {
                         "type": "string",
                         "description": "Title information that will be added to the properties of the package.",
-                        "default": null
+                        "default": None
                 },
                 "summary": {
                         "type": "string",
                         "description": "Summary information that will be added to the properties of the package.",
-                        "default": null
+                        "default": None
                 },
                 "description": {
                         "type": "string",
                         "description": "Description information that will be added to the properties of the package.",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "Tag information that will be added to the properties of the package. Multiple\r\ntags can be added, separated by a comma or semicolon.",
-                        "default": null
+                        "default": None
                 },
                 "credits": {
                         "type": "string",
                         "description": "Credit information that will be added to the properties of the package.",
-                        "default": null
+                        "default": None
                 },
                 "use_limitations": {
                         "type": "string",
                         "description": "Use limitations that will be added to the properties of the package.",
-                        "default": null
+                        "default": None
                 },
                 "anonymous_use": {
                         "type": "string",
                         "description": "Specifies whether the mobile scenes can be used by anyone or only those with an ArcGIS account.ANONYMOUS_USE\u2014Anyone with access to the package can use the mobile scene without signing in with an Esri ...",
-                        "default": null
+                        "default": None
                 },
                 "texture_optimization": {
                         "type": "string",
                         "description": "Specifies the textures that will be optimized according to the target platform where the scene layer package is used.Caution:Optimizations that include KTX2 may take significant time to process. For f...",
-                        "default": null
+                        "default": None
                 },
                 "enable_scene_expiration": {
                         "type": "string",
                         "description": "Specifies whether the mobile scene package will time out.ENABLE_SCENE_EXPIRATION\u2014Time-out functionality will be enabled on the mobile scene package.DISABLE_SCENE_EXPIRATION\u2014Time-out functionality will...",
-                        "default": null
+                        "default": None
                 },
                 "scene_expiration_type": {
                         "type": "string",
                         "description": "Specifies the type of scene access that will be used for the expired mobile scene package.ALLOW_TO_OPEN\u2014The user of the package will be warned that the scene has expired and allowed to open the scene....",
-                        "default": null
+                        "default": None
                 },
                 "expiration_date": {
                         "type": "string",
                         "description": "The date the mobile scene package will expire.License:This optional parameter is only available with the Publisher extension.",
-                        "default": null
+                        "default": None
                 },
                 "expiration_message": {
                         "type": "string",
                         "description": "The text message that will appear when an expired scene is accessed.\r\nLicense:This optional parameter is only available with the Publisher extension.",
-                        "default": null
+                        "default": None
                 },
                 "select_related_rows": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to related data sources.KEEP_ONLY_RELATED_ROWS\u2014Only related data corresponding to records within the specified\r\nextent will be consolidated.KEEP_...",
-                        "default": null
+                        "default": None
                 },
                 "reference_online_content": {
                         "type": "string",
                         "description": "Specifies whether service layers will be referenced in the package.INCLUDE_SERVICE_LAYERS\u2014Service layers will be referenced in the mobile package.EXCLUDE_SERVICE_LAYERS\u2014Service layers will not be refe...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6926,12 +6926,12 @@ functions_declarations = {
                 "tiling_scheme": {
                         "type": "string",
                         "description": "The vector tile service or tiling scheme file that will be used if  the service_type parameter is set to EXISTING. \r\n The tiling scheme tile size must be 512 by 512 and must have consecutive scales in...",
-                        "default": null
+                        "default": None
                 },
                 "vertex_count": {
                         "type": "string",
                         "description": "The ideal number of vertices from all visible layers to be enclosed by each polygon in the output feature class. The default value is the recommended count of 10,000 vertices.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6959,37 +6959,37 @@ functions_declarations = {
                 "tiling_scheme": {
                         "type": "string",
                         "description": "A vector tile service or tiling scheme file that will be used if  the service_type parameter is set to EXISTING. \r\n The tiling scheme tile size must be 512 by 512 and must have consecutive scales in a...",
-                        "default": null
+                        "default": None
                 },
                 "tile_structure": {
                         "type": "string",
                         "description": "Specifies whether the tile generation structure will be optimized with an indexed structure or  as a flat array of all tiles at all levels of detail. The optimized indexed structure is the default and...",
-                        "default": null
+                        "default": None
                 },
                 "min_cached_scale": {
                         "type": "string",
                         "description": "The minimum (smallest) scale at which tiles will be generated. This does not need to be the smallest scale in the tiling scheme.\r\nThe minimum cached scale determines which scales will be used to gener...",
-                        "default": null
+                        "default": None
                 },
                 "max_cached_scale": {
                         "type": "string",
                         "description": "The maximum (largest) scale at which tiles will be generated. This does not need to be the largest scale in the tiling scheme.\r\nThe maximum cached scale determines which scales will be used to generat...",
-                        "default": null
+                        "default": None
                 },
                 "index_polygons": {
                         "type": "string",
                         "description": "An index of tiles based on feature density.Use the Create Vector Tile Index tool to create index polygons. If no index polygons are specified for this parameter, optimized index polygons will be gener...",
-                        "default": null
+                        "default": None
                 },
                 "summary": {
                         "type": "string",
                         "description": "The summary information that will be added to properties of the output vector tile package.",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "The tag information that will be  added to the properties of the output vector tile package. \r\nSeparate multiple tags with commas or semicolons.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7009,27 +7009,27 @@ functions_declarations = {
                 "output_folder": {
                         "type": "string",
                         "description": "The output folder that will contain the contents of the package.\r\n If the specified folder does not exist, a folder will be created.",
-                        "default": null
+                        "default": None
                 },
                 "cache_package": {
                         "type": "string",
                         "description": "Specifies whether a copy of the package will be cached to your profile. When extracting a package, the output is first extracted to your user profile and appended with a unique ID before a copy is mad...",
-                        "default": null
+                        "default": None
                 },
                 "storage_format_type": {
                         "type": "string",
                         "description": "Specifies the storage format that will be used for the extracted cache.\r\nThis parameter is applicable only when the input package is a \r\nvector tile  package (.vtpk).COMPACT\u2014 The tiles will be grouped...",
-                        "default": null
+                        "default": None
                 },
                 "create_ready_to_serve_format": {
                         "type": "string",
                         "description": "Specifies whether a ready-to-serve format for ArcGIS Enterprise will be created. This parameter is enabled only  when the input package is a \r\nvector tile  package (.vtpk) or a tile  package (.tpkx).R...",
-                        "default": null
+                        "default": None
                 },
                 "target_cloud_connection": {
                         "type": "string",
                         "description": "The target .acs file to which the package contents will be extracted. This parameter is enabled only  when the input package is a scene layer package (.slpk),  \r\na vector tile  package (.vtpk), or a t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7069,62 +7069,62 @@ functions_declarations = {
                 "convert_data": {
                         "type": "string",
                         "description": "Specifies whether input layers will be converted to a file geodatabase or preserved in their original format.CONVERT\u2014 Data will be converted to a file geodatabase. This option does not apply to enterp...",
-                        "default": null
+                        "default": None
                 },
                 "convert_arcsde_data": {
                         "type": "string",
                         "description": "Specifies whether input enterprise geodatabase layers will be converted to a file geodatabase or preserved in their original format. CONVERT_ARCSDE\u2014 Enterprise geodatabase data will be converted to a ...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used to select or clip features.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equ...",
-                        "default": null
+                        "default": None
                 },
                 "apply_extent_to_arcsde": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to all layers or to enterprise geodatabase layers only.ALL\u2014 The specified extent will be applied to all layers. This is the default.ARCSDE_ONLY\u2014T...",
-                        "default": null
+                        "default": None
                 },
                 "schema_only": {
                         "type": "string",
                         "description": "Specifies whether only the schema of the input layers will be consolidated or packaged.ALL\u2014 All features and records will be consolidated or packaged. This is the default.SCHEMA_ONLY\u2014 Only the schema ...",
-                        "default": null
+                        "default": None
                 },
                 "version": {
                         "type": "string",
                         "description": "Specifies the ArcGIS Pro version the layer files will be compatible with and persisted to. Certain objects such as projects,\r\n maps, and layers can be persisted to a specific version. Saving to an ear...",
-                        "default": null
+                        "default": None
                 },
                 "additional_files": {
                         "type": "string",
                         "description": "The additional files that will be included in the package.",
-                        "default": null
+                        "default": None
                 },
                 "summary": {
                         "type": "string",
                         "description": "The text that will be used as the output package's summary property.",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "The tag information that will be added to the properties of the package. Multiple tags can be added, separated by a comma or semicolon.",
-                        "default": null
+                        "default": None
                 },
                 "select_related_rows": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to related data sources.KEEP_ONLY_RELATED_ROWS\u2014Only related data corresponding to records within the specified\r\nextent will be consolidated.KEEP_...",
-                        "default": null
+                        "default": None
                 },
                 "preserve_sqlite": {
                         "type": "string",
                         "description": "Specifies whether mobile geodatabase data will be preserved in the output or written to file geodatabase format. If the input data is a mobile geodatabase network dataset, the output will be a mobile ...",
-                        "default": null
+                        "default": None
                 },
                 "exclude_network_dataset": {
                         "type": "string",
                         "description": "For network analysis layers, specifies whether the network dataset will also be packaged.INCLUDE_NETWORK_DATASET\u2014The network dataset will be included and packaged. This is the default.EXCLUDE_NETWORK_...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7147,22 +7147,22 @@ functions_declarations = {
                 "copy_arcsde_locator": {
                         "type": "string",
                         "description": "This parameter has no effect in ArcGIS Pro.  It remains only to support backward compatibility.",
-                        "default": null
+                        "default": None
                 },
                 "additional_files": {
                         "type": "string",
                         "description": "The additional files that will be included in the package.",
-                        "default": null
+                        "default": None
                 },
                 "summary": {
                         "type": "string",
                         "description": "The text that will be used as the output package's summary property.",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "The tag information that will be added to the properties of the package. Multiple tags can be added, separated by a comma or semicolon.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7185,67 +7185,67 @@ functions_declarations = {
                 "convert_data": {
                         "type": "string",
                         "description": "Specifies whether input layers will be converted to a file geodatabase or preserved in their original format.CONVERT\u2014 Data will be converted to a file geodatabase. This option does not apply to enterp...",
-                        "default": null
+                        "default": None
                 },
                 "convert_arcsde_data": {
                         "type": "string",
                         "description": "Specifies whether input enterprise geodatabase layers will be converted to a file geodatabase or preserved in their original format. CONVERT_ARCSDE\u2014 Enterprise geodatabase data will be converted to a ...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used to select or clip features.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equ...",
-                        "default": null
+                        "default": None
                 },
                 "apply_extent_to_arcsde": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to all layers or to enterprise geodatabase layers only.ALL\u2014 The specified extent will be applied to all layers. This is the default.ARCSDE_ONLY\u2014T...",
-                        "default": null
+                        "default": None
                 },
                 "arcgisruntime": {
                         "type": "string",
                         "description": "Specifies whether the package will support ArcGIS Maps SDKs. To support ArcGIS Maps SDKs, all data sources will be converted to a file geodatabase, and an .msd file will be created in the output packa...",
-                        "default": null
+                        "default": None
                 },
                 "reference_all_data": {
                         "type": "string",
                         "description": "Specifies whether a package that references the necessary data will be created rather than copying the data. This is helpful when trying to package large datasets that are available from a central loc...",
-                        "default": null
+                        "default": None
                 },
                 "version": {
                         "type": "string",
                         "description": "Specifies the version of the geodatabases that will be created in the resulting package. Specifying a version allows packages to be shared with earlier versions of ArcGIS and supports backward compati...",
-                        "default": null
+                        "default": None
                 },
                 "additional_files": {
                         "type": "string",
                         "description": "The additional files that will be included in the package.",
-                        "default": null
+                        "default": None
                 },
                 "summary": {
                         "type": "string",
                         "description": "The text that will be used as the output package's summary property.",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "The tag information that will be added to the properties of the package. Multiple tags can be added, separated by a comma or semicolon.",
-                        "default": null
+                        "default": None
                 },
                 "select_related_rows": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to related data sources.KEEP_ONLY_RELATED_ROWS\u2014Only related data corresponding to records within the specified\r\nextent will be consolidated.KEEP_...",
-                        "default": null
+                        "default": None
                 },
                 "preserve_sqlite": {
                         "type": "string",
                         "description": "Specifies whether mobile geodatabase data will be preserved in the output or written to file geodatabase format. If the input data is a mobile geodatabase network dataset, the output will be a mobile ...",
-                        "default": null
+                        "default": None
                 },
                 "consolidate_to_one_fgdb": {
                         "type": "string",
                         "description": "Specifies whether map layers will be consolidated to a single file geodatabase or to multiple file geodatabases based on the number of unique data sources in the input map.SINGLE_OUTPUT_WORKSPACE\u2014All ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7268,67 +7268,67 @@ functions_declarations = {
                 "sharing_internal": {
                         "type": "string",
                         "description": "Specifies whether the project and all data will be consolidated, converted, or copied into the package (for sharing outside your organization) or referenced as is without converting or including them ...",
-                        "default": null
+                        "default": None
                 },
                 "package_as_template": {
                         "type": "string",
                         "description": "Specifies whether a project template or a project package will be created. Project templates can include maps, layouts, connections to databases and servers, and so on.  A project template can be used...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used to select or clip features.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equ...",
-                        "default": null
+                        "default": None
                 },
                 "apply_extent_to_arcsde": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to all layers or to enterprise geodatabase layers only.ALL\u2014 The specified extent will be applied to all layers. This is the default.ENTERPRISE_ON...",
-                        "default": null
+                        "default": None
                 },
                 "additional_files": {
                         "type": "string",
                         "description": "The additional files that will be included in the package.",
-                        "default": null
+                        "default": None
                 },
                 "summary": {
                         "type": "string",
                         "description": "The summary information that will be added to the properties of the package.",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "The tags that will be added to the properties of the package. Separate multiple tags with a comma or semicolon.",
-                        "default": null
+                        "default": None
                 },
                 "version": {
                         "type": "string",
                         "description": "Specifies the ArcGIS Pro version that certain objects such as projects, maps, and layers will be compatible with and persisted to.  Saving to an earlier version  can be helpful if the project will be ...",
-                        "default": null
+                        "default": None
                 },
                 "include_toolboxes": {
                         "type": "string",
                         "description": "Specifies whether project toolboxes will be consolidated and included in the output package. All projects require a default toolbox, which will be included in the output package regardless of this set...",
-                        "default": null
+                        "default": None
                 },
                 "include_history_items": {
                         "type": "string",
                         "description": "Specifies whether geoprocessing history items will be consolidated and included in the output package. Included history items will consolidate the data required to reprocess the history item.\r\nHISTORY...",
-                        "default": null
+                        "default": None
                 },
                 "read_only": {
                         "type": "string",
                         "description": "Specifies whether the project will be read-only. Read-only projects cannot be modified or saved.\r\nREAD_ONLY\u2014The project will be read-only.READ_WRITE\u2014The project will be writable. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "select_related_rows": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to related data sources.KEEP_ONLY_RELATED_ROWS\u2014Only related data corresponding to records within the specified\r\nextent will be consolidated.KEEP_...",
-                        "default": null
+                        "default": None
                 },
                 "preserve_sqlite": {
                         "type": "string",
                         "description": "Specifies whether mobile geodatabase data will be preserved in the output or written to file geodatabase format. If the input data is a mobile geodatabase network dataset, the output will be a mobile ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7351,57 +7351,57 @@ functions_declarations = {
                 "convert_data": {
                         "type": "string",
                         "description": "Specifies whether input layers will be converted to a file geodatabase or preserved in their original format.CONVERT\u2014 Data will be converted to a file geodatabase. This option does not apply to enterp...",
-                        "default": null
+                        "default": None
                 },
                 "convert_arcsde_data": {
                         "type": "string",
                         "description": "Specifies whether input enterprise geodatabase layers will be converted to a file geodatabase or preserved in their original format. CONVERT_ARCSDE\u2014 Enterprise geodatabase data will be converted to a ...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used to select or clip features.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equ...",
-                        "default": null
+                        "default": None
                 },
                 "apply_extent_to_arcsde": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to all layers or to enterprise geodatabase layers only.ALL\u2014 The specified extent will be applied to all layers. This is the default.ARCSDE_ONLY\u2014T...",
-                        "default": null
+                        "default": None
                 },
                 "schema_only": {
                         "type": "string",
                         "description": "Specifies whether all records for input and output datasets or only the schema of input and output datasets will be consolidated or packaged.ALL\u2014 All records for input and output datasets will be cons...",
-                        "default": null
+                        "default": None
                 },
                 "arcgisruntime": {
                         "type": "string",
                         "description": "Specifies whether the package will support ArcGIS Maps SDKs.   To support ArcGIS Maps SDKs, all data sources will be converted to a file geodatabase.DESKTOP\u2014The output package will not support ArcGIS ...",
-                        "default": null
+                        "default": None
                 },
                 "additional_files": {
                         "type": "string",
                         "description": "The additional files that will be included in the package.",
-                        "default": null
+                        "default": None
                 },
                 "summary": {
                         "type": "string",
                         "description": "The text that will be used as the output package's summary property.",
-                        "default": null
+                        "default": None
                 },
                 "tags": {
                         "type": "string",
                         "description": "The tag information that will be added to the properties of the package. Multiple tags can be added, separated by a comma or semicolon.",
-                        "default": null
+                        "default": None
                 },
                 "version": {
                         "type": "string",
                         "description": "Specifies the ArcGIS Pro version that certain objects such as projects, maps, and layers will be compatible with and persisted to.  Saving to an earlier version  can be helpful if the project will be ...",
-                        "default": null
+                        "default": None
                 },
                 "select_related_rows": {
                         "type": "string",
                         "description": "Specifies whether the specified extent will be applied to related data sources.KEEP_ONLY_RELATED_ROWS\u2014Only related data corresponding to records within the specified\r\nextent will be consolidated.KEEP_...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7424,7 +7424,7 @@ functions_declarations = {
                 "out_coor_system": {
                         "type": "string",
                         "description": "The coordinate system of the output scene layer package. It can be any projected  or custom coordinate system. Supported geographic coordinate systems include WGS84 and China Geodetic Coordinate Syste...",
-                        "default": null
+                        "default": None
                 },
                 "transform_method": {
                         "type": "string",
@@ -7433,12 +7433,12 @@ functions_declarations = {
                 "texture_optimization": {
                         "type": "string",
                         "description": "Specifies the textures that will be optimized according to the target platform where the scene layer package will be used.Caution:Optimizations that include KTX2 may take significant time to process. ...",
-                        "default": null
+                        "default": None
                 },
                 "target_cloud_connection": {
                         "type": "string",
                         "description": "The target cloud connection file (.acs) where the scene layer content (.i3sREST) will be output.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7462,22 +7462,22 @@ functions_declarations = {
                 "out_coor_system": {
                         "type": "string",
                         "description": "The coordinate system of the output scene layer package. It can be any projected  or custom coordinate system. Supported geographic coordinate systems include WGS84 and China Geodetic Coordinate Syste...",
-                        "default": null
+                        "default": None
                 },
                 "transform_method": {
                         "type": "string",
                         "description": "The datum transformation method that will be used when the input layer's coordinate system uses a datum that differs from the output coordinate system. All transformations are bidirectional, regardles...",
-                        "default": null
+                        "default": None
                 },
                 "texture_optimization": {
                         "type": "string",
                         "description": "Specifies the textures that will be optimized according to the target platform where the scene layer package is used.Caution:Optimizations that include KTX2 may take significant time to process. For f...",
-                        "default": null
+                        "default": None
                 },
                 "target_cloud_connection": {
                         "type": "string",
                         "description": "The target cloud connection file (.acs) where the scene layer content (.i3sREST) will be output.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7496,42 +7496,42 @@ functions_declarations = {
                 "out_slpk": {
                         "type": "string",
                         "description": "The integrated mesh scene layer package that will be created. This parameter is required if the Target Cloud Connection parameter value is not specified.",
-                        "default": null
+                        "default": None
                 },
                 "anchor_point": {
                         "type": "string",
                         "description": "The point feature or .3mx, .xml, or .wld3  file that will be used to position the center of the OSGB model. If there are multiple points in the feature class, only the first point will be used to geor...",
-                        "default": null
+                        "default": None
                 },
                 "file_suffix": {
                         "type": "string",
                         "description": "Specifies the files that will be processed for the input dataset.*\u2014All binary files, regardless of their extension, will be processed to determine if they are in the OSGB format.osgb\u2014Only files with t...",
-                        "default": null
+                        "default": None
                 },
                 "out_coor_system": {
                         "type": "string",
                         "description": "The coordinate system of the output scene layer package. It can be any projected  or custom coordinate system. Supported geographic coordinate systems include WGS84 and China Geodetic Coordinate Syste...",
-                        "default": null
+                        "default": None
                 },
                 "max_texture_size": {
                         "type": "string",
                         "description": "The maximum texture size in pixels for each scene layer node.",
-                        "default": null
+                        "default": None
                 },
                 "texture_optimization": {
                         "type": "string",
                         "description": "Specifies the textures that will be optimized according to the target platform where the scene layer package is used.Caution:Optimizations that include KTX2 may take significant time to process. For f...",
-                        "default": null
+                        "default": None
                 },
                 "target_cloud_connection": {
                         "type": "string",
                         "description": "The target cloud connection file (.acs) where the scene layer content (.i3sREST) will be output.",
-                        "default": null
+                        "default": None
                 },
                 "out_name": {
                         "type": "string",
                         "description": "The output name of the scene layer content when output to a cloud store. This parameter is only available when the target_cloud_connection parameter value is specified.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7549,57 +7549,57 @@ functions_declarations = {
                 "out_slpk": {
                         "type": "string",
                         "description": "The output scene layer package (.slpk).",
-                        "default": null
+                        "default": None
                 },
                 "out_coor_system": {
                         "type": "string",
                         "description": "The coordinate system of the output scene layer package. It can be any projected  or custom coordinate system. Supported geographic coordinate systems include WGS84 and China Geodetic Coordinate Syste...",
-                        "default": null
+                        "default": None
                 },
                 "transform_method": {
                         "type": "string",
                         "description": "The datum transformation method that will be used when the input layer's coordinate system uses a datum that differs from the output coordinate system. All transformations are bidirectional, regardles...",
-                        "default": null
+                        "default": None
                 },
                 "attributes": {
                         "type": "string",
                         "description": "Specifies the source data attributes that will be included in the scene layer package. These values will be accessible when the content is consumed in other viewers. Select attributes that are require...",
-                        "default": null
+                        "default": None
                 },
                 "point_size_m": {
                         "type": "string",
                         "description": "The point size of the lidar data.\r\n For airborne lidar data, the default of 0 or a value close to the average point spacing is usually best. For terrestrial lidar data, the point size should match the...",
-                        "default": null
+                        "default": None
                 },
                 "xy_max_error_m": {
                         "type": "string",
                         "description": "The maximum x,y error tolerated. A higher tolerance will result in better data compression and more efficient data transfer. Values are expressed in meters. The default is 0.001.",
-                        "default": null
+                        "default": None
                 },
                 "z_max_error_m": {
                         "type": "string",
                         "description": "The maximum z-error tolerated. A higher tolerance will result in better data compression and more efficient data transfer. Values are expressed in meters. The default is 0.001.",
-                        "default": null
+                        "default": None
                 },
                 "in_coor_system": {
                         "type": "string",
                         "description": "The coordinate system of the input .laz files. This parameter is only used for .laz files that do not contain spatial reference information in their header or have a .prj file in the same location.",
-                        "default": null
+                        "default": None
                 },
                 "scene_layer_version": {
                         "type": "string",
                         "description": "The Indexed 3D Scene Layer (I3S) version of the resulting point cloud scene layer package. Specifying a version supports backward compatibility and allows scene layer packages to be shared with earlie...",
-                        "default": null
+                        "default": None
                 },
                 "target_cloud_connection": {
                         "type": "string",
                         "description": "The target cloud connection file (.acs) where the scene layer content (.i3sREST) will be output.",
-                        "default": null
+                        "default": None
                 },
                 "out_name": {
                         "type": "string",
                         "description": "The output name of the scene layer content when output to a cloud store. This parameter is only available when a target_cloud_connection parameter value is specified.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7621,17 +7621,17 @@ functions_declarations = {
                 "out_coor_system": {
                         "type": "string",
                         "description": "The coordinate system of the output scene layer package. It can be any projected  or custom coordinate system. Supported geographic coordinate systems include WGS84 and China Geodetic Coordinate Syste...",
-                        "default": null
+                        "default": None
                 },
                 "transform_method": {
                         "type": "string",
                         "description": "The datum transformation method that will be used when the input layer's coordinate system  uses a datum that differs from the output coordinate system. All transformations are bidirectional, regardle...",
-                        "default": null
+                        "default": None
                 },
                 "target_cloud_connection": {
                         "type": "string",
                         "description": "The target cloud connection file (.acs) where the scene layer content (.i3sREST) will be output.",
-                        "default": null
+                        "default": None
                 },
                 "support_symbol_referencing": {
                         "type": "string",
@@ -7677,7 +7677,7 @@ functions_declarations = {
                 "texture_optimization": {
                         "type": "string",
                         "description": "Specifies the textures that will be optimized according to the target platform where the scene layer package will be used.Caution:Optimizations that include KTX2 may take significant time to process. ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7704,17 +7704,17 @@ functions_declarations = {
                 "out_log": {
                         "type": "string",
                         "description": "The output log file that will summarize the results of the evaluation.",
-                        "default": null
+                        "default": None
                 },
                 "texture_optimization": {
                         "type": "string",
                         "description": "Specifies the textures that will be optimized according to the target platform where the scene layer package is used.Caution:Optimizations that include KTX2 may take significant time to process. For f...",
-                        "default": null
+                        "default": None
                 },
                 "date_format": {
                         "type": "string",
                         "description": "The format of the date values in the scene layers date fields. This parameter is hidden if no date fields are encountered.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7730,7 +7730,7 @@ functions_declarations = {
                 "in_slpk": {
                         "type": "string",
                         "description": "The scene layer package (*.slpk) that will be evaluated.",
-                        "default": null
+                        "default": None
                 },
                 "out_report": {
                         "type": "string",
@@ -7739,7 +7739,7 @@ functions_declarations = {
                 "in_folder": {
                         "type": "string",
                         "description": "The scene layer content (*.i3sREST) in a cloud store that will be evaluated.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7761,17 +7761,17 @@ functions_declarations = {
                 "invalid_photos_table": {
                         "type": "string",
                         "description": "An output table that will list any photo files in the input folder with invalid Exif metadata or empty or invalid coordinates.If no value is specified, the table will not be created.",
-                        "default": null
+                        "default": None
                 },
                 "include_non_geotagged_photos": {
                         "type": "string",
                         "description": "Specifies whether all photo files will be included in the output feature class or only those with valid coordinates.ALL_PHOTOS\u2014 All photos will be included as records in the output feature class. If a...",
-                        "default": null
+                        "default": None
                 },
                 "add_photos_attachments": {
                         "type": "string",
                         "description": "Specifies whether the input photos will be added to the output features as geodatabase attachments.Note:Adding attachments requires that the  output feature class be in a version 10 or later geodataba...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7802,22 +7802,22 @@ functions_declarations = {
                 "unmatched_photos_table": {
                         "type": "string",
                         "description": "The optional output table that will list any photo files in the input folder with an invalid time stamp or any photos that cannot be matched because there is no input row within the time tolerance.If ...",
-                        "default": null
+                        "default": None
                 },
                 "add_photos_attachments": {
                         "type": "string",
                         "description": "Specifies whether the photo files will be added to the rows of the input table as geodatabase attachments. Note:Adding attachments requires that the  output feature class be in a version 10 or later g...",
-                        "default": null
+                        "default": None
                 },
                 "time_tolerance": {
                         "type": "string",
                         "description": "The maximum difference (in seconds) between the date/time of an input row and a photo file that will be matched. If an input row and a photo file have time  stamps that are different by more than this...",
-                        "default": null
+                        "default": None
                 },
                 "clock_offset": {
                         "type": "string",
                         "description": "The difference (in seconds) between the internal clock of the digital camera used to capture the photos and the GPS unit. If the clock of the digital camera is behind the clock of the GPS unit, use a ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7842,17 +7842,17 @@ functions_declarations = {
                 "output_coordinate_system": {
                         "type": "string",
                         "description": "The coordinate system to be used to project the inputs. Valid values are a SpatialReference object, a file with a .prj extension, or a string representation of a coordinate system.",
-                        "default": null
+                        "default": None
                 },
                 "template_dataset": {
                         "type": "string",
                         "description": "The feature class or the feature dataset used to specify the output coordinate system used for projection.",
-                        "default": null
+                        "default": None
                 },
                 "transformation": {
                         "type": "string",
                         "description": "The name of the geographic transformation to be applied to convert data between two geographic coordinate systems (datums).",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7879,27 +7879,27 @@ functions_declarations = {
                 "transform_method": {
                         "type": "string",
                         "description": "This method can be used to convert data between two geographic coordinate systems or datums. This optional parameter may be required if the input and output coordinate systems have different datums.To...",
-                        "default": null
+                        "default": None
                 },
                 "in_coor_system": {
                         "type": "string",
                         "description": "The coordinate system of the input feature class or dataset. When the input has an unknown or unspecified coordinate system, you can specify the data's coordinate system without having to modify the i...",
-                        "default": null
+                        "default": None
                 },
                 "preserve_shape": {
                         "type": "string",
                         "description": "Specifies whether extra vertices will be added to the output lines or polygons so their projected shape is more accurate.NO_PRESERVE_SHAPE\u2014Extra vertices will not be added to the output lines or polyg...",
-                        "default": null
+                        "default": None
                 },
                 "max_deviation": {
                         "type": "string",
                         "description": "The distance a projected line or polygon can deviate from its exact projected location when the preserve_shape parameter is set to PRESERVE_SHAPE. The default is 100 times the x,y tolerance of the spa...",
-                        "default": null
+                        "default": None
                 },
                 "vertical": {
                         "type": "string",
                         "description": "Specifies whether a vertical transformation will be applied.This parameter is only enabled when the input and output coordinate systems have a vertical coordinate system and the input feature class co...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7939,22 +7939,22 @@ functions_declarations = {
                 "id_field": {
                         "type": "string",
                         "description": "This parameter is ignored, as all fields are transferred to output table.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the output feature class. The default is GCS_WGS_1984.The tool projects the output  to the spatial reference specified. If the input and output coordinate systems are in a dif...",
-                        "default": null
+                        "default": None
                 },
                 "in_coor_system": {
                         "type": "string",
                         "description": "The spatial reference of the input data. If the input spatial reference cannot be obtained from the input table, a default of GCS_WGS_1984 will be used.",
-                        "default": null
+                        "default": None
                 },
                 "exclude_invalid_records": {
                         "type": "string",
                         "description": "Specifies whether to exclude records with invalid notation.EXCLUDE_INVALID\u2014Invalid records will be excluded and only valid records will be converted to points in the output. This is the default.INCLUD...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -7989,12 +7989,12 @@ functions_declarations = {
                 "extent": {
                         "type": "string",
                         "description": "The geographic area where the transformation is applicable. Transformed data within the provided extent is guaranteed to be converted with the specified level of accuracy",
-                        "default": null
+                        "default": None
                 },
                 "accuracy": {
                         "type": "string",
                         "description": "The expected difference between transformed (output) coordinates and their true values. Because any transformation in general degrades the quality of the dataset, the accuracy value is always the maxi...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8023,22 +8023,22 @@ functions_declarations = {
                 "interpolation_gcs": {
                         "type": "string",
                         "description": "The interpolation geographic coordinate system.This parameter is only active if a vertical transformation method requires it.The geographic coordinate system is used when interpolating the offset valu...",
-                        "default": null
+                        "default": None
                 },
                 "custom_vt": {
                         "type": "string",
                         "description": "The vertical transformation method that will be used.From the drop-down list, choose the transformation method that will be used to transform the data from the input vertical coordinate system to the ...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "The area where the transformation is applicable. Use WGS84 (WKID: 4326) or another GNSS-based geographic coordinate system such as NAD 1983 or GDA2020 for the extent coordinate system. If a projected ...",
-                        "default": null
+                        "default": None
                 },
                 "accuracy": {
                         "type": "string",
                         "description": "A general statement of accuracy in meters.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8054,37 +8054,37 @@ functions_declarations = {
                 "spatial_reference": {
                         "type": "string",
                         "description": "The name of the spatial reference to be created.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference_template": {
                         "type": "string",
                         "description": "The feature class or layer to be used as a template to set the value for the spatial reference.",
-                        "default": null
+                        "default": None
                 },
                 "xy_domain": {
                         "type": "string",
                         "description": "The allowable coordinate range for x,y coordinates.",
-                        "default": null
+                        "default": None
                 },
                 "z_domain": {
                         "type": "string",
                         "description": "The allowable coordinate range for z-values.",
-                        "default": null
+                        "default": None
                 },
                 "m_domain": {
                         "type": "string",
                         "description": "The allowable coordinate range for m-values.",
-                        "default": null
+                        "default": None
                 },
                 "template": {
                         "type": "string",
                         "description": "The feature classes or layers that can be used to define the XY Domain.",
-                        "default": null
+                        "default": None
                 },
                 "expand_ratio": {
                         "type": "string",
                         "description": "The percentage by which the XY Domain will be expanded.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": []
@@ -8162,32 +8162,32 @@ functions_declarations = {
                 "resampling_type": {
                         "type": "string",
                         "description": "Specifies the resampling technique that will be used. The default is Nearest.NEAREST\u2014 The nearest neighbor technique will be used. It minimizes changes to pixel values since no new values are created ...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the new raster using an existing raster dataset or by specifying its width (x) and height (y).",
-                        "default": null
+                        "default": None
                 },
                 "geographic_transform": {
                         "type": "string",
                         "description": "The geographic transformation when\r\nprojecting from one geographic system or datum to another.\r\nA transformation is required when the input and output coordinate systems have different datums.",
-                        "default": null
+                        "default": None
                 },
                 "registration_point": {
                         "type": "string",
                         "description": "The lower left point for\r\nanchoring the output cells. This point does not need to be a corner\r\ncoordinate or fall within the\r\nraster dataset.\r\nThe Snap Raster environment setting will take priority ov...",
-                        "default": null
+                        "default": None
                 },
                 "in_coor_system": {
                         "type": "string",
                         "description": "The coordinate system of the input raster dataset.This parameter is only enabled when the input has an unknown coordinate system. When this is the case, specify a current coordinate system for the ras...",
-                        "default": null
+                        "default": None
                 },
                 "vertical": {
                         "type": "string",
                         "description": "Specifies whether a vertical transformation will be applied.This parameter is enabled when the input and output coordinate systems have a vertical coordinate system and the input feature class coordin...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8211,27 +8211,27 @@ functions_declarations = {
                 "reference_raster": {
                         "type": "string",
                         "description": "The raster dataset that will align the input raster dataset. Leave this parameter empty if you want to register your multispectral mosaic dataset items to their associated  panchromatic raster dataset...",
-                        "default": null
+                        "default": None
                 },
                 "input_link_file": {
                         "type": "string",
                         "description": "The file that has the coordinates to link the input raster dataset with the reference. The input link table works with one mosaic item in the mosaic layer. The input must specify which item is being p...",
-                        "default": null
+                        "default": None
                 },
                 "transformation_type": {
                         "type": "string",
                         "description": "Specifies the method for shifting the raster dataset.POLYORDER0\u2014 This method uses a zero-order polynomial to shift your data. This is commonly used when your data is already georeferenced, but a small...",
-                        "default": null
+                        "default": None
                 },
                 "output_cpt_link_file": {
                         "type": "string",
                         "description": "If specified, a text file will be written containing the links created by this tool. This file can be used in the\r\nWarp From File tool. The output link table\r\nworks with one mosaic dataset item in the...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_rms_value": {
                         "type": "string",
                         "description": "The amount of modeled error (in pixels) that you want in the output. The default is 0.5, and values below 0.3 are not recommended as this leads to overfitting.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8286,17 +8286,17 @@ functions_declarations = {
                 "pivot_point": {
                         "type": "string",
                         "description": "The point the raster will rotate around. If left blank, the lower left corner of the input raster dataset will serve as the pivot.",
-                        "default": null
+                        "default": None
                 },
                 "resampling_type": {
                         "type": "string",
                         "description": "Specifies the resampling technique that will be used. The default is Nearest.NEAREST\u2014 The nearest neighbor technique will be used. It minimizes changes to pixel values since no new values are created ...",
-                        "default": null
+                        "default": None
                 },
                 "clipping_extent": {
                         "type": "string",
                         "description": "The processing extent of the raster dataset.  The source data will be clipped to the specified extent before rotation.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8328,7 +8328,7 @@ functions_declarations = {
                 "in_snap_raster": {
                         "type": "string",
                         "description": "The raster dataset used to align the cells of the output raster dataset.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8361,12 +8361,12 @@ functions_declarations = {
                 "transformation_type": {
                         "type": "string",
                         "description": "Specifies the transformation method for shifting the raster dataset.POLYORDER0\u2014 A zero-order polynomial will be used to shift the data. This is commonly used when the data is georeferenced, but a smal...",
-                        "default": null
+                        "default": None
                 },
                 "resampling_type": {
                         "type": "string",
                         "description": "Specifies the resampling technique that will be used. The default is Nearest.NEAREST\u2014 The nearest neighbor technique will be used. It minimizes changes to pixel values since no new values are created ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8395,12 +8395,12 @@ functions_declarations = {
                 "transformation_type": {
                         "type": "string",
                         "description": "Specifies the transformation method for shifting the raster dataset.POLYORDER0\u2014 A zero-order polynomial will be used to shift the data. This is commonly used when the data is georeferenced, but a smal...",
-                        "default": null
+                        "default": None
                 },
                 "resampling_type": {
                         "type": "string",
                         "description": "The resampling algorithm to be used.NEAREST\u2014 The nearest neighbor technique will be used. It minimizes changes to pixel values since no new values are created and is the fastest resampling technique. ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8428,22 +8428,22 @@ functions_declarations = {
                 "in_template_dataset": {
                         "type": "string",
                         "description": "A raster dataset or feature class\r\nthat will be used as the extent. The clip output\r\nincludes pixels that intersect the minimum bounding\r\nrectangle.\r\nIf a feature class is used as the output extent an...",
-                        "default": null
+                        "default": None
                 },
                 "nodata_value": {
                         "type": "string",
                         "description": "The value for pixels to be considered as NoData.",
-                        "default": null
+                        "default": None
                 },
                 "clipping_geometry": {
                         "type": "string",
                         "description": "Specifies whether the minimum bounding rectangle or the geometry of the specified feature class will be used to clip the data.NONE\u2014The minimum bounding rectangle will be used to clip the data. This is...",
-                        "default": null
+                        "default": None
                 },
                 "maintain_clipping_extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used in the clipping output.MAINTAIN_EXTENT\u2014The number of columns and rows will be adjusted and  the pixels will be resampled to exactly match the clipping extent spe...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8471,92 +8471,92 @@ functions_declarations = {
                 "update_cellsize_ranges": {
                         "type": "string",
                         "description": "Specifies whether the cell size ranges of each raster in the mosaic dataset will be calculated. These values will be written to the attribute table in the minPS and maxPS fields.UPDATE_CELL_SIZES\u2014The ...",
-                        "default": null
+                        "default": None
                 },
                 "update_boundary": {
                         "type": "string",
                         "description": "Specifies whether the boundary polygon of a mosaic dataset will be generated or updated. By default, the boundary merges all the footprint polygons to create a single boundary representing the extent ...",
-                        "default": null
+                        "default": None
                 },
                 "update_overviews": {
                         "type": "string",
                         "description": "Specifies whether overviews for a mosaic dataset will be defined and generated.UPDATE_OVERVIEWS\u2014Overviews will be defined and generated.NO_OVERVIEWS\u2014Overviews will not be defined or generated. This is...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_pyramid_levels": {
                         "type": "string",
                         "description": "The maximum number of pyramid levels that will be used in the mosaic dataset. For example, a value of 2 will use only the first two pyramid levels from the source  raster.  Leaving this parameter blan...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_cell_size": {
                         "type": "string",
                         "description": "The maximum pyramid cell size that will be used in the mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_dimension": {
                         "type": "string",
                         "description": "The minimum dimensions of a raster pyramid that will be used in the mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference system of the input data.Specify a value if the data does not have a coordinate system; otherwise, the coordinate system of the mosaic dataset will be used. This can also be used...",
-                        "default": null
+                        "default": None
                 },
                 "filter": {
                         "type": "string",
                         "description": "A filter for the data being added to the mosaic dataset. You can use SQL expressions to create the data filter. The wildcards for the filter work on the full path to the input data.For example, the fo...",
-                        "default": null
+                        "default": None
                 },
                 "sub_folder": {
                         "type": "string",
                         "description": "Specifies whether subfolders will be recursively explored.SUBFOLDERS\u2014All subfolders will be explored for data. This is the default.NO_SUBFOLDERS\u2014Only the top-level folder will be explored for data.",
-                        "default": null
+                        "default": None
                 },
                 "duplicate_items_action": {
                         "type": "string",
                         "description": "Specifies how duplicate rasters will be handled. A check will be performed to determine whether each raster has already been added, using the original path and file name. Specify the option to use whe...",
-                        "default": null
+                        "default": None
                 },
                 "build_pyramids": {
                         "type": "string",
                         "description": "Specifies whether pyramids will be built for each source raster.NO_PYRAMIDS\u2014Pyramids will not be built. This is the default.BUILD_PYRAMIDS\u2014Pyramids will be built.",
-                        "default": null
+                        "default": None
                 },
                 "calculate_statistics": {
                         "type": "string",
                         "description": "Specifies whether statistics will be calculated for each source raster.NO_STATISTICS\u2014Statistics will not be calculated. This is the default.CALCULATE_STATISTICS\u2014Statistics will be calculated.",
-                        "default": null
+                        "default": None
                 },
                 "build_thumbnails": {
                         "type": "string",
                         "description": "Specifies whether thumbnails will be built for each source raster.NO_THUMBNAILS\u2014Thumbnails will not be built. This is the default.BUILD_THUMBNAILS\u2014Thumbnails will be built.",
-                        "default": null
+                        "default": None
                 },
                 "operation_description": {
                         "type": "string",
                         "description": "The description that will be used to represent the operation of adding raster data. It will be added to the raster type table, which can be used as part of a search or as a reference at another time.",
-                        "default": null
+                        "default": None
                 },
                 "force_spatial_reference": {
                         "type": "string",
                         "description": "Specifies the coordinate system that will be used. Use the coordinate system specified in the spatial_reference parameter for all the rasters when loading data into the mosaic dataset.NO_FORCE_SPATIAL...",
-                        "default": null
+                        "default": None
                 },
                 "estimate_statistics": {
                         "type": "string",
                         "description": "Specifies whether statistics will be estimated on the mosaic dataset for faster rendering and processing at the mosaic dataset level.NO_STATISTICS\u2014Statistics will not be estimated. Statistics generate...",
-                        "default": null
+                        "default": None
                 },
                 "enable_pixel_cache": {
                         "type": "string",
                         "description": "Specifies whether the pixel cache will be generated for faster display and processing of the mosaic dataset.NO_PIXEL_CACHE\u2014The pixel cache will not be generated. This is the default.USE_PIXEL_CACHE\u2014Th...",
-                        "default": null
+                        "default": None
                 },
                 "cache_location": {
                         "type": "string",
                         "description": "The location of the pixel cache. If no location is provided, the cache will be written to C:\\Users\\&lt;Username&gt;\\AppData\\Local\\ESRI\\rasterproxies\\.\r\nOnce the location is provided, you do not need t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8576,17 +8576,17 @@ functions_declarations = {
                 "side_tablesoperation": {
                         "type": "string",
                         "description": "Specifies the operations that will be permissible for a nonowner to perform on the mosaic dataset. ANALYSIS\u2014A nonowner will be  allowed to run the Analyze Mosaic Dataset  tool on the mosaic dataset.BO...",
-                        "default": null
+                        "default": None
                 },
                 "raster_type_namesraster_type": {
                         "type": "string",
                         "description": "Specifies the raster types that nonowners can add to the mosaic dataset.To specify a custom raster type, provide the location of the custom raster type file.ADS\u2014The Leica ADS raster type can be added....",
-                        "default": null
+                        "default": None
                 },
                 "editor_tracking": {
                         "type": "string",
                         "description": "Specifies whether editor tracking will be enabled.Editor tracking can help you maintain accountability and enforce quality-control standards. NO_EDITOR_TRACKING\u2014Editor tracking will not be enabled. Th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8604,12 +8604,12 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL statement that confines your analysis to specific raster datasets within this mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "checker_keywords": {
                         "type": "string",
                         "description": "Choose which parts of the mosaic dataset you want to analyze for known issues.\r\nFOOTPRINT\u2014 Analyze the footprint geometry of each selected mosaic dataset item. This is checked on by default.FUNCTION\u2014 ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8627,17 +8627,17 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL query to compute a boundary for select raster datasets. Use this option in conjunction with setting the append_to_existing parameter to APPEND to save time when adding new raster datasets.",
-                        "default": null
+                        "default": None
                 },
                 "append_to_existing": {
                         "type": "string",
                         "description": "Set this to APPEND when adding new raster datasets to an existing mosaic dataset. Instead of calculating the entire boundary, APPEND will merge the boundary of the new raster datasets with the existin...",
-                        "default": null
+                        "default": None
                 },
                 "simplification_method": {
                         "type": "string",
                         "description": "Specifies the simplification method that will be used to reduce the number of vertices, since a dense boundary can affect performance.Choose the simplification method to use to simplify the boundary.N...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8655,77 +8655,77 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to select specific raster datasets within the mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "reset_footprint": {
                         "type": "string",
                         "description": "Refine the footprints using one of the following methods:RADIOMETRY\u2014 Exclude pixels with a value outside of a defined  range. This option is generally used to exclude border areas, which do not contai...",
-                        "default": null
+                        "default": None
                 },
                 "min_data_value": {
                         "type": "string",
                         "description": "Exclude pixels with a value less than this number.",
-                        "default": null
+                        "default": None
                 },
                 "max_data_value": {
                         "type": "string",
                         "description": "Exclude pixels with a value greater than this number.",
-                        "default": null
+                        "default": None
                 },
                 "approx_num_vertices": {
                         "type": "string",
                         "description": "Choose between 4 and 10,000. More vertices will improve accuracy but can extend processing time. A value of -1 will calculate all vertices. More vertices will increase accuracy but also the processing...",
-                        "default": null
+                        "default": None
                 },
                 "shrink_distance": {
                         "type": "string",
                         "description": "Clip the footprint by this distance. This can eliminate artifacts from using lossy compression, which causes the edges of the image to overlap into NoData areas.Shrinking of the polygon is used to cou...",
-                        "default": null
+                        "default": None
                 },
                 "maintain_edges": {
                         "type": "string",
                         "description": "Use this parameter when using raster datasets that have been tiled and are adjacent (line up along the seams with little to no overlap).NO_MAINTAIN_EDGES\u2014Remove the sheet edges from all the footprints...",
-                        "default": null
+                        "default": None
                 },
                 "skip_derived_images": {
                         "type": "string",
                         "description": "Adjust the footprints of overviews.SKIP_DERIVED_IMAGES\u2014Do not adjust the footprints of overviews. This is the default. NO_SKIP_DERIVED_IMAGES\u2014Adjust the footprints of overviews and associated raster d...",
-                        "default": null
+                        "default": None
                 },
                 "update_boundary": {
                         "type": "string",
                         "description": "Update the boundary of the mosaic dataset if you have added or removed imagery that changes the extent.UPDATE_BOUNDARY\u2014Update the boundary. This is the default.NO_BOUNDARY\u2014Do not update the boundary.",
-                        "default": null
+                        "default": None
                 },
                 "request_size": {
                         "type": "string",
                         "description": "Set the resampled extent (in columns and rows) for the raster when building footprints. Greater image resolution provides more detail in the raster dataset but increases the processing time. A value o...",
-                        "default": null
+                        "default": None
                 },
                 "min_region_size": {
                         "type": "string",
                         "description": "Avoid small holes in your imagery when using pixel values to create a mask. For example, your imagery may have a range of values from 0 to 255, and to mask clouds, you've excluded values from 245 to 2...",
-                        "default": null
+                        "default": None
                 },
                 "simplification_method": {
                         "type": "string",
                         "description": "Reduce the number of vertices in the footprint to improve performance.NONE\u2014Do not limit the number of vertices. This is the default.CONVEX_HULL\u2014Use the minimum bounding box to simplify the footprint.E...",
-                        "default": null
+                        "default": None
                 },
                 "edge_tolerance": {
                         "type": "string",
                         "description": "Snap the footprint to the sheet edge if it is within this tolerance. Units are the same as those in the mosaic dataset coordinate system. This is used when maintain_edges is set to MAINTAIN_EDGES.By d...",
-                        "default": null
+                        "default": None
                 },
                 "max_sliver_size": {
                         "type": "string",
                         "description": "Identify all polygons that are smaller than the square of this value. The  value is specified in pixels and is based on the request_size, not  the spatial resolution of the source raster.Regions less ...",
-                        "default": null
+                        "default": None
                 },
                 "min_thinness_ratio": {
                         "type": "string",
                         "description": "Define the thinness of slivers on a scale from 0 to 1.0, where 1.0 represents a circle and 0.0 represents a polygon that approaches a straight line. Polygons that are below both the max_sliver_size an...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8743,52 +8743,52 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An  SQL expression to select  specific raster datasets within the mosaic dataset on which you want the item cache built.",
-                        "default": null
+                        "default": None
                 },
                 "define_cache": {
                         "type": "string",
                         "description": "Choose to define the mosaic dataset cache. A Cached  Raster function will be inserted to the selected items. If an item already has a Cached Raster function, it will not add another one.DEFINE_CACHE\u2014T...",
-                        "default": null
+                        "default": None
                 },
                 "generate_cache": {
                         "type": "string",
                         "description": "Choose to generate the cache files based on the properties defined in the Cached Raster function, such as the location and the compression of the cache.GENERATE_CACHE\u2014Cache will be generated. This is ...",
-                        "default": null
+                        "default": None
                 },
                 "item_cache_folder": {
                         "type": "string",
                         "description": "Choose to overwrite the default location to save your cache. If the mosaic dataset is inside of a file geodatabase, by default, the cache is saved in a folder with the same name as the geodatabase and...",
-                        "default": null
+                        "default": None
                 },
                 "compression_method": {
                         "type": "string",
                         "description": "Choose how you want to compress your data for faster transmission.LOSSLESS\u2014 Retain the values of each pixel when generating cache. Lossless has a compression ratio of approximately 2:1.LOSSY\u2014 Appropri...",
-                        "default": null
+                        "default": None
                 },
                 "compression_quality": {
                         "type": "string",
                         "description": "Set a compression quality when using the lossy method. The compression quality value is between 1 and 100 percent, with 100 compressing the least.",
-                        "default": null
+                        "default": None
                 },
                 "max_allowed_rows": {
                         "type": "string",
                         "description": "Limit the size of the cache dataset by number of rows. If value is more than the number of rows in the dataset, the cache will not generate.",
-                        "default": null
+                        "default": None
                 },
                 "max_allowed_columns": {
                         "type": "string",
                         "description": "Limit the size of the cache dataset by number of columns. If value is more than the number of columns in the dataset, the cache will not generate.",
-                        "default": null
+                        "default": None
                 },
                 "request_size_type": {
                         "type": "string",
                         "description": "Resample the cache using one of these two methods:PIXEL_SIZE_FACTOR\u2014 Set a scaling factor relative to the pixel size. To not resample the cache, choose PIXEL_SIZE_FACTOR and set the request_size param...",
-                        "default": null
+                        "default": None
                 },
                 "request_size": {
                         "type": "string",
                         "description": "Set a value to apply to the request_size_type.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8806,27 +8806,27 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL statement to select specific rasters within the mosaic dataset.  The selected rasters will have their overview built.",
-                        "default": null
+                        "default": None
                 },
                 "define_missing_tiles": {
                         "type": "string",
                         "description": "Identify where overviews are needed and define them.DEFINE_MISSING_TILES\u2014Automatically identify where overviews are needed and define them. This is the default.NO_DEFINE_MISSING_TILES\u2014 Do not define n...",
-                        "default": null
+                        "default": None
                 },
                 "generate_overviews": {
                         "type": "string",
                         "description": "Generate all overviews that need to be created or re-created. This includes missing overviews and stale overviews.GENERATE_OVERVIEWS\u2014Generate all overviews, including those that already exist. This is...",
-                        "default": null
+                        "default": None
                 },
                 "generate_missing_images": {
                         "type": "string",
                         "description": "Use if overviews have been defined but not generated.GENERATE_MISSING_IMAGES\u2014Generate overviews that have been defined but not generated. This is the default.IGNORE_MISSING_IMAGES\u2014 Do not generate ove...",
-                        "default": null
+                        "default": None
                 },
                 "regenerate_stale_images": {
                         "type": "string",
                         "description": "Overviews become stale when you change the underlying raster datasets or modify their properties.REGENERATE_STALE_IMAGES\u2014Identify and regenerate stale overviews. This is the default.IGNORE_STALE_IMAGE...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8848,87 +8848,87 @@ functions_declarations = {
                 "sort_method": {
                         "type": "string",
                         "description": "Set a rule to determine which raster will be used to generate seamlines when images overlap.NORTH_WEST\u2014 Select the raster datasets that have center points closest to the northwest corner of the bounda...",
-                        "default": null
+                        "default": None
                 },
                 "sort_order": {
                         "type": "string",
                         "description": "Choose whether to sort the rasters in ascending order or descending order.ASCENDING\u2014 Sort the rasters in ascending order. This is the default.DESCENDING\u2014 Sort the rasters in descending order.",
-                        "default": null
+                        "default": None
                 },
                 "order_by_attribute": {
                         "type": "string",
                         "description": "Order the raster datasets based on this field when the sort method is BY_ATTRIBUTE. The default attribute is ObjectID.",
-                        "default": null
+                        "default": None
                 },
                 "order_by_base_value": {
                         "type": "string",
                         "description": "Sort the rasters by their difference between this value and their value in the order_by_attribute  parameter.",
-                        "default": null
+                        "default": None
                 },
                 "view_point": {
                         "type": "string",
                         "description": "Set the coordinate location to use when sort_method  is CLOSEST_TO_VIEWPOINT.",
-                        "default": null
+                        "default": None
                 },
                 "computation_method": {
                         "type": "string",
                         "description": "Choose how to build seamlines.GEOMETRY\u2014Generate seamlines for overlapping areas based on the intersection of footprints. Areas with no overlapping imagery will merge the footprints. This is the defaul...",
-                        "default": null
+                        "default": None
                 },
                 "blend_width": {
                         "type": "string",
                         "description": "Blending (feathering) occurs along a seamline between pixels where there are overlapping rasters. The blend width defines how many pixels will be blended.If the blend width value is 10, and you use BO...",
-                        "default": null
+                        "default": None
                 },
                 "blend_type": {
                         "type": "string",
                         "description": "Determine how to blend one image into another, over the seamlines. Options are to blend inside the seamlines, outside the seamlines, or both inside and outside.BOTH\u2014 Blend using pixels on either side ...",
-                        "default": null
+                        "default": None
                 },
                 "request_size": {
                         "type": "string",
                         "description": "Specify the number of\r\ncolumns and rows for resampling. The maximum value is\r\n5,000. Increase or decrease this\r\nvalue based on the complexity of your raster data. Greater image\r\nresolution provides mo...",
-                        "default": null
+                        "default": None
                 },
                 "request_size_type": {
                         "type": "string",
                         "description": "Set the units for the Request Size.PIXELS\u2014Modify the request size based on the pixel size.This is the default option and resamples the closest image based on the raster pixel size.PIXELSIZE_FACTOR\u2014Mod...",
-                        "default": null
+                        "default": None
                 },
                 "blend_width_units": {
                         "type": "string",
                         "description": "Specify the unit of measurement for blend width.PIXELS\u2014Measure using the number of pixels. This is the default.GROUND_UNITS\u2014Measure using the same units as the mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "area_of_interest": {
                         "type": "string",
                         "description": "Build seamlines on all the rasters that intersect this polygon. To select an area of interest, use an input feature class.",
-                        "default": null
+                        "default": None
                 },
                 "where_clause": {
                         "type": "string",
                         "description": "SQL expression to build seamlines on specific raster datasets within the mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "update_existing": {
                         "type": "string",
                         "description": "Update seamlines that are affected by the addition or deletion of  the mosaic dataset items.IGNORE_EXISTING\u2014Regenerates seamlines for all items and ignores existing seamlines, if any. This is the defa...",
-                        "default": null
+                        "default": None
                 },
                 "min_region_size": {
                         "type": "string",
                         "description": "Specify the minimum region size, in pixel units. Any polygons smaller than this specified threshold will be  removed in the seamline result.\r\nThe default is 100 pixels.  This parameter value should be...",
-                        "default": null
+                        "default": None
                 },
                 "min_thinness_ratio": {
                         "type": "string",
                         "description": "Define how thin a  polygon can be, before it is considered a sliver. This is based on a scale from 0 to 1.0, where a value of 0.0 represents a polygon that is almost a straight line, and a value of 1....",
-                        "default": null
+                        "default": None
                 },
                 "max_sliver_size": {
                         "type": "string",
                         "description": "Specify the maximum size a polygon can be to still be considered a sliver. This parameter is specified in pixels and is based on the request_size, not the spatial resolution of the source raster. Any ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8947,32 +8947,32 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to select specific rasters in the mosaic dataset on which to calculate visibility levels.  If no query is specified, all the mosaic dataset items will have their cell size ranges cal...",
-                        "default": null
+                        "default": None
                 },
                 "do_compute_min": {
                         "type": "string",
                         "description": "Compute the minimum pixel size for each selected raster in the mosaic dataset.MIN_CELL_SIZES\u2014Compute the minimum pixel size. This is the default. NO_MIN_CELL_SIZES\u2014Do not compute the minimum pixel siz...",
-                        "default": null
+                        "default": None
                 },
                 "do_compute_max": {
                         "type": "string",
                         "description": "Compute the maximum pixel size for each selected raster in the mosaic dataset.MAX_CELL_SIZES\u2014Compute the maximum pixel size. This is the default.NO_MAX_CELL_SIZES\u2014Do not compute the maximum pixel size...",
-                        "default": null
+                        "default": None
                 },
                 "max_range_factor": {
                         "type": "string",
                         "description": "Set a multiplication factor to apply to the\r\nnative resolution. The default is 10, meaning that an image with a\r\nresolution of 30 meters will be visible at a\r\nscale appropriate for 300 meters. The rel...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size_tolerance_factor": {
                         "type": "string",
                         "description": "Use this to group images with similar resolutions as having the same nominal resolution. For example 1 m imagery and 0.9 m imagery can be grouped together by setting this factor to 0.1, because they a...",
-                        "default": null
+                        "default": None
                 },
                 "update_missing_only": {
                         "type": "string",
                         "description": "Calculate only the missing cell size range values.UPDATE_ALL\u2014Calculate cell size minimum and maximum values for selected rasters within the mosaic dataset. This is the default.UPDATE_MISSING_ONLY\u2014 Cal...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -8990,7 +8990,7 @@ functions_declarations = {
                 "generated_before": {
                         "type": "string",
                         "description": "All cache generated before this date will be deleted.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9008,82 +9008,82 @@ functions_declarations = {
                 "balancing_method": {
                         "type": "string",
                         "description": "Specifies the balancing method that will be used. DODGING\u2014Each pixel's value will be changed toward a target color. With this method, you must also choose the type of target color surface, which affec...",
-                        "default": null
+                        "default": None
                 },
                 "color_surface_type": {
                         "type": "string",
                         "description": "Specifies how the target color of each pixel will be determined.This parameter is enabled when the balancing_method parameter is set to DODGING.SINGLE_COLOR\u2014 All the pixels will be altered toward a si...",
-                        "default": null
+                        "default": None
                 },
                 "target_raster": {
                         "type": "string",
                         "description": "The raster that will be used to color balance the other images. The balance method and color surface type, if applicable, will be derived from this image.",
-                        "default": null
+                        "default": None
                 },
                 "exclude_raster": {
                         "type": "string",
                         "description": "A raster that identifies the locations that will be excluded.Create a mask using the Generate Exclude Area tool.",
-                        "default": null
+                        "default": None
                 },
                 "stretch_type": {
                         "type": "string",
                         "description": "Specifies how the range of values will be stretched before color balancing.NONE\u2014 The original pixel values will be used. This is the default.ADAPTIVE\u2014 An adaptive prestretch will be applied before any...",
-                        "default": null
+                        "default": None
                 },
                 "gamma": {
                         "type": "string",
                         "description": "A numeric value that will adjust the overall brightness of an image. A low value will minimize the contrast between moderate values by making them appear darker. Higher values will increase the contra...",
-                        "default": null
+                        "default": None
                 },
                 "block_field": {
                         "type": "string",
                         "description": "A field in the mosaic dataset's attribute table\r\nthat will be used to identify items that will be considered one item when performing some calculations and operations.",
-                        "default": null
+                        "default": None
                 },
                 "in_dem_raster": {
                         "type": "string",
                         "description": "A DEM to help estimate the overlapped locations in the mosaic dataset.This parameter is enabled when the balancing_method parameter is set to GLOBAL_FIT.",
-                        "default": null
+                        "default": None
                 },
                 "zfactor": {
                         "type": "string",
                         "description": "A conversion factor that adjusts the units of measure for the vertical (or elevation) units when they are different from the horizontal coordinate (x,y) units of the input surface DEM. It is the numbe...",
-                        "default": null
+                        "default": None
                 },
                 "zoffset": {
                         "type": "string",
                         "description": "A base value that will be added to the elevation value in the DEM. This can be used to offset elevation values that do not start at sea level.This parameter is enabled when the in_DEM_raster parameter...",
-                        "default": null
+                        "default": None
                 },
                 "geoid": {
                         "type": "string",
                         "description": "Specifies whether the geoid correction required by rational polynomial coefficients ( RPC) that reference ellipsoidal heights will be made. Most elevation datasets are referenced to sea level orthomet...",
-                        "default": null
+                        "default": None
                 },
                 "solution_points": {
                         "type": "string",
                         "description": "The solution points from block adjustment output to help accurately estimate the overlapped locations. This parameter is helpful when the image has less than 50 percent overlap with its neighbors. Usi...",
-                        "default": null
+                        "default": None
                 },
                 "target_objectid": {
                         "type": "string",
                         "description": "The target raster object ID that will be used to color balance the other images. The balance method and color surface type, if applicable, will be derived from this image.This parameter is enabled whe...",
-                        "default": null
+                        "default": None
                 },
                 "refine_estimation": {
                         "type": "string",
                         "description": "Specifies whether the color balancing estimation for corresponding locations in the overlapped areas will be refined using image correlation. This parameter is helpful for the exact color difference c...",
-                        "default": null
+                        "default": None
                 },
                 "reduce_shadow": {
                         "type": "string",
                         "description": "Specifies whether the negative influence of shadows on the color balance output will be reduced.This parameter is enabled when the balancing_method parameter is set to GLOBAL_FIT.NO_REDUCE_SHADOW\u2014The ...",
-                        "default": null
+                        "default": None
                 },
                 "reduce_cloud": {
                         "type": "string",
                         "description": "Specifies whether the negative influence of clouds on the color balance output will be reduced. This parameter is active when the balancing_method parameter is set to DODGING or GLOBAL_FIT.NO_REDUCE_C...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9101,7 +9101,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "SQL expression to select specific rasters  within the mosaic dataset  on which to compute dirty areas.",
-                        "default": null
+                        "default": None
                 },
                 "timestamp": {
                         "type": "string",
@@ -9129,17 +9129,17 @@ functions_declarations = {
                 "maximum_overlap": {
                         "type": "string",
                         "description": "The maximum amount of overlap between the mosaic dataset and the footprint of each image in the mosaic dataset. If the percentage of overlap is greater than this threshold, the image is excluded since...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_area_loss": {
                         "type": "string",
                         "description": "The maximum percentage of area that can be excluded by the candidate images. After the tool finds the best candidate images based on the maximum_overlap parameter value, it checks whether the maximum ...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_obliqueness_angle": {
                         "type": "string",
                         "description": "The maximum image obliqueness angle\r\nthat will be used to filter images. Any image with an obliqueness angle\r\nlarger than this value will not be used as a candidate. This parameter is measured in degr...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9165,17 +9165,17 @@ functions_declarations = {
                 "num_bands": {
                         "type": "string",
                         "description": "The number of bands the raster datasets will have in the mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "pixel_type": {
                         "type": "string",
                         "description": "Specifies the bit depth, or radiometric resolution, that will be used for the mosaic dataset. If not defined, the pixel type of the first raster dataset will be used.1_BIT\u2014The pixel type will be a 1-b...",
-                        "default": null
+                        "default": None
                 },
                 "product_definition": {
                         "type": "string",
                         "description": "Specifies whether a template is specific to the type of imagery you are working with or is generic. The generic options include the following standard raster data types:NONE\u2014No band ordering is specif...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9199,62 +9199,62 @@ functions_declarations = {
                 "coordinate_system": {
                         "type": "string",
                         "description": "The projection for the output mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_bands": {
                         "type": "string",
                         "description": "The number of bands that the referenced mosaic dataset will have.",
-                        "default": null
+                        "default": None
                 },
                 "pixel_type": {
                         "type": "string",
                         "description": "The bit depth, or radiometric resolution, of the mosaic dataset. If this is not defined, it will be taken from the first raster dataset.\r\n1_BIT\u2014The pixel type will be a 1-bit unsigned integer. The val...",
-                        "default": null
+                        "default": None
                 },
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to select raster datasets that will be included in the output mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "in_template_dataset": {
                         "type": "string",
                         "description": "Select raster datasets based on the extent of another image or feature class. Raster datasets that lay along the defined extent will be included in the mosaic dataset. To manually input the minimum an...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "The minimum and maximum coordinates for the extent.",
-                        "default": null
+                        "default": None
                 },
                 "select_using_features": {
                         "type": "string",
                         "description": "Limit the extent to the shape or envelope when a feature class is specified in the in_template_dataset parameter.\r\nSELECT_USING_FEATURES\u2014Select using  the shape of the feature. This is the default.NO_...",
-                        "default": null
+                        "default": None
                 },
                 "lod_field": {
                         "type": "string",
                         "description": "Legacy:This parameter has been deprecated and is ignored in tool execution.  It remains for backward compatibility reasons.",
-                        "default": null
+                        "default": None
                 },
                 "minps_field": {
                         "type": "string",
                         "description": "Specify a field from the footprint  attribute table that defines the minimum cell size for displaying the mosaic dataset; otherwise, only a footprint will be displayed.",
-                        "default": null
+                        "default": None
                 },
                 "maxps_field": {
                         "type": "string",
                         "description": "Specify a field from the footprint  attribute table that defines the maximum cell size for displaying the mosaic dataset; otherwise, only a footprint will be displayed.",
-                        "default": null
+                        "default": None
                 },
                 "pixelsize": {
                         "type": "string",
                         "description": "Set a maximum cell size to display the mosaic  instead of specifying a field. If you zoom out beyond this cell size, only the footprint will be displayed.",
-                        "default": null
+                        "default": None
                 },
                 "build_boundary": {
                         "type": "string",
                         "description": "Rebuild the boundary. If the selection covers a smaller area than the source mosaic dataset, this is recommended.This is only available if the mosaic dataset is created in a geodatabase.BUILD_BOUNDARY...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9277,22 +9277,22 @@ functions_declarations = {
                 "bands_for_nodata_valueband_nodata_value": {
                         "type": "string",
                         "description": "Define values for each or all bands. Each band can have a unique NoData value defined, or the same value can be specified for all bands. If you want to define multiple NoData values for each band sele...",
-                        "default": null
+                        "default": None
                 },
                 "bands_for_valid_data_rangeband_minimum_value_maximum_value": {
                         "type": "string",
                         "description": "Specify a range of values to display for each band. Values outside of this range will be classified as NoData. When working with composite bands, the range will apply to all bands.",
-                        "default": null
+                        "default": None
                 },
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL statement to select specific raster in the mosaic dataset.  Only the selected rasters will have their NoData values changed.",
-                        "default": null
+                        "default": None
                 },
                 "composite_nodata_value": {
                         "type": "string",
                         "description": "Choose whether all bands must be NoData in order for the pixel to be classified as NoData.NO_COMPOSITE_NODATA\u2014If any of the bands  have pixels of NoData, then the pixel is classified as NoData. This i...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9311,62 +9311,62 @@ functions_declarations = {
                 "overview_image_folder": {
                         "type": "string",
                         "description": "The folder or geodatabase to store the overviews.",
-                        "default": null
+                        "default": None
                 },
                 "in_template_dataset": {
                         "type": "string",
                         "description": "A raster dataset or feature class to define the extent of the overviews.",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Set the extent using minimum and maximum x and y coordinates. This is specified as space delimited in the following order: X-minimum X-maximum Y-minimum Y-maximum. The mosaic dataset boundary will det...",
-                        "default": null
+                        "default": None
                 },
                 "pixel_size": {
                         "type": "string",
                         "description": "If you prefer not to use all the raster's pyramids, specify a base pixel size at which your overviews will be generated.The units for this parameter are the same as the spatial reference of the mosaic...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_levels": {
                         "type": "string",
                         "description": "Specify the number of levels of overviews that you want to generate overviews. A value of -1 will determine an optimal value for you.",
-                        "default": null
+                        "default": None
                 },
                 "tile_rows": {
                         "type": "string",
                         "description": "Set the number of rows (in pixels) for each tile.Larger values will result in fewer, larger individual overviews, and increase the likelihood that you will need to regenerate lower level overviews. A ...",
-                        "default": null
+                        "default": None
                 },
                 "tile_cols": {
                         "type": "string",
                         "description": "Set the number of columns (in pixels) for each tile.Larger values will result in fewer, larger individual overviews, and increase the likelihood that you will need to regenerate lower level overviews....",
-                        "default": null
+                        "default": None
                 },
                 "overview_factor": {
                         "type": "string",
                         "description": "Set a ratio to determine the size of the next overview. For example, if the cell size of the first level is 10, and the overview factor is 3, then the next overview pixel size will be 30.",
-                        "default": null
+                        "default": None
                 },
                 "force_overview_tiles": {
                         "type": "string",
                         "description": "Generate overviews at all levels, or only\r\nabove existing pyramid levels.NO_FORCE_OVERVIEW_TILES\u2014Create overviews above the raster pyramid levels. This is the default.FORCE_OVERVIEW_TILES\u2014  Create ove...",
-                        "default": null
+                        "default": None
                 },
                 "resampling_method": {
                         "type": "string",
                         "description": "Choose an algorithm for aggregating pixel values in the overviews.NEAREST\u2014The fastest resampling method because it minimizes changes to pixel values. Suitable for discrete data, such as land cover. If...",
-                        "default": null
+                        "default": None
                 },
                 "compression_method": {
                         "type": "string",
                         "description": "Define the type of data compression to store the overview images.JPEG\u2014A lossy compression. This is the default, unless the Raster Metadata Data Type is thematic. This compression method is only valid ...",
-                        "default": null
+                        "default": None
                 },
                 "compression_quality": {
                         "type": "string",
                         "description": "Choose a value from 1 - 100. Higher values generate better quality\r\noutputs, but they create larger files.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9384,12 +9384,12 @@ functions_declarations = {
                 "delete_overview_images": {
                         "type": "string",
                         "description": "Delete all overviews associated with the mosaic dataset.DELETE_OVERVIEW_IMAGES\u2014Delete the overviews associated with the mosaic dataset. This is the default.NO_DELETE_OVERVIEW_IMAGES\u2014Do not delete the ...",
-                        "default": null
+                        "default": None
                 },
                 "delete_item_cache": {
                         "type": "string",
                         "description": "Delete the item cache associated with the mosaic dataset.DELETE_ITEM_CACHE\u2014Delete the item cache associated with the mosaic dataset. This is the default.NO_DELETE_ITEM_CACHE\u2014Do not delete the item cac...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9407,17 +9407,17 @@ functions_declarations = {
                 "edit_mosaic_dataset_item": {
                         "type": "string",
                         "description": "Determines if edits affect functions or the entire mosaic dataset.EDIT_MOSAIC_DATASET\u2014Edits affect the functions associated with the mosaic dataset. This is the default. EDIT_MOSAIC_DATASET_ITEM\u2014Edits...",
-                        "default": null
+                        "default": None
                 },
                 "function_chain_definition": {
                         "type": "string",
                         "description": "Choose the function chain (rft.xml file) that you want to insert or replace.",
-                        "default": null
+                        "default": None
                 },
                 "location_function_name": {
                         "type": "string",
                         "description": "Choose where to insert, replace, or remove the function chain within the existing function chain.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9435,12 +9435,12 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to export specific rasters in the mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "geometry_type": {
                         "type": "string",
                         "description": "The type of geometry to export. FOOTPRINT\u2014 Create a feature class showing the footprints of each image.BOUNDARY\u2014 Create a feature class showing the boundary of the mosaic dataset.SEAMLINE\u2014 Create a fe...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9462,57 +9462,57 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression that will be used to save selected images in the mosaic dataset. For more information about SQL syntax, see SQL reference for query expressions used in ArcGIS.",
-                        "default": null
+                        "default": None
                 },
                 "format": {
                         "type": "string",
                         "description": "Specifies the format that will be used for the output raster datasets.TIFF\u2014TIFF format will be used. This is the default.Cloud Optimized GeoTIFF\u2014Cloud Optimized GeoTIFF format will be used.BMP\u2014BMP for...",
-                        "default": null
+                        "default": None
                 },
                 "nodata_value": {
                         "type": "string",
                         "description": "All the pixels with the specified value will be set to NoData in the output raster dataset.It is recommended that you specify a NoData value if the output images will be clipped.",
-                        "default": null
+                        "default": None
                 },
                 "clip_type": {
                         "type": "string",
                         "description": "Specifies the output extent that will be used for the raster datasets. If you specify an extent or feature class that covers an area larger than the raster data, the output will have the larger extent...",
-                        "default": null
+                        "default": None
                 },
                 "template_dataset": {
                         "type": "string",
                         "description": "The feature class or bounding box that will be used to limit the extent.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent ...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The horizontal (x) and vertical (y) dimensions of the output cells.If the cell size is not provided, the spatial resolution of the input will be used.",
-                        "default": null
+                        "default": None
                 },
                 "image_space": {
                         "type": "string",
                         "description": "Specifies whether raster items will be exported in map space or image space.MAPSPACE\u2014Raster items will be exported in map space. This is the default.IMAGESPACE\u2014Raster items will be exported in image s...",
-                        "default": null
+                        "default": None
                 },
                 "remove_distortion": {
                         "type": "string",
                         "description": "Specifies whether lens distortion will be removed from the exported raster in image space.REMOVED\u2014Lens distortion will be removed from the exported raster in image space.\r\nNOTREMOVE\u2014Lens distortion wi...",
-                        "default": null
+                        "default": None
                 },
                 "band_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to select bands.This parameter is enabled  when the image_space parameter is set to IMAGESPACE.ALL_BANDS\u2014All bands will be exported. This is the default.BAND_IDS...",
-                        "default": null
+                        "default": None
                 },
                 "band_name_selection": {
                         "type": "string",
                         "description": "The name of the band that will be exported from the input mosaic dataset.\r\nThis parameter is enabled when the band_method parameter is set to BAND_NAMES.",
-                        "default": null
+                        "default": None
                 },
                 "band_id_selection": {
                         "type": "string",
                         "description": "The ID number of the band that will be exported from the input mosaic dataset.\r\nThis parameter is enabled when the band_method parameter is set to BAND_IDS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9535,17 +9535,17 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to select specific rasters for export.",
-                        "default": null
+                        "default": None
                 },
                 "export_mode": {
                         "type": "string",
                         "description": "Populate the table with either all of the paths, or only the broken paths.ALL\u2014Export all  paths to the table. This is the default.BROKEN\u2014Export only  broken paths to the table.",
-                        "default": null
+                        "default": None
                 },
                 "types_of_pathstype_of_path": {
                         "type": "string",
                         "description": "Choose to export file paths from only the source raster, only the cache, or both. The default is to export all path types.RASTER\u2014Export file paths from rasters.ITEM_CACHE\u2014Export file paths from item c...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9576,52 +9576,52 @@ functions_declarations = {
                 "max_red": {
                         "type": "string",
                         "description": "The maximum red value to exclude. The default is 255.",
-                        "default": null
+                        "default": None
                 },
                 "max_green": {
                         "type": "string",
                         "description": "The maximum green value to exclude. The default is 255.",
-                        "default": null
+                        "default": None
                 },
                 "max_blue": {
                         "type": "string",
                         "description": "The maximum blue value to exclude. The default is 255.",
-                        "default": null
+                        "default": None
                 },
                 "max_white": {
                         "type": "string",
                         "description": "The maximum white value to exclude. The default is 255.",
-                        "default": null
+                        "default": None
                 },
                 "max_black": {
                         "type": "string",
                         "description": "The maximum black value to exclude. The default is 0.",
-                        "default": null
+                        "default": None
                 },
                 "max_magenta": {
                         "type": "string",
                         "description": "The maximum magenta value to exclude. The default is 255.",
-                        "default": null
+                        "default": None
                 },
                 "max_cyan": {
                         "type": "string",
                         "description": "The maximum cyan value to exclude. The default is 255.",
-                        "default": null
+                        "default": None
                 },
                 "max_yellow": {
                         "type": "string",
                         "description": "The maximum yellow value to exclude. The default is 255.",
-                        "default": null
+                        "default": None
                 },
                 "percentage_low": {
                         "type": "string",
                         "description": "Exclude this percentage of the lowest pixel values. The default is 0.",
-                        "default": null
+                        "default": None
                 },
                 "percentage_high": {
                         "type": "string",
                         "description": "Exclude this percentage of the highest pixel values. The default is 100.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9646,27 +9646,27 @@ functions_declarations = {
                 "raster_function": {
                         "type": "string",
                         "description": "The path to a raster function template file (.rft.xml or .rft.json). The raster function template will be applied to every item in the input mosaic dataset. The Function Editor can be used to create t...",
-                        "default": null
+                        "default": None
                 },
                 "generate_rasters": {
                         "type": "string",
                         "description": "Choose to generate raster dataset files of the mosaic dataset items, after the application of the RFT.\r\nNO_GENERATE_RASTERS\u2014The processing defined by the raster function template will be appended to t...",
-                        "default": null
+                        "default": None
                 },
                 "out_workspace": {
                         "type": "string",
                         "description": "Defines the output location for the persisted raster datasets, if the generate_rasters parameter is set to GENERATE_RASTERS.  The naming convention for the output raster files\r\nis oid_&lt;oid#&gt;_&lt...",
-                        "default": null
+                        "default": None
                 },
                 "format": {
                         "type": "string",
                         "description": "The format type of the raster to be generated.TIFF\u2014Tagged Image File Format (TIFF)IMAGINE Image\u2014ERDAS IMAGINE fileCRF\u2014Cloud Raster Format. This is the default.MRF\u2014Meta Raster Format",
-                        "default": null
+                        "default": None
                 },
                 "out_base_name": {
                         "type": "string",
                         "description": "Defines the output base name for the persisted raster datasets, if the generate_rasters parameter is set to GENERATE_RASTERS.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9718,17 +9718,17 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to select specific rasters to merge  in the mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "block_field": {
                         "type": "string",
                         "description": "The field in the attribute table that you want to use to group images. Only date, numeric, and string fields can be specified as Block fields.",
-                        "default": null
+                        "default": None
                 },
                 "max_rows_per_merged_items": {
                         "type": "string",
                         "description": "Limits the number of items to merge. If the maximum is exceeded, the tool will create multiple merged items. The default is 1,000 rows.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9754,42 +9754,42 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression that will be used to select specific items to add to the mobile mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "selection_feature": {
                         "type": "string",
                         "description": "The mosaic dataset items that will be included in the output based on the extent of another image or feature class. Items that lay along the defined extent will be included in the mosaic dataset. They...",
-                        "default": null
+                        "default": None
                 },
                 "out_data_folder": {
                         "type": "string",
                         "description": "The folder where a copy of the source data will be created. If the convert_rasters parameter is set to ALWAYS, any raster functions associated with the mosaic dataset will be processed before creating...",
-                        "default": null
+                        "default": None
                 },
                 "convert_rasters": {
                         "type": "string",
                         "description": "Specifies whether the raster functions associated with the input mosaic dataset will be converted before creating the mobile mosaic dataset. If you have raster functions that are not supported by Nati...",
-                        "default": null
+                        "default": None
                 },
                 "out_name_prefix": {
                         "type": "string",
                         "description": "Appends a prefix to each item, which is copied or converted into the output data folder.",
-                        "default": null
+                        "default": None
                 },
                 "format": {
                         "type": "string",
                         "description": "Specifies the format that will be used for the rasters  written to the output data folder.TIFF\u2014The TIFF format will be used.PNG\u2014The PNG format will be used.JPEG\u2014The JPEG format will be used.JP2\u2014The JP...",
-                        "default": null
+                        "default": None
                 },
                 "compression_method": {
                         "type": "string",
                         "description": "Specifies the compression method that will be used for transmitting the mosaicked image from the computer to the display (or from the server to the client).NONE\u2014No compression will be used.JPEG\u2014Compre...",
-                        "default": null
+                        "default": None
                 },
                 "compression_quality": {
                         "type": "string",
                         "description": "The compression quality level, which is a value from 0 to 100. A higher number means better image quality but less compression. This parameter only applies when the format parameter is specified as JP...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9809,37 +9809,37 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to select the raster datasets that will be removed from the mosaic dataset.You must specify a  selection or a query; otherwise, the tool will not run. To delete all the records from ...",
-                        "default": null
+                        "default": None
                 },
                 "update_boundary": {
                         "type": "string",
                         "description": "Specifies whether the boundary polygon of the mosaic dataset will be updated. By default, the boundary merges all the footprint polygons to create a single boundary representing the extent of the vali...",
-                        "default": null
+                        "default": None
                 },
                 "mark_overviews_items": {
                         "type": "string",
                         "description": "Specifies whether affected overviews will be identified.When the rasters in a mosaic dataset have been removed, overviews created using those rasters may no longer be accurate. Use this parameter to i...",
-                        "default": null
+                        "default": None
                 },
                 "delete_overview_images": {
                         "type": "string",
                         "description": "Specifies whether the overviews associated with the selected rasters will be removed.DELETE_OVERVIEW_IMAGES\u2014The overviews associated with the selected rasters will be deleted. This is the default.NO_D...",
-                        "default": null
+                        "default": None
                 },
                 "delete_item_cache": {
                         "type": "string",
                         "description": "Specifies whether the cache that is based on any source raster dataset that will be removed from the mosaic dataset will also be removed.DELETE_ITEM_CACHE\u2014The cache that is based on any source raster ...",
-                        "default": null
+                        "default": None
                 },
                 "remove_items": {
                         "type": "string",
                         "description": "Specifies whether mosaic dataset items will be removed.REMOVE_MOSAICDATASET_ITEMS\u2014Mosaic dataset items will be removed.  This is the default.NO_REMOVE_MOSAICDATASET_ITEMS\u2014Mosaic dataset  items will no...",
-                        "default": null
+                        "default": None
                 },
                 "update_cellsize_ranges": {
                         "type": "string",
                         "description": "Specifies whether the cell size ranges for the mosaic dataset will be updated.UPDATE_CELL_SIZES\u2014The cell size ranges for the mosaic dataset will be updated. Use this if you are removing all of the ima...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9861,7 +9861,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to limit the repairs to selected rasters within the mosaic dataset.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -9880,202 +9880,202 @@ functions_declarations = {
                 "rows_maximum_imagesize": {
                         "type": "string",
                         "description": "The maximum number of rows for the mosaicked image, generated by the mosaic dataset for each request. This can help control how much work the server has to do when clients view the imagery. A higher n...",
-                        "default": null
+                        "default": None
                 },
                 "columns_maximum_imagesize": {
                         "type": "string",
                         "description": "The maximum number of columns for the mosaicked image, generated by the mosaic dataset for each request. This can help control how much work the server has to do when clients view the imagery. A highe...",
-                        "default": null
+                        "default": None
                 },
                 "allowed_compressions": {
                         "type": "string",
                         "description": "Specifies the compression methods that will be used to transmit the mosaicked image from the computer to the display (or from the server to the client).None\u2014No compression will be used.JPEG\u2014 Compressi...",
-                        "default": null
+                        "default": None
                 },
                 "default_compression_type": {
                         "type": "string",
                         "description": "Specifies the default compression type. The default compression must be in the list of values used for the allowed_compressions parameter or must be set in the mosaic dataset's Allowed Compression Met...",
-                        "default": null
+                        "default": None
                 },
                 "jpeg_quality": {
                         "type": "string",
                         "description": "The compression quality when using JPEG. Compression quality ranges from 1 to 100. A higher number means better image quality but less compression.",
-                        "default": null
+                        "default": None
                 },
                 "lerc_tolerance": {
                         "type": "string",
                         "description": "The maximum per pixel error when using LERC compression. This value is specified in the units of the mosaic dataset. For example, if the error is 10 centimeters and the mosaic dataset is in meters, en...",
-                        "default": null
+                        "default": None
                 },
                 "resampling_type": {
                         "type": "string",
                         "description": "Specifies how pixel values will be calculated when the dataset is displayed at small scales. Choose an appropriate technique based on the type of data.NEAREST\u2014The value of each pixel will be from the ...",
-                        "default": null
+                        "default": None
                 },
                 "clip_to_footprints": {
                         "type": "string",
                         "description": "Specifies whether rasters will be clipped to the footprint. Often the raster dataset and its footprint have the same extent. If they differ, the raster dataset can be clipped to the footprint.NOT_CLIP...",
-                        "default": null
+                        "default": None
                 },
                 "footprints_may_contain_nodata": {
                         "type": "string",
                         "description": "Specifies whether pixels with NoData values will be shown.FOOTPRINTS_MAY_CONTAIN_NODATA\u2014Pixels with NoData values will be shown. This is the default.FOOTPRINTS_DO_NOT_CONTAIN_NODATA\u2014Pixels with NoData...",
-                        "default": null
+                        "default": None
                 },
                 "clip_to_boundary": {
                         "type": "string",
                         "description": "Specifies whether the mosaicked image will be clipped to the boundary. Often the mosaic dataset and its boundary have the same extent. If they differ, the mosaic dataset can be clipped to the boundary...",
-                        "default": null
+                        "default": None
                 },
                 "color_correction": {
                         "type": "string",
                         "description": "Specifies whether color correction will be used on the mosaic dataset.NOT_APPLY\u2014Color correction will not be used. This is the default.APPLY\u2014The color correction that has been set up for the mosaic da...",
-                        "default": null
+                        "default": None
                 },
                 "allowed_mensuration_capabilities": {
                         "type": "string",
                         "description": "Specifies the measurements that will be performed on the mosaic dataset. The ability to perform vertical measurements is dependent on the imagery and may require a DEM.None\u2014No mensuration capabilities...",
-                        "default": null
+                        "default": None
                 },
                 "default_mensuration_capabilities": {
                         "type": "string",
                         "description": "Specifies the default mensuration capability for the mosaic dataset. The default mensuration value must be set in the list of values used for the allowed_mensuration_capabilities parameter or be set i...",
-                        "default": null
+                        "default": None
                 },
                 "allowed_mosaic_methods": {
                         "type": "string",
                         "description": "Specifies the rules for displaying overlapping imagery.None\u2014Rasters will be ordered based on the ObjectID field in the mosaic dataset attribute table.Center\u2014Imagery that is closest to the center of th...",
-                        "default": null
+                        "default": None
                 },
                 "default_mosaic_method": {
                         "type": "string",
                         "description": "Specifies the default mosaic method that will be used for the mosaic dataset. The default mosaic method must be set in the list of values used for the allowed_mosaic_methods parameter or be set in the...",
-                        "default": null
+                        "default": None
                 },
                 "order_field": {
                         "type": "string",
                         "description": "The field that will be used when ordering rasters using the ByAttribute value of the default_mosaic_method parameter. The list of fields is defined as those in the attribute table that are of type met...",
-                        "default": null
+                        "default": None
                 },
                 "order_base": {
                         "type": "string",
                         "description": "Sorts the rasters based on their difference from this value in the field selected in the order_field parameterIf a Date attribute is used, it must be in one of the following formats:YYYY/MM/DD HH:mm:s...",
-                        "default": null
+                        "default": None
                 },
                 "sorting_order": {
                         "type": "string",
                         "description": "Specifies whether the rasters will be sorted in an ascending or a descending order.ASCENDING\u2014Rasters will be sorted in an ascending order. This is the default.DESCENDING\u2014Rasters will be sorted in a de...",
-                        "default": null
+                        "default": None
                 },
                 "mosaic_operator": {
                         "type": "string",
                         "description": "Specifies the rule that will be used for resolving overlapping pixels.FIRST\u2014The first image in the attribute table will be displayed.LAST\u2014The last image in the attribute table will be displayed.MIN\u2014Th...",
-                        "default": null
+                        "default": None
                 },
                 "blend_width": {
                         "type": "string",
                         "description": "The number of pixels to which the BLEND  value of the mosaic_operator parameter will be applied.",
-                        "default": null
+                        "default": None
                 },
                 "view_point_x": {
                         "type": "string",
                         "description": "A numeric value that will be used to horizontally shift the center of the image. The units are the same as the spatial reference system.This parameter is only applicable if the allowed_mosaic_methods ...",
-                        "default": null
+                        "default": None
                 },
                 "view_point_y": {
                         "type": "string",
                         "description": "A numeric value that will be used to vertically shift the center of the image. The units are the same as the spatial reference system.This parameter is only applicable if the allowed_mosaic_methods pa...",
-                        "default": null
+                        "default": None
                 },
                 "max_num_per_mosaic": {
                         "type": "string",
                         "description": "The maximum number of raster datasets that will be displayed at a given time in a mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "cell_size_tolerance": {
                         "type": "string",
                         "description": "The maximum pixel size difference that is allowed before images are considered to have a different cell pixel.This allows images of similar spatial resolutions to be considered as having the same nomi...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the mosaic dataset using an existing raster dataset or its specified width (x) and height (y). If you specify the cell size, you can use a single value for a square cell size, or x an...",
-                        "default": null
+                        "default": None
                 },
                 "metadata_level": {
                         "type": "string",
                         "description": "Specifies the level of metadata that will be exposed from the server to a client when publishing the mosaic dataset.FULL\u2014Metadata regarding the processing applied at the mosaic dataset level as well a...",
-                        "default": null
+                        "default": None
                 },
                 "use_time": {
                         "type": "string",
                         "description": "Specifies whether the mosaic dataset will be time aware. If time is activated, the start and end fields and the time format must be specified.DISABLED\u2014The mosaic dataset will not be time aware. This i...",
-                        "default": null
+                        "default": None
                 },
                 "start_time_field": {
                         "type": "string",
                         "description": "The field in the attribute table that shows the start time.",
-                        "default": null
+                        "default": None
                 },
                 "end_time_field": {
                         "type": "string",
                         "description": "The field in the attribute table that shows the end time.",
-                        "default": null
+                        "default": None
                 },
                 "time_format": {
                         "type": "string",
                         "description": "Specifies the time format that will be used for the mosaic dataset for parameters such as start_time_field and end_time_field.YYYY\u2014The time format will be year.YYYYMM\u2014The time format will be year and ...",
-                        "default": null
+                        "default": None
                 },
                 "geographic_transform": {
                         "type": "string",
                         "description": "The geographic transformations that will be associated with the mosaic dataset.",
-                        "default": null
+                        "default": None
                 },
                 "max_num_of_download_items": {
                         "type": "string",
                         "description": "The maximum number of raster datasets that will be downloaded per request.",
-                        "default": null
+                        "default": None
                 },
                 "max_num_of_records_returned": {
                         "type": "string",
                         "description": "The maximum number of records that will be downloaded per request.",
-                        "default": null
+                        "default": None
                 },
                 "data_source_type": {
                         "type": "string",
                         "description": "Specifies the type of imagery in the mosaic dataset.GENERIC\u2014The mosaic dataset contains no specified data type.THEMATIC\u2014The mosaic dataset contains thematic data with discrete values, such as land cov...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_pixel_contribution": {
                         "type": "string",
                         "description": "The minimum number of pixels required for a mosaic dataset item to be considered significant enough to be used in the mosaic dataset. Because of overlapping imagery, an item may display only a small s...",
-                        "default": null
+                        "default": None
                 },
                 "processing_templates": {
                         "type": "string",
                         "description": "The function chains that will be used to process a mosaic dataset or the mosaic dataset items on the fly. You can add, remove, or reorder the function chains. All the template names that are added mus...",
-                        "default": null
+                        "default": None
                 },
                 "default_processing_template": {
                         "type": "string",
                         "description": "The default function chain. The default function chain will be applied when the mosaic dataset is accessed.",
-                        "default": null
+                        "default": None
                 },
                 "time_interval": {
                         "type": "string",
                         "description": "The duration of each time step interval.\r\nThe time step interval defines the granularity of the temporal data. The unit of time is specified in the time_interval_units parameter.",
-                        "default": null
+                        "default": None
                 },
                 "time_interval_units": {
                         "type": "string",
                         "description": "Specifies the measurement unit that will be used for the time interval.\r\nNone\u2014No time unit exists or it is unknown.Milliseconds\u2014The time unit will be milliseconds.Seconds\u2014The time unit will be seconds...",
-                        "default": null
+                        "default": None
                 },
                 "product_definition": {
                         "type": "string",
                         "description": "Specifies a template that is either specific to the type of imagery you are working with or generic. The generic options include the standard supported raster sensor types as follows:NONE\u2014No band orde...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10093,7 +10093,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to select items to split.If the query does not contain any previously merged items, the tool will return an error.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10111,87 +10111,87 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to select which mosaic dataset items will be synchronized.  If an expression is not provided, all dataset items will be updated.",
-                        "default": null
+                        "default": None
                 },
                 "new_items": {
                         "type": "string",
                         "description": "Specifies whether new items will be included when synchronizing as well as the options to use to update the new items.If you use this option, the item's workspace will be searched for new data. When d...",
-                        "default": null
+                        "default": None
                 },
                 "sync_only_stale": {
                         "type": "string",
                         "description": "Specifies whether mosaic dataset items will be updated only when the underlying raster datasets have been modified due to synchronizing. For example, building pyramids or updating the georeferencing o...",
-                        "default": null
+                        "default": None
                 },
                 "update_cellsize_ranges": {
                         "type": "string",
                         "description": "Specifies whether cell size ranges for the mosaic dataset will be recalculated. UPDATE_CELL_SIZES\u2014The cell size ranges for the entire mosaic dataset will be recalculated, but only for items that have ...",
-                        "default": null
+                        "default": None
                 },
                 "update_boundary": {
                         "type": "string",
                         "description": "Specifies whether the boundary that shows the full extent of the mosaic dataset will be rebuilt. Choose  UPDATE_BOUNDARY if syncing will change the extent of the mosaic dataset.UPDATE_BOUNDARY\u2014 The bo...",
-                        "default": null
+                        "default": None
                 },
                 "update_overviews": {
                         "type": "string",
                         "description": "Specifies whether obsolete overviews will be updated. The overview becomes obsolete if any underlying  rasters have been modified due to synchronizing.NO_OVERVIEWS\u2014 The overviews will not be updated. ...",
-                        "default": null
+                        "default": None
                 },
                 "build_pyramids": {
                         "type": "string",
                         "description": "Specifies whether pyramids will be built for the specified mosaic dataset items. Pyramids can be built for each raster item in the mosaic dataset. Pyramids can improve the speed at which each raster i...",
-                        "default": null
+                        "default": None
                 },
                 "calculate_statistics": {
                         "type": "string",
                         "description": "Specifies whether statistics will be calculated for the specified mosaic dataset items. Statistics are required for a mosaic dataset when performing certain tasks, such as applying a contrast stretch....",
-                        "default": null
+                        "default": None
                 },
                 "build_thumbnails": {
                         "type": "string",
                         "description": "Specifies whether thumbnails will be built for the specified mosaic dataset items. Thumbnails are small, highly resampled images that can be created for each raster item in the mosaic definition. Thum...",
-                        "default": null
+                        "default": None
                 },
                 "build_item_cache": {
                         "type": "string",
                         "description": "Choose whether to build a cache for the specified mosaic dataset items. A cache can be built when you've added data using the LAS, Terrain, or LAS dataset raster types. NO_ITEM_CACHE\u2014A cache  will not...",
-                        "default": null
+                        "default": None
                 },
                 "rebuild_raster": {
                         "type": "string",
                         "description": "Specifies whether the raster items will be rebuilt from the data source using the original raster type.REBUILD_RASTER\u2014The rasters will be rebuilt from the source data.  Any changes that you have perfo...",
-                        "default": null
+                        "default": None
                 },
                 "update_fields": {
                         "type": "string",
                         "description": "Specifies whether the fields in the table will be updated. This only affects items that will be synchronized.UPDATE_FIELDS\u2014The fields will be updated from the source files.  This is the default.NO_FIE...",
-                        "default": null
+                        "default": None
                 },
                 "fields_to_updatefield_to_update": {
                         "type": "string",
                         "description": "The fields that will be updated. This parameter is only valid if the update_fields parameter  is set to UPDATE_FIELDS.If you made edits to some of the fields, make sure they are not listed.The RASTER ...",
-                        "default": null
+                        "default": None
                 },
                 "existing_items": {
                         "type": "string",
                         "description": "Specifies whether existing items in the mosaic dataset will be updated.If you use this parameter, choose which existing parameters to update: sync_only_stale, build_pyramids, calculate_statistics, bui...",
-                        "default": null
+                        "default": None
                 },
                 "broken_items": {
                         "type": "string",
                         "description": "Specifies whether items with broken links will be removed.Ensure that all network connections are working properly. This tool will remove any items that cannot be accessed.IGNORE_BROKEN_ITEMS\u2014Items wi...",
-                        "default": null
+                        "default": None
                 },
                 "skip_existing_items": {
                         "type": "string",
                         "description": "Specifies whether existing mosaic dataset items will be skipped or updated with the modified files from disk. To use this parameter, the new_items parameter must be set to UPDATE_WITH_NEW_ITEMS.SKIP_E...",
-                        "default": null
+                        "default": None
                 },
                 "refresh_aggregate_info": {
                         "type": "string",
                         "description": "Specifies whether data that may have been removed from the mosaic dataset will be included.\r\nTo use this parameter, the existing_items parameter must be set to IGNORE_EXISTING_ITEMS.NO_REFRESH_INFO\u2014Wh...",
-                        "default": null
+                        "default": None
                 },
                 "estimate_statistics": {
                         "type": "string",
@@ -10226,17 +10226,17 @@ functions_declarations = {
                 "in_mask_dataset": {
                         "type": "string",
                         "description": "A polygon feature class used to exclude areas that you do not want in the analysis of the control points computation.The mask field can control the inclusion or exclusion of areas. A value of 1 indica...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_area": {
                         "type": "string",
                         "description": "Specify the minimum percent that the overlap area must be, in relation to the image. Areas that are lower than the specified percent threshold will be excluded from the analysis. Ensure that you do no...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_level": {
                         "type": "string",
                         "description": "The maximum \r\nnumber of images that can be overlapped when analyzing the control points.For example, if there are four images in your mosaic dataset, and a maximum overlap value of 3 was specified, th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10261,32 +10261,32 @@ functions_declarations = {
                 "in_tag_field": {
                         "type": "string",
                         "description": "A field in the input control point table that has a unique value. This field will be added to the target control point table, where the tag field can be used to bring in identifiers associated with gr...",
-                        "default": null
+                        "default": None
                 },
                 "in_xy_accuracy": {
                         "type": "string",
                         "description": "The input accuracy for the X and Y coordinates. The accuracy is in the same units as the in_input_control_points.This information should be provided by the data provider. If the accuracy  information ...",
-                        "default": null
+                        "default": None
                 },
                 "in_z_accuracy": {
                         "type": "string",
                         "description": "The input accuracy for the  vertical coordinates.\r\nThe accuracy is in the units of the in_input_control_points.This information should be provided by the data provider. If the accuracy  information is...",
-                        "default": null
+                        "default": None
                 },
                 "geoid": {
                         "type": "string",
                         "description": "The geoid correction is required by  rational polynomial coefficients (RPC) that reference ellipsoidal heights. Most elevation datasets are referenced to sea level orthometric heights, so this correct...",
-                        "default": null
+                        "default": None
                 },
                 "area_of_interest": {
                         "type": "string",
                         "description": "Defines an area of interest  extent by entering minimum and maximum x- and y-coordinates in the spatial reference of the input control point table.",
-                        "default": null
+                        "default": None
                 },
                 "append_option": {
                         "type": "string",
                         "description": "Specifies how control points will be appended to the control point table.ALL\u2014Add all points in the input control point table to the target control point table, including GCPs, check points, and all ti...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10309,42 +10309,42 @@ functions_declarations = {
                 "input_solution_table": {
                         "type": "string",
                         "description": "The solution table that will be used when adjusting the mosaic dataset. This is the output from the Compute Block Adjustments tool.",
-                        "default": null
+                        "default": None
                 },
                 "pan_to_ms_scaling_factor": {
                         "type": "string",
                         "description": "The scaling factor between the pan-sharpened resolution and the multispectral resolution that will be used if the mosaic dataset contains pan-sharpened rasters.",
-                        "default": null
+                        "default": None
                 },
                 "dem": {
                         "type": "string",
                         "description": "The DEM that will be used in the block adjustment. This DEM will only be used if it is a higher resolution than any existing DEM in the mosaic dataset.\r\n If this input DEM is used, the geometric funct...",
-                        "default": null
+                        "default": None
                 },
                 "zoffset": {
                         "type": "string",
                         "description": "The  vertical offset that will be used to adjust the \r\nelevation layer within the mosaic dataset's Geometric function.",
-                        "default": null
+                        "default": None
                 },
                 "control_point_table": {
                         "type": "string",
                         "description": "The input control point table that will have the same adjustments applied as the solution table adjustments.",
-                        "default": null
+                        "default": None
                 },
                 "adjust_footprints": {
                         "type": "string",
                         "description": "Specifies whether the footprint \r\ngeometry will be updated using the same transformation that will be applied to the image.NO_ADJUST_FOOTPRINTS\u2014The footprint geometry will not be updated. This is the ...",
-                        "default": null
+                        "default": None
                 },
                 "solution_point_table": {
                         "type": "string",
                         "description": "The solution point table that will be used to update the status field for the control point table. This parameter is only used when the control_point_table parameter value is provided.",
-                        "default": null
+                        "default": None
                 },
                 "adjust_tiepoints": {
                         "type": "string",
                         "description": "Specifies whether the tie points will be updated when a solution point table is provided. This parameter is only used when the solution_point_table parameter value is provided.\r\nNO_ADJUST_TIEPOINTS\u2014Th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10375,37 +10375,37 @@ functions_declarations = {
                 "out_solution_point_table": {
                         "type": "string",
                         "description": "The output solution points table. This will be saved as a polygon feature class. This output can be quite large.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_residual_value": {
                         "type": "string",
                         "description": "A threshold that is used in block adjustment computation; points with residuals exceeding the threshold will not be used. This parameter applies when the   transformation type is POLYORDER0,  POLYORDE...",
-                        "default": null
+                        "default": None
                 },
                 "adjustment_optionsname_value": {
                         "type": "string",
                         "description": "Additional options that will be used to fine-tune the adjustment computation.Note:To set an option in the Geoprocessing pane, type the keyword and the corresponding value in the list box.MinResidual\u2014T...",
-                        "default": null
+                        "default": None
                 },
                 "location_accuracy": {
                         "type": "string",
                         "description": "Specifies the geometric accuracy level of the images.This parameter is only enabled if the transformation_type parameter is specified as RPC.HIGH\u2014The accuracy will be 30 meters or less.MEDIUM\u2014The accu...",
-                        "default": null
+                        "default": None
                 },
                 "out_quality_table": {
                         "type": "string",
                         "description": "An output  table used to store adjustment\r\nquality information.\r\nThis parameter is only enabled if the transformation_type parameter is specified as RPC.",
-                        "default": null
+                        "default": None
                 },
                 "dem": {
                         "type": "string",
                         "description": "An input DEM from which elevations will be sampled as ground control\r\npoints for refining the geometric accuracy of the image network in\r\nthe adjustment.This parameter is only enabled when the transfo...",
-                        "default": null
+                        "default": None
                 },
                 "elevation_accuracy": {
                         "type": "string",
                         "description": "The elevation accuracy of the input DEM. The accuracy value will be used as a weight for the sampled ground control points in the adjustment.This parameter is only enabled when the transformation_type...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10426,37 +10426,37 @@ functions_declarations = {
                 "minimum_angle": {
                         "type": "string",
                         "description": "The value, in degrees, that defines the minimum angle the stereo pair must meet. The default is 10.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_angle": {
                         "type": "string",
                         "description": "The value, in degrees, that defines the maximum angle the stereo pair must meet. The default is 90.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_overlap": {
                         "type": "string",
                         "description": "The percentage of the overlapping area over the whole image. The default is 0.5.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_diff_op": {
                         "type": "string",
                         "description": "The maximum threshold for the Omega and Phi difference between the two image pairs. The Omega values and Phi values for the  image pairs are compared. If the difference between either the two Omega or...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_diff_gsd": {
                         "type": "string",
                         "description": "The threshold for the maximum GSD between two images in a pair. If the resolution ratio between the two images is greater than the threshold value, the pairs will not be built as a stereo pair. The de...",
-                        "default": null
+                        "default": None
                 },
                 "group_by": {
                         "type": "string",
                         "description": "Builds the stereo model from raster items within the same group, defined by a mosaic dataset field such as RGB, Panchromatic, or Infrared.",
-                        "default": null
+                        "default": None
                 },
                 "same_flight": {
                         "type": "string",
                         "description": "Specifies how the stereo models will be selected.SAMEFLIGHT\u2014Stereo pairs will be selected along the same flight line.NO_SAMEFLIGHT\u2014Stereo pairs will be selected across flight lines.Note:This parameter...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10486,37 +10486,37 @@ functions_declarations = {
                 "out_solution_point_table": {
                         "type": "string",
                         "description": "The output solution points table. This will be saved as a polygon feature class. This output can be quite large.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_residual_value": {
                         "type": "string",
                         "description": "A threshold that is used in block adjustment computation; points with residuals exceeding the threshold will not be used. This parameter applies when the   transformation type is POLYORDER0,  POLYORDE...",
-                        "default": null
+                        "default": None
                 },
                 "adjustment_optionsname_value": {
                         "type": "string",
                         "description": "Additional options that will be used to fine-tune the adjustment computation.Note:To set an option in the Geoprocessing pane, type the keyword and the corresponding value in the list box.MinResidual\u2014T...",
-                        "default": null
+                        "default": None
                 },
                 "location_accuracy": {
                         "type": "string",
                         "description": "Specifies the geometric accuracy level of the images.This parameter is only enabled if the transformation_type parameter is specified as RPC.HIGH\u2014The accuracy will be 30 meters or less.MEDIUM\u2014The accu...",
-                        "default": null
+                        "default": None
                 },
                 "out_quality_table": {
                         "type": "string",
                         "description": "An output  table used to store adjustment\r\nquality information.\r\nThis parameter is only enabled if the transformation_type parameter is specified as RPC.",
-                        "default": null
+                        "default": None
                 },
                 "dem": {
                         "type": "string",
                         "description": "An input DEM from which elevations will be sampled as ground control\r\npoints for refining the geometric accuracy of the image network in\r\nthe adjustment.This parameter is only enabled when the transfo...",
-                        "default": null
+                        "default": None
                 },
                 "elevation_accuracy": {
                         "type": "string",
                         "description": "The elevation accuracy of the input DEM. The accuracy value will be used as a weight for the sampled ground control points in the adjustment.This parameter is only enabled when the transformation_type...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10537,82 +10537,82 @@ functions_declarations = {
                 "out_dsm": {
                         "type": "string",
                         "description": "A DSM raster dataset generated from the adjusted images in the mosaic dataset. If apply_adjustment is set to APPLY, this DSM will replace the DEM in the geometric function to achieve better orthorecti...",
-                        "default": null
+                        "default": None
                 },
                 "gps_accuracy": {
                         "type": "string",
                         "description": "Specifies the accuracy level of the input images. The tool will search for images in the neighborhood to compute matching points and automatically apply an adjustment strategy based on the accuracy le...",
-                        "default": null
+                        "default": None
                 },
                 "estimate": {
                         "type": "string",
                         "description": "Specifies whether the camera model will be estimated by computing the adjustment based on eight times the mosaic dataset's source resolution. Computing the adjustment at this level will be faster but ...",
-                        "default": null
+                        "default": None
                 },
                 "refine": {
                         "type": "string",
                         "description": "Specifies whether the camera model will be refined by computing the adjustment at the mosaic dataset resolution. Computing the adjustment at this level will provide the most accurate result.REFINE\u2014The...",
-                        "default": null
+                        "default": None
                 },
                 "apply_adjustment": {
                         "type": "string",
                         "description": "Specifies whether the calculated adjustment will be applied to the input mosaic dataset.APPLY\u2014The calculated adjustment will be applied to the input mosaic dataset. Although not required, it is recomm...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_residual": {
                         "type": "string",
                         "description": "The maximum residual value allowed to keep a computed control point as a valid control point. The default is 5.",
-                        "default": null
+                        "default": None
                 },
                 "initial_tiepoint_resolution": {
                         "type": "string",
                         "description": "The resolution factor at which tie points will be generated when estimating the camera model. The default value is 8, which means eight times the source pixel resolution.For images with only minor dif...",
-                        "default": null
+                        "default": None
                 },
                 "out_control_points": {
                         "type": "string",
                         "description": "The optional control points feature class.",
-                        "default": null
+                        "default": None
                 },
                 "out_solution_table": {
                         "type": "string",
                         "description": "The optional adjustment solution table. The solution table contains the root mean square (RMS) of the adjustment error and solution matrix.",
-                        "default": null
+                        "default": None
                 },
                 "out_solution_point_table": {
                         "type": "string",
                         "description": "The optional solution point feature class. The solution points are the final controls points used to generate the adjustment solution.",
-                        "default": null
+                        "default": None
                 },
                 "out_flight_path": {
                         "type": "string",
                         "description": "The optional flight path line feature class.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_overlap": {
                         "type": "string",
                         "description": "The percentage of overlap between two images to consider them duplicates.For example, if the value is 0.9, it means if an image is 90 percent covered by another image, it will be considered a duplicat...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_coverage": {
                         "type": "string",
                         "description": "The percentage indicating the control point's coverage on an image. If the coverage is less than the minimum percentage, the image will\r\nbe unresolved and removed.\r\nThe default is 0.",
-                        "default": null
+                        "default": None
                 },
                 "remove": {
                         "type": "string",
                         "description": "Specifies whether images will be automatically removed if they are too far from the flight strip.NO_REMOVE\u2014Images will not be removed. This is the default.REMOVE\u2014Images that are too far away from the ...",
-                        "default": null
+                        "default": None
                 },
                 "in_control_points": {
                         "type": "string",
                         "description": "The tie point table that will be used to compute the camera model. If no tie point table is provided, the tool will compute the tie points and estimate the camera model.",
-                        "default": null
+                        "default": None
                 },
                 "options": {
                         "type": "string",
                         "description": "Additional options for the adjustment engine. The specifications of many of the options are supplied by the data provider.The options include the following:CalibrateF\u2014The sensor's focal length will be...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10638,12 +10638,12 @@ functions_declarations = {
                 "similarity": {
                         "type": "string",
                         "description": "Specifies the similarity level that will be used for matching tie points.LOW\u2014The similarity criteria for the two matching points will be low. This option will  produce the most matching points, but so...",
-                        "default": null
+                        "default": None
                 },
                 "out_image_feature_points": {
                         "type": "string",
                         "description": "The output image feature points table. This will be saved as a polygon feature class.\r\nThis output can be quite large.",
-                        "default": null
+                        "default": None
                 },
                 "density": {
                         "type": "string",
@@ -10660,7 +10660,7 @@ functions_declarations = {
                 "location_accuracy": {
                         "type": "string",
                         "description": "Specifies the keyword that describes the accuracy of the imagery.LOW\u2014Images have a large shift and a large rotation (&gt; 5 degrees).The SIFT algorithm will be used in the point-matching computation.M...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10691,17 +10691,17 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression that will be used to select items in the mosaic dataset to include in the depth map.",
-                        "default": null
+                        "default": None
                 },
                 "skip_existing": {
                         "type": "string",
                         "description": "Specifies whether a depth map CenterZ value will be computed only for rasters without a CenterZ value, or computed for all mosaic dataset items including those with an existing CenterZ value.NO_SKIP_E...",
-                        "default": null
+                        "default": None
                 },
                 "adjust_footprints": {
                         "type": "string",
                         "description": "Specifies whether the footprint \r\ngeometry will be updated using the same transformation that was applied to the image.NO_ADJUST_FOOTPRINTS\u2014The footprint geometry will not be updated. This is the defa...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10725,17 +10725,17 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "A query definition string that defines a subset of rasters for computing fiducials.",
-                        "default": null
+                        "default": None
                 },
                 "fiducial_templates": {
                         "type": "string",
                         "description": "The\r\nfiducial template table that contains required fields for storing fiducial pictures and other properties.",
-                        "default": null
+                        "default": None
                 },
                 "film_coordinate_system": {
                         "type": "string",
                         "description": "A keyword that defines the film coordinate system of the scanned aerial photograph.  It is used in computing fiducial information and affine transformation construction.\r\nNO_CHANGE\u2014Maintain the coordi...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10758,17 +10758,17 @@ functions_declarations = {
                 "similarity": {
                         "type": "string",
                         "description": "Specifies the similarity level that will be used for matching tie points.LOW\u2014The similarity criteria for the two matching points will be low. This option will  produce the most matching points, but so...",
-                        "default": null
+                        "default": None
                 },
                 "in_mask_dataset": {
                         "type": "string",
                         "description": "A polygon feature class used to exclude areas that will not be included in the computation of control points. The mask field can control the inclusion or exclusion of areas. A value of 1 indicates tha...",
-                        "default": null
+                        "default": None
                 },
                 "out_image_features": {
                         "type": "string",
                         "description": "The output image feature points table. This will be saved as a polygon feature class.\r\nThis output can be quite large.",
-                        "default": null
+                        "default": None
                 },
                 "density": {
                         "type": "string",
@@ -10785,7 +10785,7 @@ functions_declarations = {
                 "options": {
                         "type": "string",
                         "description": "Additional options for the adjustment engine. The options are only used by third-party adjustment engines.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10811,7 +10811,7 @@ functions_declarations = {
                 "output_format": {
                         "type": "string",
                         "description": "Specifies the output file format for the frame and camera parameters.ESRI_FRAME_AND_CAMERA_TABLE\u2014The frame and camera parameters will be exported as an Esri  Frames and Camera table (.csv file). This ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10842,12 +10842,12 @@ functions_declarations = {
                 "input_control_point_for_adjustment": {
                         "type": "string",
                         "description": "The associated control points table, which may include tie points and ground control points.",
-                        "default": null
+                        "default": None
                 },
                 "report_format": {
                         "type": "string",
                         "description": "Specifies the output format of the block\r\nadjustment report.HTML\u2014The adjustment report will be created in HTML format. This is the default.PDF\u2014The adjustment report will be created in PDF format.JSON\u2014...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10880,37 +10880,37 @@ functions_declarations = {
                 "object_size": {
                         "type": "string",
                         "description": "A search radius within which surface objects, such as buildings or trees, will be identified. It is the linear size in map units.",
-                        "default": null
+                        "default": None
                 },
                 "ground_spacing": {
                         "type": "string",
                         "description": "The  ground spacing, in meters,  at which the 3D points will be generated.The default is five times the  source image pixel size.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_pairs": {
                         "type": "string",
                         "description": "The maximum number of image pairs that an image can contribute to generate 3D points. The default value is a minimum of 8 image pairs.If the image is involved in more image pairs than specified, those...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_area": {
                         "type": "string",
                         "description": "The minimum overlap threshold area that is acceptable, which is a percentage of overlap between a pair of images. Image pairs with overlap areas smaller than this threshold will receive a score of 0 f...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_adjustment_quality": {
                         "type": "string",
                         "description": "The minimum adjustment quality that is acceptable. The threshold value will be compared to the adjustment quality value that is stored in the stereo model.  Image pairs with an adjustment quality less...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_diff_gsd": {
                         "type": "string",
                         "description": "The maximum allowable threshold for the ground sample distance (GSD) between two images in a pair. The resolution ratio between the two images will be compared to the threshold value. Image pairs with...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_diff_op": {
                         "type": "string",
                         "description": "The maximum threshold for the difference between the Omega values and Phi values for the two image pairs. The Omega values and Phi values for the  image pairs are compared. Image pairs with an Omega o...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10939,27 +10939,27 @@ functions_declarations = {
                 "interpolation_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to interpolate the output raster dataset from the point cloud. TRIANGULATION\u2014 The triangulation method will be used. It is also known as triangulated irregular n...",
-                        "default": null
+                        "default": None
                 },
                 "smooth_method": {
                         "type": "string",
                         "description": "Specifies the filter that will be used to smooth the output raster dataset. GAUSS3x3\u2014A Gaussian filter with a 3 by 3 window will be used.GAUSS5x5\u2014A Gaussian filter with a 5 by 5 window will be used.GA...",
-                        "default": null
+                        "default": None
                 },
                 "surface_type": {
                         "type": "string",
                         "description": "Specifies whether a digital terrain model or a digital surface model will be created.DTM\u2014A digital terrain model will be created by interpolating only the ground points.DSM\u2014A digital surface model wil...",
-                        "default": null
+                        "default": None
                 },
                 "fill_dem": {
                         "type": "string",
                         "description": "A DEM raster input that is used to fill NoData areas. Areas of NoData may exist where  pixels do not have enough information from the input to generate values.",
-                        "default": null
+                        "default": None
                 },
                 "optionsname_value": {
                         "type": "string",
                         "description": "Classify ground points from the input LAS data.This parameter is active when the surface_type parameter is set to DTM.Classify\u2014Classify the ground using different options depending on the type of terr...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -10987,7 +10987,7 @@ functions_declarations = {
                 "similarity": {
                         "type": "string",
                         "description": "Specifies the similarity level that will be used for matching tie points.LOW\u2014The similarity criteria for the two matching points will be low. This option will  produce the most matching points, but so...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11007,7 +11007,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression that will be used to select items in the mosaic dataset depth map to be removed. If not specified, all depth map content in the source raster\u2019s folder will be removed.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11025,7 +11025,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "A query definition string that defines a subset of rasters for computing fiducials.",
-                        "default": null
+                        "default": None
                 },
                 "fiducial_table": {
                         "type": "string",
@@ -11038,7 +11038,7 @@ functions_declarations = {
                 "update_footprints": {
                         "type": "string",
                         "description": "Generates or updates the footprints of the digital photos in the mosaic dataset.UPDATE\u2014The footprints will be generated or updated.NO_UPDATE\u2014The footprints will not be generated or updated. This is th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11062,62 +11062,62 @@ functions_declarations = {
                 "config_keyword": {
                         "type": "string",
                         "description": "The storage parameters (configuration) for a geodatabase. Configuration keywords are set up by your database administrator.",
-                        "default": null
+                        "default": None
                 },
                 "background_value": {
                         "type": "string",
                         "description": "Remove the unwanted values created around the raster data. The value specified will be distinguished from other valuable data in the raster dataset. For example, a value of zero along the raster datas...",
-                        "default": null
+                        "default": None
                 },
                 "nodata_value": {
                         "type": "string",
                         "description": "All the pixels with the specified value will be set to NoData in the output raster dataset.",
-                        "default": null
+                        "default": None
                 },
                 "onebit_to_eightbit": {
                         "type": "string",
                         "description": "Specifies whether the input 1-bit raster dataset will be converted to an 8-bit raster dataset. In this conversion, the value 1 in the input raster dataset will be changed to 255 in the output raster d...",
-                        "default": null
+                        "default": None
                 },
                 "colormap_to_rgb": {
                         "type": "string",
                         "description": "Specifies whether the input raster dataset will be converted to a three-band output raster dataset if the input raster dataset includes a color map. This is useful when mosaicking rasters with differe...",
-                        "default": null
+                        "default": None
                 },
                 "pixel_type": {
                         "type": "string",
                         "description": "Specifies the bit depth, or radiometric resolution, that will be used for the raster or mosaic dataset. If not defined, the value from the first raster dataset will be used.1_BIT\u2014The pixel type will b...",
-                        "default": null
+                        "default": None
                 },
                 "scale_pixel_value": {
                         "type": "string",
                         "description": "Specifies whether pixel values will be scaled. When the output is a pixel type other than the input (such as 16 bit to 8 bit), you can scale the values to fit into the new range; otherwise, the values...",
-                        "default": null
+                        "default": None
                 },
                 "rgb_to_colormap": {
                         "type": "string",
                         "description": "Specifies whether an 8-bit, 3-band (RGB) raster dataset will be converted to a single-band raster dataset with a color map.\r\nThis operation suppresses noise that is often found in scanned images and i...",
-                        "default": null
+                        "default": None
                 },
                 "format": {
                         "type": "string",
                         "description": "Specifies the output raster format.AVIF\u2014The output format will be AVIF.TIFF\u2014The output format will be TIFF.COG\u2014The output format will be Cloud Optimized GeoTIFF.IMAGINE Image\u2014The output format will be...",
-                        "default": null
+                        "default": None
                 },
                 "transform": {
                         "type": "string",
                         "description": "Specifies whether a transformation associated with the input raster will be applied to the output.\r\nThe input raster can have a transformation associated with it that is not saved in the input, such a...",
-                        "default": null
+                        "default": None
                 },
                 "process_as_multidimensional": {
                         "type": "string",
                         "description": "Specifies whether the input mosaic dataset will be processed as a multidimensional raster dataset.CURRENT_SLICE\u2014The input will not be processed as a multidimensional raster dataset. If the input is mu...",
-                        "default": null
+                        "default": None
                 },
                 "build_multidimensional_transpose": {
                         "type": "string",
                         "description": "Specifies whether the transpose for the input multidimensional raster dataset will be built, which will chunk the data along each dimension to optimize performance when accessing pixel values across a...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11140,22 +11140,22 @@ functions_declarations = {
                 "distribution": {
                         "type": "string",
                         "description": "Specifies the random value distribution method to use.Each type has one or two settings to control the distribution.\r\nUNIFORM {Minimum}, {Maximum}\u2014A uniform distribution with the defined range. The de...",
-                        "default": null
+                        "default": None
                 },
                 "raster_extent": {
                         "type": "string",
                         "description": "The extent of the output raster dataset.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is equal to the visible display....",
-                        "default": null
+                        "default": None
                 },
                 "cellsize": {
                         "type": "string",
                         "description": "The spatial resolution of the output raster dataset.",
-                        "default": null
+                        "default": None
                 },
                 "build_rat": {
                         "type": "string",
                         "description": "Specifies whether the tool will unconditionally build a raster attribute table for the output raster in which the selected distribution results in an integer output raster.This parameter has no effect...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11178,7 +11178,7 @@ functions_declarations = {
                 "cellsize": {
                         "type": "string",
                         "description": "The pixel size that will be used for the new raster dataset.",
-                        "default": null
+                        "default": None
                 },
                 "pixel_type": {
                         "type": "string",
@@ -11187,7 +11187,7 @@ functions_declarations = {
                 "raster_spatial_reference": {
                         "type": "string",
                         "description": "The coordinate system for the output raster dataset.If this is not specified, the coordinate system set in the environment settings will be used.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_bands": {
                         "type": "string",
@@ -11196,27 +11196,27 @@ functions_declarations = {
                 "config_keyword": {
                         "type": "string",
                         "description": "The storage parameters (configuration) for a file or enterprise geodatabase.  Configuration keywords are set up by your database administrator.",
-                        "default": null
+                        "default": None
                 },
                 "pyramids": {
                         "type": "string",
                         "description": "Creates pyramids.For Pyramid Levels, specify a number of -1 or higher. A value of 0 will not create pyramids, and a value of -1 will automatically determine the correct number of pyramid layers to cre...",
-                        "default": null
+                        "default": None
                 },
                 "tile_size": {
                         "type": "string",
                         "description": "The size of the tiles.The tile width controls the number of pixels that can be stored in each tile. This is specified as a number of pixels in x. The default tile width is 128.The tile height controls...",
-                        "default": null
+                        "default": None
                 },
                 "compression": {
                         "type": "string",
                         "description": "Specifies the type of compression that will be used to store the raster dataset.LZ77\u2014Lossless compression that preserves all raster cell values will be used.JPEG\u2014Lossy compression that uses the public...",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_origin": {
                         "type": "string",
                         "description": "The origination location of the raster pyramid. It is recommended that you specify this point if you plan to build large mosaics in a file geodatabase or enterprise geodatabase, especially if you plan...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11241,42 +11241,42 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to limit the download to raster datasets that satisfy the expression.",
-                        "default": null
+                        "default": None
                 },
                 "selection_feature": {
                         "type": "string",
                         "description": "Limits the download to  an extent of a feature class or bounding box. All raster datasets that intersect the extent will be downloaded.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The min...",
-                        "default": null
+                        "default": None
                 },
                 "clipping": {
                         "type": "string",
                         "description": "Specify if you want to clip the downloaded images based on the geometry of a feature. Any raster that intersects the clipping geometry will be clipped and then downloaded. This is useful when your are...",
-                        "default": null
+                        "default": None
                 },
                 "convert_rasters": {
                         "type": "string",
                         "description": "Choose whether to always convert your rasters to the specified format, or to only convert when it is necessary.\r\nCONVERT_AS_REQUIRED\u2014Do not convert the raster datasets to a new format.ALWAYS_CONVERT\u2014C...",
-                        "default": null
+                        "default": None
                 },
                 "format": {
                         "type": "string",
                         "description": "Choose a output  format for the downloaded raster datasets.TIFF\u2014Tagged Image File Format. This is the default.BIL\u2014Esri band interleaved by line.BSQ\u2014Esri band sequential.BIP\u2014Esri band interleaved by pi...",
-                        "default": null
+                        "default": None
                 },
                 "compression_method": {
                         "type": "string",
                         "description": "Choose the compression method to use with the specified Output Format.NONE\u2014No compression will occur. This is the default.JPEG\u2014Lossy compression that uses the public JPEG compression algorithm. If you...",
-                        "default": null
+                        "default": None
                 },
                 "compression_quality": {
                         "type": "string",
                         "description": "Set a value from 1 - 100. Higher values will have better image quality, but less compression.",
-                        "default": null
+                        "default": None
                 },
                 "maintain_folder": {
                         "type": "string",
                         "description": "Determines the folder structure of the downloaded rasters. MAINTAIN_FOLDER\u2014Replicate the hierarchical folder structure used to store the source raster datasets.NO_MAINTAIN_FOLDER\u2014Raster datasets will ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11299,12 +11299,12 @@ functions_declarations = {
                 "format": {
                         "type": "string",
                         "description": "The output raster format.The default format will be derived from the  file extension specified in the  output_raster_dataset value. TIFF\u2014Tagged Image File Format for raster datasets will be used.Cloud...",
-                        "default": null
+                        "default": None
                 },
                 "process_as_multidimensional": {
                         "type": "string",
                         "description": "Specifies whether the input mosaic dataset will be processed as a multidimensional raster dataset.CURRENT_SLICE\u2014The input will not be processed as a multidimensional raster dataset. If the input is mu...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11327,37 +11327,37 @@ functions_declarations = {
                 "mosaic_type": {
                         "type": "string",
                         "description": "Specifies the method that will be used to mosaic overlapping areas.FIRST\u2014The output cell value of the overlapping areas will be the value from the first raster dataset mosaicked into that location.LAS...",
-                        "default": null
+                        "default": None
                 },
                 "colormap": {
                         "type": "string",
                         "description": "Specifies the method that will be used to choose which color map from the input rasters will be applied to the mosaic output.FIRST\u2014The color map from the first raster dataset in the list will be appli...",
-                        "default": null
+                        "default": None
                 },
                 "background_value": {
                         "type": "string",
                         "description": "Remove the unwanted values created around the raster data. The value specified will be distinguished from other valuable data in the raster dataset. For example, a value of zero along the raster datas...",
-                        "default": null
+                        "default": None
                 },
                 "nodata_value": {
                         "type": "string",
                         "description": "All the pixels with the specified value will be set to NoData in the output raster dataset.",
-                        "default": null
+                        "default": None
                 },
                 "onebit_to_eightbit": {
                         "type": "string",
                         "description": "Specifies whether the input 1-bit raster dataset will be converted to an 8-bit raster dataset. In this conversion, the value 1 in the input raster dataset will be changed to 255 in the output raster d...",
-                        "default": null
+                        "default": None
                 },
                 "mosaicking_tolerance": {
                         "type": "string",
                         "description": "When mosaicking occurs, the target and the source pixels do not always line up exactly. When there is a misalignment of pixels, you need to decide whether to resample or shift the data. The mosaicking...",
-                        "default": null
+                        "default": None
                 },
                 "matchingmethod": {
                         "type": "string",
                         "description": "Specifies the color matching method that will be applied to the rasters.NONE\u2014No color matching method will be applied when mosaicking the raster datasets.STATISTIC_MATCHING\u2014Descriptive statistics from...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11384,17 +11384,17 @@ functions_declarations = {
                 "coordinate_system_for_the_raster": {
                         "type": "string",
                         "description": "The coordinate system for the output raster dataset.",
-                        "default": null
+                        "default": None
                 },
                 "pixel_type": {
                         "type": "string",
                         "description": "The bit depth, or radiometric resolution of\r\nthe mosaic dataset.If you do not set the\r\npixel type, the 8-bit default will be used and your output may be\r\nincorrect.\r\n\r\n1_BIT\u2014The pixel type will be a 1...",
-                        "default": null
+                        "default": None
                 },
                 "cellsize": {
                         "type": "string",
                         "description": "The pixel size that will be used for the new raster dataset.",
-                        "default": null
+                        "default": None
                 },
                 "number_of_bands": {
                         "type": "string",
@@ -11403,12 +11403,12 @@ functions_declarations = {
                 "mosaic_method": {
                         "type": "string",
                         "description": "The method used to mosaic overlapping areas.FIRST\u2014The output cell value of the overlapping areas will be the value from the first raster dataset mosaicked into that location.LAST\u2014The output cell value...",
-                        "default": null
+                        "default": None
                 },
                 "mosaic_colormap_mode": {
                         "type": "string",
                         "description": "Applies when the input raster datasets have a colormap.Specifies the method that will be used to choose which color map from the input rasters will be applied to the mosaic output.FIRST\u2014The color map ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11433,47 +11433,47 @@ functions_declarations = {
                 "include_subdirectories": {
                         "type": "string",
                         "description": "Specifies whether subdirectories will be included.NONE\u2014Subdirectories will not be included. This is the default.INCLUDE_SUBDIRECTORIES\u2014All raster datasets in the subdirectories will be included when l...",
-                        "default": null
+                        "default": None
                 },
                 "mosaic_type": {
                         "type": "string",
                         "description": "Specifies the method that will be used to mosaic overlapping areas.FIRST\u2014The output cell value of the overlapping areas will be the value from the first raster dataset mosaicked into that location.LAS...",
-                        "default": null
+                        "default": None
                 },
                 "colormap": {
                         "type": "string",
                         "description": "Specifies the method that will be used to choose which color map from the input rasters will be applied to the mosaic output.FIRST\u2014The color map from the first raster dataset in the list will be appli...",
-                        "default": null
+                        "default": None
                 },
                 "background_value": {
                         "type": "string",
                         "description": "Remove the unwanted values created around the raster data. The value specified will be distinguished from other valuable data in the raster dataset. For example, a value of zero along the raster datas...",
-                        "default": null
+                        "default": None
                 },
                 "nodata_value": {
                         "type": "string",
                         "description": "All the pixels with the specified value will be set to NoData in the output raster dataset.",
-                        "default": null
+                        "default": None
                 },
                 "onebit_to_eightbit": {
                         "type": "string",
                         "description": "Specifies whether the input 1-bit raster dataset will be converted to an 8-bit raster dataset. In this conversion, the value 1 in the input raster dataset will be changed to 255 in the output raster d...",
-                        "default": null
+                        "default": None
                 },
                 "mosaicking_tolerance": {
                         "type": "string",
                         "description": "When mosaicking occurs, the target and the source pixels do not always line up exactly. When there is a misalignment of pixels, you need to decide whether to resample or shift the data. The mosaicking...",
-                        "default": null
+                        "default": None
                 },
                 "matchingmethod": {
                         "type": "string",
                         "description": "The color matching method to apply to the rasters.NONE\u2014This option will not use the color matching operation when mosaicking your raster datasets.STATISTIC_MATCHING\u2014This method will use descriptive st...",
-                        "default": null
+                        "default": None
                 },
                 "colormap_to_rgb": {
                         "type": "string",
                         "description": "Specifies whether the input raster dataset will be converted to a three-band output raster dataset if the input raster dataset includes a color map. This is useful when mosaicking rasters with differe...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11500,22 +11500,22 @@ functions_declarations = {
                 "in_template_dataset": {
                         "type": "string",
                         "description": "A raster dataset or feature class\r\nthat will be used as the extent. The clip output\r\nincludes pixels that intersect the minimum bounding\r\nrectangle.\r\nIf a feature class is used as the output extent an...",
-                        "default": null
+                        "default": None
                 },
                 "nodata_value": {
                         "type": "string",
                         "description": "The value for pixels to be considered as NoData.",
-                        "default": null
+                        "default": None
                 },
                 "clipping_geometry": {
                         "type": "string",
                         "description": "Specifies whether the minimum bounding rectangle or the geometry of the specified feature class will be used to clip the data.NONE\u2014The minimum bounding rectangle will be used to clip the data. This is...",
-                        "default": null
+                        "default": None
                 },
                 "maintain_clipping_extent": {
                         "type": "string",
                         "description": "Specifies the extent that will be used in the clipping output.MAINTAIN_EXTENT\u2014The number of columns and rows will be adjusted and  the pixels will be resampled to exactly match the clipping extent spe...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11557,7 +11557,7 @@ functions_declarations = {
                 "band_indexes": {
                         "type": "string",
                         "description": "The band order for the pan sharpened weights.If a raster product is used as the in_raster parameter, the band order within the raster product template will be used.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11626,22 +11626,22 @@ functions_declarations = {
                 "in_dem_raster": {
                         "type": "string",
                         "description": "The DEM raster that will be used for orthorectification when the Ortho_type parameter is DEM.",
-                        "default": null
+                        "default": None
                 },
                 "zfactor": {
                         "type": "string",
                         "description": "The scaling factor that will be used to convert the elevation values in the DEM.If the vertical units are meters, set the parameter to 1. If the vertical units are feet, set the parameter to 0.3048. I...",
-                        "default": null
+                        "default": None
                 },
                 "zoffset": {
                         "type": "string",
                         "description": "The base value that will be added to the elevation value in the DEM. This can be used to offset elevation values that do not start at sea level.",
-                        "default": null
+                        "default": None
                 },
                 "geoid": {
                         "type": "string",
                         "description": "Specifies whether the geoid correction required by  RPCs that reference ellipsoidal heights will be made. Most elevation datasets are referenced to sea level orthometric heights, so this correction is...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11674,7 +11674,7 @@ functions_declarations = {
                 "infrared_channel": {
                         "type": "string",
                         "description": "The input raster band that will display with the infrared color channel.",
-                        "default": null
+                        "default": None
                 },
                 "out_raster_dataset": {
                         "type": "string",
@@ -11691,27 +11691,27 @@ functions_declarations = {
                 "red_weight": {
                         "type": "string",
                         "description": "A value from 0 to 1 that will be used to weight the red band.",
-                        "default": null
+                        "default": None
                 },
                 "green_weight": {
                         "type": "string",
                         "description": "A value from 0 to 1 that will be used to weight the green band.",
-                        "default": null
+                        "default": None
                 },
                 "blue_weight": {
                         "type": "string",
                         "description": "A value from 0 to 1 that will be used to weight the blue band.",
-                        "default": null
+                        "default": None
                 },
                 "infrared_weight": {
                         "type": "string",
                         "description": "A value from 0 to 1 that will be used to weight the infrared band.",
-                        "default": null
+                        "default": None
                 },
                 "sensor": {
                         "type": "string",
                         "description": "Specifies the sensor of the multiband raster input.You can specify the sensor when the  pansharpening_type parameter is set to Gram-Schmidt. Specifying the sensor will set appropriate  band weights.UN...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11739,7 +11739,7 @@ functions_declarations = {
                 "subdataset_index": {
                         "type": "string",
                         "description": "The  subdatasets that you want to extract.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11762,7 +11762,7 @@ functions_declarations = {
                 "raster_function_arguments": {
                         "type": "string",
                         "description": "The function arguments and their values to be set. Each raster function has its own arguments and values, which are listed in the dialog of the tool.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11789,7 +11789,7 @@ functions_declarations = {
                 "resampling_type": {
                         "type": "string",
                         "description": "Choose an appropriate technique based on the type of data you have.NEAREST\u2014The fastest resampling method, and it minimizes changes to pixel values. Suitable for discrete data, such as land cover.BILIN...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11813,12 +11813,12 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the new raster using an existing raster dataset or by specifying its width (x) and height (y).\r\nYou can specify the cell size in the following ways: Use a single number specifying a s...",
-                        "default": null
+                        "default": None
                 },
                 "resampling_type": {
                         "type": "string",
                         "description": "Specifies the resampling technique to be used.NEAREST\u2014 The nearest neighbor technique will be used. It minimizes changes to pixel values since no new values are created and is the fastest resampling t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11853,57 +11853,57 @@ functions_declarations = {
                 "resampling_type": {
                         "type": "string",
                         "description": "Choose an appropriate technique based on the type of data you have.NEAREST\u2014The fastest resampling method, and it minimizes changes to pixel values. Suitable for discrete data, such as land cover.BILIN...",
-                        "default": null
+                        "default": None
                 },
                 "num_rasters": {
                         "type": "string",
                         "description": "The number of columns (x) and rows (y) to split the raster dataset into. This is a point whose X and Y coordinates define number of rows and columns. The X coordinate is the number of columns and the ...",
-                        "default": null
+                        "default": None
                 },
                 "tile_size": {
                         "type": "string",
                         "description": "The x and y dimensions\r\nof the output tiles. The default unit of measurement is in pixels.\r\nYou can change this with the units parameter. This is a point whose X and Y coordinates define the dimension...",
-                        "default": null
+                        "default": None
                 },
                 "overlap": {
                         "type": "string",
                         "description": "The tiles do not have to line up perfectly; set\r\nthe amount of overlap between tiles with this parameter. The default unit of measurement is in pixels. You\r\ncan change this with the units parameter.",
-                        "default": null
+                        "default": None
                 },
                 "units": {
                         "type": "string",
                         "description": "Set the units of measurement for the tile_size and the overlap  parameters.PIXELS\u2014The unit is in pixels. This is the default.METERS\u2014The unit is in meters.FEET\u2014The unit is in feet.DEGREES\u2014The unit is i...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The spatial resolution of the output\r\nraster. If left blank, the output cell size will match the input\r\nraster. When you change the cell size\r\nvalues, the tile size\r\nis reset to the image size\r\nand th...",
-                        "default": null
+                        "default": None
                 },
                 "origin": {
                         "type": "string",
                         "description": "Change the coordinates for\r\nthe lower left origin point, where the tiling scheme will begin. If\r\nleft blank, the lower left origin would be the same as the input\r\nraster.",
-                        "default": null
+                        "default": None
                 },
                 "split_polygon_feature_class": {
                         "type": "string",
                         "description": "A feature class that will be used to split the raster dataset.",
-                        "default": null
+                        "default": None
                 },
                 "clip_type": {
                         "type": "string",
                         "description": "Limits the extent of your raster dataset before you split it.NONE\u2014 Use the full extent of the input raster dataset.EXTENT\u2014Specify bounding box as your clipping boundary.FEATURE_CLASS\u2014Specify a feature...",
-                        "default": null
+                        "default": None
                 },
                 "template_extent": {
                         "type": "string",
                         "description": "An extent or a  dataset used to define the clipping boundary. The dataset can be a raster or feature class.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inpu...",
-                        "default": null
+                        "default": None
                 },
                 "nodata_value": {
                         "type": "string",
                         "description": "All the pixels with the specified value will be set to NoData in the output raster dataset.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11925,12 +11925,12 @@ functions_declarations = {
                 "in_template_raster": {
                         "type": "string",
                         "description": "A raster dataset that has a color map that you want to apply to the input raster dataset. If this is entered the input_CLR_file parameter is ignored.",
-                        "default": null
+                        "default": None
                 },
                 "input_clr_file": {
                         "type": "string",
                         "description": "Specify a .clr or .act file to use as the color map.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11948,32 +11948,32 @@ functions_declarations = {
                 "pyramid_levels": {
                         "type": "string",
                         "description": "The number of reduced-resolution dataset layers that will be built. The default value is -1, which will build full pyramids. A value of 0 will result in no pyramid levels.",
-                        "default": null
+                        "default": None
                 },
                 "skip_first_level": {
                         "type": "string",
                         "description": "Specifies whether the first pyramid level will be skipped. Skipping the first level will take up slightly less disk space but will slow down performance at these scales.NONE\u2014The first pyramid level wi...",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_resampling_technique": {
                         "type": "string",
                         "description": "Specifies the resampling technique that will be used to build the pyramids.NEAREST\u2014The new value of a cell will be based on the closest cell when resampling. This is the default.BILINEAR\u2014The new value...",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_compression_type": {
                         "type": "string",
                         "description": "Specifies the compression type that will be used when building the pyramids.DEFAULT\u2014If the source data is compressed using a wavelet compression, pyramids will be built with the JPEG compression type;...",
-                        "default": null
+                        "default": None
                 },
                 "compression_quality": {
                         "type": "string",
                         "description": "The compression quality that will be used when pyramids are built with the JPEG compression type.\r\nThe value must be between 0 and 100. The values closer to 100 will produce a higher-quality image, bu...",
-                        "default": null
+                        "default": None
                 },
                 "skip_existing": {
                         "type": "string",
                         "description": "Specifies whether pyramids will be built only if they do not exist or built even if they exist. OVERWRITE\u2014Pyramids will be built even if they already exist; existing pyramids will be overwritten. This...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -11991,22 +11991,22 @@ functions_declarations = {
                 "number_of_columns_to_skip": {
                         "type": "string",
                         "description": "The number of horizontal pixels between samples.A skip factor controls the portion of the raster that is used when calculating the statistics. The input value indicates the horizontal or vertical skip...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_rows_to_skip": {
                         "type": "string",
                         "description": "The number of vertical pixels between samples.A skip factor controls the portion of the raster that is used when calculating the statistics. The input value indicates the horizontal or vertical skip f...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_valuesignore_value": {
                         "type": "string",
                         "description": "The pixel values that are not to be included in the statistics calculation.The default is no value.",
-                        "default": null
+                        "default": None
                 },
                 "skip_existing": {
                         "type": "string",
                         "description": "Specifies whether statistics will be calculated only when they are missing or will be regenerated even if they exist.OVERWRITE\u2014Statistics will be calculated even if they already exist, and existing st...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12024,32 +12024,32 @@ functions_declarations = {
                 "pyramid_level": {
                         "type": "string",
                         "description": "The number of reduced-resolution dataset layers that will be built. The default value is -1, which will build full pyramids. A value of 0 will result in no pyramid levels.To delete pyramids, set the n...",
-                        "default": null
+                        "default": None
                 },
                 "skip_first": {
                         "type": "string",
                         "description": "Specifies whether the first pyramid level will be skipped. Skipping the first level will take up slightly less disk space but will slow down performance at these scales.NONE\u2014The first pyramid level wi...",
-                        "default": null
+                        "default": None
                 },
                 "resample_technique": {
                         "type": "string",
                         "description": "Specifies the resampling technique that will be used to build the pyramids.NEAREST\u2014The value of the closest pixel will be used to assign a value to the output pixel when resampling. This is the defaul...",
-                        "default": null
+                        "default": None
                 },
                 "compression_type": {
                         "type": "string",
                         "description": "Specifies the compression type that will be used when building the raster pyramids.DEFAULT\u2014If the source data is compressed using a wavelet compression, it will build pyramids with the JPEG compressio...",
-                        "default": null
+                        "default": None
                 },
                 "compression_quality": {
                         "type": "string",
                         "description": "The compression quality that will be used when pyramids are built with the JPEG compression type.\r\nThe value must be between 0 and 100. The values closer to 100 will produce a higher-quality image, bu...",
-                        "default": null
+                        "default": None
                 },
                 "skip_existing": {
                         "type": "string",
                         "description": "Specifies whether pyramids will be built only when they are missing or \r\nwill be regenerated even if they exist.OVERWRITE\u2014Pyramids will be built even if they already exist, and existing pyramids will ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12067,87 +12067,87 @@ functions_declarations = {
                 "include_subdirectories": {
                         "type": "string",
                         "description": "Specifies whether subdirectories will be included.NONE\u2014Does not include subdirectories. INCLUDE_SUBDIRECTORIES\u2014Includes all the raster datasets within the subdirectories when loading. This is the defa...",
-                        "default": null
+                        "default": None
                 },
                 "build_pyramids": {
                         "type": "string",
                         "description": "Specifies whether pyramids will be built.NONE\u2014Pyramids will not be built.BUILD_PYRAMIDS\u2014Pyramids will be built. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "calculate_statistics": {
                         "type": "string",
                         "description": "Specify whether to calculate statistics.NONE\u2014Does not calculate statistics.CALCULATE_STATISTICS\u2014Calculates statistics. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "build_on_source": {
                         "type": "string",
                         "description": "Specify whether to calculate statistics on the source raster datasets, or calculate statistics on the raster items in a mosaic dataset.\r\nThis option only applies to mosaic datasets. NONE\u2014Statistics wi...",
-                        "default": null
+                        "default": None
                 },
                 "block_field": {
                         "type": "string",
                         "description": "The name of the field within a mosaic dataset's attribute table\r\nused to identify items that should be considered one item when performing some calculations and operations.",
-                        "default": null
+                        "default": None
                 },
                 "estimate_statistics": {
                         "type": "string",
                         "description": "Specify whether to calculate statistics for the mosaic dataset (not the rasters within it). The statistics are derived from the existing statistics that have been calculated for each raster in the mos...",
-                        "default": null
+                        "default": None
                 },
                 "x_skip_factor": {
                         "type": "string",
                         "description": "The number of horizontal pixels between samples.A skip factor controls the portion of the raster that is used when calculating the statistics. The input value indicates the horizontal or vertical skip...",
-                        "default": null
+                        "default": None
                 },
                 "y_skip_factor": {
                         "type": "string",
                         "description": "The number of vertical pixels between samples.A skip factor controls the portion of the raster that is used when calculating the statistics. The input value indicates the horizontal or vertical skip f...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_valuesignore_value": {
                         "type": "string",
                         "description": "The pixel values that are not to be included in the statistics calculation.The default is no value.",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_level": {
                         "type": "string",
                         "description": "The number of reduced-resolution dataset layers that will be built. The default value is -1, which will build full pyramids. A value of 0 will result in no pyramid levels.The maximum number of pyramid...",
-                        "default": null
+                        "default": None
                 },
                 "skip_first": {
                         "type": "string",
                         "description": "Specifies whether the first pyramid level will be skipped. Skipping the first level will take up slightly less disk space but will slow down performance at these scales.NONE\u2014The first pyramid level wi...",
-                        "default": null
+                        "default": None
                 },
                 "resample_technique": {
                         "type": "string",
                         "description": "Specifies the resampling technique that will be used to build the pyramids.NEAREST\u2014The value of the closest pixel will be used to assign a value to the output pixel when resampling. This is the defaul...",
-                        "default": null
+                        "default": None
                 },
                 "compression_type": {
                         "type": "string",
                         "description": "Specifies the compression type that will be used when building the raster pyramids.DEFAULT\u2014If the source data is compressed using a wavelet compression, pyramids will be built using the JPEG compressi...",
-                        "default": null
+                        "default": None
                 },
                 "compression_quality": {
                         "type": "string",
                         "description": "The compression quality that will be used when pyramids are built with the JPEG compression type.\r\nThe value must be between 0 and 100. The values closer to 100 will produce a higher-quality image, bu...",
-                        "default": null
+                        "default": None
                 },
                 "skip_existing": {
                         "type": "string",
                         "description": "Specify whether to calculate statistics only where they are missing, or regenerate them even if they exist.SKIP_EXISTING\u2014Statistics will only be calculated if they do not already exist. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression to select raster datasets that will be processed.",
-                        "default": null
+                        "default": None
                 },
                 "sips_mode": {
                         "type": "string",
                         "description": "Specifies whether  to enable building of pyramid files using key processes and algorithms defined in the Softcopy Image Processing Standard (SIPS), NGA.STND.0014.NONE\u2014Pyramids will be built using stan...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12165,12 +12165,12 @@ functions_declarations = {
                 "overwrite": {
                         "type": "string",
                         "description": "Specifies whether the existing table will be overwritten.NONE\u2014The existing raster attribute table will not be overwritten and any edits will be appended to it. This is the default.Overwrite\u2014The existi...",
-                        "default": null
+                        "default": None
                 },
                 "convert_colormap": {
                         "type": "string",
                         "description": "Specifies whether the color map will be converted to a raster attribute table. The output raster attribute table will include Red, Green, and Blue fields containing color values from the color map. Th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12188,27 +12188,27 @@ functions_declarations = {
                 "x_skip_factor": {
                         "type": "string",
                         "description": "The number of horizontal pixels between samples.A skip factor controls the portion of the raster that is used when calculating the statistics. The input value indicates the horizontal or vertical skip...",
-                        "default": null
+                        "default": None
                 },
                 "y_skip_factor": {
                         "type": "string",
                         "description": "The number of vertical pixels between samples.A skip factor controls the portion of the raster that is used when calculating the statistics. The input value indicates the horizontal or vertical skip f...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_valuesignore_value": {
                         "type": "string",
                         "description": "The pixel values that are not to be included in the statistics calculation.The default is no value or the last ignore value used.",
-                        "default": null
+                        "default": None
                 },
                 "skip_existing": {
                         "type": "string",
                         "description": "Specifies whether statistics will be calculated only when they are missing or will be regenerated even if they exist.OVERWRITE\u2014Statistics will be calculated even if they already exist, and existing st...",
-                        "default": null
+                        "default": None
                 },
                 "area_of_interest": {
                         "type": "string",
                         "description": "The feature class that represents the area in the dataset that will be used to calculate statistics, so they are not generated from the entire dataset.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12230,7 +12230,7 @@ functions_declarations = {
                 "format": {
                         "type": "string",
                         "description": "The output function template file format.\r\nXML\u2014XML output format.JSON\u2014JSON output format. This is the default.BINARY\u2014Binary output format.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12292,7 +12292,7 @@ functions_declarations = {
                 "band_index": {
                         "type": "string",
                         "description": "Specify the bands that you want to query. Leave blank to query all bands in a multiband dataset.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12311,7 +12311,7 @@ functions_declarations = {
                 "band_index": {
                         "type": "string",
                         "description": "Choose the band name from which to get the properties. If no band is chosen, then the first band will be used.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12329,27 +12329,27 @@ functions_declarations = {
                 "data_type": {
                         "type": "string",
                         "description": "Specifies the type of imagery in the raster.GENERIC\u2014 The raster does not have a specified data type.ELEVATION\u2014 The raster contains elevation data.THEMATIC\u2014The raster contains thematic data, which has ...",
-                        "default": null
+                        "default": None
                 },
                 "statisticsband_index_min_max_mean_std_dev": {
                         "type": "string",
                         "description": "The bands and  values for the minimum, maximum, mean, and standard deviation.",
-                        "default": null
+                        "default": None
                 },
                 "stats_file": {
                         "type": "string",
                         "description": "An .xml file that contains the statistics.",
-                        "default": null
+                        "default": None
                 },
                 "nodataband_index_nodata_value": {
                         "type": "string",
                         "description": "The NoData value for each band. Each band can have a unique NoData value defined, or the same value can be specified for all bands. To define multiple NoData values for each band selection, use a spac...",
-                        "default": null
+                        "default": None
                 },
                 "multidimensional_info": {
                         "type": "string",
                         "description": "The dimensional information for the raster dataset. Setting dimensional information will convert a  dimensionless raster  into a multidimensional raster.If the dimension is time, the dimension name mu...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12367,32 +12367,32 @@ functions_declarations = {
                 "origin_subtype": {
                         "type": "string",
                         "description": "Specifies the subtype of the origin class. If the origin class has subtypes, choose the subtype to which you want to associate a relationship class rule. If the origin class has no subtypes, the relat...",
-                        "default": null
+                        "default": None
                 },
                 "origin_minimum": {
                         "type": "string",
                         "description": "Specifies the minimum range cardinality for the origin class if the relationship class is many-to-many.",
-                        "default": null
+                        "default": None
                 },
                 "origin_maximum": {
                         "type": "string",
                         "description": "Specifies the maximum range cardinality for the origin class if the relationship class is many-to-many or one-to-many.",
-                        "default": null
+                        "default": None
                 },
                 "destination_subtype": {
                         "type": "string",
                         "description": "Specifies the subtype of the destination class. If the destination class has subtypes, choose the subtype to which you want to associate a relationship class rule. If the destination class has no subt...",
-                        "default": null
+                        "default": None
                 },
                 "destination_minimum": {
                         "type": "string",
                         "description": "Specifies the minimum range cardinality for the destination class if the relationship class is many-to-many or one-to-many.",
-                        "default": null
+                        "default": None
                 },
                 "destination_maximum": {
                         "type": "string",
                         "description": "Specifies the maximum range cardinality for the destination class if the relationship class is many-to-many or one-to-many.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12450,12 +12450,12 @@ functions_declarations = {
                 "destination_primary_key": {
                         "type": "string",
                         "description": "The  field in the destination table that links  to the destination_foreign_key field in the relationship class table. This value is required for many-to-many or attributed relationship classes, but sh...",
-                        "default": null
+                        "default": None
                 },
                 "destination_foreign_key": {
                         "type": "string",
                         "description": "The field in the relationship class table that links to the destination_primary_key field in the destination table. This value is required for many-to-many or attributed relationship classes, but shou...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12496,17 +12496,17 @@ functions_declarations = {
                 "origin_subtype": {
                         "type": "string",
                         "description": "If the origin class has subtypes, the subtype that is associated with the relationship class rule to be deleted.",
-                        "default": null
+                        "default": None
                 },
                 "destination_subtype": {
                         "type": "string",
                         "description": "If the destination class has subtypes, the subtype that is associated with the relationship class rule to be deleted.",
-                        "default": null
+                        "default": None
                 },
                 "remove_all": {
                         "type": "string",
                         "description": "Specifies the relationship rules to be removed from the relationship class.\r\nREMOVE\u2014All relationship rules will be removed from the input relationship class.NOT_ALL\u2014Only rules from the origin and dest...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12624,57 +12624,57 @@ functions_declarations = {
                 "expression": {
                         "type": "string",
                         "description": "An SQL expression that will be used to select a subset of records. This expression will be applied in addition to any existing expressions.",
-                        "default": null
+                        "default": None
                 },
                 "adjust_row_height": {
                         "type": "string",
                         "description": "Specifies whether the row height will adjust to fit the content of the cell.ADJUST_ROW_HEIGHT\u2014The row height will collapse or expand to fit the content of the cell. This is the default.NO_ADJUST_ROW_H...",
-                        "default": null
+                        "default": None
                 },
                 "merge_cells": {
                         "type": "string",
                         "description": "Specifies whether the cells of the Excel file will be merged to fit the content.MERGE_CELLS\u2014The cells of the Excel file will be merged to fit the content. This is the default.NO_MERGE_CELLS\u2014The cells ...",
-                        "default": null
+                        "default": None
                 },
                 "remove_vertical_whitespace": {
                         "type": "string",
                         "description": "Specifies whether extra white space will be removed from the output Excel file.REMOVE_WHITESPACE\u2014Extra white space will be removed from the output Excel file. This is the default.NO_REMOVE_WHITESPACE\u2014...",
-                        "default": null
+                        "default": None
                 },
                 "display_gridlines": {
                         "type": "string",
                         "description": "Specifies whether grid lines will be automatically displayed when viewing sheets in the output Excel file.DISPLAY_GRIDLINES\u2014Grid lines will be automatically displayed when viewing sheets in the output...",
-                        "default": null
+                        "default": None
                 },
                 "export_unsupported_formats_as_text": {
                         "type": "string",
                         "description": "Specifies whether unsupported numeric formats will be exported as text.VALUE_AS_TEXT\u2014Unsupported numeric formats will be exported as text.RAW_VALUE\u2014Unsupported numeric formats will be exported as a ge...",
-                        "default": null
+                        "default": None
                 },
                 "sheet_export": {
                         "type": "string",
                         "description": "Specifies how each report will be exported to sheets.ALL\u2014All report sections will be exported to an individual sheet. This is the default.SUBREPORT\u2014Each subreport will be exported to  an individual  s...",
-                        "default": null
+                        "default": None
                 },
                 "page_range_type": {
                         "type": "string",
                         "description": "Specifies the page range of the report  that will exported.ALL\u2014All pages will be exported. This is the default.LAST\u2014Only the last page only will be exported.ODD\u2014Only odd numbered pages will be exporte...",
-                        "default": null
+                        "default": None
                 },
                 "custom_page_range": {
                         "type": "string",
                         "description": "The pages that will be exported when the page_range_type parameter is set to CUSTOM.  You can set individual pages, ranges, or a combination of both separated by commas, such as 1, 3-5, 10.",
-                        "default": null
+                        "default": None
                 },
                 "initial_page_number": {
                         "type": "string",
                         "description": "The initial page number of the report that will be used to create a  page numbering offset to add more pages to the beginning of the report.",
-                        "default": null
+                        "default": None
                 },
                 "final_page_number": {
                         "type": "string",
                         "description": "The page number that will be displayed on the last page of the Excel file.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12697,67 +12697,67 @@ functions_declarations = {
                 "expression": {
                         "type": "string",
                         "description": "A SQL expression that will be used to select a subset of records. This expression is applied in addition to any existing expressions.",
-                        "default": null
+                        "default": None
                 },
                 "resolution": {
                         "type": "string",
                         "description": "The resolution of the output .pdf file in dots per inch (dpi).",
-                        "default": null
+                        "default": None
                 },
                 "image_quality": {
                         "type": "string",
                         "description": "Specifies the output image quality of the PDF. The image quality option controls the quality of exported rasterized data.BEST\u2014The highest available image quality will be used. This is the default.BETT...",
-                        "default": null
+                        "default": None
                 },
                 "embed_font": {
                         "type": "string",
                         "description": "Specifies whether fonts will be embedded in the output .pdf file. Font embedding allows text and markers built from font glyphs to be displayed correctly when the .pdf file is viewed on a computer tha...",
-                        "default": null
+                        "default": None
                 },
                 "compress_vector_graphics": {
                         "type": "string",
                         "description": "Specifies whether vector graphics will be compressed.COMPRESS_GRAPHICS\u2014Vector graphics will be compressed. Use this option unless clear text is wanted for troubleshooting. This is the default.NO_COMPR...",
-                        "default": null
+                        "default": None
                 },
                 "image_compression": {
                         "type": "string",
                         "description": "Specifies the compression scheme that will be used to compress image or raster data in the output .pdf file.\r\nNONE\u2014Image or raster data will not be compressed.RLE\u2014Image or raster data will be compress...",
-                        "default": null
+                        "default": None
                 },
                 "password_protect": {
                         "type": "string",
                         "description": "Specifies whether a password will be needed to view the output .pdf file.PASSWORD_PROTECT\u2014The output .pdf file will require a password  to open.NO_PASSWORD_PROTECT\u2014The output .pdf file can be opened w...",
-                        "default": null
+                        "default": None
                 },
                 "pdf_password": {
                         "type": "string",
                         "description": "The password that will be required to open the .pdf file.",
-                        "default": null
+                        "default": None
                 },
                 "page_range_type": {
                         "type": "string",
                         "description": "Specifies the page range of the report  that will exported.ALL\u2014All pages will be exported. This is the default.LAST\u2014Only the last page only will be exported.ODD\u2014Only odd numbered pages will be exporte...",
-                        "default": null
+                        "default": None
                 },
                 "custom_page_range": {
                         "type": "string",
                         "description": "The pages that will be exported when the page_range_type parameter is set to CUSTOM.  You can set individual pages, ranges, or a combination of both separated by commas, such as 1, 3-5, 10.",
-                        "default": null
+                        "default": None
                 },
                 "initial_page_number": {
                         "type": "string",
                         "description": "The initial page number that will be used to create a  page numbering offset to add more pages to the beginning of the report.",
-                        "default": null
+                        "default": None
                 },
                 "final_page_number": {
                         "type": "string",
                         "description": "The page number that will be displayed on the last page of the output .pdf file.",
-                        "default": null
+                        "default": None
                 },
                 "selection_symbology": {
                         "type": "string",
                         "description": "Specifies whether selection symbology will be included when exporting a report with a map frame and selected features in the source map.SELECTION_SYMBOLOGY\u2014Selection symbology will be included in the ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12800,22 +12800,22 @@ functions_declarations = {
                 "corner_coord": {
                         "type": "string",
                         "description": "The opposite corner of the fishnet set by the origin_coord parameter.This parameter is disabled if the origin_coord, y_axis_coord, cell_width, cell_height, number_rows, and number_columns parameters a...",
-                        "default": null
+                        "default": None
                 },
                 "labels": {
                         "type": "string",
                         "description": "Specifies whether a point feature class will be created containing label points at the center of each fishnet cell.LABELS\u2014A point feature class will be created. This is the default.NO_LABELS\u2014A point f...",
-                        "default": null
+                        "default": None
                 },
                 "template": {
                         "type": "string",
                         "description": "The extent of the fishnet. The extent can be provided by specifying the coordinates or using a template dataset.\r\nMAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to a...",
-                        "default": null
+                        "default": None
                 },
                 "geometry_type": {
                         "type": "string",
                         "description": "Specifies whether the output fishnet cells will be polyline or polygon features.POLYLINE\u2014The output will be a polyline feature class. Each cell is defined by four line features.POLYGON\u2014The output will...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12843,32 +12843,32 @@ functions_declarations = {
                 "constraining_feature_class": {
                         "type": "string",
                         "description": "Random points will be generated inside or along the features in this feature class. The constraining feature class can be point, multipoint, line, or polygon. Points will be randomly placed inside pol...",
-                        "default": null
+                        "default": None
                 },
                 "constraining_extent": {
                         "type": "string",
                         "description": "Random points will be generated inside the extent. The constraining extent will only be used if no constraining feature class is specified.\r\nMAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014T...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_points_or_field": {
                         "type": "string",
                         "description": "The number of points to be randomly generated.The number of points can be specified as a long integer number or as a field from the constraining features containing numeric values for how many random ...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_allowed_distance": {
                         "type": "string",
                         "description": "The shortest distance allowed between any two randomly placed points. If a value of 1 Meter is specified, all random points will be farther than 1 meter away from the closest point.",
-                        "default": null
+                        "default": None
                 },
                 "create_multipoint_output": {
                         "type": "string",
                         "description": "Determines if the output feature class will be a multipart or single-part feature.POINT\u2014The output will be geometry type point (each point is a separate feature). This is the default.MULTIPOINT\u2014The ou...",
-                        "default": null
+                        "default": None
                 },
                 "multipoint_size": {
                         "type": "string",
                         "description": "If create_multipoint_output is set to MULTIPOINT, specify the number of random points to be placed in each multipoint geometry. The default is 10.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12905,7 +12905,7 @@ functions_declarations = {
         "parameters": {
                 "in_study_area": {
                         "type": "string",
-                        "description": "The input study area where sample locations will be created. The study area must be polygons or an integer (categorical) raster.  For rasters, cells with null values will not be included in the study ..."
+                        "description": "The input study area where sample locations will be created. The study area must be polygons or an integer (categorical) raster.  For rasters, cells with None values will not be included in the study ..."
                 },
                 "out_features": {
                         "type": "string",
@@ -12914,62 +12914,62 @@ functions_declarations = {
                 "sampling_method": {
                         "type": "string",
                         "description": "Specifies the sampling method that will be used to create the sample locations.RANDOM\u2014Points will be randomly created in the study area, and all locations have the same likelihood of being sampled. Al...",
-                        "default": null
+                        "default": None
                 },
                 "strata_id_field": {
                         "type": "string",
                         "description": "For stratified sampling by strata ID field, the strata ID field defining the strata.",
-                        "default": null
+                        "default": None
                 },
                 "strata_count_method": {
                         "type": "string",
                         "description": "For stratified sampling, specifies the method that will be used to determine the number of sample locations that will be created in each stratum. \r\nEQUAL\u2014The same number of sample locations will be cr...",
-                        "default": null
+                        "default": None
                 },
                 "bin_shape": {
                         "type": "string",
                         "description": "For systematic and cluster sampling, specifies the shape of the polygons that will be generated in the gridded tessellation.  \r\nHEXAGON\u2014Hexagon-shaped features will be generated. The top and bottom si...",
-                        "default": null
+                        "default": None
                 },
                 "bin_size": {
                         "type": "string",
                         "description": "For systematic and cluster sampling, the size of each polygon in the tessellation. The value can be provided as a count (the total number of tessellated polygons created in the study area) or as an ar...",
-                        "default": null
+                        "default": None
                 },
                 "h3_resolution": {
                         "type": "string",
                         "description": "For systematic or cluster sampling with H3 hexagon bins, specifies the H3 resolution of the hexagons.With each increasing resolution value, the area of the polygons will be one seventh the size. 0\u2014Hex...",
-                        "default": null
+                        "default": None
                 },
                 "num_samples": {
                         "type": "string",
                         "description": "The number of sample locations that will be created.  This parameter always applies to simple random and cluster sampling.  For stratified sampling, this parameter applies when the sample count will b...",
-                        "default": null
+                        "default": None
                 },
                 "num_samples_per_strata": {
                         "type": "string",
                         "description": "For stratified sampling with an equal sample count in each stratum, the number of sample locations created within each stratum.  The total number of samples will be this value multiplied by the number...",
-                        "default": null
+                        "default": None
                 },
                 "population_field": {
                         "type": "string",
                         "description": "The population field for stratified sampling when the sample count is equal or proportional to a population field.",
-                        "default": null
+                        "default": None
                 },
                 "geometry_type": {
                         "type": "string",
                         "description": "For systematic sampling, specifies whether the sample locations will be tessellated polygons or centroids (points) of the tessellated polygons.POINT\u2014Centroids of the tessellated polygons will be creat...",
-                        "default": null
+                        "default": None
                 },
                 "min_distance": {
                         "type": "string",
                         "description": "For simple random and stratified sampling, the smallest allowed distance between sample locations. For simple random sampling, all points will be at least this distance apart.  For stratified sampling...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_relationship": {
                         "type": "string",
                         "description": "Specifies which polygons from a background tessellation will be included as sampling locations. This parameter  applies to cluster sampling and to systematic sampling when the output geometry type is ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -12996,32 +12996,32 @@ functions_declarations = {
                 "distance": {
                         "type": "string",
                         "description": "The interval from the beginning of the feature \r\nat which points will be placed.This parameter is active when the Point_Placement parameter is set to DISTANCE.",
-                        "default": null
+                        "default": None
                 },
                 "percentage": {
                         "type": "string",
                         "description": "The percentage from the beginning of the feature at which points will be placed. For example, if a percentage of 40 is used, \r\npoints will be placed at 40 percent and 80 percent of the feature's dista...",
-                        "default": null
+                        "default": None
                 },
                 "include_end_points": {
                         "type": "string",
                         "description": "Specifies whether additional points will be included at the start point and end point of the feature.END_POINTS\u2014Additional points will be included at the start point and end point of the feature.NO_EN...",
-                        "default": null
+                        "default": None
                 },
                 "add_chainage_fields": {
                         "type": "string",
                         "description": "Specifies whether the accumulated distance and sequence fields will be added to the output.ADD_CHAINAGE\u2014The accumulated distance (ORIG_LEN) and sequence (ORIG_SEQ) fields will be added to the output. ...",
-                        "default": null
+                        "default": None
                 },
                 "distance_field": {
                         "type": "string",
                         "description": "A field from the input features that will be used to place output points.If the field is a numeric type, the field value will be used to place points at that interval.If the field is a string type, th...",
-                        "default": null
+                        "default": None
                 },
                 "distance_method": {
                         "type": "string",
                         "description": "Specifies the measurement method that will be used to create the points.This parameter is active when the Point_Placement parameter is set to DISTANCE.PLANAR\u2014Points will be created using a planar meth...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13045,12 +13045,12 @@ functions_declarations = {
                 "length_along_line": {
                         "type": "string",
                         "description": "The length of the output polygon features along the input line features. The default value is determined by the spatial reference of the input line features. This value will be 1/100 of the input feat...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_sort_method": {
                         "type": "string",
                         "description": "Output features are created in a sequential order and require a spatial starting point. Setting the direction type to upper right will start the output features in the upper right of each input featur...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13073,22 +13073,22 @@ functions_declarations = {
                 "shape_type": {
                         "type": "string",
                         "description": "Specifies the shape that will be generated.HEXAGON\u2014Hexagon-shaped features will be generated. The top and bottom side of each hexagon will be parallel with the x-axis of the coordinate system (the top...",
-                        "default": null
+                        "default": None
                 },
                 "size": {
                         "type": "string",
                         "description": "The area of each individual shape that comprises the tessellation.",
-                        "default": null
+                        "default": None
                 },
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference that will be assigned to the output feature class.",
-                        "default": null
+                        "default": None
                 },
                 "h3_resolution": {
                         "type": "string",
                         "description": "Specifies the H3 resolution of the hexagons.With each increasing resolution value, the area of the polygons will be one seventh the size. 0\u2014Hexagons will be created at the H3 resolution of 0, with an ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13119,7 +13119,7 @@ functions_declarations = {
                 "include_ends": {
                         "type": "string",
                         "description": "Specifies whether transects will be generated at the start and end of the input line.END_POINTS\u2014Transects will be generated at the start and end of the input line.NO_END_POINTS\u2014Transects will not be g...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13144,17 +13144,17 @@ functions_declarations = {
                 "out_test_feature_class": {
                         "type": "string",
                         "description": "The subset of test features that will be created.",
-                        "default": null
+                        "default": None
                 },
                 "size_of_training_dataset": {
                         "type": "string",
                         "description": "The size of the output training feature class, entered either as a percentage of the input features or as an absolute number of features.",
-                        "default": null
+                        "default": None
                 },
                 "subset_size_units": {
                         "type": "string",
                         "description": "Specifies whether the subset size value will be used as a percentage of the input features or as an absolute number of features.PERCENTAGE_OF_INPUT\u2014 The subset size will be used as a percentage of the...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13232,12 +13232,12 @@ functions_declarations = {
                 "field": {
                         "type": "string",
                         "description": "The integer field that will store the subtype codes.",
-                        "default": null
+                        "default": None
                 },
                 "clear_value": {
                         "type": "string",
-                        "description": "Specifies whether to clear the subtype field.CLEAR_SUBTYPE_FIELD\u2014The subtype field will be cleared (set to null).DO_NOT_CLEAR\u2014The subtype field will not be cleared. This is the default.",
-                        "default": null
+                        "description": "Specifies whether to clear the subtype field.CLEAR_SUBTYPE_FIELD\u2014The subtype field will be cleared (set to None).DO_NOT_CLEAR\u2014The subtype field will not be cleared. This is the default.",
+                        "default": None
                 }
         },
         "required": [
@@ -13277,7 +13277,7 @@ functions_declarations = {
                 "config_keyword": {
                         "type": "string",
                         "description": "The default storage parameters for an enterprise geodatabase.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13300,17 +13300,17 @@ functions_declarations = {
                 "template": {
                         "type": "string",
                         "description": "One or more datasets from which the attribute schema will be used to define the output table. Fields in the template datasets will be added to the output table.",
-                        "default": null
+                        "default": None
                 },
                 "config_keyword": {
                         "type": "string",
                         "description": "The configuration keyword that determines the storage parameters of the table in an enterprise geodatabase.",
-                        "default": null
+                        "default": None
                 },
                 "out_alias": {
                         "type": "string",
                         "description": "The alternate name of the \r\noutput table that will be created.",
-                        "default": null
+                        "default": None
                 },
                 "oid_type": {
                         "type": "string",
@@ -13338,12 +13338,12 @@ functions_declarations = {
                 "template": {
                         "type": "string",
                         "description": "An existing dataset or list of datasets with fields and attribute schema that will be used to define the fields in the output table.",
-                        "default": null
+                        "default": None
                 },
                 "config_keyword": {
                         "type": "string",
                         "description": "Specifies the default storage parameters (configurations) for geodatabases in a relational database management system (RDBMS). This setting is applicable only when using enterprise geodatabase tables....",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13442,22 +13442,22 @@ functions_declarations = {
                 "export_cache_type": {
                         "type": "string",
                         "description": "Specifies whether the cache will be exported as a tile cache or a tile package. Tile packages are suitable\r\nfor ArcGIS Runtime and ArcGIS Mobile deployments.\r\nTILE_CACHE\u2014The cache will be exported as ...",
-                        "default": null
+                        "default": None
                 },
                 "storage_format_type": {
                         "type": "string",
                         "description": "Determines the storage format of tiles.COMPACT\u2014Group tiles into large files called bundles. This storage format is more efficient in terms of storage and mobility. COMPACT_V2\u2014 Tiles are grouped in bun...",
-                        "default": null
+                        "default": None
                 },
                 "scalesscale": {
                         "type": "string",
                         "description": "A list of scale levels at which tiles will be exported.",
-                        "default": null
+                        "default": None
                 },
                 "area_of_interest": {
                         "type": "string",
                         "description": "An area of interest that spatially constrains where tiles will be exported from the cache.The area of interest can be a feature class or a feature that you draw on the map.This parameter is useful if ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13489,52 +13489,52 @@ functions_declarations = {
                 "predefined_tiling_scheme": {
                         "type": "string",
                         "description": "Path to a predefined tiling scheme file (usually named conf.xml). This parameter is enabled only when the Predefined option is chosen as the tiling scheme generation method.",
-                        "default": null
+                        "default": None
                 },
                 "scalesscale": {
                         "type": "string",
                         "description": "Scale levels to be included in the tiling scheme. By default, these are not represented as fractions. Instead, use 500 to represent a scale of 1:500, and so on. The value entered in the Number of Scal...",
-                        "default": null
+                        "default": None
                 },
                 "scales_type": {
                         "type": "string",
                         "description": "Determines the units of the scales parameter.CELL_SIZE\u2014Indicates the values of the scales parameter are pixel sizes. This is the default.SCALE\u2014Indicates the values of the scales parameter are scale le...",
-                        "default": null
+                        "default": None
                 },
                 "tile_origin": {
                         "type": "string",
                         "description": "The origin (upper left corner) of the tiling scheme in the coordinates of the spatial reference of the source dataset. The extent of the source dataset must be within (but does not need to coincide) t...",
-                        "default": null
+                        "default": None
                 },
                 "dpi": {
                         "type": "string",
                         "description": "The dots per inch of the intended output device. If a DPI is chosen that does not match the resolution of the output device, typically a display monitor, the scale of the tile will appear incorrect. T...",
-                        "default": null
+                        "default": None
                 },
                 "tile_size": {
                         "type": "string",
                         "description": "The width and height of the cache tiles in pixels. The default is 256 by 256.For the best balance between performance and manageability, avoid deviating from widths of 256 or 512.128 x 128\u2014Tile width ...",
-                        "default": null
+                        "default": None
                 },
                 "tile_format": {
                         "type": "string",
                         "description": "The file format for the tiles in the cache.  PNG\u2014Creates PNG format with varying bit\r\ndepths. The bit depths are optimized according to the color\r\nvariation and transparency values in each tile.PNG8\u2014A...",
-                        "default": null
+                        "default": None
                 },
                 "tile_compression_quality": {
                         "type": "string",
                         "description": "Enter a value\r\nbetween 1 and 100 for the JPEG or Mixed compression quality. The default value is 75.Compression is\r\nsupported only for Mixed and JPEG format. Choosing a higher value will result in hig...",
-                        "default": null
+                        "default": None
                 },
                 "storage_format": {
                         "type": "string",
                         "description": "Determines the storage format of tiles. COMPACT\u2014Group tiles into large files called bundles. This storage format is more efficient in terms of storage and mobility. This is the default.EXPLODED\u2014Each t...",
-                        "default": null
+                        "default": None
                 },
                 "lerc_error": {
                         "type": "string",
                         "description": "Set the maximum tolerance in pixel values when compressing with LERC.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13559,17 +13559,17 @@ functions_declarations = {
                 "scales": {
                         "type": "string",
                         "description": "A list of scale levels at which tiles will be imported.",
-                        "default": null
+                        "default": None
                 },
                 "area_of_interest": {
                         "type": "string",
                         "description": "An area of interest will spatially constrain where tiles are imported into the cache.This parameter is useful if you want to import tiles for irregularly shaped areas.",
-                        "default": null
+                        "default": None
                 },
                 "overwrite": {
                         "type": "string",
                         "description": "Determines whether the images in the destination cache will be merged with the tiles from the originating cache or overwritten by them.MERGE\u2014When the tiles are imported, transparent pixels in the orig...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13592,52 +13592,52 @@ functions_declarations = {
                 "in_cache_name": {
                         "type": "string",
                         "description": "The name of the cache dataset that will be created in\r\n  the cache location.",
-                        "default": null
+                        "default": None
                 },
                 "in_datasource": {
                         "type": "string",
                         "description": "A raster dataset, mosaic dataset, or map file.\r\nThis parameter is not required when the manage_mode parameter is set to DELETE_TILES.A map file (.mapx) cannot contain a map service or image service.",
-                        "default": null
+                        "default": None
                 },
                 "tiling_scheme": {
                         "type": "string",
                         "description": "Specifies the tiling scheme that will be used.ARCGISONLINE_SCHEME\u2014The default ArcGIS Online tiling scheme will be used.IMPORT_SCHEME\u2014An existing tiling scheme will be imported and used.ARCGISONLINE_EL...",
-                        "default": null
+                        "default": None
                 },
                 "import_tiling_scheme": {
                         "type": "string",
                         "description": "The path to an existing scheme file (.xml)  or to a tiling scheme imported from an existing image service or map service.",
-                        "default": null
+                        "default": None
                 },
                 "scalesscale": {
                         "type": "string",
                         "description": "The scale levels at which tiles will be created or deleted , depending on the value of the manage_mode parameter. The pixel size is based on the spatial reference of the tiling scheme.By default, only...",
-                        "default": null
+                        "default": None
                 },
                 "area_of_interest": {
                         "type": "string",
                         "description": "An area of interest that will be used to constrain where tiles will be created or deleted.It can be a feature class, or it can be a feature set that you\r\ninteractively define.This parameter is useful ...",
-                        "default": null
+                        "default": None
                 },
                 "max_cell_size": {
                         "type": "string",
                         "description": "The value that defines the visibility of the data source for which the cache will be generated. By default, the value is empty.If the value is empty, the following apply:For levels of cache that lie w...",
-                        "default": null
+                        "default": None
                 },
                 "min_cached_scale": {
                         "type": "string",
                         "description": "The minimum scale at which tiles will be created.\r\nThis value does not need to be the smallest scale in the tiling scheme. The minimum cache scale will determine which scales are used when generating ...",
-                        "default": null
+                        "default": None
                 },
                 "max_cached_scale": {
                         "type": "string",
                         "description": "The maximum scale at which tiles will be created. This\r\nvalue does not need to be the largest scale in the tiling scheme. The maximum cache scale will determine which scales are used when generating c...",
-                        "default": null
+                        "default": None
                 },
                 "ready_to_serve_format": {
                         "type": "string",
                         "description": "Specifies whether the cache content will be generated using the open tile package specification and also specifies the file format of the cache schema.READY_TO_SERVE_FORMAT\u2014The cache content will be g...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13692,17 +13692,17 @@ functions_declarations = {
                 "subtype": {
                         "type": "string",
                         "description": "The subtype for the input or origin  feature class.  Provide the subtype name (not the code). If subtypes do not exist on the input feature class, or you want the rule to be applied to all subtypes in...",
-                        "default": null
+                        "default": None
                 },
                 "in_featureclass2": {
                         "type": "string",
                         "description": "The destination feature class for the topology rule.",
-                        "default": null
+                        "default": None
                 },
                 "subtype2": {
                         "type": "string",
                         "description": "The subtype for the destination feature class.  Provide the subtype name (not the code). If subtypes do not exist on the origin feature class, or you want the rule to be applied to all subtypes in the...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13726,7 +13726,7 @@ functions_declarations = {
                 "in_cluster_tolerance": {
                         "type": "string",
                         "description": "The cluster tolerance to be set on the topology.  The larger the value, the more likely vertices will be to cluster together.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13768,27 +13768,27 @@ functions_declarations = {
                 "overlap_type": {
                         "type": "string",
                         "description": "Specifies the spatial relationship that will be evaluated.INTERSECT\u2014The features in the input layer will be selected if they intersect a selecting feature. This is the default. INTERSECT_3D\u2014The featur...",
-                        "default": null
+                        "default": None
                 },
                 "select_features": {
                         "type": "string",
                         "description": "The features in the Input Features parameter will be selected based on their relationship to the features from this layer or feature class.",
-                        "default": null
+                        "default": None
                 },
                 "search_distance": {
                         "type": "string",
                         "description": "The distance that will be searched. This parameter is only valid if the overlap_type  parameter is set to INTERSECT, INTERSECT_3D, WITHIN_A_DISTANCE, WITHIN_A_DISTANCE_3D, WITHIN_A_DISTANCE_GEODESIC, ...",
-                        "default": null
+                        "default": None
                 },
                 "selection_type": {
                         "type": "string",
                         "description": "Specifies how the selection will be applied to the input and how it will be combined with an existing selection.  This tool does not include an option to clear an existing selection; use the  Select L...",
-                        "default": null
+                        "default": None
                 },
                 "invert_spatial_relationship": {
                         "type": "string",
                         "description": "Specifies whether the spatial relationship evaluation result or the opposite result will be used.  For example, this parameter can be used to get a list of features that do not intersect or are not wi...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13860,7 +13860,7 @@ functions_declarations = {
                 "visible_extent": {
                         "type": "string",
                         "description": "Specifies whether the current visible extent of the map or the full extent of the topology will be validated. Visible_Extent\u2014 The current visible extent of the map will be validated.Full_Extent\u2014The fu...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13886,17 +13886,17 @@ functions_declarations = {
                 "filter": {
                         "type": "string",
                         "description": "The filter for the input data. The default will be determined by the trajectory_type parameter value. Custom filter criteria can also be provided. For example,  a value of STD_ will filter files that ...",
-                        "default": null
+                        "default": None
                 },
                 "sub_folder": {
                         "type": "string",
                         "description": "Specifies whether data in the input_path subfolders will be searched and added.SUBFOLDERS\u2014All subfolders will be searched and the data added. This is the default.NO_SUBFOLDERS\u2014Only the top-level folde...",
-                        "default": null
+                        "default": None
                 },
                 "aux_inputs": {
                         "type": "string",
                         "description": "The properties that are determined by the trajectory_type parameter value.  Supported property names are ProductFilter, Frequency, PredefinedVariables, and Variables.  For a list of supported values a...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13943,7 +13943,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression that will limit the repairs to selected items in the trajectory dataset.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -13984,22 +13984,22 @@ functions_declarations = {
                 "name": {
                         "type": "string",
                         "description": "The new name of the version.",
-                        "default": null
+                        "default": None
                 },
                 "description": {
                         "type": "string",
                         "description": "The new description of the version.",
-                        "default": null
+                        "default": None
                 },
                 "access": {
                         "type": "string",
                         "description": "Specifies the access permission for the version. If no value is specified, the access permission will not be updated.PRIVATE\u2014Only the owner can view the version and modify available feature classes.PU...",
-                        "default": null
+                        "default": None
                 },
                 "target_owner": {
                         "type": "string",
                         "description": "The name of the portal user to which the version ownership will be transferred. Ensure that the target owner user exists; the tool does not check the validity of the owner name specified. This paramet...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14022,17 +14022,17 @@ functions_declarations = {
                 "version_name": {
                         "type": "string",
                         "description": "The name of the version to which the input feature layer will connect. This parameter is optional if you're using a historical version.",
-                        "default": null
+                        "default": None
                 },
                 "date": {
                         "type": "string",
                         "description": "The date of the historical version to which the input feature layer will connect.",
-                        "default": null
+                        "default": None
                 },
                 "include_participating": {
                         "type": "string",
                         "description": "Specifies whether the workspace of participating classes will also change.The parameter is only applicable when the input layer is a topology layer, parcel layer, utility network layer, or trace netwo...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14059,12 +14059,12 @@ functions_declarations = {
                 "access_permission": {
                         "type": "string",
                         "description": "Specifies the permission access level for the version to protect it from being edited or viewed by users other than the owner.PRIVATE\u2014Only the owner or the geodatabase administrator can view and modif...",
-                        "default": null
+                        "default": None
                 },
                 "version_description": {
                         "type": "string",
                         "description": "The description of the version that will be created. The description cannot exceed 64 characters.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14106,7 +14106,7 @@ functions_declarations = {
                 "report_only": {
                         "type": "string",
                         "description": "Specifies whether the eligible archive records will be reported or pruned.REPORT_ONLY\u2014The eligible archive records  will be reported to the log file; they will not be pruned. This is the default.PRUNE...",
-                        "default": null
+                        "default": None
                 },
                 "system_tables_only": {
                         "type": "string",
@@ -14115,7 +14115,7 @@ functions_declarations = {
                 "prune_before_date": {
                         "type": "string",
                         "description": "Archive records that are older than the specified date and time will be pruned. The date and time must be in UTC. If no date is provided, the oldest referenced moment in the database will be used.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14139,47 +14139,47 @@ functions_declarations = {
                 "target_version": {
                         "type": "string",
                         "description": "The name of any version in the direct ancestry of the edit version, such as the parent version or the default version.\r\n It typically contains edits from other versions that you want included in the e...",
-                        "default": null
+                        "default": None
                 },
                 "edit_versions": {
                         "type": "string",
                         "description": "The name of the edit version or versions to be reconciled with the selected target version.\r\nThis can be an individual version name or a list of version names.",
-                        "default": null
+                        "default": None
                 },
                 "acquire_locks": {
                         "type": "string",
                         "description": "Specifies whether feature locks will be acquired.If the input is a branch workspace, locks are not acquired during the reconcile process.LOCK_ACQUIRED\u2014Locks will be acquired during the reconcile proce...",
-                        "default": null
+                        "default": None
                 },
                 "abort_if_conflicts": {
                         "type": "string",
                         "description": "Specifies whether the reconcile process will end if conflicts are found between the target version and the edit version during the reconcile process.NO_ABORT\u2014The reconcile will not end if conflicts ar...",
-                        "default": null
+                        "default": None
                 },
                 "conflict_definition": {
                         "type": "string",
                         "description": "Specifies whether the conditions required for a conflict to occur will be defined by object (row) or by attribute (column).BY_OBJECT\u2014Conflicts will be defined by object. Any changes to the same row or...",
-                        "default": null
+                        "default": None
                 },
                 "conflict_resolution": {
                         "type": "string",
                         "description": "Specifies the resolution that will be used if a conflict is detected.If the input is a branch workspace, the default is to favor the edit version.FAVOR_TARGET_VERSION\u2014All conflicts will be resolved in...",
-                        "default": null
+                        "default": None
                 },
                 "out_log": {
                         "type": "string",
                         "description": "The name and location where the log file will be written. The log file is an ASCII file containing the contents of the geoprocessing messages.",
-                        "default": null
+                        "default": None
                 },
                 "proceed_if_conflicts_not_reviewed": {
                         "type": "string",
                         "description": "Specifies whether the reconcile will proceed if existing unreviewed conflicts are detected before the reconcile process starts. If you proceed, existing conflicts from previous sessions will be lost w...",
-                        "default": null
+                        "default": None
                 },
                 "reconcile_checkout_versions": {
                         "type": "string",
                         "description": "Specifies whether the reconcile process will include checkout replica versions. If you are creating a checkout replica as part of a geodatabase replication workflow, an associated version is created i...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14198,7 +14198,7 @@ functions_declarations = {
                 "edit_to_base": {
                         "type": "string",
                         "description": "Specifies whether edits made to the default version will be moved to the base tables. This parameter is not applicable for branch versioning.NO_EDITS_TO_BASE\u2014The dataset will not be versioned with the...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14234,12 +14234,12 @@ functions_declarations = {
                 "keep_edit": {
                         "type": "string",
                         "description": "Specifies whether edits made to the versioned data will be maintained.KEEP_EDIT\u2014When there are outstanding edits that could be lost, the tool will fail. Outstanding edits include edits in the delta ta...",
-                        "default": null
+                        "default": None
                 },
                 "compress_default": {
                         "type": "string",
                         "description": "Specifies whether edits will be compressed and unused data will be removed. This option is ignored if the keep_edit parameter is set to KEEP_EDIT.This parameter is only applicable for traditional vers...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14253,7 +14253,7 @@ functions_declarations = {
                 "in_data": {
                         "type": "string",
                         "description": "The geodatabase, .sde connection file, or folder path representing the workspace that will be removed from the workspace cache. If no value is specified, all contents of the workspace cache will be cl...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": []
@@ -14309,32 +14309,32 @@ functions_declarations = {
                 "access_key_id": {
                         "type": "string",
                         "description": "The access key ID string for the specific cloud storage type.  It can also be the account name,  as is the case with Azure.",
-                        "default": null
+                        "default": None
                 },
                 "secret_access_key": {
                         "type": "string",
                         "description": "The secret access key string to authenticate the connection to cloud storage.",
-                        "default": null
+                        "default": None
                 },
                 "region": {
                         "type": "string",
                         "description": "The region string for the cloud storage. If provided, the value must use the format defined by the cloud storage choice. The default is the selected cloud provider's default account.",
-                        "default": null
+                        "default": None
                 },
                 "end_point": {
                         "type": "string",
                         "description": "The service endpoint (URI) of the cloud storage, such as oss-us-west-1.aliyuncs.com. If no value is provided, the default endpoint for the selected cloud storage type will be used. The CNAME redirecte...",
-                        "default": null
+                        "default": None
                 },
                 "folder": {
                         "type": "string",
                         "description": "The folder in the bucket_name parameter value where the raster dataset or Parquet file is stored. If using this location for output for raster geoprocessing tools, this is the folder where the output ...",
-                        "default": null
+                        "default": None
                 },
                 "authentication": {
                         "type": "string",
                         "description": "The connection name of OAuth 2.0 authentication.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14363,97 +14363,97 @@ functions_declarations = {
                 "instance": {
                         "type": "string",
                         "description": "The database server or instance to which the connection will be made.The value you specify for the database_platform parameter indicates the type of database or cloud data warehouse to which the conne...",
-                        "default": null
+                        "default": None
                 },
                 "account_authentication": {
                         "type": "string",
                         "description": "Specifies the type of authentication that will be used.DATABASE_AUTH\u2014Database authentication will be used. An internal database username and a password will be used to connect to the database. You are...",
-                        "default": null
+                        "default": None
                 },
                 "username": {
                         "type": "string",
                         "description": "The database username that will be used for database authentication.",
-                        "default": null
+                        "default": None
                 },
                 "password": {
                         "type": "string",
                         "description": "The database user password that will be used for database authentication.",
-                        "default": null
+                        "default": None
                 },
                 "save_user_pass": {
                         "type": "string",
                         "description": "Specifies whether the username and password will be saved.SAVE_USERNAME\u2014The username and password will be saved in the connection file. This is the default. If the connection file you are creating wil...",
-                        "default": null
+                        "default": None
                 },
                 "database": {
                         "type": "string",
                         "description": "The name of the database to which the connection will be made. This parameter  applies to PostgreSQL,  Redshift, Snowflake, and SQL Server platforms.",
-                        "default": null
+                        "default": None
                 },
                 "schema": {
                         "type": "string",
                         "description": "The user schema geodatabase to which the connection will be made. This parameter only applies to Oracle databases that contain at least one user\u2013schema geodatabase. The default value for this paramete...",
-                        "default": null
+                        "default": None
                 },
                 "version_type": {
                         "type": "string",
                         "description": "Specifies the type of version to which the connection will be made.TRANSACTIONAL\u2014The connection will be made to a traditional transactional version.Note:This option does not apply to geodatabases in S...",
-                        "default": null
+                        "default": None
                 },
                 "version": {
                         "type": "string",
                         "description": "The geodatabase transactional version or historical marker  to which the connection will be made. The default option uses the default transactional version.If you choose a branch version type, the con...",
-                        "default": null
+                        "default": None
                 },
                 "date": {
                         "type": "string",
                         "description": "The value representing the date and time that will be used to connect to the database when working with archive-enabled data. Dates can be entered in the following formats: 6/9/2011 4:20:15 PM 6/9/201...",
-                        "default": null
+                        "default": None
                 },
                 "auth_type": {
                         "type": "string",
                         "description": "Specifies the advanced authentication type that will be used when connecting to a cloud data warehouse, Microsoft Azure SQL Database,  Azure SQL Managed Instance, Elasticsearch, or OpenSearch.\r\nAZURE_...",
-                        "default": null
+                        "default": None
                 },
                 "project_id": {
                         "type": "string",
                         "description": "The project ID for the Google BigQuery connection. Public data projects are not supported.",
-                        "default": null
+                        "default": None
                 },
                 "default_dataset": {
                         "type": "string",
                         "description": "The default dataset for the Google BigQuery connection. Provide the dataset name only; the fully-qualified dataset name is not supported. The dataset name must contain 32 characters or fewer. Public d...",
-                        "default": null
+                        "default": None
                 },
                 "refresh_token": {
                         "type": "string",
                         "description": "The refresh token value.This parameter is only applicable for Google BigQuery connections when the advanced authentication type is user authentication.",
-                        "default": null
+                        "default": None
                 },
                 "key_file": {
                         "type": "string",
                         "description": "The key file  value.This parameter is only applicable for Google BigQuery connections when the advanced authentication type is server authentication.",
-                        "default": null
+                        "default": None
                 },
                 "role": {
                         "type": "string",
                         "description": "The role value for a cloud data warehouse connection.This parameter is only applicable for connections to Snowflake.",
-                        "default": null
+                        "default": None
                 },
                 "warehouse": {
                         "type": "string",
                         "description": "The warehouse value for the connection.This parameter is only applicable for connections to Snowflake.",
-                        "default": null
+                        "default": None
                 },
                 "advanced_options": {
                         "type": "string",
                         "description": "The advanced options for the connection. This is optional connection information that is specific to the cloud data warehouse platform (Google BigQuery, Amazon Redshift, or Snowflake) to which you con...",
-                        "default": null
+                        "default": None
                 },
                 "host_url": {
                         "type": "string",
                         "description": "The URL to connect to Elasticsearch or OpenSearch.This parameter is only applicable for connections to Elasticsearch or OpenSearch.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14477,57 +14477,57 @@ functions_declarations = {
                 "account_authentication": {
                         "type": "string",
                         "description": "Specifies the type of authentication that will be used.DATABASE_AUTH\u2014Database authentication will be used. An internal database user name and password are used to connect to the database. You aren't r...",
-                        "default": null
+                        "default": None
                 },
                 "username": {
                         "type": "string",
                         "description": "The database user name that will be used when using database authentication.",
-                        "default": null
+                        "default": None
                 },
                 "password": {
                         "type": "string",
                         "description": "The database user password that will be used when using database authentication.",
-                        "default": null
+                        "default": None
                 },
                 "database": {
                         "type": "string",
                         "description": "The name of the database to which you will connect. This parameter only applies to PostgreSQL and SQL Server platforms.",
-                        "default": null
+                        "default": None
                 },
                 "object_name": {
                         "type": "string",
                         "description": "The name of the dataset or object in the database to which the connection string will point. This connection string can be used as a path to the specified dataset.",
-                        "default": null
+                        "default": None
                 },
                 "data_type": {
                         "type": "string",
                         "description": "The type of dataset or object referred to in the dataset object name. If there are multiple objects with the same name in the database, you may need to specify the data type of the object for which yo...",
-                        "default": null
+                        "default": None
                 },
                 "feature_dataset": {
                         "type": "string",
                         "description": "The name of the feature dataset containing the dataset or object for which you want to make a connection string. If the dataset is not in a feature dataset (for example, if it's at the root of the dat...",
-                        "default": null
+                        "default": None
                 },
                 "schema": {
                         "type": "string",
                         "description": "The user schema geodatabase to which you will connect. This option only applies to Oracle databases that contain at least one user-schema geodatabase. The default value for this parameter is to use th...",
-                        "default": null
+                        "default": None
                 },
                 "version_type": {
                         "type": "string",
                         "description": "Specifies the type of version to which you will connect. This parameter only applies when connecting to a geodatabase.TRANSACTIONAL\u2014Connect to a transactional version. If Transactional is selected, th...",
-                        "default": null
+                        "default": None
                 },
                 "version": {
                         "type": "string",
                         "description": "The geodatabase transactional version or historical marker  to connect to. The default option uses the default transactional version.If you choose a branch version type, the connection is always to th...",
-                        "default": null
+                        "default": None
                 },
                 "date": {
                         "type": "string",
                         "description": "The value representing the date and time that will be used to connect to the database when working with archive-enabled data. Dates can be entered in the following formats: 6/9/2011 4:20:15 PM 6/9/201...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14550,7 +14550,7 @@ functions_declarations = {
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the output feature dataset. You can specify the spatial reference in the following ways: Enter the path to a .prj file, such as C:/workspace/watershed.prj. Reference a feature...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14573,7 +14573,7 @@ functions_declarations = {
                 "out_version": {
                         "type": "string",
                         "description": "Specifies the ArcGIS version for the new geodatabase.CURRENT\u2014A geodatabase compatible with the currently installed version of ArcGIS will be created. This is the default.10.0\u2014A geodatabase compatible ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14632,12 +14632,12 @@ functions_declarations = {
                 "tablespace_name": {
                         "type": "string",
                         "description": "The name of a tablespace that will be set as the default tablespace for the sde user in Oracle. If the tablespace name does not exist, it will be created in the Oracle default storage location. If a t...",
-                        "default": null
+                        "default": None
                 },
                 "st_shape_library_path": {
                         "type": "string",
                         "description": "The location on the Oracle server where the st_shape library resides.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14656,7 +14656,7 @@ functions_declarations = {
                 "spatial_type": {
                         "type": "string",
                         "description": "Specifies the spatial type that will be installed with the new SQLite database or the GeoPackage version that will be created.ST_GEOMETRY\u2014The Esri spatial storage type will be installed. This is the d...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14691,17 +14691,17 @@ functions_declarations = {
                 "export_type": {
                         "type": "string",
                         "description": "Specifies whether the output XML workspace document will contain all of the data from the input (table and feature class records, including geometry) or only the schema.\r\nDATA\u2014The schema and the data ...",
-                        "default": null
+                        "default": None
                 },
                 "storage_type": {
                         "type": "string",
                         "description": "Specifies how feature geometry will be stored when data is exported from a feature class.\r\nBINARY\u2014The geometry will be stored in a compressed base64 binary format. This binary format will produce a sm...",
-                        "default": null
+                        "default": None
                 },
                 "export_metadata": {
                         "type": "string",
                         "description": "Specifies whether the metadata will be exported.METADATA\u2014If the input contains metadata, it will be exported. This is the default. NO_METADATA\u2014Metadata will not be exported.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -14752,12 +14752,12 @@ functions_declarations = {
                 "import_type": {
                         "type": "string",
                         "description": "Specifies whether both data (feature class and table records, including geometry) and schema will be imported, or only the schema will be imported.\r\n DATA\u2014Data and schema will be imported. This is the...",
-                        "default": null
+                        "default": None
                 },
                 "config_keyword": {
                         "type": "string",
                         "description": "The geodatabase configuration keyword to be applied if the target_geodatabase parameter value is an enterprise or file geodatabase.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [

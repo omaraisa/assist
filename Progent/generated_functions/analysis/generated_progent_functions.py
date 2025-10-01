@@ -440,8 +440,10 @@ Computes a geometric intersection of the input features. Features or portions of
     def apportion_polygon(self, params):
         """Apportion Polygon
 
-Summarizes the attributes of an input polygon layer based on the spatial overlay of a target polygon layer and assigns the summarized attributes to the target polygons. The target polygons have summed numeric attributes derived from the input polygons that each target overlaps. This process is typically known as apportioning or apportionment. This tool can be used to estimate the population of one
-feature based on the percentage of that feature that overlays another feature
+Summarizes the attributes of an input polygon layer based on the spatial overlay of a target polygon layer and assigns the summarized attributes to the target polygons. The target polygons have summed numeric attributes derived from the input polygons that each target overlaps. This process is typically known as apportioning or apportionment. This tool can be used to estimate the population of one
+
+feature based on the percentage of that feature that overlays another feature
+
 with a known population. The Enrich Layer tool uses detailed aggregation and apportionment settings to summarize data.  The Apportion Polygon tool is similar to the Enrich Layer tool. However, Apportion Polygon uses specified apportionment, while Enrich Layer uses U.S. Census Block points or global settlement points for apportionment. For more information, see Data apportionment.
 
         params: {"in_features": <Feature Layer>, "apportion_fieldsfield_statistic_type": <Value Table>, "target_features": <Feature Layer>, ...}
@@ -704,7 +706,8 @@ Aggregates features based on specified attributes using a parallel processing ap
     def pairwise_integrate(self, params):
         """Pairwise Integrate
 
-Analyzes the coordinate locations of feature vertices among features in one or more feature classes. Those that fall within a specified distance of one another are assumed to represent the same location and are assigned a common coordinate value (in other words, they are colocated). The tool also adds vertices where feature vertices are within the x,y tolerance of an edge and where line segments intersect. Pairwise Integrate performs
+Analyzes the coordinate locations of feature vertices among features in one or more feature classes. Those that fall within a specified distance of one another are assumed to represent the same location and are assigned a common coordinate value (in other words, they are colocated). The tool also adds vertices where feature vertices are within the x,y tolerance of an edge and where line segments intersect. Pairwise Integrate performs
+
 the following processing tasks: Vertices within the x,y tolerance of one another will be assigned the same coordinate location.When a vertex of one feature is within the x,y tolerance of an edge of any other feature, a new vertex will be inserted on the edge.When line segments intersect, a vertex will be inserted at the point of intersection for each feature involved in the intersection. An alternate tool is available for vector data integration. See the Integrate tool documentation for details.
 
         params: {"in_features": <Value Table>, "cluster_tolerance": <Linear Unit>}

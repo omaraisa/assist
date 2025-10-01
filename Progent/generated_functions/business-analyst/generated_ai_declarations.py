@@ -30,42 +30,42 @@ functions_declarations = {
                 "area_description_field": {
                         "type": "string",
                         "description": "The field that will be used to describe each feature in the market penetration layer.",
-                        "default": null
+                        "default": None
                 },
                 "weight_field": {
                         "type": "string",
                         "description": "The field in the customer layer that will be used as a weight to calculate market penetration rather than customer counts.",
-                        "default": null
+                        "default": None
                 },
                 "create_report": {
                         "type": "string",
                         "description": "Specifies whether a summary report will be created.\r\nCREATE_REPORT\u2014A summary report will be created.DO_NOT_CREATE_REPORT\u2014A summary report will not be created. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "store_id": {
                         "type": "string",
                         "description": "A unique identifier associated with each store for each trade area.",
-                        "default": null
+                        "default": None
                 },
                 "link_field": {
                         "type": "string",
                         "description": "An ID that assigns a trade area to a customer.",
-                        "default": null
+                        "default": None
                 },
                 "report_title": {
                         "type": "string",
                         "description": "The title of the report.",
-                        "default": null
+                        "default": None
                 },
                 "report_folder": {
                         "type": "string",
                         "description": "The output directory that will contain the report.",
-                        "default": null
+                        "default": None
                 },
                 "report_format": {
                         "type": "string",
                         "description": "Specifies the format  one or more output report formats.PDF\u2014The report will be in PDF format. This is the default.XLSX\u2014The report will be in XLSX format.HTML\u2014The report will be in HTML format.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -99,37 +99,37 @@ functions_declarations = {
                 "area_of_interest": {
                         "type": "string",
                         "description": "The feature layer that will be used to determine the geographic extent of the analysis.",
-                        "default": null
+                        "default": None
                 },
                 "out_dataset_path": {
                         "type": "string",
                         "description": "The geodatabase in which the output feature dataset will be created.",
-                        "default": null
+                        "default": None
                 },
                 "out_dataset_name": {
                         "type": "string",
                         "description": "The name of the feature dataset in the output geodatabase in which the color-coded layer feature classes will be created.",
-                        "default": null
+                        "default": None
                 },
                 "boundary_mode": {
                         "type": "string",
                         "description": "Specifies the types of boundaries that will be used to create levels in the color-coded group layer.STANDARD_GEOGRAPHIES\u2014Boundaries will be levels of standard geographies. This is the default.H3_HEXAG...",
-                        "default": null
+                        "default": None
                 },
                 "secondary_variable": {
                         "type": "string",
                         "description": "A second variable that will display as a color-coded map.",
-                        "default": null
+                        "default": None
                 },
                 "grid_size": {
                         "type": "string",
                         "description": "Specifies the grid size that will be used to create the bivariate color symbology.TWO_BY_TWO\u2014A 4-class bivariate color scheme will be used.THREE_BY_THREE\u2014A 9-class bivariate color scheme will be used....",
-                        "default": null
+                        "default": None
                 },
                 "renderer_type": {
                         "type": "string",
                         "description": "Specifies the type of symbology that will be used.BIVARIATE\u2014Two variables will be displayed using a grid color scheme.GRADUATED_COLORS\u2014Varying color shades will be displayed across geographical areas....",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -158,17 +158,17 @@ functions_declarations = {
                 "buffer_type": {
                         "type": "string",
                         "description": "Specifies the area that will be enriched.\r\nThe default value is STRAIGHT_LINE_DISTANCE.Input line features can only use the STRAIGHT_LINE_DISTANCE distance option.",
-                        "default": null
+                        "default": None
                 },
                 "distance": {
                         "type": "string",
                         "description": "The distance or size of an area to enrich, for example, a 1-mile buffer or 5-minute walk time. Units correspond to the polygon type. The default value is 1.",
-                        "default": null
+                        "default": None
                 },
                 "unit": {
                         "type": "string",
                         "description": "The units associated with the distance parameter. The default value is MILES.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -200,17 +200,17 @@ functions_declarations = {
                 "distance_type": {
                         "type": "string",
                         "description": "The calculated distance based on the method of travel. Straight Line is the default value.",
-                        "default": null
+                        "default": None
                 },
                 "units": {
                         "type": "string",
                         "description": "The measurement units, in distance or time, that will be used when calculating nearby locations.",
-                        "default": null
+                        "default": None
                 },
                 "distance_limit": {
                         "type": "string",
                         "description": "The analysis extent measured in distance or time.",
-                        "default": null
+                        "default": None
                 },
                 "number_limit": {
                         "type": "string",
@@ -223,52 +223,52 @@ functions_declarations = {
                 "create_report": {
                         "type": "string",
                         "description": "Specifies whether an output report will be created.CREATE_REPORT\u2014A report will be created.DO_NOT_CREATE_REPORT\u2014A report will not be created. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "report_title": {
                         "type": "string",
                         "description": "The title of the output report.",
-                        "default": null
+                        "default": None
                 },
                 "report_folder": {
                         "type": "string",
                         "description": "The directory that will contain the output report.",
-                        "default": null
+                        "default": None
                 },
                 "report_format": {
                         "type": "string",
                         "description": "The output report formats. The default value is InfographicHTML. Additional available formats are PDF, XLSX, S.XLSX, HTML, S.XML, ZIP, CVS, PAGX, and InfographicPDF.",
-                        "default": null
+                        "default": None
                 },
                 "report_fields": {
                         "type": "string",
                         "description": "The additional fields that will be added to the report.",
-                        "default": null
+                        "default": None
                 },
                 "travel_direction": {
                         "type": "string",
                         "description": "Specifies whether travel times or distances will be measured from location points to input features or from input features to location points.TOWARD_STORES\u2014The direction of travel will be from locatio...",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The time at which travel will begin.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that will be used for the time_of_day parameter.UTC\u2014Coordinated universal time (UTC) will be used. Choose this option if you want the best location for a specific time, such as...",
-                        "default": null
+                        "default": None
                 },
                 "search_tolerance": {
                         "type": "string",
                         "description": "The maximum distance that input points can be from the network. Points located beyond the search tolerance will be excluded from processing.",
-                        "default": null
+                        "default": None
                 },
                 "location_name": {
                         "type": "string",
                         "description": "A field from the input in_location_points parameter. This field contains the name or ID for each input point used in the Find Nearby Locations report.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -307,52 +307,52 @@ functions_declarations = {
                 "distance_type": {
                         "type": "string",
                         "description": "The method of travel that will be used for distance calculation. Straight Line is the default value. When using Portal for ArcGIS or local data sources, travel mode options are dynamically populated.",
-                        "default": null
+                        "default": None
                 },
                 "units": {
                         "type": "string",
                         "description": "The type of distance- or time-measuring units that will be used when calculating minimal distance.",
-                        "default": null
+                        "default": None
                 },
                 "cutoff": {
                         "type": "string",
                         "description": "The distance beyond which customers will be considered outliers and excluded from consideration during desire line generation.",
-                        "default": null
+                        "default": None
                 },
                 "travel_direction": {
                         "type": "string",
                         "description": "Specifies the direction of travel that will be used between stores and demand points.TOWARD_STORES\u2014The direction of travel will be from demand points to stores.\r\nThis is the default.AWAY_FROM_STORES\u2014T...",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The time at which travel begins.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that will be used for the time_of_day parameter.UTC\u2014Coordinated universal time (UTC) will be used. Choose this option if you want to choose the best location for a specific tim...",
-                        "default": null
+                        "default": None
                 },
                 "create_report": {
                         "type": "string",
                         "description": "Specifies whether a Wind Rose report will be created.CREATE_REPORT\u2014A report will be created.DO_NOT_CREATE_REPORT\u2014A report will not be created. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "report_title": {
                         "type": "string",
                         "description": "The title of the Wind Rose report.",
-                        "default": null
+                        "default": None
                 },
                 "report_folder": {
                         "type": "string",
                         "description": "The output directory that will contain the Wind Rose report.",
-                        "default": null
+                        "default": None
                 },
                 "report_format": {
                         "type": "string",
                         "description": "One or more output report formats. The default value is PDF. Additional available formats are XLSX, HTML, CSV, and PAGX.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -378,77 +378,77 @@ functions_declarations = {
                 "cell_type": {
                         "type": "string",
                         "description": "Specifies the cell type that will be created in the output.SQUARE\u2014Regular four-sided polygons with equal side lengths will be created. This is the default.HEXAGON\u2014Regular six-sided polygons with equal...",
-                        "default": null
+                        "default": None
                 },
                 "enrich_type": {
                         "type": "string",
                         "description": "Specifies the method that will be used for variable enrichment.ENRICH_CELL\u2014Enrichment will be performed on the cell_type parameter value.ENRICH_BUFFER\u2014Enrichment will be performed on a buffer around t...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The size of the cell to generate squares or hexagons. The default value is 1 square mile.",
-                        "default": null
+                        "default": None
                 },
                 "h3_resolution": {
                         "type": "string",
                         "description": "The resolution that will be used to generate the H3 hexagons. A value of 15 represents the finest resolution. The default value is 7.",
-                        "default": null
+                        "default": None
                 },
                 "variables": {
                         "type": "string",
                         "description": "A list of variables that will be appended to the output.",
-                        "default": null
+                        "default": None
                 },
                 "distance_type": {
                         "type": "string",
                         "description": "Specifies the method of travel that will be used for the buffer calculation.",
-                        "default": null
+                        "default": None
                 },
                 "distance": {
                         "type": "string",
                         "description": "The distance that will be used for the buffer calculations.",
-                        "default": null
+                        "default": None
                 },
                 "units": {
                         "type": "string",
                         "description": "The units that will be used for the distance parameter.",
-                        "default": null
+                        "default": None
                 },
                 "out_enriched_buffers": {
                         "type": "string",
                         "description": "The feature class that will contain the enriched buffers.",
-                        "default": null
+                        "default": None
                 },
                 "travel_direction": {
                         "type": "string",
                         "description": "Specifies the direction of travel that will be used between the center of the cell and the buffer boundary.TOWARD_STORES\u2014The direction of travel will be from location points to input features. This is...",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The time at which the travel will begin.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that will be used for the time_of_day parameter.UTC\u2014Coordinated universal time (UTC) will be used. Choose this option if you want the best location for a specific time, such as...",
-                        "default": null
+                        "default": None
                 },
                 "search_tolerance": {
                         "type": "string",
                         "description": "The maximum distance that input points can be from the network. Points located beyond the search tolerance will be excluded from processing.",
-                        "default": null
+                        "default": None
                 },
                 "polygon_detail": {
                         "type": "string",
                         "description": "Specifies the level of detail that will be used for the output drive time polygons. STANDARD\u2014The optimal setting that combines processing speed with overall accuracy will be used. This is the default....",
-                        "default": null
+                        "default": None
                 },
                 "out_centroids": {
                         "type": "string",
                         "description": "The feature class that will contain the cell centroids.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -467,37 +467,37 @@ functions_declarations = {
                 "in_search_features": {
                         "type": "string",
                         "description": "The area that will be used to search for businesses. Selected features supersede the feature class and will be used as the search area.",
-                        "default": null
+                        "default": None
                 },
                 "search_terms": {
                         "type": "string",
                         "description": "The terms that will be used to search for businesses. You can use terms such as business name or business type keywords. If this parameter is not set, all businesses from the in_search_features parame...",
-                        "default": null
+                        "default": None
                 },
                 "exact_match": {
                         "type": "string",
                         "description": "Specifies whether only the text provided for the search_terms parameter will be returned from the search.EXACT_MATCH\u2014Only exact matches to the text provided for the search_terms parameter will be retu...",
-                        "default": null
+                        "default": None
                 },
                 "match_name_only": {
                         "type": "string",
                         "description": "Specifies whether the search will be limited to the business name only.MATCH_NAME_ONLY\u2014Only exact matches to the business name provided for the search_terms parameter will be returned.MATCH_ALL_FIELDS...",
-                        "default": null
+                        "default": None
                 },
                 "filtersfilter_name_filter_value_include": {
                         "type": "string",
                         "description": "The filters that will be applied to the search_terms parameter.filter_name\u2014Set the filter by the dataset field.filter_value\u2014Set the filter by applying a value to the selected field.include\u2014Set the fil...",
-                        "default": null
+                        "default": None
                 },
                 "max_count": {
                         "type": "string",
                         "description": "The limit for the number of returned \r\nfeatures. The default value is 1,000,000 for local data and 5,000 for online data hosted by ArcGIS Online.The record limit when using\r\non-premises hosted data is...",
-                        "default": null
+                        "default": None
                 },
                 "business_dataset": {
                         "type": "string",
                         "description": "The dataset that will be used in the business search.",
-                        "default": null
+                        "default": None
                 },
                 "find_related_poi": {
                         "type": "string",
@@ -506,7 +506,7 @@ functions_declarations = {
                 "style": {
                         "type": "string",
                         "description": "Specifies the point symbology that will be used for the output feature class.Location\u2014The data will be displayed using a single symbol. This is the default.Place\u2014The data will be displayed using thema...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -561,32 +561,32 @@ functions_declarations = {
                 "distance_type": {
                         "type": "string",
                         "description": "The type of distance, based on method of travel, that will be used. The default value is Straight Line.",
-                        "default": null
+                        "default": None
                 },
                 "distance_units": {
                         "type": "string",
                         "description": "The distance-measuring units that will be used when calculating distance.",
-                        "default": null
+                        "default": None
                 },
                 "out_distance_matrix": {
                         "type": "string",
                         "description": "The name and location of the matrix table of distance calculations. The IDs for the in_facility_features and in_candidate_features parameters must be unique.",
-                        "default": null
+                        "default": None
                 },
                 "travel_direction": {
                         "type": "string",
                         "description": "Specifies the direction of travel that will be used between stores and sales potential features.TOWARD_STORES\u2014The direction of travel will be from sales potential features to stores. This is the defau...",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The time and date that will be used when calculating distance.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION\u2014The time zone in which the territories are located will be used. This is the default.UTC\u2014Coordinated unive...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -641,32 +641,32 @@ functions_declarations = {
                 "customer_weight_field": {
                         "type": "string",
                         "description": "A calculated weighted value field assigned to each customer.",
-                        "default": null
+                        "default": None
                 },
                 "distance_type": {
                         "type": "string",
                         "description": "The method of travel that will be used to calculate distance. The default value is Straight Line.",
-                        "default": null
+                        "default": None
                 },
                 "distance_units": {
                         "type": "string",
                         "description": "The distance-measuring units that will be used when calculating distance.",
-                        "default": null
+                        "default": None
                 },
                 "travel_direction": {
                         "type": "string",
                         "description": "Specifies the direction of travel that will be used between stores and sales potential features.TOWARD_STORES\u2014The direction of travel will be from sales potential features to stores. This is the defau...",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The time and date that will be used when calculating distance.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION\u2014The time zone in which the territories are located will be used. This is the default.UTC\u2014Coordinated unive...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -691,17 +691,17 @@ functions_declarations = {
                 "output_folder": {
                         "type": "string",
                         "description": "The local folder where the report template items will be imported.",
-                        "default": null
+                        "default": None
                 },
                 "dataset_id": {
                         "type": "string",
                         "description": "The dataset that will be used to populate the report variables.",
-                        "default": null
+                        "default": None
                 },
                 "config": {
                         "type": "string",
                         "description": "A JSON string specifying where the report's SDCX variables will be stored. The config options are as follows:id\u2014The portal item ID of the SDCX.download\u2014True or false. Set to true to download the SDCX,...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -727,87 +727,87 @@ functions_declarations = {
                 "summarization_options": {
                         "type": "string",
                         "description": "Specifies how the data will be displayed in a report.INDIVIDUAL_FEATURES\u2014Selected report templates will be returned for each individual trade area polygon. This is the default.WHOLE_LAYER\u2014Selected rep...",
-                        "default": null
+                        "default": None
                 },
                 "single_report": {
                         "type": "string",
                         "description": "Specifies whether a single output will be created or a separate file will be created for each report.CREATE_SINGLE_REPORT\u2014All reports will be combined into a single output.CREATE_REPORT_PER_TEMPLATE\u2014A...",
-                        "default": null
+                        "default": None
                 },
                 "formats": {
                         "type": "string",
                         "description": "The report output format. The default value is PDF.",
-                        "default": null
+                        "default": None
                 },
                 "store_id_field": {
                         "type": "string",
                         "description": "The field that will be used to group data for each site in output reports. These field values are not displayed in the header.",
-                        "default": null
+                        "default": None
                 },
                 "store_name_field": {
                         "type": "string",
                         "description": "The field values that will be displayed in the output report headers that identify the site corresponding to each polygon's data.",
-                        "default": null
+                        "default": None
                 },
                 "store_address_field": {
                         "type": "string",
                         "description": "The store address associated with each trade area.",
-                        "default": null
+                        "default": None
                 },
                 "store_latitude_field": {
                         "type": "string",
                         "description": "The field that will contain the latitude coordinates (y field).",
-                        "default": null
+                        "default": None
                 },
                 "store_longitude_field": {
                         "type": "string",
                         "description": "The field that will contain the longitude coordinates (x field).",
-                        "default": null
+                        "default": None
                 },
                 "ring_id_field": {
                         "type": "string",
                         "description": "The field that will control the presentation order of data for inputs with multiple polygons per site.",
-                        "default": null
+                        "default": None
                 },
                 "area_description_field": {
                         "type": "string",
                         "description": "The field that will be displayed as the output template header with values corresponding to each input polygon's data.",
-                        "default": null
+                        "default": None
                 },
                 "title": {
                         "type": "string",
                         "description": "The title in the report header.",
-                        "default": null
+                        "default": None
                 },
                 "subtitle": {
                         "type": "string",
                         "description": "The subtitle in the report header. The default value is Prepared by Business Analyst Pro.",
-                        "default": null
+                        "default": None
                 },
                 "report_per_feature": {
                         "type": "string",
                         "description": "Specifies whether a single report or multiple reports will be created.CREATE_REPORT_PER_FEATURE\u2014A report will be created for each feature.CREATE_SINGLE_REPORT\u2014A single report will be created. This is ...",
-                        "default": null
+                        "default": None
                 },
                 "add_infographic_header": {
                         "type": "string",
                         "description": "Specifies whether a header will be added to the infographic.ENABLE_INFOGRAPHIC_HEADER\u2014A header will be added to the infographic.DISABLE_INFOGRAPHIC_HEADER\u2014A header will not be added to the infographic...",
-                        "default": null
+                        "default": None
                 },
                 "add_infographic_footer": {
                         "type": "string",
                         "description": "Specifies whether a footer will be added to the infographic.ENABLE_INFOGRAPHIC_FOOTER\u2014A footer will be added to the infographic.DISABLE_INFOGRAPHIC_FOOTER\u2014A footer will not be added to the infographic...",
-                        "default": null
+                        "default": None
                 },
                 "add_infographic_data_source": {
                         "type": "string",
                         "description": "Specifies whether the data source will be added to the infographic.ENABLE_INFOGRAPHIC_DATA_SOURCE\u2014The data source will be added to the infographic.DISABLE_INFOGRAPHIC_DATA_SOURCE\u2014The data source will ...",
-                        "default": null
+                        "default": None
                 },
                 "report_style": {
                         "type": "string",
                         "description": "Specifies the style that will be used for the Esri report.CLASSIC\u2014The generated Esri report will use the traditional style. This is the default.MODERN\u2014The generated Esri report will use the updated st...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -870,22 +870,22 @@ functions_declarations = {
                 "distance_type": {
                         "type": "string",
                         "description": "The method of travel that will be used to calculate the minimal distance.",
-                        "default": null
+                        "default": None
                 },
                 "units": {
                         "type": "string",
                         "description": "The unit of measure that will be used when calculating minimal distance.",
-                        "default": null
+                        "default": None
                 },
                 "in_site_centers_features": {
                         "type": "string",
                         "description": "The point layer that will be used as site centers. This point layer will replace default polygon centroids of the Suitability Analysis layer.",
-                        "default": null
+                        "default": None
                 },
                 "site_centers_id_field": {
                         "type": "string",
                         "description": "A field in the in_site_centers_features parameter value that uniquely identifies each record.",
-                        "default": null
+                        "default": None
                 },
                 "weight_field": {
                         "type": "string",
@@ -894,12 +894,12 @@ functions_declarations = {
                 "statistics_type": {
                         "type": "string",
                         "description": "Specifies the type of statistical operation that will be applied to the weighted field.SUM\u2014The total of the field values will be calculated for each point feature.AVE\u2014The average field value will be c...",
-                        "default": null
+                        "default": None
                 },
                 "cutoff_distance": {
                         "type": "string",
                         "description": "The distance beyond which points will not be considered in the calculation.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -956,12 +956,12 @@ functions_declarations = {
                 "out_dataset_path": {
                         "type": "string",
                         "description": "The geodatabase that will contain the output feature dataset.",
-                        "default": null
+                        "default": None
                 },
                 "out_dataset_name": {
                         "type": "string",
                         "description": "The name of the output feature dataset that will contain the collection of suitability analysis layer feature classes.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1002,22 +1002,22 @@ functions_declarations = {
                 "criteria_score_preset": {
                         "type": "string",
                         "description": "Specifies the preprocessing and combination method that will be used when calculating the final score.SUM_SCALED\u2014The sum of scaled values with scores representing the distribution of values for each c...",
-                        "default": null
+                        "default": None
                 },
                 "preprocessing": {
                         "type": "string",
                         "description": "Specifies the method that will be used to convert the input\r\nvariables to a standardized scale.MINMAX\u2014 Variables will be scaled between 0 and 1 using the minimum and maximum values of each variable. T...",
-                        "default": null
+                        "default": None
                 },
                 "criteria_score_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to combine the scaled\r\nvariables into a single value.SUM\u2014 The values will be added. This is the default.MEAN\u2014 The arithmetic (additive) mean of the values will b...",
-                        "default": null
+                        "default": None
                 },
                 "final_score_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to scale the combined score. This parameter will determine the final score.METHOD_0_1\u2014The final score will be calculated with the lowest value of 0 and the highe...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1036,12 +1036,12 @@ functions_declarations = {
                 "target_site_layer": {
                         "type": "string",
                         "description": "The layer that contains the target site.",
-                        "default": null
+                        "default": None
                 },
                 "target_site_feature_id": {
                         "type": "string",
                         "description": "The feature from the target site layer that will be added to the group layer as the target site.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1087,27 +1087,27 @@ functions_declarations = {
                 "boundary_layer": {
                         "type": "string",
                         "description": "The boundary that determines the layer extent. If no value is provided, the entire country will be used.",
-                        "default": null
+                        "default": None
                 },
                 "create_report": {
                         "type": "string",
                         "description": "Specifies whether a  gap analysis report will be created.CREATE_REPORT\u2014A gap analysis report will be created.DO_NOT_CREATE_REPORT\u2014A gap analysis report will not be created. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "report_title": {
                         "type": "string",
                         "description": "The title of the report.",
-                        "default": null
+                        "default": None
                 },
                 "report_folder": {
                         "type": "string",
                         "description": "The output location where the report will be saved.",
-                        "default": null
+                        "default": None
                 },
                 "report_format": {
                         "type": "string",
                         "description": "Specifies the format of the output report.PDF\u2014The report will be in PDF format. This is the default.XLSX\u2014The report will be in XLSX format.HTML\u2014The report will be in HTML format.CSV\u2014The report will be...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1144,27 +1144,27 @@ functions_declarations = {
                 "boundary_layer": {
                         "type": "string",
                         "description": "The boundary that determines the layer extent. If no value is provided, the entire country will be used.",
-                        "default": null
+                        "default": None
                 },
                 "create_report": {
                         "type": "string",
                         "description": "Specifies whether a market potential report will be created.CREATE_REPORT\u2014A market potential report will be created.DO_NOT_CREATE_REPORT\u2014A market potential report will not be created. This is the defa...",
-                        "default": null
+                        "default": None
                 },
                 "report_title": {
                         "type": "string",
                         "description": "The title of the report.",
-                        "default": null
+                        "default": None
                 },
                 "report_folder": {
                         "type": "string",
                         "description": "The output location where the report will be saved.",
-                        "default": null
+                        "default": None
                 },
                 "report_format": {
                         "type": "string",
                         "description": "Specifies the format of the output report.PDF\u2014The report will be in PDF format. This is the default.XLSX\u2014The report will be in XLSX format.HTML\u2014The report will be in HTML format.CSV\u2014The report will be...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1210,7 +1210,8 @@ functions_declarations = {
                 "out_table_name"
         ]
 },
-    "generate
+    "generate
+
 customer_segmentation_profile": {
         "name": "generate\r\ncustomer_segmentation_profile",
         "description": "Creates a segmentation profile with an existing customer layer.",
@@ -1230,7 +1231,7 @@ customer_segmentation_profile": {
                 "in_volume_field": {
                         "type": "string",
                         "description": "The field containing volume information from which the profile can be created. For example, you can create a profile using the sales for each customer.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1239,7 +1240,8 @@ customer_segmentation_profile": {
                 "out_profile"
         ]
 },
-    "generate
+    "generate
+
 market_area_segmentation_profile": {
         "name": "generate\r\nmarket_area_segmentation_profile",
         "description": "Creates a segmentation profile by summarizing segments from standard geography boundaries within the input area.",
@@ -1263,7 +1265,8 @@ market_area_segmentation_profile": {
                 "out_profile"
         ]
 },
-    "generate
+    "generate
+
 segmentation_profile_report": {
         "name": "generate\r\nsegmentation_profile_report",
         "description": "Creates a report that displays segments of your customers and compares them to the study area (base profile).",
@@ -1279,17 +1282,17 @@ segmentation_profile_report": {
                 "report_title": {
                         "type": "string",
                         "description": "The title of the report.",
-                        "default": null
+                        "default": None
                 },
                 "report_folder": {
                         "type": "string",
                         "description": "The output location where the report will be saved.",
-                        "default": null
+                        "default": None
                 },
                 "report_format": {
                         "type": "string",
                         "description": "Specifies the format of the output report.PDF\u2014The report will be in PDF format. This is the default.XLSX\u2014The report will be in XLSX format.HTML\u2014The report will be in HTML format.CSV\u2014The report will be...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1320,22 +1323,22 @@ segmentation_profile_report": {
                 "sort_column": {
                         "type": "string",
                         "description": "Specifies the column that will be used to sort the report.EXPECTED_NUMBER\u2014The report will be sorted based on counts\u2014for example, number of adults. This is the default.INDEX\u2014The report will be sorted b...",
-                        "default": null
+                        "default": None
                 },
                 "sort_order": {
                         "type": "string",
                         "description": "Specifies the order of the report, based on the sort column, in ascending or descending order.ASCENDING\u2014The report will be sorted in ascending order.DESCENDING\u2014The report will be sorted in descending ...",
-                        "default": null
+                        "default": None
                 },
                 "report_title": {
                         "type": "string",
                         "description": "The title of the report.",
-                        "default": null
+                        "default": None
                 },
                 "report_format": {
                         "type": "string",
                         "description": "Specifies the format of the output report.PDF\u2014The report will be in PDF format. This is the default.XLSX\u2014The report will be in XLSX format.HTML\u2014The report will be in HTML format.CSV\u2014The report will be...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1372,22 +1375,22 @@ segmentation_profile_report": {
                 "report_type": {
                         "type": "string",
                         "description": "Specifies the survey characteristics that will be added to the report.UNDERSTANDING_YOUR_TARGET\u2014Media-related characteristics will be added to the report, for example, reading, watching, and listening...",
-                        "default": null
+                        "default": None
                 },
                 "survey_categories": {
                         "type": "string",
                         "description": "A category that contains the characteristics from the consumer survey.",
-                        "default": null
+                        "default": None
                 },
                 "report_title": {
                         "type": "string",
                         "description": "The title of the report.",
-                        "default": null
+                        "default": None
                 },
                 "report_format": {
                         "type": "string",
                         "description": "Specifies the format of the output report.PDF\u2014The report will be in PDF format. This is the default.XLSX\u2014The report will be in XLSX format.HTML\u2014The report will be in HTML format.CSV\u2014The report will be...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1421,7 +1424,7 @@ segmentation_profile_report": {
                 "boundary_layer": {
                         "type": "string",
                         "description": "The boundary that will determine the layer extent.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1454,22 +1457,22 @@ segmentation_profile_report": {
                 "target_group": {
                         "type": "string",
                         "description": "The target group, if the dataset supports target groups.",
-                        "default": null
+                        "default": None
                 },
                 "target": {
                         "type": "string",
                         "description": "A target from the target_group parameter value.",
-                        "default": null
+                        "default": None
                 },
                 "segments": {
                         "type": "string",
                         "description": "The segments from the provided dataset.",
-                        "default": null
+                        "default": None
                 },
                 "boundary_layer": {
                         "type": "string",
                         "description": "The boundary that will determine the layer extent.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1502,22 +1505,22 @@ segmentation_profile_report": {
                 "target_group": {
                         "type": "string",
                         "description": "A user-created group of targets. This parameter is used when the dataset supports target groups.",
-                        "default": null
+                        "default": None
                 },
                 "target": {
                         "type": "string",
                         "description": "A target from the target_group parameter value.",
-                        "default": null
+                        "default": None
                 },
                 "segments": {
                         "type": "string",
                         "description": "The segments from the provided dataset.",
-                        "default": null
+                        "default": None
                 },
                 "boundary_layer": {
                         "type": "string",
                         "description": "The boundary that will determine the extent of the analysis.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1554,7 +1557,7 @@ segmentation_profile_report": {
                 "total_volume_field": {
                         "type": "string",
                         "description": "A numeric field that contains volume information.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1606,37 +1609,37 @@ segmentation_profile_report": {
                 "link_field": {
                         "type": "string",
                         "description": "A new field that contains the assigned store or facility ID.",
-                        "default": null
+                        "default": None
                 },
                 "distance_type": {
                         "type": "string",
                         "description": "The method of travel used to calculate the distance between customers and stores.",
-                        "default": null
+                        "default": None
                 },
                 "distance_units": {
                         "type": "string",
                         "description": "The units that will be used to measure the selected distance type.",
-                        "default": null
+                        "default": None
                 },
                 "travel_direction": {
                         "type": "string",
                         "description": "Specifies the direction of travel that will be used between stores or facilities and customers.TOWARD_STORES\u2014The direction of travel will be from customers to stores. This is the default.AWAY_FROM_STO...",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The time and date that will be used when calculating distance.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION\u2014The time zone in which the territories are located will be used. This is the default.UTC\u2014Coordinated unive...",
-                        "default": null
+                        "default": None
                 },
                 "search_tolerance": {
                         "type": "string",
                         "description": "The maximum distance that input points can be from the network. Points located beyond the search tolerance will be excluded from processing.The parameter requires a distance value and units for the to...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1665,62 +1668,62 @@ segmentation_profile_report": {
                 "units": {
                         "type": "string",
                         "description": "The distance units to be used with the threshold values.",
-                        "default": null
+                        "default": None
                 },
                 "in_stores_layer": {
                         "type": "string",
                         "description": "A point layer that will be used as the starting point for creating network service areas.",
-                        "default": null
+                        "default": None
                 },
                 "store_id_field": {
                         "type": "string",
                         "description": "The ID that uniquely identifies each in_stores_layer point.",
-                        "default": null
+                        "default": None
                 },
                 "link_field": {
                         "type": "string",
                         "description": "The ID that uniquely identifies each in_features point.",
-                        "default": null
+                        "default": None
                 },
                 "iterations_limit": {
                         "type": "string",
                         "description": "The maximum number of drive times that can be used to find the optimal threshold limit.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_step": {
                         "type": "string",
                         "description": "The minimum increment distance or time\u2014for example, 1 mile or 1 min\u2014that will be used between iterations to expand until the threshold is reached.",
-                        "default": null
+                        "default": None
                 },
                 "target_percent_diff": {
                         "type": "string",
                         "description": "The maximum difference between the target value and threshold value when determining the threshold drive time, for example, 5 percent. The default value is 5.",
-                        "default": null
+                        "default": None
                 },
                 "travel_direction": {
                         "type": "string",
                         "description": "Specifies the direction of travel toward or away from stores.TOWARD_STORES\u2014  The direction of travel will be toward stores. This is the default.AWAY_FROM_STORES\u2014 The direction of travel will be away f...",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The time and date that will be used when calculating distance.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION\u2014The time zone in which the territories are located will be used. This is the default.UTC\u2014Coordinated unive...",
-                        "default": null
+                        "default": None
                 },
                 "search_tolerance": {
                         "type": "string",
                         "description": "The maximum distance that input points can be from the network.The default value is 5000 meters.",
-                        "default": null
+                        "default": None
                 },
                 "polygon_detail": {
                         "type": "string",
                         "description": "Specifies the level of detail that will be used for the output drive time polygons.STANDARD\u2014Polygons with a standard level of detail will be created. This is the default.GENERALIZED\u2014Generalized polygo...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1768,77 +1771,77 @@ segmentation_profile_report": {
                 "customer_weight_field": {
                         "type": "string",
                         "description": "The field that will be used to calculate the trade areas. This is based on either the number of customers (count) or the calculated weighted value assigned to each customer.",
-                        "default": null
+                        "default": None
                 },
                 "exclude_outlying_customers": {
                         "type": "string",
                         "description": "Specifies whether outlying customers will be excluded from the trade area generation.EXCLUDE_OUTLIERS\u2014Outlying customers will be excluded.ALL_POINTS\u2014Outlying customers will not be excluded; all custom...",
-                        "default": null
+                        "default": None
                 },
                 "cutoff_distance": {
                         "type": "string",
                         "description": "The distance beyond which customers will be considered outliers and excluded from consideration during trade area generation.",
-                        "default": null
+                        "default": None
                 },
                 "dissolve_option": {
                         "type": "string",
                         "description": "Specifies whether polygons of the entire area will be created or the polygons will be split into individual features. When the method parameter is set to THRESHOLD_DRIVETIMES, the only available optio...",
-                        "default": null
+                        "default": None
                 },
                 "use_customer_centroids": {
                         "type": "string",
                         "description": "Specifies whether the centroid of your customer area will be used to calculate trade areas outward from this point.USE_CENTROIDS\u2014The centroid of customer points will be used to calculate trade areas.U...",
-                        "default": null
+                        "default": None
                 },
                 "distance_type": {
                         "type": "string",
                         "description": "The method of travel that will be used to calculate the distance.",
-                        "default": null
+                        "default": None
                 },
                 "units": {
                         "type": "string",
                         "description": "The units that will be used for the distance values.",
-                        "default": null
+                        "default": None
                 },
                 "travel_direction": {
                         "type": "string",
                         "description": "Specifies the direction of travel toward or away from stores.TOWARD_STORES\u2014  The direction of travel will be toward stores. This is the default.AWAY_FROM_STORES\u2014 The direction of travel will be away f...",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The time and date that will be used when calculating distance.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION\u2014The time zone in which the territories are located will be used. This is the default.UTC\u2014Coordinated unive...",
-                        "default": null
+                        "default": None
                 },
                 "search_tolerance": {
                         "type": "string",
                         "description": "The maximum distance that input points can be from the network. Points located beyond the search tolerance will be excluded from processing.This parameter requires a distance value and units for the t...",
-                        "default": null
+                        "default": None
                 },
                 "polygon_detail": {
                         "type": "string",
                         "description": "Specifies the level of detail that will be used for the output drive time polygons.STANDARD\u2014 Polygons with a standard level of detail will be created. This is the default.GENERALIZED\u2014Generalized polyg...",
-                        "default": null
+                        "default": None
                 },
                 "iterations_limit": {
                         "type": "string",
                         "description": "Restricts the number of drive times that can be used to find the optimal threshold limit.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_step": {
                         "type": "string",
                         "description": "The minimum increment distance or time\u2014for example, 1 mile or 1 minute\u2014that will be used between iterations to expand until the threshold is reached.",
-                        "default": null
+                        "default": None
                 },
                 "target_percent_diff": {
                         "type": "string",
                         "description": "The maximum percentage difference between the target value and threshold value that will be used when determining the threshold drive time, for example, 5 percent. The default value is 5.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1875,57 +1878,57 @@ segmentation_profile_report": {
                 "units": {
                         "type": "string",
                         "description": "The units that will be used for the distance values. The default value is miles.",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "A unique ID field for existing facilities.",
-                        "default": null
+                        "default": None
                 },
                 "dissolve_option": {
                         "type": "string",
                         "description": "Specifies whether overlapping or nonoverlapping service areas for a single location will be used when multiple distances are specified.\r\nOVERLAP\u2014 Each polygon will include the area reachable from the ...",
-                        "default": null
+                        "default": None
                 },
                 "remove_overlap": {
                         "type": "string",
                         "description": "Specifies whether overlapping concentric rings will be created or overlap will be removed from multiple locations in relation to one another.REMOVE_OVERLAP\u2014Polygons will be split and the overlap betwe...",
-                        "default": null
+                        "default": None
                 },
                 "travel_direction": {
                         "type": "string",
                         "description": "Specifies the direction of travel toward or away from stores.TOWARD_STORES\u2014  The direction of travel will be toward stores. This is the default.AWAY_FROM_STORES\u2014 The direction of travel will be away f...",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The time and date that will be used when calculating distance.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that will be used for the time_of_day parameter.TIME_ZONE_AT_LOCATION\u2014The time zone in which the territories are located will be used. This is the default.UTC\u2014Coordinated unive...",
-                        "default": null
+                        "default": None
                 },
                 "search_tolerance": {
                         "type": "string",
                         "description": "The maximum distance that input points can be from the network. Points located beyond the search tolerance will be excluded from processing.This parameter requires a distance value and units for the t...",
-                        "default": null
+                        "default": None
                 },
                 "polygon_detail": {
                         "type": "string",
                         "description": "Specifies the level of detail that will be used for the output drive time polygons.STANDARD\u2014 Polygons with a standard level of detail will be created. This is the default.GENERALIZED\u2014Generalized polyg...",
-                        "default": null
+                        "default": None
                 },
                 "input_method": {
                         "type": "string",
                         "description": "Specifies the type of value that will be used for each drive time.VALUES\u2014A constant value will be used (all trade areas will be the same size). This is the default.EXPRESSION\u2014 The values from a field ...",
-                        "default": null
+                        "default": None
                 },
                 "expression": {
                         "type": "string",
                         "description": "A fields-based expression used to calculate drive time.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1958,12 +1961,12 @@ segmentation_profile_report": {
                 "overlap_type": {
                         "type": "string",
                         "description": "Specifies how the subgeography will be selected from the boundary layer.INTERSECT\u2014If any of the subgeography features touch or intersect the boundary layer, they will be included in the output layer. ...",
-                        "default": null
+                        "default": None
                 },
                 "ratios": {
                         "type": "string",
                         "description": "Specifies how percentages will be calculated. The percentages are generated based on how much each geography\r\nintersects the boundary layer and appends the values to the\r\ngeography layer.\r\nNO_RATIOS\u2014N...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1988,37 +1991,37 @@ segmentation_profile_report": {
                 "input_type": {
                         "type": "string",
                         "description": "Specifies whether the geography IDs will be from a table or a list.TABLE\u2014The input IDs will be from a table.LIST\u2014The input IDs will be from a list. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "in_ids_table": {
                         "type": "string",
                         "description": "The input table with IDs that will be used to select geographies that will define the trade area.",
-                        "default": null
+                        "default": None
                 },
                 "geography_key_field": {
                         "type": "string",
                         "description": "A field in the in_ids_table parameter value that identifies the records that will be included in the output.",
-                        "default": null
+                        "default": None
                 },
                 "ids_list": {
                         "type": "string",
                         "description": "The input list of comma-separated geography IDs.",
-                        "default": null
+                        "default": None
                 },
                 "summarize_duplicates": {
                         "type": "string",
                         "description": "Specifies whether duplicate fields in the table containing\r\nmatching geography IDs will be summarized.SUMMARIZE_DUPLICATES\u2014The numeric fields for all duplicate records will be summarized.USE_FIRST\u2014The...",
-                        "default": null
+                        "default": None
                 },
                 "group_field": {
                         "type": "string",
                         "description": "The field that will be used to perform a group by operation.",
-                        "default": null
+                        "default": None
                 },
                 "dissolve_output": {
                         "type": "string",
                         "description": "Specifies whether the output will be dissolved based on the group_field parameter value.DISSOLVE\u2014The output will be dissolved.DONT_DISSOLVE\u2014The output will not be dissolved. This is the default.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2053,62 +2056,62 @@ segmentation_profile_report": {
                 "units": {
                         "type": "string",
                         "description": "The distance units that will be used with the threshold values.",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "The ID that uniquely identifies each input point and is included in the output as an attribute.",
-                        "default": null
+                        "default": None
                 },
                 "travel_direction": {
                         "type": "string",
                         "description": "Specifies the direction of travel toward or away from stores.TOWARD_STORES\u2014  The direction of travel will be toward stores. This is the default.AWAY_FROM_STORES\u2014 The direction of travel will be away f...",
-                        "default": null
+                        "default": None
                 },
                 "time_of_day": {
                         "type": "string",
                         "description": "The time and date that will be used when calculating distance.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "Specifies the time zone that will be used for the Time of Day parameter.TIME_ZONE_AT_LOCATION\u2014The time zone in which the territories are located will be used. This is the default.UTC\u2014Coordinated unive...",
-                        "default": null
+                        "default": None
                 },
                 "search_tolerance": {
                         "type": "string",
                         "description": "The maximum distance that input points can be from the network.The default value is 5,000 meters.",
-                        "default": null
+                        "default": None
                 },
                 "polygon_detail": {
                         "type": "string",
                         "description": "Specifies the level of detail that will be used for the output drive time polygons.STANDARD\u2014Polygons with a standard level of detail will be created. This is the default.GENERALIZED\u2014Generalized polygo...",
-                        "default": null
+                        "default": None
                 },
                 "iterations_limit": {
                         "type": "string",
                         "description": "Restricts the number of drive times that can be used to find the optimal threshold limit.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_step": {
                         "type": "string",
                         "description": "The minimum distance between one threshold area candidate and the next as the model approaches the threshold value to prevent infinite iterations.",
-                        "default": null
+                        "default": None
                 },
                 "target_percent_diff": {
                         "type": "string",
                         "description": "The maximum percentage difference between the target value and threshold value that will be used when determining the threshold drive time, for example, 5 percent. The default value is 5.",
-                        "default": null
+                        "default": None
                 },
                 "input_method": {
                         "type": "string",
                         "description": "Specifies the type of value that will be used for each drive time.VALUES\u2014A constant value will be used (all trade areas will be the same size). This is the default.EXPRESSION\u2014The values from a field o...",
-                        "default": null
+                        "default": None
                 },
                 "expression": {
                         "type": "string",
                         "description": "A fields-based expression that will be used to calculate drive time.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2142,32 +2145,32 @@ segmentation_profile_report": {
                 "units": {
                         "type": "string",
                         "description": "The distance units that will be used with the threshold values.",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "The ID that uniquely identifies each input point and is included in the output as an attribute.",
-                        "default": null
+                        "default": None
                 },
                 "input_method": {
                         "type": "string",
                         "description": "Specifies the type of value that will be used for each drive time.VALUES\u2014A constant value will be used (all trade areas will be the same size). This is the default.EXPRESSION\u2014The values from a field o...",
-                        "default": null
+                        "default": None
                 },
                 "expression": {
                         "type": "string",
                         "description": "A fields-based expression that will be used to calculate the radii.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_step": {
                         "type": "string",
                         "description": "The minimum distance between one threshold area candidate and the next as the model approaches the threshold value to prevent infinite iterations.",
-                        "default": null
+                        "default": None
                 },
                 "target_percent_diff": {
                         "type": "string",
                         "description": "The maximum percentage difference between the target value and threshold value that will be used when determining the threshold drive time, for example, 5 percent. The default value is 5.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2192,37 +2195,37 @@ segmentation_profile_report": {
                 "radii": {
                         "type": "string",
                         "description": "The distances, in ascending size, used to create rings around the input features.",
-                        "default": null
+                        "default": None
                 },
                 "units": {
                         "type": "string",
                         "description": "The linear unit to be used with the distance values.",
-                        "default": null
+                        "default": None
                 },
                 "id_field": {
                         "type": "string",
                         "description": "A unique ID field in the ring center layer.",
-                        "default": null
+                        "default": None
                 },
                 "remove_overlap": {
                         "type": "string",
                         "description": "Creates overlapping concentric rings or removes overlap.REMOVE_OVERLAP\u2014Thiessen polygons are used to remove overlap between output ring polygons.KEEP_OVERLAP\u2014Output ring features are created with over...",
-                        "default": null
+                        "default": None
                 },
                 "dissolve_option": {
                         "type": "string",
                         "description": "Specifies whether overlapping or nonoverlapping service areas for a single location will be used when multiple distances are specified.\r\nOVERLAP\u2014Each polygon will include the area reachable from the f...",
-                        "default": null
+                        "default": None
                 },
                 "input_method": {
                         "type": "string",
                         "description": "Specifies the type of value that is to be used for each drive time.VALUES\u2014Uses a constant value (all trade areas will be the same size). This is the default.EXPRESSION\u2014The values from a field or an ex...",
-                        "default": null
+                        "default": None
                 },
                 "expression": {
                         "type": "string",
                         "description": "A fields-based expression to calculate the radii.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2253,32 +2256,32 @@ segmentation_profile_report": {
                 "store_id_field": {
                         "type": "string",
                         "description": "The unique ID that associates a store with each polygon when the inputs are trade areas.",
-                        "default": null
+                        "default": None
                 },
                 "create_report": {
                         "type": "string",
                         "description": "Specifies whether a report will be generated.CREATE_REPORT\u2014A report will be generated.DO_NOT_CREATE_REPORT\u2014A report will not be generated. This is the default.",
-                        "default": null
+                        "default": None
                 },
                 "report_title": {
                         "type": "string",
                         "description": "The title of the report. The default value is Measure Cannibalization.",
-                        "default": null
+                        "default": None
                 },
                 "report_folder": {
                         "type": "string",
                         "description": "The output location where the report will be saved.",
-                        "default": null
+                        "default": None
                 },
                 "report_format": {
                         "type": "string",
                         "description": "The output format or formats of the report.",
-                        "default": null
+                        "default": None
                 },
                 "variables": {
                         "type": "string",
                         "description": "One or more variables that will be used to calculate additional overlap metrics\u2014for example, the total number of people and households in intersection areas, or the percentage of the total number of p...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2303,37 +2306,37 @@ segmentation_profile_report": {
                 "method": {
                         "type": "string",
                         "description": "Specifies how the overlap between trade areas will be removed.CENTER_LINE\u2014 Overlap will be removed by creating a border that evenly distributes the area of intersection between polygons. This is the d...",
-                        "default": null
+                        "default": None
                 },
                 "define_trade_area": {
                         "type": "string",
                         "description": "Specifies whether ring overlap in a trade area will be removed.DEFINE_TRADE_AREA\u2014Overlap will only be removed between polygons with equal values in the ring_id_field parameter.DO_NOT_DEFINE_TRADE_AREA...",
-                        "default": null
+                        "default": None
                 },
                 "ring_id_field": {
                         "type": "string",
                         "description": "A field from the input  that defines common trade areas. Overlap between polygons will only be removed if their values in this field are equal.",
-                        "default": null
+                        "default": None
                 },
                 "weight_field": {
                         "type": "string",
                         "description": "A field from the input used to influence removal of overlap based on its values.",
-                        "default": null
+                        "default": None
                 },
                 "store_id": {
                         "type": "string",
                         "description": "A unique ID field in the stores feature layer.",
-                        "default": null
+                        "default": None
                 },
                 "in_stores_layer": {
                         "type": "string",
                         "description": "The input features containing the center points for the overlapping\r\ntrade areas.",
-                        "default": null
+                        "default": None
                 },
                 "link_field": {
                         "type": "string",
                         "description": "A unique ID field representing a store or facility location.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2356,12 +2359,12 @@ segmentation_profile_report": {
                 "method": {
                         "type": "string",
                         "description": "Specifies how the overlap between trade areas will be removed.\r\nCENTER_LINE\u2014Overlap will be removed by creating a border that evenly distributes the overlapping area between polygons. This is the simp...",
-                        "default": null
+                        "default": None
                 },
                 "join_attributes": {
                         "type": "string",
                         "description": "Specifies the attributes of the input layers that will be transferred to the output.ALL\u2014All attributes from the input features will be transferred to the output feature class. This is the default.NO_F...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [

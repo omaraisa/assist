@@ -18,12 +18,12 @@ functions_declarations = {
                 "field_names_row": {
                         "type": "string",
                         "description": "The row in the Excel sheet that contains values that will be used as field names.  The default value is 1.  The row specified will be skipped when converting records to the output table.If the Sheet\tp...",
-                        "default": null
+                        "default": None
                 },
                 "cell_range": {
                         "type": "string",
                         "description": "The  cell range. This parameter is disabled when a named ranged is selected. If no cell range is specified, the tool will use the start and end cells of the specified sheet.A cell is the intersection ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -46,12 +46,12 @@ functions_declarations = {
                 "use_field_alias_column_header": {
                         "type": "string",
                         "description": "Specifies whether input field names or field aliases will be used as the output column names.NAME\u2014Column headers will be set using the input field names. This is the default.ALIAS\u2014Column headers will ...",
-                        "default": null
+                        "default": None
                 },
                 "use_domain_and_subtype_description": {
                         "type": "string",
                         "description": "Specifies whether values from subtype fields or fields with a coded value domain will be transferred to the output.CODE\u2014All field values will be used as they are stored in the table. This is the defau...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -74,42 +74,42 @@ functions_declarations = {
                 "pdf_password": {
                         "type": "string",
                         "description": "This parameter is unavailable at ArcGIS 3.5. It will be supported in a future release.",
-                        "default": null
+                        "default": None
                 },
                 "pdf_page_number": {
                         "type": "string",
                         "description": "The page number of the PDF document to export to TIFF.",
-                        "default": null
+                        "default": None
                 },
                 "pdf_map": {
                         "type": "string",
                         "description": "The map that will be exported.In a .pdf file, a map is a defined container of graphics on the PDF page that has a spatial reference. A PDF map is equivalent to an ArcGIS Pro map in that it is the cont...",
-                        "default": null
+                        "default": None
                 },
                 "clip_option": {
                         "type": "string",
                         "description": "Specifies whether the entire page or only the map will be exported.CLIP_TO_MAP\u2014Only  the map specified in the pdf_map parameter will be exported to TIFF.NO_CLIP\u2014The entire page will be exported to TIF...",
-                        "default": null
+                        "default": None
                 },
                 "resolution": {
                         "type": "string",
                         "description": "The resolution of the output .tif file in dots per inch (DPI).  The default is 250.",
-                        "default": null
+                        "default": None
                 },
                 "color_mode": {
                         "type": "string",
                         "description": "Specifies the number of bits that will be used to describe color.Note:Additional options will be supported in a future release.RGB_TRUE_COLOR\u201432-bit RGBA color will be used. If the tiff_compression pa...",
-                        "default": null
+                        "default": None
                 },
                 "tiff_compression": {
                         "type": "string",
                         "description": "Specifies the compression scheme for the output .tif file.LZW\u2014Lempel-Ziv-Welch, a lossless data compression, will be used. This is the default.DEFLATE\u2014A lossless data compression will be used.JPEG\u2014JPE...",
-                        "default": null
+                        "default": None
                 },
                 "geotiff_tags": {
                         "type": "string",
                         "description": "Specifies whether GeoTIFF tags will be added to the output. This parameter is only supported if the in_pdf_file parameter value has a spatial reference.GEOTIFF_TAGS\u2014GeoTIFF tags will be added to the o...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -168,7 +168,7 @@ functions_declarations = {
                 "raster_field": {
                         "type": "string",
                         "description": "The field to assign values from the cells in the input raster to the points in the output dataset.It can be an integer, floating point, or string field.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -191,22 +191,22 @@ functions_declarations = {
                 "simplify": {
                         "type": "string",
                         "description": "Determines if the output polygons will be smoothed into simpler shapes or conform to the input raster's cell edges.SIMPLIFY\u2014The polygons will be smoothed into simpler shapes. The smoothing is done in ...",
-                        "default": null
+                        "default": None
                 },
                 "raster_field": {
                         "type": "string",
                         "description": "The field used to assign values from the cells in the input raster to the polygons in the output dataset.It can be an integer or a string field.",
-                        "default": null
+                        "default": None
                 },
                 "create_multipart_features": {
                         "type": "string",
                         "description": "Specifies whether the output polygons will consist of single-part or multipart features.\r\nMULTIPLE_OUTER_PART\u2014Specifies that multipart features will be created based on polygons that have the same val...",
-                        "default": null
+                        "default": None
                 },
                 "max_vertices_per_feature": {
                         "type": "string",
                         "description": "The vertex limit used to subdivide a polygon into smaller polygons. This parameter produces similar output as created by the Dice tool.If left empty, the output polygons will not be split. The default...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -229,22 +229,22 @@ functions_declarations = {
                 "background_value": {
                         "type": "string",
                         "description": "Specifies the value that will identify the background cells. The raster dataset is viewed as a set of foreground cells and background cells. The linear features are formed from the foreground cells.ZE...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_dangle_length": {
                         "type": "string",
                         "description": "Minimum length of dangling polylines that will be retained. The default is zero.",
-                        "default": null
+                        "default": None
                 },
                 "simplify": {
                         "type": "string",
                         "description": "Simplifies a line by removing small fluctuations or extraneous bends from it while preserving its essential shape.SIMPLIFY\u2014The polylines will be simplified into simpler shapes such that each contains ...",
-                        "default": null
+                        "default": None
                 },
                 "raster_field": {
                         "type": "string",
                         "description": "The field used to assign values from the cells in the input raster to the polyline features in the output dataset.It can be an integer or a string field.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -275,27 +275,27 @@ functions_declarations = {
                 "is_complex": {
                         "type": "string",
                         "description": "Specifies whether the input_WFS_server parameter value is a complex WFS service.COMPLEX\u2014The WFS service is a complex WFS service.NOT_COMPLEX\u2014The WFS service is not a complex WFS service. This is the d...",
-                        "default": null
+                        "default": None
                 },
                 "max_features": {
                         "type": "string",
                         "description": "The maximum number of features that can be returned. The default is 1000.",
-                        "default": null
+                        "default": None
                 },
                 "expose_metadata": {
                         "type": "string",
                         "description": "Specifies whether metadata tables will be created from the service. This is only applicable to complex WFS services.EXPOSE_METADATA\u2014Metadata tables will be created in the output geodatabase.DO_NOT_EXP...",
-                        "default": null
+                        "default": None
                 },
                 "swap_xy": {
                         "type": "string",
                         "description": "Specifies whether the x,y axis order of the output feature class will be swapped. Some WFS services may have the order of the x,y coordinates swapped on the server side, causing the feature class to d...",
-                        "default": null
+                        "default": None
                 },
                 "page_size": {
                         "type": "string",
                         "description": "The page size that will be used when downloading features from the WFS service. The default is 100. Some servers limit the number of features that can be requested at a time or server performance may ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -320,22 +320,22 @@ functions_declarations = {
                 "name_field": {
                         "type": "string",
                         "description": "A field from the input features with values used to populate the GPX name tag.",
-                        "default": null
+                        "default": None
                 },
                 "description_field": {
                         "type": "string",
                         "description": "A field from the input features with\r\nvalues used to populate the GPX desc tag.",
-                        "default": null
+                        "default": None
                 },
                 "z_field": {
                         "type": "string",
                         "description": "A numeric field from the input features with  values used to populate the GPX elevation tag. If an elevation field is not specified, the z-values from the input features' geometries will be used to po...",
-                        "default": null
+                        "default": None
                 },
                 "date_field": {
                         "type": "string",
                         "description": "A date/time field from the input features with values used to populate the GPX time tag.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -358,7 +358,7 @@ functions_declarations = {
                 "output_type": {
                         "type": "string",
                         "description": "Specifies the geometry type of the output feature class.POINTS\u2014An output point feature class will be created. All GPX points will be included in the output. This is the default.TRACKS_AS_LINES\u2014An outp...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -381,7 +381,7 @@ functions_declarations = {
                 "exclude_features": {
                         "type": "string",
                         "description": "Specifies whether the converted\r\nfeatures will be excluded using a query.EXCLUDE_FEATURES\u2014The features will be excluded. This is the default.KEEP_FEATURES\u2014The features will not be excluded; they will ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -408,12 +408,12 @@ functions_declarations = {
                 "delete_graphics": {
                         "type": "string",
                         "description": "Specifies whether the converted graphic elements from the in_layer parameter will be deleted after conversion.DELETE_GRAPHICS\u2014The converted graphic elements will be deleted. This is the default.KEEP_G...",
-                        "default": null
+                        "default": None
                 },
                 "reference_scale": {
                         "type": "string",
                         "description": "The reference scale that will be used to convert text elements to annotation features. This parameter is required when the graphics_type parameter is set to ANNOTATION.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -437,32 +437,32 @@ functions_declarations = {
                 "format_json": {
                         "type": "string",
                         "description": "Specifies whether the JSON will be formatted to improve readability similar to the ArcGIS REST API specification's PJSON (Pretty JSON) format.NOT_FORMATTED\u2014 The features will not be formatted. This is...",
-                        "default": null
+                        "default": None
                 },
                 "include_z_values": {
                         "type": "string",
                         "description": "Specifies whether the z-values of the features will be included in the JSON.NO_Z_VALUES\u2014 The z-values will not be included in geometries, and the hasZ property of the JSON will not be included. This i...",
-                        "default": null
+                        "default": None
                 },
                 "include_m_values": {
                         "type": "string",
                         "description": "Specifies whether the m-values of the features will be included in the JSON.NO_M_VALUES\u2014 The m-values will not be included in geometries, and the hasM property of the JSON will not be included. This i...",
-                        "default": null
+                        "default": None
                 },
                 "geojson": {
                         "type": "string",
                         "description": "Specifies whether the output will be created in GeoJSON format, conforming to the GeoJSON specification or Esri JSON format,.GEOJSON\u2014 The output will be created in GeoJSON format (.geojson file). NO_G...",
-                        "default": null
+                        "default": None
                 },
                 "outputtowgs84": {
                         "type": "string",
                         "description": "Specifies whether the input features will be projected to the WGS84 geographic coordinate system with a default geographic transformation. This parameter only applies when the output is GeoJSON.WGS84\u2014...",
-                        "default": null
+                        "default": None
                 },
                 "use_field_alias": {
                         "type": "string",
                         "description": "Specifies whether the output file will use field aliases for feature attributes.USE_FIELD_NAME\u2014Output feature attributes will not use field aliases; they will use field names. This is the default.USE_...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -485,7 +485,7 @@ functions_declarations = {
                 "geometry_type": {
                         "type": "string",
                         "description": "Specifies the geometry type that will be used to convert from GeoJSON to features. This parameter is only used when the input is a .geojson file.\r\nIf the .geojson file does not contain any of the spec...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -508,17 +508,17 @@ functions_declarations = {
                 "output_data": {
                         "type": "string",
                         "description": "The name that will be used for both the output geodatabase and layer file (.lyrx). The default is the name of the input file.\r\nYou can specify the name of an existing geodatabase in the target folder,...",
-                        "default": null
+                        "default": None
                 },
                 "include_groundoverlay": {
                         "type": "string",
                         "description": "Specifies whether ground overlays from the KML will be included in the output.\r\nUse caution if the KMZ points to a service that serves imagery. The tool will attempt to convert the raster imagery at a...",
-                        "default": null
+                        "default": None
                 },
                 "out_suffix": {
                         "type": "string",
                         "description": "The suffix that will be added to the names of all output feature datasets, feature classes, mosaic datasets, and layer files. If no suffix is specified, the name of the feature dataset in the output g...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -541,32 +541,32 @@ functions_declarations = {
                 "layer_output_scale": {
                         "type": "string",
                         "description": "The scale of the output file. For raster layers, a value of 0 can be used to create one untiled output image. If a value greater than or equal to 1 is used, it will determine the output resolution of ...",
-                        "default": null
+                        "default": None
                 },
                 "is_composite": {
                         "type": "string",
                         "description": "Specifies whether the output will be a single composite image.  This parameter only applies if you specify the output KML as a .kmz file, as output .kml files do not support ground overlay images or r...",
-                        "default": null
+                        "default": None
                 },
                 "boundary_box_extent": {
                         "type": "string",
                         "description": "The geographic extent of the layer to be converted. Only features or raster cells in this extent will be included in the output KML. The extent can be specified using the following options:MAXOF\u2014The m...",
-                        "default": null
+                        "default": None
                 },
                 "image_size": {
                         "type": "string",
                         "description": "The size of the tiles for raster layers if the layer_output_scale parameter value is greater than or equal to 1. This parameter has no effect on layers that are not raster layers.",
-                        "default": null
+                        "default": None
                 },
                 "dpi_of_client": {
                         "type": "string",
                         "description": "The device resolution for KML output when the is_composite parameter is set to COMPOSITE. Use this parameter with the image_size parameter to control output image resolution.This parameter does not re...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_zvalue": {
                         "type": "string",
                         "description": "Specifies whether the z-values of the input features will be ignored and all features will be located, or clamped, at the ground elevation.ABSOLUTE\u2014The z-values of the features will be maintained in t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -589,42 +589,42 @@ functions_declarations = {
                 "map_output_scale": {
                         "type": "string",
                         "description": "The scale at which each layer in the map will be exported. This\r\nparameter is important with any scale dependency, such as layer\r\nvisibility or scale-dependent rendering. If the layer is not\r\nvisible ...",
-                        "default": null
+                        "default": None
                 },
                 "is_composite": {
                         "type": "string",
                         "description": "Specifies whether the output KML will contain a single composite image or separate layers.COMPOSITE\u2014The output KML will contain a single image that\r\ncomposites all the features in the map into a singl...",
-                        "default": null
+                        "default": None
                 },
                 "is_vector_to_raster": {
                         "type": "string",
                         "description": "Specifies whether each feature layer in the map will be converted to a separate raster image\r\nor preserved as features. This parameter is not used if the is_composite parameter is set to COMPOSITE.VEC...",
-                        "default": null
+                        "default": None
                 },
                 "extent_to_export": {
                         "type": "string",
                         "description": "The geographic extent of the layer to be converted. Only features or raster cells in this extent will be included in the output KML. The extent can be specified using the following options:\r\nMAXOF\u2014The...",
-                        "default": null
+                        "default": None
                 },
                 "image_size": {
                         "type": "string",
                         "description": "The size of the tiles for raster layers if\r\nthe map_output_scale parameter value is greater than\r\nor equal to 1. This parameter has no effect on layers that are not raster layers.",
-                        "default": null
+                        "default": None
                 },
                 "dpi_of_client": {
                         "type": "string",
                         "description": "The device resolution for any rasters in the output KML\r\ndocument. Typical screen resolution is 96 dpi. If the data in\r\nthe map supports a high resolution and the KML requires it,\r\nconsider increasing...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_zvalue": {
                         "type": "string",
                         "description": "Specifies whether the z-values of the input features will be ignored and all features will be located, or clamped, at the ground elevation.ABSOLUTE\u2014The z-values of the features will be maintained in t...",
-                        "default": null
+                        "default": None
                 },
                 "layout": {
                         "type": "string",
                         "description": "The name of the layout that contains legend elements that will be included in the KML output as screen overlays.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -647,37 +647,37 @@ functions_declarations = {
                 "file_version": {
                         "type": "string",
                         "description": "Specifies the file version that will be used for the output files.SAME_AS_INPUT\u2014The output file version will be the same as the input. This is the default.1.0\u2014The base version for the LAS format that ...",
-                        "default": null
+                        "default": None
                 },
                 "point_format": {
                         "type": "string",
                         "description": "Specifies the point record format that will be used for the output files. The available options will vary based on the output LAS format file version.\r\n0\u2014The base type for storing discrete LAS points ...",
-                        "default": null
+                        "default": None
                 },
                 "compression": {
                         "type": "string",
                         "description": "Specifies whether the output files will be stored in  a compressed or uncompressed format.NO_COMPRESSION\u2014Output files will be in the uncompressed LAS format (*.las). This format supports edits to clas...",
-                        "default": null
+                        "default": None
                 },
                 "las_options": {
                         "type": "string",
                         "description": "Specifies the modifications that will be made to the output files that will reduce their size and improve their performance in display and analysis.\r\nREARRANGE_POINTS\u2014Points will be rearranged to impr...",
-                        "default": null
+                        "default": None
                 },
                 "out_las_dataset": {
                         "type": "string",
                         "description": "The output LAS dataset referencing the newly created .las files.",
-                        "default": null
+                        "default": None
                 },
                 "define_coordinate_system": {
                         "type": "string",
                         "description": "Specifies how the coordinate system of each input file will be defined.NO_FILES\u2014The coordinate system of each input file will be defined by the information in its header. Any file that lacks spatial r...",
-                        "default": null
+                        "default": None
                 },
                 "in_coordinate_system": {
                         "type": "string",
                         "description": "The coordinate system that will be used to define the spatial reference of some or all input files based on the define_coordinate_system parameter value.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -700,32 +700,32 @@ functions_declarations = {
                 "value_field": {
                         "type": "string",
                         "description": "Specifies the information from the lidar data that will be used to generate the raster output.\r\nELEVATION\u2014Elevation from the lidar files will be used to create the raster. This is the default.INTENSIT...",
-                        "default": null
+                        "default": None
                 },
                 "interpolation_type_binning_cell_assignment_type_void_fill_method_or_triangulation_interpolation_method_point_thinning_type_point_selection_method_resolution": {
                         "type": "string",
                         "description": "The interpolation type that will be used to determine the cell value of the output raster. Either binning or triangulation based interpolation can be specified. Each type presents unique options for a...",
-                        "default": null
+                        "default": None
                 },
                 "data_type": {
                         "type": "string",
                         "description": "Specifies the type of numeric values that will be stored in the output raster.\t\t\t\t\tFLOAT\u2014The output raster will use 32-bit floating point, which supports values ranging from -3.402823466e+38 to 3.4028...",
-                        "default": null
+                        "default": None
                 },
                 "sampling_type": {
                         "type": "string",
                         "description": "Specifies how the Sampling Value parameter will be interpreted to define the output raster's cell size.\t\t\t\t\tOBSERVATIONS\u2014The Sampling Value will define the number of columns or rows in the output rast...",
-                        "default": null
+                        "default": None
                 },
                 "sampling_value": {
                         "type": "string",
                         "description": "The value used in conjunction with the Sampling Type parameter to define the output raster's cell size.",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The factor by which z-values will be multiplied. This is typically used to convert z linear units to match x,y linear units. The default is 1, which leaves elevation values unchanged. This parameter i...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -748,42 +748,42 @@ functions_declarations = {
                 "method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to create the point cloud from the integrated mesh.\r\nSAMPLE_POINTS_FROM_FACES\u2014Points will be sampled from the integrated mesh triangle faces. Triangles may poten...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_triangle_area": {
                         "type": "string",
                         "description": "Controls the density of points created from the integrated mesh by defining the maximum area of each triangle that contributes points. Any mesh triangle that is larger than this value will be subdivid...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "The extent of the integrated mesh that will be exported to the point cloud. If the processing extent is specified with an extraction boundary polygon, both the intersection of the extent and the bound...",
-                        "default": null
+                        "default": None
                 },
                 "boundary": {
                         "type": "string",
                         "description": "The polygon features defining the area that will be clipped.",
-                        "default": null
+                        "default": None
                 },
                 "rearrange_points": {
                         "type": "string",
                         "description": "Specifies whether points  in the .las  or .zlas files will be rearranged to optimize the performance of reading and updating the classification of the point cloud.\r\nMAINTAIN_POINTS\u2014The order of points...",
-                        "default": null
+                        "default": None
                 },
                 "compute_stats": {
                         "type": "string",
                         "description": "Specifies whether statistics will be computed for the .las files referenced by the LAS dataset. Computing statistics provides a spatial index for each .las file, which improves analysis and display pe...",
-                        "default": null
+                        "default": None
                 },
                 "out_las_dataset": {
                         "type": "string",
                         "description": "The output LAS dataset that will reference the LAS format files created by the conversion process.",
-                        "default": null
+                        "default": None
                 },
                 "compression": {
                         "type": "string",
                         "description": "Specifies whether the output .las file will be in  a compressed format or the standard LAS format.NO_COMPRESSION\u2014The output will be in the standard LAS format (*.las file). This is the default.ZLAS\u2014Ou...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -810,17 +810,17 @@ functions_declarations = {
                 "cell_assignment": {
                         "type": "string",
                         "description": "Specifies the method that will be used for assigning values to cells containing points.AVERAGE\u2014The cell value will be defined by the average of the z-values for all points in the cell. This is the def...",
-                        "default": null
+                        "default": None
                 },
                 "void_fill": {
                         "type": "string",
                         "description": "Specifies the method that will be used for interpolating the values of cells within the interpolation zone that do not contain points.NONE\u2014No value will be assigned to raster cells that do not contain...",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The factor by which z-values will be multiplied. This is typically used to convert z linear units to match x,y linear units. The default is 1, which leaves the z-values unchanged.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -844,37 +844,37 @@ functions_declarations = {
                 "use_cas_connection": {
                         "type": "string",
                         "description": "Specifies whether the input SAS dataset will be downloaded from CAS or accessed from a local SAS library.USE_CAS\u2014The input SAS dataset will be downloaded from CAS.LOCAL_SAS\u2014The input SAS dataset will ...",
-                        "default": null
+                        "default": None
                 },
                 "hostname": {
                         "type": "string",
                         "description": "The URL of the CAS host.",
-                        "default": null
+                        "default": None
                 },
                 "port": {
                         "type": "string",
                         "description": "The port of the CAS connection.",
-                        "default": null
+                        "default": None
                 },
                 "username": {
                         "type": "string",
                         "description": "The username for the CAS connection.",
-                        "default": null
+                        "default": None
                 },
                 "password": {
                         "type": "string",
                         "description": "The password for the CAS connection.  This password is hidden and not accessible after running the tool.",
-                        "default": null
+                        "default": None
                 },
                 "custom_cfg_file": {
                         "type": "string",
                         "description": "The file specifying custom configurations for the SAS session. The file is only required for customized local or remote SAS deployments.",
-                        "default": null
+                        "default": None
                 },
                 "authinfo_file": {
                         "type": "string",
                         "description": "The file containing authentication information when connecting to CAS.\r\nThe file must contain the username and encoded password for the connection.  If a file is provided, the username and password pa...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -897,47 +897,47 @@ functions_declarations = {
                 "replace_sas_dataset": {
                         "type": "string",
                         "description": "Specifies whether an existing SAS dataset will be overwritten in the output.OVERWRITE\u2014The output SAS dataset can overwrite an existing dataset.NO_OVERWRITE\u2014The output SAS dataset cannot overwrite an e...",
-                        "default": null
+                        "default": None
                 },
                 "use_domain_and_subtype_description": {
                         "type": "string",
                         "description": "Specifies whether domain and subtype descriptions will be included in the output SAS dataset.USE_DOMAIN\u2014Domain and subtype descriptions will be included in the output SAS dataset.NO_DOMAIN\u2014Domain and ...",
-                        "default": null
+                        "default": None
                 },
                 "use_cas_connection": {
                         "type": "string",
                         "description": "Specifies whether the output SAS dataset will be uploaded to \r\nCAS or saved in a local SAS library.USE_CAS\u2014The output SAS dataset will be uploaded to CAS.LOCAL_SAS\u2014The output SAS dataset will be saved...",
-                        "default": null
+                        "default": None
                 },
                 "hostname": {
                         "type": "string",
                         "description": "The URL of the CAS host.",
-                        "default": null
+                        "default": None
                 },
                 "port": {
                         "type": "string",
                         "description": "The port of the CAS connection.",
-                        "default": null
+                        "default": None
                 },
                 "username": {
                         "type": "string",
                         "description": "The username for the CAS connection.",
-                        "default": null
+                        "default": None
                 },
                 "password": {
                         "type": "string",
                         "description": "The password for the CAS connection.  This password is hidden and not accessible after running the tool.",
-                        "default": null
+                        "default": None
                 },
                 "custom_cfg_file": {
                         "type": "string",
                         "description": "The file specifying custom configurations for the SAS session. The file is only required for customized local or remote SAS deployments.",
-                        "default": null
+                        "default": None
                 },
                 "authinfo_file": {
                         "type": "string",
                         "description": "The file containing authentication information when connecting to CAS.\r\nThe file must contain the username and encoded password for the connection.  If a file is provided, the username and password pa...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -960,22 +960,22 @@ functions_declarations = {
                 "layerprops": {
                         "type": "string",
                         "description": "Adds the list of CAD-specific Layer property fields to the input tableADD_LAYER_PROPERTIES\u2014Adds the list of CAD-specific Layer property fields to the input tableNO_LAYER_PROPERTIES\u2014Does not add the li...",
-                        "default": null
+                        "default": None
                 },
                 "textprops": {
                         "type": "string",
                         "description": "Adds the list of CAD-specific Text property fields to the input tableADD_TEXT_PROPERTIES\u2014Adds the list of CAD-specific Text property fields to the input tableNO_TEXT_PROPERTIES\u2014Does not add the list o...",
-                        "default": null
+                        "default": None
                 },
                 "docprops": {
                         "type": "string",
                         "description": "Adds the list of CAD-specific Document property fields to the input tableADD_DOCUMENT_PROPERTIES\u2014Adds the list of CAD-specific Document property fields to the input tableNO_DOCUMENT_PROPERTIES\u2014Does no...",
-                        "default": null
+                        "default": None
                 },
                 "xdataprops": {
                         "type": "string",
                         "description": "Adds the list of CAD-specific XData property fields to the input tableADD_XDATA_PROPERTIES\u2014Adds the list of CAD-specific XData property fields to the input tableNO_XDATA_PROPERTIES\u2014Does not add the li...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -998,12 +998,12 @@ functions_declarations = {
                 "append_to_existing": {
                         "type": "string",
                         "description": "Specifies whether the output will be appended to an existing CAD file. This allows you to add information to a CAD file on disk.Append_To_Existing_Files\u2014Entities will be appended to an output CAD file...",
-                        "default": null
+                        "default": None
                 },
                 "seed_file": {
                         "type": "string",
                         "description": "An existing CAD drawing whose contents and document and layer properties will be used as a seed file when output CAD files are created. The CAD platform and format version of the seed file overrides t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1026,12 +1026,12 @@ functions_declarations = {
                 "append_to_existing": {
                         "type": "string",
                         "description": "Specifies whether the output will be appended to an existing CAD file. This allows you to add information to a CAD file on disk.Append_To_Existing_Files\u2014Entities will be appended to an output CAD file...",
-                        "default": null
+                        "default": None
                 },
                 "seed_file": {
                         "type": "string",
                         "description": "An existing CAD drawing whose contents and document and layer properties will be used as a seed file when output CAD files are created. The CAD platform and format version of the seed file overrides t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1054,12 +1054,12 @@ functions_declarations = {
                 "prepend_source": {
                         "type": "string",
                         "description": "Specifies whether the names of the output COLLADA files will be prepended with the name of the source feature layer.\r\nPREPEND_SOURCE_NAME\u2014The file names will be prepended with the name of the source f...",
-                        "default": null
+                        "default": None
                 },
                 "field_name": {
                         "type": "string",
                         "description": "The feature attribute that will be used as the output COLLADA file name for each exported feature. If no field is specified, the feature's Object ID will be used.",
-                        "default": null
+                        "default": None
                 },
                 "collada_version": {
                         "type": "string",
@@ -1145,17 +1145,17 @@ functions_declarations = {
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the output feature dataset.To control other aspects of the spatial reference, such as the x,y-, z-, and m-domains, resolutions, and tolerances, set the appropriate geoprocessi...",
-                        "default": null
+                        "default": None
                 },
                 "identifier": {
                         "type": "string",
                         "description": "A unique building identifier that will be added to all output feature classes. The identifier allows you to add unique names to each building to be used at a later time.",
-                        "default": null
+                        "default": None
                 },
                 "include_floorplan": {
                         "type": "string",
                         "description": "Specifies whether the output dataset will include the floorplan feature classes.INCLUDE_FLOORPLAN\u2014The output dataset will include the floorplan feature classes. This is the default.EXCLUDE_FLOORPLAN\u2014T...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1187,7 +1187,7 @@ functions_declarations = {
                 "spatial_reference": {
                         "type": "string",
                         "description": "The spatial reference of the output feature dataset. To control other aspects of the spatial reference, such as the x-, y-, z-, and m-domains, resolutions, and tolerances, set the appropriate geoproce...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1212,22 +1212,22 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression used to select a subset of features.  For more information on SQL syntax  see the help topic SQL reference for query expressions used in ArcGIS.",
-                        "default": null
+                        "default": None
                 },
                 "use_field_alias_name": {
                         "type": "string",
                         "description": "Specifies whether the input's field names or field aliases will be used as the output field name.NOT_USE_ALIAS\u2014The input's field names will be used as the output field names. This is the default.USE_A...",
-                        "default": null
+                        "default": None
                 },
                 "field_mapping": {
                         "type": "string",
                         "description": "The fields that will be transferred to the output dataset with their respective properties and source fields. The output includes all fields from the input dataset by default.Use the field map to add,...",
-                        "default": null
+                        "default": None
                 },
                 "sort_field": {
                         "type": "string",
                         "description": "The field or fields whose values will be used to reorder the input records and the direction the records will be sorted.ASCENDING\u2014Records will be sorted from low value to high value.DESCENDING\u2014Records...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1250,7 +1250,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression used to select a subset of records.  For more information on SQL syntax see the help topic SQL reference for query expressions used in ArcGIS.",
-                        "default": null
+                        "default": None
                 },
                 "use_field_alias_name": {
                         "type": "string",
@@ -1259,12 +1259,12 @@ functions_declarations = {
                 "field_mapping": {
                         "type": "string",
                         "description": "The fields that will be transferred to the output dataset with their respective properties and source fields. The output includes all fields from the input dataset by default.Use the field map to add,...",
-                        "default": null
+                        "default": None
                 },
                 "sort_field": {
                         "type": "string",
                         "description": "The field or fields whose values will be used to reorder the input records and the direction the records will be sorted.ASCENDING\u2014Records will be sorted from low value to high value.DESCENDING\u2014Records...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1346,192 +1346,192 @@ functions_declarations = {
                 "in_template": {
                         "type": "string",
                         "description": "The template file (*.lxttmpl) that determines the setting to use for each tool parameter. When a template file is provided, all values specified for other parameters will be ignored except those that ...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dd_latlon": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as decimal degrees formatted as latitude and longitude (infrequent false positives). Examples are: 33.8N 77.035W and W77N38.88909.FIND_DD_LATLON\u2014The ...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dd_xydeg": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as decimal degrees formatted as X Y with degree symbols (infrequent false positives). Examples are: 38.8\u00b0 -77.035\u00b0 and -077d+38.88909d.FIND_DD_XYDEG\u2014...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dd_xyplain": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as decimal degrees formatted as X Y with no symbols (frequent false positives). Examples are: 38.8 -77.035 and -077.0, +38.88909.FIND_DD_XYPLAIN\u2014The ...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dm_latlon": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as degrees decimal minutes formatted as latitude and longitude (infrequent false positives). Examples are: 3853.3N 7702.100W and W7702N3853.3458.FIND...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dm_xymin": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as degrees decimal minutes formatted as X Y with minutes symbols (infrequent false positives). Examples are: 3853' -7702.1' and -07702m+3853.3458m.FI...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dms_latlon": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as latitude and longitude (infrequent false positives). Examples are: 385320.7N 770206.000W and W770206N385320.7...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dms_xysec": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as X Y with seconds symbols (infrequent false positives). Examples are: 385320\" -770206.0\" and -0770206.0s+38532...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dms_xysep": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as X Y with separators (moderate false positives). Examples are: 8:53:20 -77:2:6.0 and -077/02/06/+38/53/20.76.F...",
-                        "default": null
+                        "default": None
                 },
                 "coord_utm": {
                         "type": "string",
                         "description": "Specifies whether to search for Universal Transverse Mercator (UTM) coordinates (infrequent false positives). Examples are: 18S 323503 4306438 and 18 north 323503.25 4306438.39.FIND_UTM_MAINWORLD\u2014The ...",
-                        "default": null
+                        "default": None
                 },
                 "coord_ups_north": {
                         "type": "string",
                         "description": "Specifies whether to search for Universal Polar Stereographic (UPS) coordinates in the north polar area (infrequent false positives). Examples are: Y 2722399 2000000 and north 2722399 2000000.FIND_UTM...",
-                        "default": null
+                        "default": None
                 },
                 "coord_ups_south": {
                         "type": "string",
                         "description": "Specifies whether to search for Universal Polar Stereographic (UPS) coordinates in the south polar area (infrequent false positives). Examples are: A 2000000 3168892 and south 2000000 3168892.FIND_UTM...",
-                        "default": null
+                        "default": None
                 },
                 "coord_mgrs": {
                         "type": "string",
                         "description": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates (infrequent false positives). Examples are: 18S UJ 13503 06438 and 18SUJ0306.\r\nFIND_MGRS_MAINWORLD\u2014The tool will searc...",
-                        "default": null
+                        "default": None
                 },
                 "coord_mgrs_northpolar": {
                         "type": "string",
                         "description": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates in the north polar area (infrequent false positives). Examples are: Y TG 56814 69009 and YTG5669.FIND_MGRS_NORTHPOLAR\u2014...",
-                        "default": null
+                        "default": None
                 },
                 "coord_mgrs_southpolar": {
                         "type": "string",
                         "description": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates in the south polar area (moderate false positives). Examples are: A TN 56814 30991 and ATN5630.FIND_MGRS_SOUTHPOLAR\u2014Th...",
-                        "default": null
+                        "default": None
                 },
                 "comma_decimal": {
                         "type": "string",
                         "description": "Specifies whether a comma (,) will be recognized as a decimal separator. By default, content is scanned for\r\nspatial coordinates defined by numbers that use a period (.) or a middle dot (\u00b7) as the dec...",
-                        "default": null
+                        "default": None
                 },
                 "coord_use_lonlat": {
                         "type": "string",
                         "description": "When numbers resemble x,y coordinates, both numbers are less than 90, and there are no symbols or notations to indicate which number represents the latitude or longitude, results can be ambiguous. Int...",
-                        "default": null
+                        "default": None
                 },
                 "in_coor_system": {
                         "type": "string",
                         "description": "The coordinate system that will be used to interpret the spatial coordinates defined in the input. GCS-WGS-84 is the default.",
-                        "default": null
+                        "default": None
                 },
                 "in_custom_locations": {
                         "type": "string",
                         "description": "The custom location file (.lxtgaz) that will be used when scanning the input content. A point is created to represent each occurrence of each place name in the custom location file up to the limits es...",
-                        "default": null
+                        "default": None
                 },
                 "fuzzy_match": {
                         "type": "string",
                         "description": "Specifies whether fuzzy matching will be used for searching the custom location file.USE_FUZZY\u2014Fuzzy matching will be used when searching the custom location file.DONT_USE_FUZZY\u2014Exact matching will be...",
-                        "default": null
+                        "default": None
                 },
                 "max_features_extracted": {
                         "type": "string",
                         "description": "The maximum number of features that can be extracted. The tool will stop scanning the input content for locations when the maximum number is reached. When running as a geoprocessing service, the servi...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_first_features": {
                         "type": "string",
                         "description": "The number of features detected and ignored before extracting all other features. This parameter can be used to focus the search on a specific portion of the data.",
-                        "default": null
+                        "default": None
                 },
                 "date_monthname": {
                         "type": "string",
                         "description": "Specifies whether to search for dates in which the month name appears (infrequent false positives). 12 May 2003 and January 15, 1997 are examples.FIND_DATE_MONTHNAME\u2014The tool will search for dates in ...",
-                        "default": null
+                        "default": None
                 },
                 "date_m_d_y": {
                         "type": "string",
                         "description": "Specifies whether to search for dates in which numbers are in the M/D/Y or D/M/Y format (moderate false positives). 5/12/03 and 1-15-1997 are examples.FIND_DATE_M_D_Y\u2014The tool will search for dates in...",
-                        "default": null
+                        "default": None
                 },
                 "date_yyyymmdd": {
                         "type": "string",
                         "description": "Specifies whether to search for dates in which numbers are in the YYYYMMDD format (moderate false positives). 20030512 and 19970115 are examples.FIND_DATE_YYYYMMDD\u2014The tool will search for dates in wh...",
-                        "default": null
+                        "default": None
                 },
                 "date_yymmdd": {
                         "type": "string",
                         "description": "Specifies whether to search for dates in which numbers are in the YYMMDD format (frequent false positives). 030512 and 970115 are examples.FIND_DATE_YYMMDD\u2014The tool will search for dates in which numb...",
-                        "default": null
+                        "default": None
                 },
                 "date_yyjjj": {
                         "type": "string",
                         "description": "Specifies whether to search for dates in which numbers are in the YYJJJ or YYYYJJJ format (frequent false positives). 03132 and 97015 are examples.FIND_DATE_YYJJJ\u2014The tool will search for dates in whi...",
-                        "default": null
+                        "default": None
                 },
                 "max_dates_extracted": {
                         "type": "string",
                         "description": "The maximum number of dates that will be extracted.",
-                        "default": null
+                        "default": None
                 },
                 "ignore_first_dates": {
                         "type": "string",
                         "description": "The number of dates that will be detected and ignored before extracting all other dates.",
-                        "default": null
+                        "default": None
                 },
                 "date_range_begin": {
                         "type": "string",
                         "description": "The earliest acceptable date to extract. Detected dates matching this value or later will be extracted.",
-                        "default": null
+                        "default": None
                 },
                 "date_range_end": {
                         "type": "string",
                         "description": "The latest acceptable date to extract. Detected dates matching this value or earlier will be extracted.",
-                        "default": null
+                        "default": None
                 },
                 "in_custom_attributes": {
                         "type": "string",
                         "description": "The custom attribute file (.lxtca) that will be used to scan the input content. Fields will be created in the output feature class's attribute table for all custom attributes defined in the file. When...",
-                        "default": null
+                        "default": None
                 },
                 "file_link": {
                         "type": "string",
                         "description": "The file path that will be used as the file name in the output data when the Input File parameter (in_file in Python) is transferred to the server. If this parameter is not specified, the path of the ...",
-                        "default": null
+                        "default": None
                 },
                 "file_mod_datetime": {
                         "type": "string",
                         "description": "The UTC date and time that the file was modified will be used as the modified attribute in the output data when the Input File parameter (in_file in Python) is transferred to the server. If this param...",
-                        "default": null
+                        "default": None
                 },
                 "pre_text_length": {
                         "type": "string",
                         "description": "Content is extracted from the input document to provide context for the location that was found. This parameter defines the maximum number of characters that will be extracted preceding the text that ...",
-                        "default": null
+                        "default": None
                 },
                 "post_text_length": {
                         "type": "string",
                         "description": "Content is extracted from the input document to provide context for the location that was found. This parameter defines the maximum number of characters that will be extracted following the text that ...",
-                        "default": null
+                        "default": None
                 },
                 "std_coord_fmt": {
                         "type": "string",
                         "description": "Specifies the coordinate format that will be used to store the coordinate location. A standard representation of the spatial coordinate that defines the point feature is recorded in a field in the att...",
-                        "default": null
+                        "default": None
                 },
                 "req_word_breaks": {
                         "type": "string",
                         "description": "Specifies whether to search for text using word breaks. A word break occurs when words (text) are bounded by whitespace or punctuation characters as in European languages. This setting can produce fre...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1554,192 +1554,192 @@ functions_declarations = {
                 "in_template": {
                         "type": "string",
                         "description": "The template file (*.lxttmpl) that determines the setting to use for each tool parameter. When a template file is provided, all values specified for other parameters will be ignored except those that ...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dd_latlon": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as decimal degrees formatted as latitude and longitude (infrequent false positives). Examples are: 33.8N 77.035W and W77N38.88909.FIND_DD_LATLON\u2014The ...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dd_xydeg": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as decimal degrees formatted as X Y with degree symbols (infrequent false positives). Examples are: 38.8\u00b0 -77.035\u00b0 and -077d+38.88909d.FIND_DD_XYDEG\u2014...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dd_xyplain": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as decimal degrees formatted as X Y with no symbols (frequent false positives). Examples are: 38.8 -77.035 and -077.0, +38.88909.FIND_DD_XYPLAIN\u2014The ...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dm_latlon": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as degrees decimal minutes formatted as latitude and longitude (infrequent false positives). Examples are: 3853.3N 7702.100W and W7702N3853.3458.FIND...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dm_xymin": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as degrees decimal minutes formatted as X Y with minutes symbols (infrequent false positives). Examples are: 3853' -7702.1' and -07702m+3853.3458m.FI...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dms_latlon": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as latitude and longitude (infrequent false positives). Examples are: 385320.7N 770206.000W and W770206N385320.7...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dms_xysec": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as X Y with seconds symbols (infrequent false positives). Examples are: 385320\" -770206.0\" and -0770206.0s+38532...",
-                        "default": null
+                        "default": None
                 },
                 "coord_dms_xysep": {
                         "type": "string",
                         "description": "Specifies whether to search for coordinates stored as degrees minutes seconds formatted as X Y with separators (moderate false positives). Examples are: 8:53:20 -77:2:6.0 and -077/02/06/+38/53/20.76.F...",
-                        "default": null
+                        "default": None
                 },
                 "coord_utm": {
                         "type": "string",
                         "description": "Specifies whether to search for Universal Transverse Mercator (UTM) coordinates (infrequent false positives). Examples are: 18S 323503 4306438 and 18 north 323503.25 4306438.39.FIND_UTM_MAINWORLD\u2014The ...",
-                        "default": null
+                        "default": None
                 },
                 "coord_ups_north": {
                         "type": "string",
                         "description": "Specifies whether to search for Universal Polar Stereographic (UPS) coordinates in the north polar area (infrequent false positives). Examples are: Y 2722399 2000000 and north 2722399 2000000.FIND_UTM...",
-                        "default": null
+                        "default": None
                 },
                 "coord_ups_south": {
                         "type": "string",
                         "description": "Specifies whether to search for Universal Polar Stereographic (UPS) coordinates in the south polar area (infrequent false positives). Examples are: A 2000000 3168892 and south 2000000 3168892.FIND_UTM...",
-                        "default": null
+                        "default": None
                 },
                 "coord_mgrs": {
                         "type": "string",
                         "description": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates (infrequent false positives). Examples are: 18S UJ 13503 06438 and 18SUJ0306.\r\nFIND_MGRS_MAINWORLD\u2014The tool will searc...",
-                        "default": null
+                        "default": None
                 },
                 "coord_mgrs_northpolar": {
                         "type": "string",
                         "description": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates in the north polar area (infrequent false positives). Examples are: Y TG 56814 69009 and YTG5669.FIND_MGRS_NORTHPOLAR\u2014...",
-                        "default": null
+                        "default": None
                 },
                 "coord_mgrs_southpolar": {
                         "type": "string",
                         "description": "Specifies whether to search for Military Grid Reference System (MGRS) coordinates in the south polar area (moderate false positives). Examples are: A TN 56814 30991 and ATN5630.FIND_MGRS_SOUTHPOLAR\u2014Th...",
-                        "default": null
+                        "default": None
                 },
                 "comma_decimal": {
                         "type": "string",
                         "description": "Specifies whether a comma (,) will be recognized as a decimal separator. By default, content is scanned for\r\nspatial coordinates defined by numbers that use a period (.) or a middle dot (\u00b7) as the dec...",
-                        "default": null
+                        "default": None
                 },
                 "coord_use_lonlat": {
                         "type": "string",
                         "description": "When numbers resemble x,y coordinates, both numbers are less than 90, and there are no symbols or notations to indicate which number represents the latitude or longitude, results can be ambiguous. Int...",
-                        "default": null
+                        "default": None
                 },
                 "in_coor_system": {
                         "type": "string",
                         "description": "The coordinate system that will be used to interpret the spatial coordinates defined in the input. GCS-WGS-84 is the default.",
-                        "default": null
+                        "default": None
                 },
                 "in_custom_locations": {
                         "type": "string",
                         "description": "The custom location file (.lxtgaz) that will be used when scanning the input content. A point is created to represent each occurrence of each place name in the custom location file up to the limits es...",
-                        "default": null
+                        "default": None
                 },
                 "fuzzy_match": {
                         "type": "string",
                         "description": "Specifies whether fuzzy matching will be used for searching the custom location file.USE_FUZZY\u2014Fuzzy matching will be used when searching the custom location file.DONT_USE_FUZZY\u2014Exact matching will be...",
-                        "default": null
+                        "default": None
                 },
                 "max_features_extracted": {
                         "type": "string",
                         "description": "The maximum number of features that can be extracted. The tool will stop scanning the input content for locations when the maximum number is reached. When running as a geoprocessing service, the servi...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_first_features": {
                         "type": "string",
                         "description": "The number of features detected and ignored before extracting all other features. This parameter can be used to focus the search on a specific portion of the data.",
-                        "default": null
+                        "default": None
                 },
                 "date_monthname": {
                         "type": "string",
                         "description": "Specifies whether to search for dates in which the month name appears (infrequent false positives). 12 May 2003 and January 15, 1997 are examples.FIND_DATE_MONTHNAME\u2014The tool will search for dates in ...",
-                        "default": null
+                        "default": None
                 },
                 "date_m_d_y": {
                         "type": "string",
                         "description": "Specifies whether to search for dates in which numbers are in the M/D/Y or D/M/Y format (moderate false positives). 5/12/03 and 1-15-1997 are examples.FIND_DATE_M_D_Y\u2014The tool will search for dates in...",
-                        "default": null
+                        "default": None
                 },
                 "date_yyyymmdd": {
                         "type": "string",
                         "description": "Specifies whether to search for dates in which numbers are in the YYYYMMDD format (moderate false positives). 20030512 and 19970115 are examples.FIND_DATE_YYYYMMDD\u2014The tool will search for dates in wh...",
-                        "default": null
+                        "default": None
                 },
                 "date_yymmdd": {
                         "type": "string",
                         "description": "Specifies whether to search for dates in which numbers are in the YYMMDD format (frequent false positives). 030512 and 970115 are examples.FIND_DATE_YYMMDD\u2014The tool will search for dates in which numb...",
-                        "default": null
+                        "default": None
                 },
                 "date_yyjjj": {
                         "type": "string",
                         "description": "Specifies whether to search for dates in which numbers are in the YYJJJ or YYYYJJJ format (frequent false positives). 03132 and 97015 are examples.FIND_DATE_YYJJJ\u2014The tool will search for dates in whi...",
-                        "default": null
+                        "default": None
                 },
                 "max_dates_extracted": {
                         "type": "string",
                         "description": "The maximum number of dates that will be extracted.",
-                        "default": null
+                        "default": None
                 },
                 "ignore_first_dates": {
                         "type": "string",
                         "description": "The number of dates that will be detected and ignored before extracting all other dates.",
-                        "default": null
+                        "default": None
                 },
                 "date_range_begin": {
                         "type": "string",
                         "description": "The earliest acceptable date to extract. Detected dates matching this value or later will be extracted.",
-                        "default": null
+                        "default": None
                 },
                 "date_range_end": {
                         "type": "string",
                         "description": "The latest acceptable date to extract. Detected dates matching this value or earlier will be extracted.",
-                        "default": null
+                        "default": None
                 },
                 "in_custom_attributes": {
                         "type": "string",
                         "description": "The custom attribute file (.lxtca) that will be used to scan the input content. Fields will be created in the output feature class's attribute table for all custom attributes defined in the file. When...",
-                        "default": null
+                        "default": None
                 },
                 "file_link": {
                         "type": "string",
                         "description": "The file path that will be used as the file name in the output data when the Input File parameter (in_file in Python) is transferred to the server. If this parameter is not specified, the path of the ...",
-                        "default": null
+                        "default": None
                 },
                 "file_mod_datetime": {
                         "type": "string",
                         "description": "The UTC date and time that the file was modified will be used as the modified attribute in the output data when the Input File parameter (in_file in Python) is transferred to the server. If this param...",
-                        "default": null
+                        "default": None
                 },
                 "pre_text_length": {
                         "type": "string",
                         "description": "Content is extracted from the input document to provide context for the location that was found. This parameter defines the maximum number of characters that will be extracted preceding the text that ...",
-                        "default": null
+                        "default": None
                 },
                 "post_text_length": {
                         "type": "string",
                         "description": "Content is extracted from the input document to provide context for the location that was found. This parameter defines the maximum number of characters that will be extracted following the text that ...",
-                        "default": null
+                        "default": None
                 },
                 "std_coord_fmt": {
                         "type": "string",
                         "description": "Specifies the coordinate format that will be used to store the coordinate location. A standard representation of the spatial coordinate that defines the point feature is recorded in a field in the att...",
-                        "default": null
+                        "default": None
                 },
                 "req_word_breaks": {
                         "type": "string",
                         "description": "Specifies whether to search for text using word breaks. A word break occurs when words (text) are bounded by whitespace or punctuation characters as in European languages. This setting can produce fre...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1798,7 +1798,7 @@ functions_declarations = {
                 "configuration_keyword": {
                         "type": "string",
                         "description": "The storage parameters (configuration) for a geodatabase. Configuration keywords are set up by your database administrator.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1843,17 +1843,17 @@ functions_declarations = {
                 "tiling_scheme": {
                         "type": "string",
                         "description": "Specifies the tiling scheme.TILED\u2014The spatial reference of the input raster will be maintained and tiles will be generated consistent with the GeoPackage standard. This is the default.ARCGISONLINE_SCH...",
-                        "default": null
+                        "default": None
                 },
                 "tiling_scheme_file": {
                         "type": "string",
                         "description": "A custom tiling scheme file that is required when tiling_scheme is set to FROM_FILE.",
-                        "default": null
+                        "default": None
                 },
                 "area_of_interest": {
                         "type": "string",
                         "description": "An area of interest used to limit the area of the raster to be loaded, rather than the entire dataset.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1881,7 +1881,7 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster being created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn\u2019t been explicitly specified as the ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1905,12 +1905,12 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster being created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn\u2019t been explicitly specified as the ...",
-                        "default": null
+                        "default": None
                 },
                 "cell_assignment_method": {
                         "type": "string",
                         "description": "Specifies whether the maximum or minimum z-value will be used for a cell when more than one z-value is detected at the cell center location when a vertical line is extended from the cell center locati...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1937,22 +1937,22 @@ functions_declarations = {
                 "cell_assignment": {
                         "type": "string",
                         "description": "The method to determine how the cell will be assigned a value when more than one feature falls within a cell.MOST_FREQUENT\u2014If there is more than one feature within the cell, the one with the most comm...",
-                        "default": null
+                        "default": None
                 },
                 "priority_field": {
                         "type": "string",
                         "description": "This field is used when a feature should take preference over another feature with the same attribute.Priority field is only used with the Most frequent cell assignment type option.",
-                        "default": null
+                        "default": None
                 },
                 "cellsize": {
                         "type": "string",
                         "description": "The cell size of the output raster being created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn\u2019t been explicitly specified as the ...",
-                        "default": null
+                        "default": None
                 },
                 "build_rat": {
                         "type": "string",
                         "description": "Specifies whether the output raster will have a raster attribute table.This parameter only applies to integer rasters.BUILD\u2014The output raster will have a raster attribute table. This is the default.DO...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1980,22 +1980,22 @@ functions_declarations = {
                 "cell_assignment": {
                         "type": "string",
                         "description": "The method to determine how the cell will be assigned a value when more than one feature falls within a cell.CELL_CENTER\u2014The polygon that overlaps the center of the cell yields the attribute to assign...",
-                        "default": null
+                        "default": None
                 },
                 "priority_field": {
                         "type": "string",
                         "description": "This field is used to determine which feature should take preference over another feature that falls over a cell. When it is used, the feature with the largest positive priority is always selected for...",
-                        "default": null
+                        "default": None
                 },
                 "cellsize": {
                         "type": "string",
                         "description": "The cell size of the output raster being created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn\u2019t been explicitly specified as the ...",
-                        "default": null
+                        "default": None
                 },
                 "build_rat": {
                         "type": "string",
                         "description": "Specifies whether the output raster will have a raster attribute table.This parameter only applies to integer rasters.BUILD\u2014The output raster will have a raster attribute table. This is the default.DO...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2023,22 +2023,22 @@ functions_declarations = {
                 "cell_assignment": {
                         "type": "string",
                         "description": "The method to determine how the cell will be assigned a value when more than one feature falls within a cell.MAXIMUM_LENGTH\u2014The feature with the longest length that covers the cell will determine the ...",
-                        "default": null
+                        "default": None
                 },
                 "priority_field": {
                         "type": "string",
                         "description": "This field is used to determine which feature should take preference over another feature that falls over a cell. When it is used, the feature with the largest positive priority is always selected for...",
-                        "default": null
+                        "default": None
                 },
                 "cellsize": {
                         "type": "string",
                         "description": "The cell size of the output raster being created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn\u2019t been explicitly specified as the ...",
-                        "default": null
+                        "default": None
                 },
                 "build_rat": {
                         "type": "string",
                         "description": "Specifies whether the output raster will have a raster attribute table.This parameter only applies to integer rasters.BUILD\u2014The output raster will have a raster attribute table. This is the default.DO...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2062,7 +2062,7 @@ functions_declarations = {
                 "raster_format": {
                         "type": "string",
                         "description": "Specifies the format that will be used for the output raster dataset.BIL\u2014The output will be Esri BIL format.BIP\u2014The output will be Esri BIP format.BMP\u2014The output will be Microsoft BMP format.BSQ\u2014The o...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [

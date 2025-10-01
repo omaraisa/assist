@@ -22,7 +22,7 @@ functions_declarations = {
                 "generate_unplaced": {
                         "type": "string",
                         "description": "Specifies whether to create unplaced annotation\r\nfrom unplaced labels.\r\n\r\n\r\nONLY_PLACED\u2014Annotation will only be created\r\nfor features that are currently labeled. This is the\r\ndefault.GENERATE_UNPLACED...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -62,17 +62,17 @@ functions_declarations = {
                 "contour_type_field": {
                         "type": "string",
                         "description": "The field in the input layer attribute table containing a value for the type of contour feature.  An annotation class will be created for each type value.",
-                        "default": null
+                        "default": None
                 },
                 "contour_alignment": {
                         "type": "string",
                         "description": "Specifies how the annotation will be aligned to contour elevations.\r\nThe annotation can be aligned to the contour elevations so that\r\nthe top of the text is always placed uphill or downhill. These opt...",
-                        "default": null
+                        "default": None
                 },
                 "enable_laddering": {
                         "type": "string",
                         "description": "Specifies whether annotation will be placed in ladders. Placing annotation in ladders will place the text so it appears to\r\nstep up and step down the contours in a straight  path.\r\nThese ladders will ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -103,62 +103,62 @@ functions_declarations = {
                 "anno_suffix": {
                         "type": "string",
                         "description": "The suffix that will be added to each new annotation feature class. This suffix will be appended to the name of the source feature class for each new annotation feature class.",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that contains the labels to convert to annotation.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent i...",
-                        "default": null
+                        "default": None
                 },
                 "generate_unplaced": {
                         "type": "string",
                         "description": "Specifies whether unplaced annotation\r\nwill be created from unplaced labels.\r\n\r\n\r\nONLY_PLACED\u2014Annotation will only be created\r\nfor features that are currently labeled. This is the\r\ndefault.GENERATE_UN...",
-                        "default": null
+                        "default": None
                 },
                 "require_symbol_id": {
                         "type": "string",
                         "description": "Specifies whether all\r\ntext symbol properties can be edited.NO_REQUIRE_ID\u2014All text symbol properties can be edited. This is the default.REQUIRE_ID\u2014Only symbol properties that enable\r\nannotation featur...",
-                        "default": null
+                        "default": None
                 },
                 "feature_linked": {
                         "type": "string",
                         "description": "Specifies whether the output annotation feature\r\nclass will be linked to the features in another feature\r\nclass.STANDARD\u2014The output annotation feature class\r\nwill not be linked to the features in anot...",
-                        "default": null
+                        "default": None
                 },
                 "auto_create": {
                         "type": "string",
                         "description": "Specifies whether annotation will be created when new\r\nfeatures are added to the linked feature class and the feature_linked parameter is set to FEATURE_LINKED.AUTO_CREATE\u2014Feature-linked annotation wi...",
-                        "default": null
+                        "default": None
                 },
                 "update_on_shape_change": {
                         "type": "string",
                         "description": "Specifies whether the position of annotation will be updated when the shape of the linked feature is modified and the feature_linked parameter is set to FEATURE_LINKED.SHAPE_UPDATE\u2014The position of the...",
-                        "default": null
+                        "default": None
                 },
                 "output_group_layer": {
                         "type": "string",
                         "description": "The group layer that will contain the generated annotation. You can use the Save To Layer File tool to write the output group layer to a layer file.",
-                        "default": null
+                        "default": None
                 },
                 "which_layers": {
                         "type": "string",
                         "description": "Specifies whether annotation will be converted for all layers in the map or for a single layer. The single layer must be specified.\r\n\r\n\r\nALL_LAYERS\u2014Labels will be converted to annotation for all layer...",
-                        "default": null
+                        "default": None
                 },
                 "single_layer": {
                         "type": "string",
                         "description": "The layer with the annotation that will be converted when the which_layers parameter is set to SINGLE_LAYER. This layer must be in the map.",
-                        "default": null
+                        "default": None
                 },
                 "multiple_feature_classes": {
                         "type": "string",
                         "description": "Specifies whether labels will be converted to individual annotation feature classes or to a single annotation feature class. If converting to a single annotation feature class, the annotation cannot b...",
-                        "default": null
+                        "default": None
                 },
                 "merge_label_classes": {
                         "type": "string",
                         "description": "Specifies whether similar label classes will be merged when the multiple_feature_classes parameter is set to SINGLE_FEATURE_CLASS.MERGE_LABEL_CLASS\u2014Label classes with similar properties will be merged...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -182,37 +182,37 @@ functions_declarations = {
                 "which_layers": {
                         "type": "string",
                         "description": "Specifies whether to convert graphics for all layers in the map or for a single layer. ALL_LAYERS\u2014Labels will be converted to graphics for all layers in the map.\r\n\r\nThis is the default.SINGLE_LAYER\u2014La...",
-                        "default": null
+                        "default": None
                 },
                 "single_layer": {
                         "type": "string",
                         "description": "The layer with the labels to convert when the which_layers parameter is set to SINGLE_LAYER. This layer must be in the map.",
-                        "default": null
+                        "default": None
                 },
                 "graphics_suffix": {
                         "type": "string",
                         "description": "The suffix that will be added to each new graphics layer. This suffix will be appended to the name of the source feature class for each new graphics layer.",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Specifies the extent that contains the labels to convert to graphics.MAXOF\u2014The maximum extent of all inputs will be used.MINOF\u2014The minimum area common to all inputs will be used.DISPLAY\u2014The extent is ...",
-                        "default": null
+                        "default": None
                 },
                 "multiple_graphics_layers": {
                         "type": "string",
                         "description": "Specifies whether labels will be converted to individual graphics layers or to a single graphics layer. SINGLE_GRAPHICS_LAYER\u2014Labels from all layers will be converted to a single graphics layer.GRAPHI...",
-                        "default": null
+                        "default": None
                 },
                 "generate_unplaced": {
                         "type": "string",
                         "description": "Specifies whether graphics\r\nwill be created from unplaced labels.\r\n\r\n\r\nONLY_PLACED\u2014Graphics will only be created\r\nfor features that are currently labeled. This is the\r\ndefault.GENERATE_UNPLACED\u2014Unplac...",
-                        "default": null
+                        "default": None
                 },
                 "output_group_layer": {
                         "type": "string",
                         "description": "The group layer that will contain the generated graphics. You can use the Save To Layer File tool to write the output group layer to a layer file.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -247,12 +247,12 @@ functions_declarations = {
                 "antialiasing": {
                         "type": "string",
                         "description": "Specifies whether polygons that match map service caches with antialiasing enabled will be generated.\r\nA map service cache supertile is 2048 x 2048 pixels with antialiasing or 4096 x 4096\r\npixels with...",
-                        "default": null
+                        "default": None
                 },
                 "levelslevel": {
                         "type": "string",
                         "description": "The scale levels at which polygons will be created.  To create polygons for all scale levels included in a tiling scheme, leave this parameter blank. You can create polygons for some or all of the sca...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -290,72 +290,72 @@ functions_declarations = {
                 "reference_scale_value": {
                         "type": "string",
                         "description": "The scale value that will be used as a reference for the annotation. This is the scale on which all symbol and text sizes in the annotation will be based.",
-                        "default": null
+                        "default": None
                 },
                 "reference_scale_field": {
                         "type": "string",
                         "description": "The field in the polygon index layer that will determine the reference scale of the annotation. This is the scale on which all symbol and text sizes in the annotation will be based.",
-                        "default": null
+                        "default": None
                 },
                 "tile_id_field": {
                         "type": "string",
                         "description": "A field in the polygon index layer that uniquely identifies the tiled area. These values will populate the TileID field in the annotation feature class attribute table.",
-                        "default": null
+                        "default": None
                 },
                 "coordinate_sys_field": {
                         "type": "string",
                         "description": "A field in the polygon index layer that contains the coordinate system information for each tile. Due to the length required for a field to store coordinate system information, a polygon index layer t...",
-                        "default": null
+                        "default": None
                 },
                 "map_rotation_field": {
                         "type": "string",
                         "description": "A field in the polygon index layer that contains the angle by which the map will be rotated.",
-                        "default": null
+                        "default": None
                 },
                 "feature_linked": {
                         "type": "string",
                         "description": "Specifies whether the output annotation feature\r\nclass will be linked to the features in another feature\r\nclass.STANDARD\u2014 The output annotation feature class will not be linked to the features in anot...",
-                        "default": null
+                        "default": None
                 },
                 "generate_unplaced_annotation": {
                         "type": "string",
                         "description": "Specifies whether unplaced annotation\r\nwill be created from unplaced labels.NOT_GENERATE_UNPLACED_ANNOTATION\u2014Annotation will only be created for features that are currently labeled. This is the defaul...",
-                        "default": null
+                        "default": None
                 },
                 "which_layers": {
                         "type": "string",
                         "description": "Specifies whether annotation will be converted for all layers in the map or for a single layer. The single layer must be specified.\r\n\r\n\r\nALL_LAYERS\u2014Labels will be converted to annotation for all layer...",
-                        "default": null
+                        "default": None
                 },
                 "single_layer": {
                         "type": "string",
                         "description": "The layer with the annotation that will be converted when the which_layers parameter is set to SINGLE_LAYER. This layer must be in the map.",
-                        "default": null
+                        "default": None
                 },
                 "require_symbol_id": {
                         "type": "string",
                         "description": "Specifies whether all\r\ntext symbol properties can be edited.NO_REQUIRE_ID\u2014All text symbol properties can be edited. This is the default.REQUIRE_ID\u2014Only symbol properties that enable\r\nannotation featur...",
-                        "default": null
+                        "default": None
                 },
                 "auto_create": {
                         "type": "string",
                         "description": "Specifies whether annotation will be created when new\r\nfeatures are added to the linked feature class if the feature_linked parameter is set to FEATURE_LINKED.AUTO_CREATE\u2014Feature-linked annotation wil...",
-                        "default": null
+                        "default": None
                 },
                 "update_on_shape_change": {
                         "type": "string",
                         "description": "Specifies whether the position of annotation will be updated when the shape of the linked feature is modified if the feature_linked parameter is set to FEATURE_LINKED.SHAPE_UPDATE\u2014The position of the ...",
-                        "default": null
+                        "default": None
                 },
                 "multiple_feature_classes": {
                         "type": "string",
                         "description": "Specifies whether labels will be converted to individual annotation feature classes or to a single annotation feature class. If converting to a single annotation feature class, the annotation cannot b...",
-                        "default": null
+                        "default": None
                 },
                 "merge_label_classes": {
                         "type": "string",
                         "description": "Specifies whether similar label classes will be merged if the multiple_feature_classes parameter is set to SINGLE_FEATURE_CLASS.MERGE_LABEL_CLASS\u2014Label classes with similar properties will be merged w...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -403,7 +403,7 @@ functions_declarations = {
                 "method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to transform the input and create the cartogram.FLOW-BASED\u2014An evolution of the diffusion method that is often faster will be used, which may increase distortion....",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -431,7 +431,7 @@ functions_declarations = {
                 "marker_orientation": {
                         "type": "string",
                         "description": "Specifies how the marker symbol layer will be oriented relative to the stroke or fill symbol layer's edge.PERPENDICULAR\u2014Marker symbol layers will be aligned perpendicularly to the stroke or fill edge....",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -469,12 +469,12 @@ functions_declarations = {
                 "cap_type": {
                         "type": "string",
                         "description": "Specifies how the ends of stroke symbol layers will be drawn. The default cap type of strokes is round; the symbol is terminated with a semicircle of radius equal to stroke width centered at the line ...",
-                        "default": null
+                        "default": None
                 },
                 "dangle_option": {
                         "type": "string",
                         "description": "Specifies how line caps will be calculated for adjoining line features that share an endpoint but are drawn with different symbology. CASED_LINE_DANGLE\u2014The cap style will be modified for dangling line...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -496,7 +496,7 @@ functions_declarations = {
                 "rotation_method": {
                         "type": "string",
                         "description": "Specifies the method and origin point of rotation that will be used.. \r\nGEOGRAPHIC\u2014The angle will be calculated clockwise with 0 at the top (north).ARITHMETIC\u2014The angle will be calculated counterclock...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -532,47 +532,47 @@ functions_declarations = {
                 "create_multipoints": {
                         "type": "string",
                         "description": "Specifies whether output point features will be multipoint.\r\nCREATE_MULTIPOINTS\u2014A multipoint feature will be created for the markers in each input polygon. This is the default.CREATE_POINTS\u2014A point fe...",
-                        "default": null
+                        "default": None
                 },
                 "boundary_option": {
                         "type": "string",
                         "description": "Specifies whether output points will be created for input markers that cross polygon boundaries.MAY_CROSS_BOUNDARY\u2014Output points will be created for input markers that cross polygon boundaries. This i...",
-                        "default": null
+                        "default": None
                 },
                 "boundary_distance": {
                         "type": "string",
                         "description": "The minimum distance between the output point symbols and the polygon boundaries. This parameter is applied only when the boundary_option parameter is set to FIXED_DISTANCE. The default value is 0.",
-                        "default": null
+                        "default": None
                 },
                 "boundary_distance_field": {
                         "type": "string",
                         "description": "A numeric field from the input polygons that will be used to determine the boundary distance .This parameter is applied only when the boundary_option parameter is set to VALUE_FROM_FIELD.",
-                        "default": null
+                        "default": None
                 },
                 "boundary_distance_unit": {
                         "type": "string",
                         "description": "Specifies the linear unit that will be used for boundary distance values.Kilometers\u2014The unit will be kilometers.Meters\u2014The unit will be meters.Decimeters\u2014The unit will be decimeters.Centimeters\u2014The un...",
-                        "default": null
+                        "default": None
                 },
                 "in_barriersbarrier_layer_barrier_distance_barrier_distance_field_barrier_distance_unit": {
                         "type": "string",
                         "description": "The layers containing points, lines, or polygon features that are conflict barriers for input markers. Markers that conflict with barriers will not be created. The symbology of the barrier layers will...",
-                        "default": null
+                        "default": None
                 },
                 "keep_at_least_one_marker": {
                         "type": "string",
                         "description": "Specifies whether a single marker will be created for input polygons when all markers conflict with boundaries or barriers.\r\nKEEP_AT_LEAST_ONE_MARKER\u2014One marker will be created for input polygons when...",
-                        "default": null
+                        "default": None
                 },
                 "displacement_method": {
                         "type": "string",
                         "description": "Specifies the displacement method that will be used to move markers that are too close to each other. This parameter is applied only when markers are positioned randomly inside the polygons.\r\nDO_NOT_D...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_marker_distance": {
                         "type": "string",
                         "description": "The minimum distance between individual markers. This parameter is applied only when markers are positioned randomly inside the polygons. The default value is 0.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -611,22 +611,22 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression that will be used to select a subset of features from the in_above_features parameter valueUse quotation marks for field names, for example, \"MY_FIELD\".\r\n\r\n\r\n\r\nSee SQL reference for ...",
-                        "default": null
+                        "default": None
                 },
                 "out_decoration_feature_class": {
                         "type": "string",
                         "description": "The output line feature class that will be created to store parapet features.",
-                        "default": null
+                        "default": None
                 },
                 "wing_type": {
                         "type": "string",
                         "description": "Specifies the wing style that will be used for the parapet features.ANGLED\u2014The wing tick of the parapet will be angled between the in_above_features parameter value and the in_below_features parameter...",
-                        "default": null
+                        "default": None
                 },
                 "wing_tick_length": {
                         "type": "string",
                         "description": "The length of the parapet wings in page units. The length must be greater than or equal to zero; the default length is 1. Choose a page unit (points, millimeters, and so on) for the length; the defaul...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -669,22 +669,22 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "An SQL expression used to select a subset of features from the in_above_features parameter value.Use quotation marks for field names, for example, \"MY_FIELD\".\r\n\r\n\r\n\r\nSee SQL reference for query expres...",
-                        "default": null
+                        "default": None
                 },
                 "out_decoration_feature_class": {
                         "type": "string",
                         "description": "The output line feature class that will be created to store parapet features.",
-                        "default": null
+                        "default": None
                 },
                 "wing_type": {
                         "type": "string",
                         "description": "Specifies the wing style that will be used for the parapet features.ANGLED\u2014The wing tick of the parapet will be angled between the in_above_features parameter value and the in_below_features parameter...",
-                        "default": null
+                        "default": None
                 },
                 "wing_tick_length": {
                         "type": "string",
                         "description": "The length of the parapet wings in page units. The length must be greater than or equal to zero; the default length is 1. Choose a page unit (points, millimeters, and so on) for the length; the defaul...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -711,7 +711,7 @@ functions_declarations = {
                 "dispersal_pattern": {
                         "type": "string",
                         "description": "Specifies the pattern that will be used to place the dispersed point symbols. A group of point symbols will have a center of mass derived from the locations of all points in the group. The center of m...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -738,42 +738,42 @@ functions_declarations = {
                 "output_type": {
                         "type": "string",
                         "description": "Specifies whether polygon triangles or tick lines  will be created to represent the slope.POLYGON_TRIANGLES\u2014Multipart polygon features will be created in which a triangular polygon is created for each...",
-                        "default": null
+                        "default": None
                 },
                 "fully_connected": {
                         "type": "string",
                         "description": "Specifies whether the upper and lower lines in the input data form fully connected areas.  If the upper and lower lines are not fully connected, choose NOT_CONNECTED to create hachures inside areas th...",
-                        "default": null
+                        "default": None
                 },
                 "search_distance": {
                         "type": "string",
                         "description": "The distance used when deriving connections between the upper and lower features. When the extremities for the upper and lower feature are within this distance, the area between the features is used f...",
-                        "default": null
+                        "default": None
                 },
                 "interval": {
                         "type": "string",
                         "description": "The distance between the hachure ticks or triangles within the slope area. The default value is 10 meters.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_length": {
                         "type": "string",
                         "description": "The length a hachure tick or triangle must be to be created. Hachures that are shorter than this length will not  be created. The default value is 0 meters.",
-                        "default": null
+                        "default": None
                 },
                 "alternate_hachures": {
                         "type": "string",
                         "description": "Specifies whether the length of every other hachure triangle or tick will differ.UNIFORM_HACHURES\u2014All hachures will be of uniform  length, which is the distance between the upper and lower slope lines...",
-                        "default": null
+                        "default": None
                 },
                 "perpendicular": {
                         "type": "string",
                         "description": "Specifies whether the hachure ticks or triangles will be perpendicular to the upper slope line.NOT_PERPENDICULAR\u2014 Hachures will be oriented to obtain even spacing. This is the default.PERPENDICULAR\u2014Ha...",
-                        "default": null
+                        "default": None
                 },
                 "polygon_base_width": {
                         "type": "string",
                         "description": "The width of the base of triangular polygon hachures. This parameter is enabled only when the  output_type parameter is set to polygon_triangles. The default value is 5 meters.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -793,7 +793,7 @@ functions_declarations = {
                 "in_features": {
                         "type": "string",
                         "description": "The line or polygon feature layer with features coincident to the input features.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -860,32 +860,32 @@ functions_declarations = {
                 "minimum_area": {
                         "type": "string",
                         "description": "The minimum area for an aggregated polygon to be retained. The default value is zero, that is, to keep all polygons. You can specify a preferred unit; the default is the feature unit.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_hole_size": {
                         "type": "string",
                         "description": "The minimum size of a polygon hole to be retained. The default value is zero, that is, to keep all polygon holes. You can specify a preferred unit; the default is the feature unit.",
-                        "default": null
+                        "default": None
                 },
                 "orthogonality_option": {
                         "type": "string",
                         "description": "Specifies the characteristic of the output features when constructing the aggregated boundaries.NON_ORTHOGONAL\u2014Organically shaped output features will be created. This is suitable for natural features...",
-                        "default": null
+                        "default": None
                 },
                 "barrier_features": {
                         "type": "string",
                         "description": "The layers containing the line or polygon features that are aggregation barriers for input features. Features will not be aggregated across barrier features. Barrier features that are in geometric con...",
-                        "default": null
+                        "default": None
                 },
                 "out_table": {
                         "type": "string",
                         "description": "A one-to-many relationship table that links the aggregated polygons to their source polygon features. This table contains two fields, OUTPUT_FID and INPUT_FID, that store the aggregated feature IDs an...",
-                        "default": null
+                        "default": None
                 },
                 "aggregate_field": {
                         "type": "string",
                         "description": "The field that contains attributes for aggregation. Features must share the same attribute value to be considered for aggregation. For example, use a building classification field as the aggregate fie...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -913,7 +913,7 @@ functions_declarations = {
                 "minimum_width": {
                         "type": "string",
                         "description": "The minimum width of the dual-line features that will be used to derive a centerline. The minimum width must be greater than or equal to zero, and it must be less than the maximum width. The default v...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -937,32 +937,32 @@ functions_declarations = {
                 "merge_adjacent_input_polygons": {
                         "type": "string",
                         "description": "Specifies whether adjacent input polygons will be merged before calculating the centerlines.\r\n\r\n\r\nMERGE_ADJACENT\u2014Input hydro polygons will be merged before calculating the centerlines. This is the\r\nde...",
-                        "default": null
+                        "default": None
                 },
                 "connecting_features": {
                         "type": "string",
                         "description": "Input hydro line features that connect to the input hydro polygons to be collapsed. Line features will be created to maintain these connections.",
-                        "default": null
+                        "default": None
                 },
                 "collapse_width": {
                         "type": "string",
                         "description": "The threshold width of an input hydro polygon to be considered for collapse. All polygons below the specified width will be collapsed. The default value is 0, which will collapse all features.",
-                        "default": null
+                        "default": None
                 },
                 "collapse_width_tolerance": {
                         "type": "string",
                         "description": "A percentage tolerance within which features will be analyzed and the surrounding context will be considered when determining whether to collapse a feature. This is to minimize oscillations within the...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_length": {
                         "type": "string",
                         "description": "The minimum length required for a polygon to be retained in the output polygon  feature class. The minimum length is based on the length of the centerline created for the polygon. If the centerline of...",
-                        "default": null
+                        "default": None
                 },
                 "out_poly_feature_class": {
                         "type": "string",
                         "description": "The polygon feature class containing the portions of the input hydro polygons  that are not collapsed. This parameter is applied only when the collapse_width parameter value is specified.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -989,7 +989,7 @@ functions_declarations = {
                 "locking_field": {
                         "type": "string",
                         "description": "The field that contains locking information for the features. The data type must be short or long integer. A value of 1 indicates that a feature will not be collapsed.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1017,7 +1017,7 @@ functions_declarations = {
                 "partition_method": {
                         "type": "string",
                         "description": "Specifies whether the feature_count parameter references the ideal number of features or the ideal number of vertices in each output polygon. \r\nFEATURES\u2014Partitioning  considers the number and density ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1037,12 +1037,12 @@ functions_declarations = {
                 "identifier_field": {
                         "type": "string",
                         "description": "A  field in the input feature classes that will hold a status code indicating whether the input feature is part of the resulting built-up area .  This field must be either short or long integer type a...",
-                        "default": null
+                        "default": None
                 },
                 "edge_features": {
                         "type": "string",
                         "description": "The layers that will be used to define the edges of the built-up area polygons. Typically, these are roads, but other common examples are rivers, coastlines, and administrative areas. Built-up area po...",
-                        "default": null
+                        "default": None
                 },
                 "grouping_distance": {
                         "type": "string",
@@ -1059,7 +1059,7 @@ functions_declarations = {
                 "minimum_building_count": {
                         "type": "string",
                         "description": "The minimum number of buildings that must be collectively considered for representation by an output built-up area polygon. The default value is 4. The minimum building count must be greater than or e...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1092,17 +1092,17 @@ functions_declarations = {
                 "out_displacement_features": {
                         "type": "string",
                         "description": "The output polygon features containing the degree and direction of road displacement.",
-                        "default": null
+                        "default": None
                 },
                 "character_field": {
                         "type": "string",
                         "description": "A short or long integer field that indicate the character of road segments, independent of  their road classification. The tool uses these values to refine the assessment of  candidate feature pairs f...",
-                        "default": null
+                        "default": None
                 },
                 "out_table": {
                         "type": "string",
                         "description": "A many-to-many relationship table that links the merged  road features to their source features. This table contains two fields, OUTPUT_FID and INPUT_FID, which store the merged feature IDs and their ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1131,22 +1131,22 @@ functions_declarations = {
                 "minimum_area": {
                         "type": "string",
                         "description": "The minimum area for a simplified building to be retained in feature units. The default value is zero, that is, to keep all buildings. You can specify a preferred unit; the default is the feature unit...",
-                        "default": null
+                        "default": None
                 },
                 "conflict_option": {
                         "type": "string",
                         "description": "Specifies whether spatial conflicts\u2014that is, overlapping or touching among buildings\u2014will be identified. A SimBldFlag field is added to the output to store conflict flags. A value of 0 means no confli...",
-                        "default": null
+                        "default": None
                 },
                 "in_barriers": {
                         "type": "string",
                         "description": "The input layers containing features to act as barriers for simplification. Resulting simplified buildings will not touch or cross barrier features. For example, when simplifying buildings, the result...",
-                        "default": null
+                        "default": None
                 },
                 "collapsed_point_option": {
                         "type": "string",
                         "description": "Specifies whether an output point feature class will be created to store the centers of any buildings that are removed because they are smaller than the minimum_area parameter value. The point output ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1178,27 +1178,27 @@ functions_declarations = {
                 "error_resolving_option": {
                         "type": "string",
                         "description": "Legacy:This is a legacy parameter that is no longer used. It was formerly used to indicate how topological errors, possibly introduced during processing, were resolved. This parameter is still include...",
-                        "default": null
+                        "default": None
                 },
                 "collapsed_point_option": {
                         "type": "string",
                         "description": "Specifies whether an output point feature class will be created to store the endpoints of lines that are smaller than the spatial tolerance. The point output is derived; it will use the same name and ...",
-                        "default": null
+                        "default": None
                 },
                 "error_checking_option": {
                         "type": "string",
                         "description": "Note:This is a legacy parameter that is no longer used. It was formerly used to indicate how topological errors, possibly introduced during processing, were handled. This parameter is still included i...",
-                        "default": null
+                        "default": None
                 },
                 "in_barriers": {
                         "type": "string",
                         "description": "Inputs containing features to act as barriers for simplification. Resulting simplified lines will not touch or cross barrier features. For example, when simplifying contour lines, spot height features...",
-                        "default": null
+                        "default": None
                 },
                 "error_option": {
                         "type": "string",
                         "description": "Specifies how topological errors will be handled. Topological errors may be introduced in the simplification process and can include lines crossing or overlapping lines.NO_CHECK\u2014Topological errors wil...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1231,22 +1231,22 @@ functions_declarations = {
                 "minimum_area": {
                         "type": "string",
                         "description": "The minimum area for a polygon to be retained. The default value is zero, that is, to keep all polygons. You can choose a preferred unit for the specified value; otherwise, the units of the input will...",
-                        "default": null
+                        "default": None
                 },
                 "error_option": {
                         "type": "string",
                         "description": "Specifies how topological errors will be handled. Topological errors may be introduced in the simplification process and can include lines crossing or overlapping lines.NO_CHECK\u2014Topological errors wil...",
-                        "default": null
+                        "default": None
                 },
                 "collapsed_point_option": {
                         "type": "string",
                         "description": "Specifies whether an output point feature class will be created to store the centers of polygons that are removed because they are smaller than the minimum_area parameter value. The point output is de...",
-                        "default": null
+                        "default": None
                 },
                 "in_barriers": {
                         "type": "string",
                         "description": "The inputs containing features to act as barriers for simplification. Resulting simplified polygons will not touch or cross barrier features. For example, when simplifying forested areas, the resultin...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1275,17 +1275,17 @@ functions_declarations = {
                 "shared_edge_features": {
                         "type": "string",
                         "description": "Line or polygon features that will be simplified along edges shared with input features. Other edges are not simplified.",
-                        "default": null
+                        "default": None
                 },
                 "minimum_area": {
                         "type": "string",
                         "description": "The minimum area for a polygon to be retained. The default value is zero, which will retain all polygons. A unit can be specified; if no unit is specified, the unit of the input will be used. This par...",
-                        "default": null
+                        "default": None
                 },
                 "in_barriers": {
                         "type": "string",
                         "description": "Point, line, or polygon features that act as barriers for the simplification. The simplified features will not touch or cross barrier features.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1317,17 +1317,17 @@ functions_declarations = {
                 "endpoint_option": {
                         "type": "string",
                         "description": "This is a legacy parameter that is no\r\nlonger used. It was formerly used to specify whether endpoints of closed lines would be preserved. This\r\nparameter is still included in the tool's syntax for com...",
-                        "default": null
+                        "default": None
                 },
                 "error_option": {
                         "type": "string",
                         "description": "Specifies how topological errors (possibly introduced in the process, such as line crossing or overlapping) will be handled.NO_CHECK\u2014Topological errors will not be identified. This is the default. FLA...",
-                        "default": null
+                        "default": None
                 },
                 "in_barriers": {
                         "type": "string",
                         "description": "Inputs containing features that will act as barriers for smoothing. The resulting smoothed lines will not touch or cross barrier features. For example, when smoothing contour lines, spot height featur...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1360,17 +1360,17 @@ functions_declarations = {
                 "endpoint_option": {
                         "type": "string",
                         "description": "This is a legacy parameter that is no\r\nlonger used. It was formerly used to specify whether the endpoint of an isolated polygon ring would be preserved. This\r\nparameter is still included in the tool's...",
-                        "default": null
+                        "default": None
                 },
                 "error_option": {
                         "type": "string",
                         "description": "Specifies how topological errors (possibly introduced in the process, such as line crossing or overlapping) will be handled.NO_CHECK\u2014Topological errors will not be identified. This is the default. FLA...",
-                        "default": null
+                        "default": None
                 },
                 "in_barriers": {
                         "type": "string",
                         "description": "Inputs containing features that will act as barriers for smoothing. The resulting smoothed polygons will not touch or cross barrier features.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1399,12 +1399,12 @@ functions_declarations = {
                 "shared_edge_features": {
                         "type": "string",
                         "description": "Line or polygon features that will be smoothed along edges shared with input features. Other edges are not smoothed.",
-                        "default": null
+                        "default": None
                 },
                 "in_barriers": {
                         "type": "string",
                         "description": "Point, line, or polygon features that act as barriers for smoothing. The smoothed features will not touch or cross barrier features.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1460,12 +1460,12 @@ functions_declarations = {
                 "conflict_distance": {
                         "type": "string",
                         "description": "The area where input and conflict symbology is closer than a certain distance. Temporary buffers one-half the size of the conflict distance value\r\nare created around symbols in both the\r\ninput and con...",
-                        "default": null
+                        "default": None
                 },
                 "line_connection_allowance": {
                         "type": "string",
                         "description": "The radius of a circle, centered where lines join, within which graphic overlaps won't be detected. This parameter is only considered when the input layer and the conflict layer are identical. Zero al...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1512,7 +1512,7 @@ functions_declarations = {
                 "out_displacement_features": {
                         "type": "string",
                         "description": "The output polygon features containing the degree and direction of road displacement that will be used by the Propagate Displacement tool to preserve spatial relationships.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1543,17 +1543,17 @@ functions_declarations = {
                 "out_displacement_features": {
                         "type": "string",
                         "description": "The output polygon features containing the degree and direction of road displacement.",
-                        "default": null
+                        "default": None
                 },
                 "character_field": {
                         "type": "string",
                         "description": "A short or long integer field that indicate the character of road segments, independent of  their road classification. The tool uses these values to refine the assessment of  candidate feature pairs f...",
-                        "default": null
+                        "default": None
                 },
                 "out_table": {
                         "type": "string",
                         "description": "A many-to-many relationship table that links the merged  road features to their source features. This table contains two fields, OUTPUT_FID and INPUT_FID, which store the merged feature IDs and their ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1590,7 +1590,7 @@ functions_declarations = {
                 "hierarchy_field": {
                         "type": "string",
                         "description": "The short or long integer field that contains hierarchical ranking of feature importance in which 1 is very important and larger integers reflect decreasing importance. A value of 0 causes the buildin...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1634,7 +1634,7 @@ functions_declarations = {
                 "standard_offset": {
                         "type": "string",
                         "description": "The percentage of the height of the input feature used to offset the standard parallels from the center latitude of the input feature. The default is 25 percent or 0.25. Negative values and values gre...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1657,12 +1657,12 @@ functions_declarations = {
                 "rotation_method": {
                         "type": "string",
                         "description": "Specifies the method used to calculate the rotation value.GEOGRAPHIC\u2014The angle is calculated clockwise with 0 at the top. This is the default.ARITHMETIC\u2014The angle is calculated counterclockwise with 0...",
-                        "default": null
+                        "default": None
                 },
                 "coordinate_sys_field": {
                         "type": "string",
                         "description": "The field containing a projection engine string for a projected coordinate system to be used for angle calculation. The angle calculation for each feature will be based on the projected coordinate sys...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1699,57 +1699,57 @@ functions_declarations = {
                 "in_features": {
                         "type": "string",
                         "description": "The input features to be used to define the extent of the polygon grid that will be created.",
-                        "default": null
+                        "default": None
                 },
                 "intersect_feature": {
                         "type": "string",
                         "description": "Limits the output grid feature class to areas that intersect input feature layers or datasets. The intersection of input features will be used to create index features.INTERSECTFEATURE\u2014Limits the outp...",
-                        "default": null
+                        "default": None
                 },
                 "use_page_unit": {
                         "type": "string",
                         "description": "Specifies whether index polygon size input is in page units.USEPAGEUNIT\u2014Index polygon height and width are calculated in page units.NO_USEPAGEUNIT\u2014Index polygon height and width are calculated in map ...",
-                        "default": null
+                        "default": None
                 },
                 "scale": {
                         "type": "string",
                         "description": "The map scale. The scale must be specified if the index polygon height and width are to be calculated in page units. If the tool is used outside an active ArcGIS Pro session, the default scale value i...",
-                        "default": null
+                        "default": None
                 },
                 "polygon_width": {
                         "type": "string",
                         "description": "The width of the index polygon specified in either map or page units. If page units are used, the default value is 1 inch. If map units are used, the default value is 1 degree.",
-                        "default": null
+                        "default": None
                 },
                 "polygon_height": {
                         "type": "string",
                         "description": "The height of the index polygon specified in either map or page units. If page units are used, the default value is 1 inch. If map units are used, the default value is 1 degree.",
-                        "default": null
+                        "default": None
                 },
                 "origin_coord": {
                         "type": "string",
                         "description": "The coordinate value for the lower left origin of the output grid feature class. If input features are specified, the default value is determined by the extent of the union of extents for these featur...",
-                        "default": null
+                        "default": None
                 },
                 "number_rows": {
                         "type": "string",
                         "description": "The number of rows to create in the y direction from the point of origin. The default is 10.",
-                        "default": null
+                        "default": None
                 },
                 "number_columns": {
                         "type": "string",
                         "description": "The number of columns to create in the x direction from the point of origin. The default is 10.",
-                        "default": null
+                        "default": None
                 },
                 "starting_page_number": {
                         "type": "string",
                         "description": "Each grid index feature is assigned a sequential page number starting with a specified starting page number. The default is 1.",
-                        "default": null
+                        "default": None
                 },
                 "label_from_origin": {
                         "type": "string",
                         "description": "Specifies where page numbers (labels) begin.LABELFROMORIGIN\u2014Page numbers (labels) begin with the polygon feature in the lower left corner of the output grid.NO_LABELFROMORIGIN\u2014Page numbers (labels) be...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1771,37 +1771,37 @@ functions_declarations = {
                 "use_page_unit": {
                         "type": "string",
                         "description": "Specifies whether index feature size input is in page units.USEPAGEUNIT\u2014Index polygon height and width are calculated in page units.NO_USEPAGEUNIT\u2014Index polygon height and width are calculated in map ...",
-                        "default": null
+                        "default": None
                 },
                 "scale": {
                         "type": "string",
                         "description": "Map scale must be specified if index feature lengths (along the line and perpendicular to the line) are to be calculated in page units. If  you're using ArcGIS Pro, the default value will be the scale...",
-                        "default": null
+                        "default": None
                 },
                 "length_along_line": {
                         "type": "string",
                         "description": "The length of the polygon index feature along the input line feature specified in either map or page units. The default value is determined by the spatial reference of the input line feature or featur...",
-                        "default": null
+                        "default": None
                 },
                 "page_orientation": {
                         "type": "string",
                         "description": "Specifies the orientation of the input line features on the layout page.VERTICAL\u2014The direction of the strip map series on the page is top to bottom.HORIZONTAL\u2014The direction of the strip map series on ...",
-                        "default": null
+                        "default": None
                 },
                 "overlap_percentage": {
                         "type": "string",
                         "description": "The approximate percentage of geographic overlap between an individual map page and its adjoining pages in the series. The default is 10.",
-                        "default": null
+                        "default": None
                 },
                 "starting_page_number": {
                         "type": "string",
                         "description": "The page number of the starting page. Each grid index feature is assigned a sequential page number beginning with the specified starting page number. The default is 1.",
-                        "default": null
+                        "default": None
                 },
                 "direction_type": {
                         "type": "string",
                         "description": "Specifies the initial direction of the strip maps.WE_NS\u2014If the line's directional trend is West to East, the starting point will be at the westernmost end of the line, or if the line's direction trend...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1824,7 +1824,7 @@ functions_declarations = {
                 "standard_offset": {
                         "type": "string",
                         "description": "The percentage of the height of the input feature used to offset the standard parallels from the center latitude of the input feature. The default is 25 percent or 0.25. Negative values and values gre...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1859,7 +1859,7 @@ functions_declarations = {
                 "attributes": {
                         "type": "string",
                         "description": "Specifies the attributes that will be transferred from the input features to the output features.ONLY_FID\u2014Only the FID field from the input features will be transferred to the output features. This is...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1905,12 +1905,12 @@ functions_declarations = {
                 "attributes": {
                         "type": "string",
                         "description": "Specifies the attributes that will be transferred from the input features to the output features.ONLY_FID\u2014Only the FID field from the input features will be transferred to the output features. This is...",
-                        "default": null
+                        "default": None
                 },
                 "preserve_small_sized_features": {
                         "type": "string",
                         "description": "Specifies whether small mask features will be included in the output feature class.DO_NOT_PRESERVE_SMALL_SIZED_FEATURES\u2014Small mask features will not be included in the output feature class. This is th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1962,7 +1962,7 @@ functions_declarations = {
                 "attributes": {
                         "type": "string",
                         "description": "Specifies the attributes that will be transferred from the input features to the output features.ONLY_FID\u2014Only the FID field from the input features will be transferred to the output features. This is...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [

@@ -36,12 +36,12 @@ functions_declarations = {
                 "in_false_raster_or_constant": {
                         "type": "string",
                         "description": "The input whose values will be used as the output cell values if the condition is false.It can be an integer or a floating-point raster, or a constant value.",
-                        "default": null
+                        "default": None
                 },
                 "where_clause": {
                         "type": "string",
                         "description": "A logical expression that determines which of the input cells are to be true or false.\r\n\r\nThe expression follows the general form of an SQL expression. An example of a where_clause is \"VALUE &gt; 100\"...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -64,7 +64,7 @@ functions_declarations = {
                 "process_as_multiband": {
                         "type": "string",
                         "description": "Specifies how the input multiband raster bands will be processed.SINGLE_BAND\u2014Each band from a multiband raster input will be processed separately as a single band raster. This is the default.MULTI_BAN...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -72,8 +72,8 @@ functions_declarations = {
                 "in_rasters_or_constantsin_raster_or_constant"
         ]
 },
-    "set_null": {
-        "name": "set_null",
+    "set_None": {
+        "name": "set_None",
         "description": "Set Null sets identified cell locations to NoData based on a specified criteria. It returns NoData if a conditional evaluation is true, and returns the value specified by another raster if it is false. Learn more about setting cell values to NoData with Set Null",
         "parameters": {
                 "in_conditional_raster": {
@@ -87,7 +87,7 @@ functions_declarations = {
                 "where_clause": {
                         "type": "string",
                         "description": "A logical expression that determines which of the input cells are to be true or false.\r\nThe expression follows the general form of an SQL expression. An example of a where_clause is \"VALUE &gt; 100\".",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -118,37 +118,37 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "search_radius_numerator": {
                         "type": "string",
                         "description": "The search radius within which density will be calculated. Units are based on the linear unit of the projection of the output spatial reference.For example, if the units are meters\u2014to include all feat...",
-                        "default": null
+                        "default": None
                 },
                 "search_radius_denominator": {
                         "type": "string",
                         "description": "The search radius within which density will be calculated. Units are based on the linear unit of the projection of the output spatial reference.For example, if the units are meters\u2014to include all feat...",
-                        "default": null
+                        "default": None
                 },
                 "out_cell_values": {
                         "type": "string",
                         "description": "Specifies what the values in the output raster represent.DENSITIES\u2014The output values represent the calculated density value per unit area for each cell. This is the default.EXPECTED_COUNTS\u2014The output ...",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies whether the flat earth (planar) or the shortest path on a spheroid (geodesic) distance will be used.PLANAR\u2014The planar distance between features will be used. This is the default.GEODESIC\u2014The...",
-                        "default": null
+                        "default": None
                 },
                 "in_barriers_numerator": {
                         "type": "string",
                         "description": "The dataset that defines the barriers. The barriers can be a feature layer of polyline or polygon features.",
-                        "default": null
+                        "default": None
                 },
                 "in_barriers_denominator": {
                         "type": "string",
                         "description": "The dataset that defines the barriers.The barriers can be a feature layer of polyline or polygon features.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -173,32 +173,32 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "search_radius": {
                         "type": "string",
                         "description": "The search radius within which density will be calculated. Units are based on the linear unit of the projection of the output spatial reference.For example, if the units are meters\u2014to include all feat...",
-                        "default": null
+                        "default": None
                 },
                 "area_unit_scale_factor": {
                         "type": "string",
                         "description": "Specifies the area units that will be used for the output density values.A default unit is determined based on the linear unit of the output spatial reference. You can change this to the appropriate u...",
-                        "default": null
+                        "default": None
                 },
                 "out_cell_values": {
                         "type": "string",
                         "description": "Specifies what the values in the output raster represent.DENSITIES\u2014The output values represent the calculated density value per unit area for each cell. This is the default.EXPECTED_COUNTS\u2014The output ...",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies whether the flat earth (planar) or the shortest path on a spheroid (geodesic) method will be used.PLANAR\u2014The planar distance between features will be used. This is the default.GEODESIC\u2014The g...",
-                        "default": null
+                        "default": None
                 },
                 "in_barriers": {
                         "type": "string",
                         "description": "The dataset that defines the barriers.The barriers can be a feature layer of polyline or polygon features.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -221,17 +221,17 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "search_radius": {
                         "type": "string",
                         "description": "The search radius within which density will be calculated. Units are based on the linear unit of the projection of the output spatial reference.For example, if the units are meters\u2014to include all feat...",
-                        "default": null
+                        "default": None
                 },
                 "area_unit_scale_factor": {
                         "type": "string",
                         "description": "Specifies the area units that will be used for the output density values.A default unit is determined based on the linear unit of the output spatial reference. You can change this to the appropriate u...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -254,17 +254,17 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "neighborhood": {
                         "type": "string",
                         "description": "Dictates the shape of the area around each cell used to calculate the density value.This is a Neighborhood class.There are four types of neighbourhood class: NbrAnnulus, NbrCircle, NbrRectangle, and N...",
-                        "default": null
+                        "default": None
                 },
                 "area_unit_scale_factor": {
                         "type": "string",
                         "description": "Specifies the area units that will be used for the output density values.A default unit is determined based on the linear unit of the output spatial reference. You can change this to the appropriate u...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -287,92 +287,92 @@ functions_declarations = {
                 "elevation_field": {
                         "type": "string",
                         "description": "The field denoting elevation values for each feature.Values in the elevation field can be integer or floating point.\r\nUse '' to support 3D kernel density with time.\r\nFor 3D features, a pseudo field, S...",
-                        "default": null
+                        "default": None
                 },
                 "elevation_field_unit": {
                         "type": "string",
                         "description": "Specifies the unit of measure that will be used for the input elevation field value. The default is meters.\r\nUse the appropriate unit to represent the values in the elevation_field parameter value.\r\n\r...",
-                        "default": null
+                        "default": None
                 },
                 "time_field": {
                         "type": "string",
                         "description": "The field denoting time values for each feature.",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the multidimensional raster output that will be created.The value can be defined by a numeric value or obtained from an existing raster dataset. If no cell size is provided, the envir...",
-                        "default": null
+                        "default": None
                 },
                 "kernel_search_radius_xy": {
                         "type": "string",
                         "description": "The search radius on the x,y plane within which density will be calculated.\r\nProvide the value and the appropriate units. For example, to include all features within a 1-mile neighborhood when the uni...",
-                        "default": null
+                        "default": None
                 },
                 "kernel_search_radius_z": {
                         "type": "string",
                         "description": "The vertical search distance in the z-direction within which density will be calculated. This vertical distance will be used to search for features in the upward and downward directions along the z-ax...",
-                        "default": null
+                        "default": None
                 },
                 "kernel_search_time_window": {
                         "type": "string",
                         "description": "The search range of time within which density will be calculated.\r\nProvide the value and the appropriate units.",
-                        "default": null
+                        "default": None
                 },
                 "resultant_values": {
                         "type": "string",
                         "description": "Specifies what the values in the output raster will represent.Since the output cell value is related to the specified cell size, the resulting raster cannot be resampled to a different cell size.\r\n\r\nD...",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies whether the flat earth (planar) or the shortest path on a spheroid (geodesic) method will be used.PLANAR\u2014The planar distance between features will be used. This is the default.GEODESIC\u2014The g...",
-                        "default": null
+                        "default": None
                 },
                 "min_elevation": {
                         "type": "string",
                         "description": "The minimum (lowest) elevation that will be used for the multidimensional raster output.",
-                        "default": null
+                        "default": None
                 },
                 "max_elevation": {
                         "type": "string",
                         "description": "The maximum (highest) elevation that will be used for the multidimensional raster output.",
-                        "default": null
+                        "default": None
                 },
                 "elevation_interval": {
                         "type": "string",
                         "description": "The elevation interval between slices in the multidimensional raster output.The value must be greater than zero.",
-                        "default": null
+                        "default": None
                 },
                 "elevation_unit": {
                         "type": "string",
                         "description": "Specifies the unit of elevation interval that will be used for the multidimensional raster output. The default is meter.INCH\u2014Inches will be used.FOOT\u2014Feet will be used. YARD\u2014Yards will be used.MILE_US...",
-                        "default": null
+                        "default": None
                 },
                 "start_time": {
                         "type": "string",
                         "description": "The start time that will be used for the multidimensional raster output.",
-                        "default": null
+                        "default": None
                 },
                 "end_time": {
                         "type": "string",
                         "description": "The end time that will be used for the multidimensional raster output.",
-                        "default": null
+                        "default": None
                 },
                 "time_interval": {
                         "type": "string",
                         "description": "The time interval between slices in the multidimensional raster output.The value must be greater than zero.",
-                        "default": null
+                        "default": None
                 },
                 "time_interval_unit": {
                         "type": "string",
                         "description": "Specifies the unit of the time interval that will be used for the multidimensional raster output. The default is day.SECOND\u2014The time interval unit will be seconds.MINUTE\u2014The time interval unit will be...",
-                        "default": null
+                        "default": None
                 },
                 "out_voxel_layer": {
                         "type": "string",
                         "description": "The output voxel layer based on volumetric data stored in the output netCDF raster.\r\n\r\n\r\nThis output type can only be created when the out_raster parameter is set to create a netCDF raster with the .n...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -391,77 +391,77 @@ functions_declarations = {
                 "in_barrier_data": {
                         "type": "string",
                         "description": "The dataset that defines the barriers.The barriers can be defined by an integer or a floating-point raster, or by a point, line, or polygon feature.For a raster barrier, the barrier must have a valid ...",
-                        "default": null
+                        "default": None
                 },
                 "in_surface_raster": {
                         "type": "string",
                         "description": "A raster defining the elevation values at each cell location.The values are used to calculate the actual surface distance covered when passing between cells.",
-                        "default": null
+                        "default": None
                 },
                 "in_cost_raster": {
                         "type": "string",
                         "description": "A raster defining the impedance or cost to move planimetrically through each cell.The value at each cell location represents the cost-per-unit distance for moving through the cell. Each cell location ...",
-                        "default": null
+                        "default": None
                 },
                 "in_vertical_raster": {
                         "type": "string",
                         "description": "A raster defining the z-values for each cell location.The values are used for calculating the slope used to identify the vertical factor incurred when moving from one cell to another.",
-                        "default": null
+                        "default": None
                 },
                 "vertical_factor": {
                         "type": "string",
                         "description": "The Vertical factor object defines the relationship between the vertical cost factor and the vertical relative moving angle (VRMA).There are several factors with modifiers that identify a defined vert...",
-                        "default": null
+                        "default": None
                 },
                 "in_horizontal_raster": {
                         "type": "string",
                         "description": "A raster defining the horizontal direction at each cell.The values on the raster must be integers ranging from 0 to 360, with 0 degrees being north, or toward the top of the screen, and increasing clo...",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_factor": {
                         "type": "string",
                         "description": "The Horizontal Factor object defines the relationship between the horizontal cost factor and the horizontal relative moving angle.There are several factors with modifiers that identify a defined horiz...",
-                        "default": null
+                        "default": None
                 },
                 "out_back_direction_raster": {
                         "type": "string",
                         "description": "The back direction raster contains the calculated direction in degrees. The direction identifies the next cell along the shortest path back to the closest source while avoiding barriers.The range of v...",
-                        "default": null
+                        "default": None
                 },
                 "out_source_direction_raster": {
                         "type": "string",
                         "description": "The source direction raster identifies the direction of the least accumulated cost source cell as an azimuth in degrees.The range of values is from 0 degrees to 360 degrees, with 0 reserved for the so...",
-                        "default": null
+                        "default": None
                 },
                 "out_source_location_raster": {
                         "type": "string",
                         "description": "The source location raster is a multiband output. The first band contains a row index, and the second band contains a column index. These indexes identify the location of the source cell that is the l...",
-                        "default": null
+                        "default": None
                 },
                 "source_initial_accumulation": {
                         "type": "string",
                         "description": "The initial accumulative cost that will be used to begin the cost calculation.Allows for the specification of the fixed cost associated with a source. Instead of starting at a cost of zero, the cost a...",
-                        "default": null
+                        "default": None
                 },
                 "source_maximum_accumulation": {
                         "type": "string",
                         "description": "The maximum accumulation for the traveler for a source.The cost calculations continue for each source until the specified accumulation is reached.The values must be greater than zero. The default accu...",
-                        "default": null
+                        "default": None
                 },
                 "source_cost_multiplier": {
                         "type": "string",
                         "description": "The multiplier that will be applied to the cost values.This allows for control of the mode of travel or the magnitude at a source. The greater the multiplier, the greater the cost to move through each...",
-                        "default": null
+                        "default": None
                 },
                 "source_direction": {
                         "type": "string",
                         "description": "Specifies the direction of the traveler when applying horizontal and vertical factors.FROM_SOURCE\u2014The horizontal factor and vertical factor will be applied beginning at the input source and travel out...",
-                        "default": null
+                        "default": None
                 },
                 "distance_method": {
                         "type": "string",
                         "description": "Specifies whether the distance will be calculated using a planar (flat earth) or a geodesic (ellipsoid) method.PLANAR\u2014The distance calculation will be performed on a projected flat plane using a 2D Ca...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -479,87 +479,87 @@ functions_declarations = {
                 "in_barrier_data": {
                         "type": "string",
                         "description": "The dataset that defines the barriers.The barriers can be defined by an integer or a floating-point raster, or by a point, line, or polygon feature.For a raster barrier, the barrier must have a valid ...",
-                        "default": null
+                        "default": None
                 },
                 "in_surface_raster": {
                         "type": "string",
                         "description": "A raster defining the elevation values at each cell location.The values are used to calculate the actual surface distance covered when passing between cells.",
-                        "default": null
+                        "default": None
                 },
                 "in_cost_raster": {
                         "type": "string",
                         "description": "A raster defining the impedance or cost to move planimetrically through each cell.The value at each cell location represents the cost-per-unit distance for moving through the cell. Each cell location ...",
-                        "default": null
+                        "default": None
                 },
                 "in_vertical_raster": {
                         "type": "string",
                         "description": "A raster defining the z-values for each cell location.The values are used for calculating the slope used to identify the vertical factor incurred when moving from one cell to another.",
-                        "default": null
+                        "default": None
                 },
                 "vertical_factor": {
                         "type": "string",
                         "description": "The Vertical factor object defines the relationship between the vertical cost factor and the vertical relative moving angle (VRMA).There are several factors with modifiers that identify a defined vert...",
-                        "default": null
+                        "default": None
                 },
                 "in_horizontal_raster": {
                         "type": "string",
                         "description": "A raster defining the horizontal direction at each cell.The values on the raster must be integers ranging from 0 to 360, with 0 degrees being north, or toward the top of the screen, and increasing clo...",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_factor": {
                         "type": "string",
                         "description": "The Horizontal Factor object defines the relationship between the horizontal cost factor and the horizontal relative moving angle.There are several factors with modifiers that identify a defined horiz...",
-                        "default": null
+                        "default": None
                 },
                 "out_distance_accumulation_raster": {
                         "type": "string",
                         "description": "The output distance raster.\r\n\r\n\r\nThe distance accumulation raster contains the accumulative distance for each cell from,\r\nor to, the least-cost source.",
-                        "default": null
+                        "default": None
                 },
                 "out_back_direction_raster": {
                         "type": "string",
                         "description": "The back direction raster contains the calculated direction in degrees. The direction identifies the next cell along the shortest path back to the closest source while avoiding barriers.The range of v...",
-                        "default": null
+                        "default": None
                 },
                 "out_source_direction_raster": {
                         "type": "string",
                         "description": "The source direction raster identifies the direction of the least accumulated cost source cell as an azimuth in degrees.\r\nThe range of values is from 0 degrees to 360 degrees, with 0 reserved for the ...",
-                        "default": null
+                        "default": None
                 },
                 "out_source_location_raster": {
                         "type": "string",
                         "description": "The source location raster is a multiband output. The first band contains a row index, and the second band contains a column index. These indexes identify the location of the source cell that is the l...",
-                        "default": null
+                        "default": None
                 },
                 "source_field": {
                         "type": "string",
                         "description": "The field used to assign values to the source locations. It must be of integer type.",
-                        "default": null
+                        "default": None
                 },
                 "source_initial_accumulation": {
                         "type": "string",
                         "description": "The initial accumulative cost that will be used to begin the cost calculation.Allows for the specification of the fixed cost associated with a source. Instead of starting at a cost of zero, the cost a...",
-                        "default": null
+                        "default": None
                 },
                 "source_maximum_accumulation": {
                         "type": "string",
                         "description": "The maximum accumulation for the traveler for a source.The cost calculations continue for each source until the specified accumulation is reached.The values must be greater than zero. The default accu...",
-                        "default": null
+                        "default": None
                 },
                 "source_cost_multiplier": {
                         "type": "string",
                         "description": "The multiplier that will be applied to the cost values.This allows for control of the mode of travel or the magnitude at a source. The greater the multiplier, the greater the cost to move through each...",
-                        "default": null
+                        "default": None
                 },
                 "source_direction": {
                         "type": "string",
                         "description": "Specifies the direction of the traveler when applying horizontal and vertical factors.FROM_SOURCE\u2014The horizontal factor and vertical factor will be applied beginning at the input source and travel out...",
-                        "default": null
+                        "default": None
                 },
                 "distance_method": {
                         "type": "string",
                         "description": "Specifies whether the distance will be calculated using a planar (flat earth) or a geodesic (ellipsoid) method.PLANAR\u2014The distance calculation will be performed on a projected flat plane using a 2D Ca...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -619,42 +619,42 @@ functions_declarations = {
                 "in_barriers": {
                         "type": "string",
                         "description": "The dataset that defines the barriers.The barriers can be defined by an integer or a floating-point raster, or by a point, line, or polygon feature.",
-                        "default": null
+                        "default": None
                 },
                 "in_cost_raster": {
                         "type": "string",
                         "description": "A raster defining the impedance or cost to move planimetrically through each cell.The value at each cell location represents the cost-per-unit distance for moving through the cell. Each cell location ...",
-                        "default": null
+                        "default": None
                 },
                 "out_optimal_lines": {
                         "type": "string",
                         "description": "The output line feature class identifies the optimal lines to connect each of the input regions. Lines will overlap in locations where paths travel the same route.Each path (or line) is uniquely numbe...",
-                        "default": null
+                        "default": None
                 },
                 "out_neighbor_polygons": {
                         "type": "string",
                         "description": "The output polygon or line feature class identifying the optimal corridors that connect each region to each of its closest or cost neighbors. Corridors (or lines) will overlap in locations where corri...",
-                        "default": null
+                        "default": None
                 },
                 "out_neighbor_lines": {
                         "type": "string",
                         "description": "The output line feature class identifying the optimal line from each region to each of its closest or cost neighbors.Each corridor (or polygon) is uniquely numbered and additional fields in the attrib...",
-                        "default": null
+                        "default": None
                 },
                 "corridor_method": {
                         "type": "string",
                         "description": "Specifies how the corridor will be created.Note:At this release, there is only one method to create corridors: fixed width. Since there is only a single default option, this parameter will be inactive...",
-                        "default": null
+                        "default": None
                 },
                 "corridor_width": {
                         "type": "string",
                         "description": "A linear distance that defines the width of the resulting corridors. The value must be greater than or equal to zero. The default is zero.",
-                        "default": null
+                        "default": None
                 },
                 "distance_method": {
                         "type": "string",
                         "description": "Specifies whether the distance will be calculated using a planar (flat earth) or a geodesic (ellipsoid) method.PLANAR\u2014The distance calculation will be performed on a projected flat plane using a 2D Ca...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -685,17 +685,17 @@ functions_declarations = {
                 "destination_field": {
                         "type": "string",
                         "description": "An integer field that will be used to obtain values for the destination locations.",
-                        "default": null
+                        "default": None
                 },
                 "path_type": {
                         "type": "string",
                         "description": "Specifies a keyword defining the manner in which the values and zones on the input destination data will be interpreted in the cost path calculations.EACH_ZONE\u2014For each zone on the input destination d...",
-                        "default": null
+                        "default": None
                 },
                 "create_network_paths": {
                         "type": "string",
                         "description": "Specifies whether complete, and possibly overlapping, paths from the destinations to the sources are calculated or if nonoverlapping network paths are created.DESTINATIONS_TO_SOURCES\u2014Complete paths fr...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -724,12 +724,12 @@ functions_declarations = {
                 "destination_field": {
                         "type": "string",
                         "description": "The field that will be used to obtain values for the destination locations.",
-                        "default": null
+                        "default": None
                 },
                 "path_type": {
                         "type": "string",
                         "description": "Specifies a keyword defining the manner in which the values and zones on the input destination data will be interpreted in the cost path calculations.EACH_ZONE\u2014For each zone on the input destination d...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -753,27 +753,27 @@ functions_declarations = {
                 "in_barrier_data": {
                         "type": "string",
                         "description": "The dataset that defines the barriers.The barriers can be defined by an integer or a floating-point raster, or by a point, line, or polygon feature.",
-                        "default": null
+                        "default": None
                 },
                 "in_cost_raster": {
                         "type": "string",
                         "description": "A raster defining the impedance or cost to move planimetrically through each cell.The value at each cell location represents the cost-per-unit distance for moving through the cell. Each cell location ...",
-                        "default": null
+                        "default": None
                 },
                 "out_neighbor_paths": {
                         "type": "string",
                         "description": "The output polyline feature class identifying all paths from each region to each of its closest or cost neighbors.Each path (or line) is uniquely numbered and additional fields in the attribute table ...",
-                        "default": null
+                        "default": None
                 },
                 "distance_method": {
                         "type": "string",
                         "description": "Specifies whether the distance will be calculated using a planar (flat earth) or a geodesic (ellipsoid) method.PLANAR\u2014The distance calculation will be performed on a projected flat plane using a 2D Ca...",
-                        "default": null
+                        "default": None
                 },
                 "connections_within_regions": {
                         "type": "string",
                         "description": "Specifies whether the paths will continue and connect within the input regions.GENERATE_CONNECTIONS\u2014Paths will continue within the input regions to connect all paths that enter a region.NO_CONNECTIONS...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -818,7 +818,7 @@ functions_declarations = {
                 "extraction_area": {
                         "type": "string",
                         "description": "Specifies whether cells inside or outside the input circle will be selected and written to the output raster.INSIDE\u2014Cells inside the input circle will be selected and written to the output raster. All...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -842,12 +842,12 @@ functions_declarations = {
                 "extraction_area": {
                         "type": "string",
                         "description": "Specifies whether cells inside or outside the locations defined by the input mask will be selected and written to the output raster.INSIDE\u2014Cells within the input mask will be selected and written to t...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_extent": {
                         "type": "string",
                         "description": "The extent that defines the area to be extracted.If not specified, the default extent is the intersection of the in_raster value and the in_mask_data value.The coordinates are specified in the same ma...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -870,7 +870,7 @@ functions_declarations = {
                 "extraction_area": {
                         "type": "string",
                         "description": "Identifies whether to extract cells based on the specified point locations (inside) or outside the point locations (outside) .INSIDE\u2014The cell in which the selected point falls will be written to the o...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -893,7 +893,7 @@ functions_declarations = {
                 "extraction_area": {
                         "type": "string",
                         "description": "Identifies whether to extract cells inside or outside the input polygon.INSIDE\u2014The cells inside the input polygon should be selected and written to the output raster. All cells outside the polygon wil...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -916,7 +916,7 @@ functions_declarations = {
                 "extraction_area": {
                         "type": "string",
                         "description": "Specifies whether cells inside or outside the input rectangle will be selected and written to the output raster.INSIDE\u2014Cells inside the input rectangle will be selected and written to the output raste...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -935,7 +935,7 @@ functions_declarations = {
                 "bilinear_interpolate_values": {
                         "type": "string",
                         "description": "Specifies whether interpolation will be used.NONE\u2014No interpolation will be applied; the value of the cell center will be used. This is the default.BILINEAR\u2014The value of the cell will be calculated fro...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -961,12 +961,12 @@ functions_declarations = {
                 "interpolate_values": {
                         "type": "string",
                         "description": "Specifies whether interpolation will be used.NONE\u2014No interpolation will be applied; the value of the cell center will be used. This is the default.INTERPOLATE\u2014The value of the cell will be calculated ...",
-                        "default": null
+                        "default": None
                 },
                 "add_attributes": {
                         "type": "string",
                         "description": "Determines if the raster attributes are written to the output point feature dataset.VALUE_ONLY\u2014Only the value of the input raster is added to the point attributes. This is the default.ALL\u2014All the fiel...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -994,47 +994,47 @@ functions_declarations = {
                 "resampling_type": {
                         "type": "string",
                         "description": "The resampling algorithm that will be used to sample a raster to determine how the values will be obtained from the raster.\r\nNEAREST\u2014Nearest neighbor assignment will be used. This is the default.BILIN...",
-                        "default": null
+                        "default": None
                 },
                 "unique_id_field": {
                         "type": "string",
                         "description": "A field containing a different value for every location or feature in the input location raster or features.",
-                        "default": null
+                        "default": None
                 },
                 "process_as_multidimensional": {
                         "type": "string",
                         "description": "Specifies how the input rasters will be processed.This parameter is only available when the input is a single, multidimensional raster.ALL_SLICES\u2014Samples will be processed for all dimensions (such as ...",
-                        "default": null
+                        "default": None
                 },
                 "acquisition_definition": {
                         "type": "string",
                         "description": "Specifies the time, depth, or other acquisition data associated with the location features.Only the following combinations are supported:\r\nDimension + Start field or valueDimension + Start field or va...",
-                        "default": null
+                        "default": None
                 },
                 "statistics_type": {
                         "type": "string",
                         "description": "Specifies the statistic type to be calculated.MINIMUM\u2014The minimum value within the specified range will be calculated.MAXIMUM\u2014The maximum value within the specified range will be calculated.MEDIAN\u2014The...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_value": {
                         "type": "string",
                         "description": "The percentile to calculate when the Statistics Type parameter is set to Percentile.\r\nThe percentile to calculate when the statistics_type parameter is set to PERCENTILE.This value can range from 0 to...",
-                        "default": null
+                        "default": None
                 },
                 "buffer_distance": {
                         "type": "string",
                         "description": "The distance around the location data features. The buffer distance is specified in the linear unit of the location feature's spatial reference. If the feature uses a geographic reference, the unit wi...",
-                        "default": null
+                        "default": None
                 },
                 "layout": {
                         "type": "string",
                         "description": "Specifies whether sampled values will appear in rows or columns in the output table.ROW_WISE\u2014Sampled values will appear in separate rows in the output table. This is the default.COLUMN_WISE\u2014Sampled va...",
-                        "default": null
+                        "default": None
                 },
                 "generate_feature_class": {
                         "type": "string",
                         "description": "Specifies whether a point feature class with sampled values in its attribute table or a table with sampled values will be generated.TABLE\u2014A table with sampled values will be generated. This is the def...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1058,17 +1058,17 @@ functions_declarations = {
                 "aggregation_type": {
                         "type": "string",
                         "description": "The method that will be used for aggregation.The values of the input cells encompassed by the coarser output cells are aggregated by one of the following statistics:SUM\u2014The total of the input cell val...",
-                        "default": null
+                        "default": None
                 },
                 "extent_handling": {
                         "type": "string",
                         "description": "Specifies whether the boundaries of the input raster will be expanded when its rows or columns are not a multiple of the cell factor.EXPAND\u2014The top or right boundaries of the input raster will be expa...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_nodata": {
                         "type": "string",
                         "description": "Denotes whether NoData values are ignored by the aggregation calculation.DATA\u2014Specifies that if NoData values exist for any of the cells that fall within the spatial extent of a larger cell on the out...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1087,12 +1087,12 @@ functions_declarations = {
                 "sort_type": {
                         "type": "string",
                         "description": "Specifies the type of sorting to use in the smoothing process. The sorting determines the priority by which cells can expand into their neighbors.The sorting can be based on zone value or zone size.NO...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_runs": {
                         "type": "string",
                         "description": "Specifies the number of times the smoothing process will occur, twice or once.TWO_WAY\u2014The expansion and shrinking operation is performed twice. The first time, the operation is performed according to ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1118,7 +1118,7 @@ functions_declarations = {
                 "expand_method": {
                         "type": "string",
                         "description": "The method used to expand the selected zones.MORPHOLOGICAL\u2014Uses a mathematical morphology method to expand the zones. This is the default.DISTANCE\u2014Uses a distance-based method to expand the zones.The ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1138,12 +1138,12 @@ functions_declarations = {
                 "number_neighbors": {
                         "type": "string",
                         "description": "Determines the number of neighboring cells to use in the kernel of the filter.FOUR\u2014The kernel of the filter will be the four direct (orthogonal) neighbors to the present cell. This is the default.EIGH...",
-                        "default": null
+                        "default": None
                 },
                 "majority_definition": {
                         "type": "string",
                         "description": "Specifies the number of contiguous (spatially connected) cells that must be of the same value before a replacement will occur.MAJORITY\u2014A majority of cells must have the same value and be contiguous. T...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1165,17 +1165,17 @@ functions_declarations = {
                 "nibble_values": {
                         "type": "string",
                         "description": "Specifies whether NoData cells in the input raster can replace cells in the masked areas if they are the nearest neighbor.\r\n\r\n\r\nALL_VALUES\u2014Both NoData and data values can replace cells in the masked a...",
-                        "default": null
+                        "default": None
                 },
                 "nibble_nodata": {
                         "type": "string",
                         "description": "Specifies whether NoData cells in the input raster that are within the masked area will be preserved or replaced.\r\nPRESERVE_NODATA\u2014 Any NoData cells in the input raster that are within the masked area...",
-                        "default": null
+                        "default": None
                 },
                 "in_zone_raster": {
                         "type": "string",
                         "description": "The input zone raster. For each zone, input cells that are within the mask will be replaced only by the nearest cell values within that same zone.A zone is all the cells in a raster that have the same...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1194,22 +1194,22 @@ functions_declarations = {
                 "number_neighbors": {
                         "type": "string",
                         "description": "Specifies the number of neighboring cells to use when evaluating connectivity between cells that define a region.FOUR\u2014Connectivity is evaluated for the four nearest (orthogonal) neighbors of each inpu...",
-                        "default": null
+                        "default": None
                 },
                 "zone_connectivity": {
                         "type": "string",
                         "description": "Defines which cell values should be considered when testing for connectivity.WITHIN\u2014Connectivity for a region is evaluated for input cells that are part of the same zone (cell value). The only cells t...",
-                        "default": null
+                        "default": None
                 },
                 "add_link": {
                         "type": "string",
                         "description": "Specifies whether a link field will be added to the table of the output when the zone_connectivity parameter is set to WITHIN. It is ignored if that parameter is set to CROSS.ADD_LINK\u2014A LINK field wil...",
-                        "default": null
+                        "default": None
                 },
                 "excluded_value": {
                         "type": "string",
                         "description": "A value that excludes all cells of that zone from the connectivity evaluation. If a cell location contains the value, no spatial connectivity will be evaluated, regardless of how the number of neighbo...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1235,7 +1235,7 @@ functions_declarations = {
                 "shrink_method": {
                         "type": "string",
                         "description": "The method to use to shrink the selected zones.MORPHOLOGICAL\u2014Uses a mathematical morphology method to shrink the zones. This is the default.DISTANCE\u2014Uses a distance-based method to shrink the zones.\r\n...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1255,22 +1255,22 @@ functions_declarations = {
                 "background_value": {
                         "type": "string",
                         "description": "Specifies the cell value that will identify the background cells. The linear features are formed from the foreground cells.ZERO\u2014The background is composed of cells of 0 or less, or NoData. All cells w...",
-                        "default": null
+                        "default": None
                 },
                 "filter": {
                         "type": "string",
                         "description": "Specifies whether a filter will be applied as the first phase of thinning.NO_FILTER\u2014No filter will be applied.This is the default.FILTER\u2014The raster will be filtered to smooth the boundaries between fo...",
-                        "default": null
+                        "default": None
                 },
                 "corners": {
                         "type": "string",
                         "description": "Specifies whether round or sharp turns will be made at turns or junctions.It is also used during the vector conversion process to spline curves or create sharp intersections and corners.ROUND\u2014Attempts...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_thickness": {
                         "type": "string",
                         "description": "The maximum thickness, in map units, of linear features in the input raster.The default thickness is ten times the cell size.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1300,12 +1300,12 @@ functions_declarations = {
                 "out_direction_raster": {
                         "type": "string",
                         "description": "The output flow direction raster.Each cell value represents the direction of the seepage velocity vector (average linear velocity) at the center of the cell, calculated as the average value of the see...",
-                        "default": null
+                        "default": None
                 },
                 "out_magnitude_raster": {
                         "type": "string",
                         "description": "An optional output raster where each cell value represents the magnitude of the seepage velocity vector (average linear velocity) at the center of the cell, calculated as the average value of the seep...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1371,17 +1371,17 @@ functions_declarations = {
                 "step_length": {
                         "type": "string",
                         "description": "The step length to be used for calculating the particle track.The default is one-half the cell size. Units are length.",
-                        "default": null
+                        "default": None
                 },
                 "tracking_time": {
                         "type": "string",
                         "description": "Maximum elapsed time for particle tracking.The algorithm will follow the track until either this time is met or the particle migrates off the raster or into a depression.The default value is infinity....",
-                        "default": null
+                        "default": None
                 },
                 "out_track_polyline_features": {
                         "type": "string",
                         "description": "The optional output line feature class containing the particle track.This feature class contains a series of arcs with attributes for position, local velocity direction and magnitude, and cumulative l...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1414,27 +1414,27 @@ functions_declarations = {
                 "dispersion_time": {
                         "type": "string",
                         "description": "A value representing the time horizon for dispersion of the solute, in units of time.The time must be less than or equal to the maximum time in the track file. If the requested time exceeds the availa...",
-                        "default": null
+                        "default": None
                 },
                 "longitudinal_dispersivity": {
                         "type": "string",
                         "description": "A value representing the dispersivity parallel to the flow direction.For details on how the default value is determined, and how it relates to the scale of the study, see the How Porous Puff works sec...",
-                        "default": null
+                        "default": None
                 },
                 "dispersivity_ratio": {
                         "type": "string",
                         "description": "A value representing the ratio of longitudinal dispersivity over transverse dispersivity.Transverse dispersivity is perpendicular to the flow direction in the same horizontal plane. The default value ...",
-                        "default": null
+                        "default": None
                 },
                 "retardation_factor": {
                         "type": "string",
                         "description": "A dimensionless value representing the retardation of the solute in the aquifer.Retardation varies between one and infinity, with one corresponding to no retardation. The default value is one.",
-                        "default": null
+                        "default": None
                 },
                 "decay_coefficient": {
                         "type": "string",
                         "description": "Decay coefficient for solutes undergoing first-order exponential decay (for example, radionuclides) in units of inverse time.The default is zero, corresponding to no decay.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1468,27 +1468,27 @@ functions_declarations = {
                 "in_depressions_data": {
                         "type": "string",
                         "description": "An optional dataset that defines real depressions.The depressions can be defined either through a raster or a feature layer.If input is a raster, the depression cells must take a valid value, includin...",
-                        "default": null
+                        "default": None
                 },
                 "in_weight_raster": {
                         "type": "string",
                         "description": "An optional input raster dataset that defines the fraction of flow that contributes to flow accumulation at each cell.The weight is only applied to the accumulation of flow.If no accumulation weight r...",
-                        "default": null
+                        "default": None
                 },
                 "out_flow_direction_raster": {
                         "type": "string",
                         "description": "The output raster that shows the direction of flow at each cell using the D8 or Multiple Flow Direction (MFD) method.The output is of integer type.",
-                        "default": null
+                        "default": None
                 },
                 "flow_direction_type": {
                         "type": "string",
                         "description": "Specifies the type of flow method that will be used when computing flow directions.D8\u2014Flow direction will be determined by the D8 method. This method assigns flow direction to the steepest downslope n...",
-                        "default": null
+                        "default": None
                 },
                 "force_flow": {
                         "type": "string",
                         "description": "Specifies whether edge cells will always flow outward or follow normal flow rules.\r\nNORMAL\u2014If the maximum drop on the inside of an edge cell is greater than zero, the flow direction will be determined...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1510,27 +1510,27 @@ functions_declarations = {
                 "in_depressions_data": {
                         "type": "string",
                         "description": "An optional dataset that defines real depressions.The depressions can be defined either through a raster or a feature layer.If input is a raster, the depression cells must take a valid value, includin...",
-                        "default": null
+                        "default": None
                 },
                 "in_weight_raster": {
                         "type": "string",
                         "description": "An optional input raster dataset that defines the fraction of flow that contributes to flow accumulation at each cell.The weight is only applied to the accumulation of flow.If no accumulation weight r...",
-                        "default": null
+                        "default": None
                 },
                 "accumulation_threshold": {
                         "type": "string",
                         "description": "The threshold for determining whether a given cell is part of a stream in terms of the total area that flows into such cell.",
-                        "default": null
+                        "default": None
                 },
                 "stream_designation_method": {
                         "type": "string",
                         "description": "Specifies the unique value or order of the streams in the output attribute table.CONSTANT\u2014The output stream segments will all equal 1. This is the default.UNIQUE\u2014Each stream will have a unique ID betw...",
-                        "default": null
+                        "default": None
                 },
                 "simplify": {
                         "type": "string",
                         "description": "Specifies whether the output stream lines will be smoothed into simpler shapes.NO_SIMPLIFY\u2014The stream feature lines will not be smoothed.SIMPLIFY\u2014The stream feature lines will be simplified using the ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1549,27 +1549,27 @@ functions_declarations = {
                 "in_depressions_data": {
                         "type": "string",
                         "description": "An optional dataset that defines real depressions.The depressions can be defined either through a raster or a feature layer.If input is a raster, the depression cells must take a valid value, includin...",
-                        "default": null
+                        "default": None
                 },
                 "in_weight_raster": {
                         "type": "string",
                         "description": "An optional input raster dataset that defines the fraction of flow that contributes to flow accumulation at each cell.The weight is only applied to the accumulation of flow.If no accumulation weight r...",
-                        "default": null
+                        "default": None
                 },
                 "accumulation_threshold": {
                         "type": "string",
                         "description": "The threshold for determining whether a given cell is part of a stream in terms of the total area that flows into such cell.",
-                        "default": null
+                        "default": None
                 },
                 "stream_designation_method": {
                         "type": "string",
                         "description": "Specifies the unique or order of the streams in the output.CONSTANT\u2014The output cell values will all equal 1. This is the default.UNIQUE\u2014Each stream will have a unique ID between intersections in the o...",
-                        "default": null
+                        "default": None
                 },
                 "force_flow": {
                         "type": "string",
                         "description": "Specifies whether edge cells will always flow outward or follow normal flow rules.\r\nNORMAL\u2014If the maximum drop on the inside of an edge cell is greater than zero, the flow direction will be determined...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1587,7 +1587,7 @@ functions_declarations = {
                 "z_limit": {
                         "type": "string",
                         "description": "Maximum elevation difference between a sink and its pour point to be filled.If the difference in z-values between a sink and its pour point is greater than the z_limit, that sink will not be filled.Th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1605,17 +1605,17 @@ functions_declarations = {
                 "in_weight_raster": {
                         "type": "string",
                         "description": "An optional input raster for applying a weight to each cell.If no weight raster is specified, a default weight of 1 will be applied to each cell. For each cell in the output raster, the result will be...",
-                        "default": null
+                        "default": None
                 },
                 "data_type": {
                         "type": "string",
                         "description": "The output accumulation raster can be integer, floating point, or double type.FLOAT\u2014The output raster will be floating point type. This is the default.INTEGER\u2014The output raster will be integer type.DO...",
-                        "default": null
+                        "default": None
                 },
                 "flow_direction_type": {
                         "type": "string",
                         "description": "Specifies the input flow direction raster type.D8\u2014The input flow direction raster is of type D8. This is the default.MFD\u2014The input flow direction raster is of type Multi Flow Direction (MFD).DINF\u2014The ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1633,17 +1633,17 @@ functions_declarations = {
                 "force_flow": {
                         "type": "string",
                         "description": "Specifies whether edge cells will always flow outward or follow normal flow rules.\r\nNORMAL\u2014If the maximum drop on the inside of an edge cell is greater than zero, the flow direction will be determined...",
-                        "default": null
+                        "default": None
                 },
                 "out_drop_raster": {
                         "type": "string",
                         "description": "An optional output drop raster.The drop raster returns the ratio of the maximum change in elevation from each cell along the direction of flow to the path length between centers of cells, expressed in...",
-                        "default": null
+                        "default": None
                 },
                 "flow_direction_type": {
                         "type": "string",
                         "description": "Specifies the type of flow method that will be used when computing flow directions.D8\u2014Flow direction will be determined by the D8 method. This method assigns flow direction to the steepest downslope n...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1665,22 +1665,22 @@ functions_declarations = {
                 "in_flow_direction_raster": {
                         "type": "string",
                         "description": "The input raster that shows the direction of flow out of each cell.When a flow direction raster is provided, the down slope direction(s) will be limited to those defined by the input flow directions.T...",
-                        "default": null
+                        "default": None
                 },
                 "distance_type": {
                         "type": "string",
                         "description": "Determines if the vertical or horizontal component of flow distance is calculated.VERTICAL\u2014The flow distance calculations represent the vertical component of flow distance, following the flow path, fr...",
-                        "default": null
+                        "default": None
                 },
                 "flow_direction_type": {
                         "type": "string",
                         "description": "Specifies the input flow direction raster type.D8\u2014The input flow direction raster is of type D8. This is the default.MFD\u2014The input flow direction raster is of type Multi Flow Direction (MFD).DINF\u2014The ...",
-                        "default": null
+                        "default": None
                 },
                 "statistics_type": {
                         "type": "string",
                         "description": "Determines the statistics type used to compute flow distance over multiple flow paths. If there is only a single flow path from each cell to a cell on the stream, all statistics types produce the same...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1699,12 +1699,12 @@ functions_declarations = {
                 "direction_measurement": {
                         "type": "string",
                         "description": "The direction of measurement along the flow path.DOWNSTREAM\u2014Calculates the downslope distance along the flow path, from each cell to a sink or outlet on the edge of the raster.UPSTREAM\u2014Calculates the ...",
-                        "default": null
+                        "default": None
                 },
                 "in_weight_raster": {
                         "type": "string",
                         "description": "An optional input raster for applying a weight to each cell.If no weight raster is specified, a default weight of 1 will be applied to each cell. For each cell in the output raster, the result will be...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1743,7 +1743,7 @@ functions_declarations = {
                 "pour_point_field": {
                         "type": "string",
                         "description": "The field used to assign values to the pour point locations.If the pour point dataset is a raster, use Value.If the pour point dataset is a feature, use a numeric field. If the field contains floating...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1771,42 +1771,42 @@ functions_declarations = {
                 "zone_field": {
                         "type": "string",
                         "description": "The field that contains the values that define each zone.It can be an integer or a string field of the zone dataset.",
-                        "default": null
+                        "default": None
                 },
                 "analysis_type": {
                         "type": "string",
                         "description": "Specifies the analysis type.AREA_VOLUME\u2014Both surface areas and total volumes are calculated at each elevation increment. This is the default.AREA\u2014Surface area is calculated at each elevation increment...",
-                        "default": null
+                        "default": None
                 },
                 "min_elevation": {
                         "type": "string",
                         "description": "The minimum elevation from which storage capacities are assessed.By default, the tool uses the minimum surface raster value in each zone as the minimum elevation for that zone. If a value is provided,...",
-                        "default": null
+                        "default": None
                 },
                 "max_elevation": {
                         "type": "string",
                         "description": "The maximum elevation from which storage capacities are assessed.By default, the tool uses the maximum surface raster value in each zone as the maximum elevation for that zone. If a value is provided,...",
-                        "default": null
+                        "default": None
                 },
                 "increment_type": {
                         "type": "string",
                         "description": "Specifies the increment type to use when computing elevation increments between minimum and maximum elevations.NUMBER_OF_INCREMENTS\u2014The number of increments between minimum and maximum elevations is u...",
-                        "default": null
+                        "default": None
                 },
                 "increment": {
                         "type": "string",
                         "description": "An incremental value that is either the number of increments or the difference in elevation between increments. The value is determined based on the increment type parameter value.",
-                        "default": null
+                        "default": None
                 },
                 "z_unit": {
                         "type": "string",
                         "description": "Specifies the linear unit that will be used for vertical z-values.INCH\u2014The linear unit will be inches.FOOT\u2014The linear unit will be feet.YARD\u2014The linear unit will be yards.MILE_US\u2014The linear unit will ...",
-                        "default": null
+                        "default": None
                 },
                 "out_chart": {
                         "type": "string",
                         "description": "The name of the output chart for display.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1848,7 +1848,7 @@ functions_declarations = {
                 "order_method": {
                         "type": "string",
                         "description": "The method used for assigning stream order.STRAHLER\u2014The method of stream ordering proposed by Strahler in 1952. Stream order only increases when streams of the same order intersect. Therefore, the int...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1875,7 +1875,7 @@ functions_declarations = {
                 "simplify": {
                         "type": "string",
                         "description": "Specifies whether weeding is used.SIMPLIFY\u2014 The feature is weeded to reduce the number of vertices. The Douglas-Puecker algorithm for line generalization is used with a tolerance of sqrt(0.5) * cell s...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1899,7 +1899,7 @@ functions_declarations = {
                 "pour_point_field": {
                         "type": "string",
                         "description": "The field used to assign values to the pour point locations.If the pour point dataset is a raster, use Value.If the pour point dataset is a feature, use a numeric field. If the field contains floating...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1922,22 +1922,22 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "power": {
                         "type": "string",
                         "description": "The exponent of distance.Controls the significance of surrounding points on the interpolated value. A higher power results in less influence from distant points. It can be any real number greater than...",
-                        "default": null
+                        "default": None
                 },
                 "search_radius": {
                         "type": "string",
                         "description": "The Radius class defines which of the input points will be used to interpolate the value for each cell in the output raster.There are two types of radius classes: RadiusVariable and RadiusFixed. A Var...",
-                        "default": null
+                        "default": None
                 },
                 "in_barrier_polyline_features": {
                         "type": "string",
                         "description": "Polyline features to be used as a break or limit in searching for the input sample points.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1964,17 +1964,17 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "search_radius": {
                         "type": "string",
                         "description": "The Radius class defines which of the input points will be used to interpolate the value for each cell in the output raster.There are two types of radius classes: RadiusVariable and RadiusFixed. A Var...",
-                        "default": null
+                        "default": None
                 },
                 "out_variance_prediction_raster": {
                         "type": "string",
                         "description": "Optional output raster where each cell contains the predicted variance values for that location.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -1998,7 +1998,7 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2021,22 +2021,22 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "spline_type": {
                         "type": "string",
                         "description": "The type of spline to be used.REGULARIZED\u2014Yields a smooth surface and smooth first derivatives.TENSION\u2014Tunes the stiffness of the interpolant according to the character of the modeled phenomenon.",
-                        "default": null
+                        "default": None
                 },
                 "weight": {
                         "type": "string",
                         "description": "Parameter influencing the character of the surface interpolation.When the REGULARIZED option is used, it defines the weight of the third derivatives of the surface in the curvature minimization expres...",
-                        "default": null
+                        "default": None
                 },
                 "number_points": {
                         "type": "string",
                         "description": "The number of points per region used for local approximation.The default is 12.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2059,17 +2059,17 @@ functions_declarations = {
                 "input_barrier_features": {
                         "type": "string",
                         "description": "The optional input barrier features to constrain the interpolation.",
-                        "default": null
+                        "default": None
                 },
                 "output_cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "smoothing_factor": {
                         "type": "string",
                         "description": "The parameter that influences the smoothing of the output surface.            No smoothing is applied when the value is zero and the maximum amount of smoothing is applied when the factor equals 1.   ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2088,107 +2088,107 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "Extent for the output raster dataset.Interpolation will occur out to the x and y limits, and cells outside that extent will be NoData. For best interpolation results along the edges of the output rast...",
-                        "default": null
+                        "default": None
                 },
                 "margin": {
                         "type": "string",
                         "description": "Distance in cells to interpolate beyond the specified output extent and boundary.The value must be greater than or equal to 0 (zero). The default value is 20.If the Extent and TopoBoundary feature dat...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_z_value": {
                         "type": "string",
                         "description": "The minimum z-value to be used in the interpolation.The default is 20 percent below the smallest of all the input values.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_z_value": {
                         "type": "string",
                         "description": "The maximum z-value to be used in the interpolation.The default is 20 percent above the largest of all input values.",
-                        "default": null
+                        "default": None
                 },
                 "enforce": {
                         "type": "string",
                         "description": "The type of drainage enforcement to apply.The drainage enforcement option can be set to attempt to remove all sinks or depressions so a hydrologically correct DEM can be created. If sink points have b...",
-                        "default": null
+                        "default": None
                 },
                 "data_type": {
                         "type": "string",
                         "description": "The dominant elevation data type of the input feature data.CONTOUR\u2014The dominant type of input data will be elevation contours. This is the default.SPOT\u2014The dominant type of input will be point.\r\nSpeci...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_iterations": {
                         "type": "string",
                         "description": "The maximum number of interpolation iterations.The number of iterations must be greater than zero. A default of 20 is normally adequate for both contour and line data.A value of 30 will clear fewer si...",
-                        "default": null
+                        "default": None
                 },
                 "roughness_penalty": {
                         "type": "string",
                         "description": "The integrated squared second derivative as a measure of roughness.\r\nThe roughness penalty must be zero or greater. If the primary input data type is CONTOUR, the default is zero. If the primary data ...",
-                        "default": null
+                        "default": None
                 },
                 "discrete_error_factor": {
                         "type": "string",
                         "description": "The discrete error factor is used to adjust the amount of smoothing when converting the input data to a raster.The value must be greater than zero. The normal range of adjustment is 0.25 to 4, and the...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_standard_error": {
                         "type": "string",
                         "description": "The amount of random error in the z-values of the input data.The value must be zero or greater. The default is zero.The vertical standard error may be set to a small positive value if the data has sig...",
-                        "default": null
+                        "default": None
                 },
                 "tolerance_1": {
                         "type": "string",
                         "description": "This tolerance reflects the accuracy and density of the elevation points in relation to surface drainage.For point datasets, set the tolerance to the standard error of the data heights. For contour da...",
-                        "default": null
+                        "default": None
                 },
                 "tolerance_2": {
                         "type": "string",
                         "description": "This tolerance prevents drainage clearance through unrealistically high barriers.\r\nThe value must be greater than zero. The default is 100 if the data type is CONTOUR and 200 if the data type is SPOT.",
-                        "default": null
+                        "default": None
                 },
                 "out_stream_features": {
                         "type": "string",
                         "description": "The output line feature class of stream polyline features and ridge line features.The line features are created at the beginning of the interpolation process. It provides the general morphology of the...",
-                        "default": null
+                        "default": None
                 },
                 "out_sink_features": {
                         "type": "string",
                         "description": "The output point feature class of the remaining sink point features.These are the sinks that were not specified in the sink input feature data and were not cleared during drainage enforcement. Adjusti...",
-                        "default": null
+                        "default": None
                 },
                 "out_diagnostic_file": {
                         "type": "string",
                         "description": "The output diagnostic file listing all inputs and parameters used and the number of sinks cleared at each resolution and iteration.",
-                        "default": null
+                        "default": None
                 },
                 "out_parameter_file": {
                         "type": "string",
                         "description": "The output parameter file listing all inputs and parameters used, which can be used with Topo to Raster by File to run the interpolation again.",
-                        "default": null
+                        "default": None
                 },
                 "profile_penalty": {
                         "type": "string",
                         "description": "The profile curvature roughness penalty is a locally adaptive penalty that can be used to partly replace total curvature.It can yield good results with high-quality contour data but can lead to instab...",
-                        "default": null
+                        "default": None
                 },
                 "out_residual_feature": {
                         "type": "string",
                         "description": "The output point feature class of all the large elevation residuals as scaled by the local discretisation error.All the scaled residuals larger than 10 should be inspected for possible errors in input...",
-                        "default": null
+                        "default": None
                 },
                 "out_stream_cliff_error_feature": {
                         "type": "string",
                         "description": "The output point feature class of locations where possible stream and cliff errors occur.The locations where the streams have closed loops, distributaries, and streams over cliffs can be identified fr...",
-                        "default": null
+                        "default": None
                 },
                 "out_contour_error_feature": {
                         "type": "string",
                         "description": "The output point feature class of possible errors pertaining to the input contour data.Contours with bias in height exceeding five times the standard deviation of the contour values as represented on ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2206,27 +2206,27 @@ functions_declarations = {
                 "out_stream_features": {
                         "type": "string",
                         "description": "Output feature class of stream polyline features.The polyline features are coded as follows:1. Input stream line not over cliff.2. Input stream line over cliff (waterfall).3. Drainage enforcement clea...",
-                        "default": null
+                        "default": None
                 },
                 "out_sink_features": {
                         "type": "string",
                         "description": "Output feature class of remaining sink point features.",
-                        "default": null
+                        "default": None
                 },
                 "out_residual_feature": {
                         "type": "string",
                         "description": "The output point feature class of all the large elevation residuals as scaled by the local discretisation error.All the scaled residuals larger than 10 should be inspected for possible errors in input...",
-                        "default": null
+                        "default": None
                 },
                 "out_stream_cliff_error_feature": {
                         "type": "string",
                         "description": "The output point feature class of locations where possible stream and cliff errors occur.The locations where the streams have closed loops, distributaries, and streams over cliffs can be identified fr...",
-                        "default": null
+                        "default": None
                 },
                 "out_contour_error_feature": {
                         "type": "string",
                         "description": "The output point feature class of possible errors pertaining to the input contour data.Contours with bias in height exceeding five times the standard deviation of the contour values as represented on ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2248,22 +2248,22 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "order": {
                         "type": "string",
                         "description": "The order of the polynomial.This must be an integer between 1 and 12. A value of 1 will fit a flat plane to the points, and a higher value will fit a more complex surface. The default is 1.",
-                        "default": null
+                        "default": None
                 },
                 "regression_type": {
                         "type": "string",
                         "description": "The type of regression to be performed.LINEAR\u2014Polynomial regression is performed to fit a least-squares surface to the set of input points. This is applicable for continuous types of data.LOGISTIC\u2014Log...",
-                        "default": null
+                        "default": None
                 },
                 "out_rms_file": {
                         "type": "string",
                         "description": "File name for the output text file that contains information about the RMS error and the Chi-Square of the interpolation.The extension must be .txt.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2282,27 +2282,27 @@ functions_declarations = {
                 "statistics_type": {
                         "type": "string",
                         "description": "Specifies the statistic type to be calculated.MEAN\u2014The mean (average) of the inputs will be calculated. This is the default.MAJORITY\u2014The majority (value that occurs most often) of the inputs will be d...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_nodata": {
                         "type": "string",
                         "description": "Specifies whether NoData values will be ignored by the statistic calculation.DATA\u2014At the processing cell location, if any of the input rasters has NoData, that NoData value will be ignored. The statis...",
-                        "default": null
+                        "default": None
                 },
                 "process_as_multiband": {
                         "type": "string",
                         "description": "Specifies how the input multiband raster bands will be processed.\r\nSINGLE_BAND\u2014Each band from a multiband raster input will be processed separately as a single band raster. This is the default.MULTI_B...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_value": {
                         "type": "string",
                         "description": "The percentile value that will be calculated. The default is 90, indicating the 90th percentile.The value can range from 0 to 100. The 0th percentile is essentially equivalent to the minimum statistic...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_interpolation_type": {
                         "type": "string",
                         "description": "Specifies the method of interpolation that will be used when the specified percentile value is between two input cell values.AUTO_DETECT\u2014If the input rasters are of integer pixel type, the NEAREST met...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2337,7 +2337,7 @@ functions_declarations = {
                 "process_as_multiband": {
                         "type": "string",
                         "description": "Specifies how the input multiband raster bands will be processed.SINGLE_BAND\u2014Each band from a multiband raster input will be processed separately as a single band raster. This is the default.MULTI_BAN...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2360,7 +2360,7 @@ functions_declarations = {
                 "process_as_multiband": {
                         "type": "string",
                         "description": "Specifies how the input multiband raster bands will be processed.\r\nSINGLE_BAND\u2014Each band from a multiband raster input will be processed separately as a single band raster. This is the default.MULTI_B...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2396,7 +2396,7 @@ functions_declarations = {
                 "process_as_multiband": {
                         "type": "string",
                         "description": "Specifies how the input multiband raster bands will be processed.SINGLE_BAND\u2014Each band from a multiband raster input will be processed separately as a single band raster. This is the default.MULTI_BAN...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2432,7 +2432,7 @@ functions_declarations = {
                 "process_as_multiband": {
                         "type": "string",
                         "description": "Specifies how the input multiband raster bands will be processed.SINGLE_BAND\u2014Each band from a multiband raster input will be processed separately as a single band raster. This is the default.MULTI_BAN...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -2455,7 +2455,7 @@ functions_declarations = {
                 "process_as_multiband": {
                         "type": "string",
                         "description": "Specifies how the input multiband raster bands will be processed.\r\nSINGLE_BAND\u2014Each band from a multiband raster input will be processed separately as a single band raster. This is the default.MULTI_B...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3136,7 +3136,7 @@ functions_declarations = {
                 "process_as_multiband": {
                         "type": "string",
                         "description": "Specifies how the input multiband raster bands will be processed.\r\nSINGLE_BAND\u2014Each band from a multiband raster input will be processed separately as a single band raster. This is the default.MULTI_B...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3144,13 +3144,13 @@ functions_declarations = {
                 "in_raster_or_constantsin_raster_or_constant"
         ]
 },
-    "is_null": {
-        "name": "is_null",
+    "is_None": {
+        "name": "is_None",
         "description": "Determines which values from the input raster are NoData on a cell-by-cell basis. Returns a value of 1 if the input value is NoData and 0 for cells that are not.",
         "parameters": {
                 "in_raster": {
                         "type": "string",
-                        "description": "The input raster being tested to identify the cells that are NoData (null).The input can be either integer or floating-point type."
+                        "description": "The input raster being tested to identify the cells that are NoData (None).The input can be either integer or floating-point type."
                 }
         },
         "required": [
@@ -3382,62 +3382,62 @@ functions_declarations = {
                 "aggregation_method": {
                         "type": "string",
                         "description": "Specifies the mathematical method that will be used to combine the aggregated slices in an interval.MEAN\u2014The mean of a pixel's values will be calculated across all slices in the interval. This is the ...",
-                        "default": null
+                        "default": None
                 },
                 "variables": {
                         "type": "string",
                         "description": "The variable or variables that will be aggregated along the given dimension. If no variable is specified, all variables with the selected dimension will be aggregated.For example, to aggregate daily t...",
-                        "default": null
+                        "default": None
                 },
                 "aggregation_def": {
                         "type": "string",
                         "description": "Specifies the dimension interval for which the data will be aggregated.ALL\u2014The data values will be aggregated across all slices. This is the default.INTERVAL_KEYWORD\u2014The variable data will be aggregat...",
-                        "default": null
+                        "default": None
                 },
                 "interval_keyword": {
                         "type": "string",
                         "description": "Specifies the keyword interval that will be used when aggregating along the dimension. This parameter is required when the aggregation_def parameter is set to INTERVAL_KEYWORD and the aggregation must...",
-                        "default": null
+                        "default": None
                 },
                 "interval_value": {
                         "type": "string",
                         "description": "The size of the interval that will be used for the aggregation. This parameter is required when the aggregation_def parameter is set to INTERVAL_VALUE.For example, to aggregate 30 years of monthly tem...",
-                        "default": null
+                        "default": None
                 },
                 "interval_unit": {
                         "type": "string",
                         "description": "The unit that will be used for the interval_value parameter. This parameter is required when the dimension parameter is set to a time field and the aggregation_def parameter is set to INTERVAL_VALUE.I...",
-                        "default": null
+                        "default": None
                 },
                 "interval_ranges": {
                         "type": "string",
                         "description": "Interval ranges specified in a value table will be used to aggregate groups of values. The value table consists of pairs of minimum and maximum range values, with data type Double or Date.\r\nThis param...",
-                        "default": null
+                        "default": None
                 },
                 "aggregation_function": {
                         "type": "string",
                         "description": "A custom raster function that will be used to compute the pixel values of the aggregated rasters. The input is a raster function JSON object or an .rft.xml file created from a function chain or a cust...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_nodata": {
                         "type": "string",
                         "description": "Specifies whether NoData values will be ignored in the analysis.DATA\u2014The analysis will include all valid pixels along a given dimension and ignore NoData pixels. This is the default.NODATA\u2014The analysi...",
-                        "default": null
+                        "default": None
                 },
                 "dimensionless": {
                         "type": "string",
                         "description": "Specifies whether the layer will have dimension values. This parameter is only enabled if a single slice is selected to create a layer.NO_DIMENSIONS\u2014 The layer will not have dimension values.DIMENSION...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_value": {
                         "type": "string",
                         "description": "The percentile that will be calculated. The default is 90, indicating the 90th percentile.The values can range from 0 to 100. The 0th percentile is essentially equivalent to the minimum statistic, and...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_interpolation_type": {
                         "type": "string",
                         "description": "Specifies the method of percentile interpolation that will be used when there is an even number of values from the input raster to be calculated.NEAREST\u2014The nearest available value to the desired perc...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3456,42 +3456,42 @@ functions_declarations = {
                 "dimension": {
                         "type": "string",
                         "description": "The name of the dimension along which the window will move.The default value is the first dimension other than x,y found in the input multidimensional raster.",
-                        "default": null
+                        "default": None
                 },
                 "backward_window": {
                         "type": "string",
                         "description": "The value of how many slices before or above to be included in the defined window. The value must be a positive integer from 1 to 100. The default value is 1.The unit of this parameter is slice.",
-                        "default": null
+                        "default": None
                 },
                 "forward_window": {
                         "type": "string",
                         "description": "The value of how many slices after or below to be included in the defined window. The value must be a positive integer from 1 to 100. The default value is 1.The unit of this parameter is slice.",
-                        "default": null
+                        "default": None
                 },
                 "nodata_handling": {
                         "type": "string",
                         "description": "Specifies how NoData values will be handled by the statistic calculation.DATA\u2014NoData values in the value input will be ignored in the results of the defined window that they fall within. This is the d...",
-                        "default": null
+                        "default": None
                 },
                 "statistics_type": {
                         "type": "string",
                         "description": "Specifies the statistic type to be calculated.MEAN\u2014The mean (average value) of the cells in the defined window will be calculated. This is the default.CIRCULAR_MEAN\u2014The mean for angles or other cyclic...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_value": {
                         "type": "string",
                         "description": "The percentile value that will be calculated. The default is 90, for the 90th percentile.The value can range from 0 to 100. The 0th percentile is essentially equivalent to the minimum statistic, and t...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_interpolation_type": {
                         "type": "string",
                         "description": "Specifies the method of interpolation that will be used when the percentile value falls between two cell values.This parameter is only supported if the statistics_type parameter is set to MEDIAN or PE...",
-                        "default": null
+                        "default": None
                 },
                 "circular_wrap_value": {
                         "type": "string",
                         "description": "The value that will be used to convert a linear value to the range of a given circular mean. Its value must be positive. The default value is 360 degrees.\r\nThis parameter is only supported if the stat...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3509,27 +3509,27 @@ functions_declarations = {
                 "variables": {
                         "type": "string",
                         "description": "The variable or variables for which anomalies will be calculated. If no variable is specified, all variables with a time dimension will be analyzed.",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to calculate the anomaly.\r\nDIFFERENCE_FROM_MEAN\u2014The difference between a pixel's value and the mean of that pixel's values across slices defined by the interval ...",
-                        "default": null
+                        "default": None
                 },
                 "calculation_interval": {
                         "type": "string",
                         "description": "Specifies the temporal interval that will be used to calculate the mean.ALL\u2014The mean is calculated across all slices for each pixel.YEARLY\u2014The yearly mean is calculated for each pixel.RECURRING_MONTHL...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_nodata": {
                         "type": "string",
                         "description": "Specifies whether NoData values will be ignored in the analysis.DATA\u2014The analysis will include all valid pixels along a given dimension and ignore NoData pixels. This is the default.NODATA\u2014The analysi...",
-                        "default": null
+                        "default": None
                 },
                 "reference_mean_raster": {
                         "type": "string",
                         "description": "The reference raster dataset that contains a previously calculated mean for each pixel. The anomalies will be calculated in comparison to this mean.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3551,7 +3551,7 @@ functions_declarations = {
                 "compute_matrices": {
                         "type": "string",
                         "description": "Specifies whether covariance and correlation matrices are calculated.BRIEF\u2014Only the basic statistical measures (minimum, maximum, mean, and standard deviation) will be calculated for every layer. This...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3574,17 +3574,17 @@ functions_declarations = {
                 "maximum_output_value": {
                         "type": "string",
                         "description": "Factor for scaling the range of values in the output probability bands.By default, the values range from 0 to 100.",
-                        "default": null
+                        "default": None
                 },
                 "a_priori_probabilities": {
                         "type": "string",
                         "description": "Specifies how a priori probabilities will be determined.\r\nEQUAL\u2014All classes will have the same a priori probability.SAMPLE\u2014A priori probabilities will be proportional to the number of cells in each cl...",
-                        "default": null
+                        "default": None
                 },
                 "in_a_priori_file": {
                         "type": "string",
                         "description": "A text file containing a priori probabilities for the input signature classes.An input for the a priori probability file is only required when the File option is used.The extension for the a priori fi...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3611,12 +3611,12 @@ functions_declarations = {
                 "compute_covariance": {
                         "type": "string",
                         "description": "Specifies whether covariance matrices in addition to the means are calculated.COVARIANCE\u2014Both the covariance matrices and the means for all classes of the in_sample_data will be computed. This is the ...",
-                        "default": null
+                        "default": None
                 },
                 "sample_field": {
                         "type": "string",
                         "description": "Field of the input raster or feature sample data to assign values to the sampled locations (classes).Only integer or string fields are valid fields. The specified number or string will be used as the ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3640,12 +3640,12 @@ functions_declarations = {
                 "distance_calculation": {
                         "type": "string",
                         "description": "Specifies the manner in which the distances between classes in multidimensional attribute space are defined.VARIANCE\u2014 The distances between classes will be computed based on the variances and the Eucl...",
-                        "default": null
+                        "default": None
                 },
                 "line_width": {
                         "type": "string",
                         "description": "Sets the width of the dendrogram in number of characters on a line.The default is 78.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3676,7 +3676,7 @@ functions_declarations = {
                 "sample_interval": {
                         "type": "string",
                         "description": "The interval to be used for sampling.The default is 10.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3705,17 +3705,17 @@ functions_declarations = {
                 "number_iterations": {
                         "type": "string",
                         "description": "Number of iterations of the clustering process to run.The default is 20.",
-                        "default": null
+                        "default": None
                 },
                 "min_class_size": {
                         "type": "string",
                         "description": "Minimum number of cells in a valid class.The default is 20.",
-                        "default": null
+                        "default": None
                 },
                 "sample_interval": {
                         "type": "string",
                         "description": "The interval to be used for sampling.The default is 10.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3739,17 +3739,17 @@ functions_declarations = {
                 "minimum_class_size": {
                         "type": "string",
                         "description": "Minimum number of cells in a valid class.The default is 20.",
-                        "default": null
+                        "default": None
                 },
                 "sample_interval": {
                         "type": "string",
                         "description": "The interval to be used for sampling.The default is 10.",
-                        "default": null
+                        "default": None
                 },
                 "output_signature_fileout_signature_file": {
                         "type": "string",
                         "description": "The output signature file.A .gsg extension must be specified.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3772,22 +3772,22 @@ functions_declarations = {
                 "reject_fraction": {
                         "type": "string",
                         "description": "Select a reject fraction, which determines whether a cell will be classified based on its likelihood of being correctly assigned to one of the classes. Cells whose likelihood of being correctly assign...",
-                        "default": null
+                        "default": None
                 },
                 "a_priori_probabilities": {
                         "type": "string",
                         "description": "Specifies how a priori probabilities will be determined.EQUAL\u2014All classes will have the same a priori probability.SAMPLE\u2014A priori probabilities will be proportional to the number of cells in each clas...",
-                        "default": null
+                        "default": None
                 },
                 "in_a_priori_file": {
                         "type": "string",
                         "description": "A text file containing a priori probabilities for the input signature classes.An input for the a priori probability file is only required when the File option is used.The extension for the a priori fi...",
-                        "default": null
+                        "default": None
                 },
                 "out_confidence_raster": {
                         "type": "string",
                         "description": "The output confidence raster dataset shows the certainty of the classification in 14 levels of confidence, with the lowest values representing the highest reliability. If there are no cells classified...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3806,12 +3806,12 @@ functions_declarations = {
                 "number_components": {
                         "type": "string",
                         "description": "Number of principal components.The number must be greater than zero and less than or equal to the total number of input raster bands.The default is the total number of rasters in the input.",
-                        "default": null
+                        "default": None
                 },
                 "out_data_file": {
                         "type": "string",
                         "description": "Output ASCII data file storing principal component parameters.The output data file records the correlation and covariance matrices, the eigenvalues and eigenvectors, the percent variance each eigenval...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3829,17 +3829,17 @@ functions_declarations = {
                 "neighborhood": {
                         "type": "string",
                         "description": "The cells of the processing block that will be used in the statistic calculation. There are several predefined neighborhood types to choose from, or a custom kernel can be defined.Once the neighborhoo...",
-                        "default": null
+                        "default": None
                 },
                 "statistics_type": {
                         "type": "string",
                         "description": "Specifies the statistic type to be calculated.\r\n\r\nMEAN\u2014The mean (average value) of the cells in the neighborhood will be calculated.MAJORITY\u2014The majority (value that occurs most often) of the cells in...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_nodata": {
                         "type": "string",
                         "description": "Specifies whether NoData values will be ignored by the statistic calculation.DATA\u2014If a NoData value exists within a block neighborhood, the NoData value will be ignored. Only cells within the neighbor...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3857,12 +3857,12 @@ functions_declarations = {
                 "filter_type": {
                         "type": "string",
                         "description": "The type of filter operation to perform.LOW\u2014Traverses a low pass 3-by-3 filter over the raster. This option smooths the entire input raster and reduces the significance of anomalous cells. This is the...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_nodata": {
                         "type": "string",
                         "description": "Denotes whether NoData values are ignored by the filter calculation.DATA\u2014If a NoData value exists within the filter, the NoData value will be ignored. Only cells within the filter that have data value...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3880,7 +3880,7 @@ functions_declarations = {
                 "threshold_value": {
                         "type": "string",
                         "description": "Defines a value that constitutes the threshold, which must be equaled or exceeded before flow can occur.The threshold value can be either an integer or floating-point value.If the difference between t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3898,22 +3898,22 @@ functions_declarations = {
                 "neighborhood": {
                         "type": "string",
                         "description": "The cells surrounding a processing cell that will be used in the statistic calculation. There are several predefined neighborhood types to choose from, or a custom kernel can be defined.Once the neigh...",
-                        "default": null
+                        "default": None
                 },
                 "statistics_type": {
                         "type": "string",
                         "description": "Specifies the statistic type to be calculated.MEAN\u2014The mean (average value) of the cells in the neighborhood will be calculated.MAJORITY\u2014The majority (value that occurs most often) of the cells in the...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_nodata": {
                         "type": "string",
                         "description": "Specifies whether NoData values will be ignored by the statistic calculation.DATA\u2014If a NoData value exists within a neighborhood, the NoData value will be ignored. Only cells within the neighborhood t...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_value": {
                         "type": "string",
                         "description": "The percentile value that will be calculated. The default is 90, for the 90th percentile.The value can range from 0 to 100. The 0th percentile is essentially equivalent to the minimum statistic, and t...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3935,17 +3935,17 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "search_radius": {
                         "type": "string",
                         "description": "The search radius that will be used to calculate the statistic within, in map units.The default radius is five times the output cell size.",
-                        "default": null
+                        "default": None
                 },
                 "statistics_type": {
                         "type": "string",
                         "description": "Specifies the statistic type to be calculated.Statistics are calculated on the value of the specified field for all lines within the neighborhood.MEAN\u2014The average field value in each neighborhood, wei...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3968,17 +3968,17 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "neighborhood": {
                         "type": "string",
                         "description": "The area around each processing cell within which any input points found will be used in the statistics calculation. There are several predefined neighborhood types to choose from.Once the neighborhoo...",
-                        "default": null
+                        "default": None
                 },
                 "statistics_type": {
                         "type": "string",
                         "description": "Specifies the statistic type to be calculated.The calculation is performed on the values of the specified field of the points that fall within the specified neighborhood of each output raster cell.MEA...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -3997,12 +3997,12 @@ functions_declarations = {
                 "fuzzy_function": {
                         "type": "string",
                         "description": "Specifies the algorithm used in fuzzification of the input raster.The fuzzy classes are used to specify the type of membership.The types of membership classes are: \r\n  FuzzyGaussian, FuzzyLarge, Fuzzy...",
-                        "default": null
+                        "default": None
                 },
                 "hedge": {
                         "type": "string",
                         "description": "Defining a hedge increases or decreases the fuzzy membership values which modify the meaning of a fuzzy set. Hedges are useful to help in controlling the criteria or important attributes.NONE\u2014No hedge...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4020,12 +4020,12 @@ functions_declarations = {
                 "overlay_type": {
                         "type": "string",
                         "description": "Specifies the method used to combine two or more membership data.AND\u2014The minimum of the fuzzy memberships from the input fuzzy rasters.OR\u2014The maximum of the fuzzy memberships from the input rasters.PR...",
-                        "default": null
+                        "default": None
                 },
                 "gamma": {
                         "type": "string",
                         "description": "The gamma value to be used. This is only available when the Overlay type is set to Gamma.Default value is 0.9.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4043,92 +4043,92 @@ functions_declarations = {
                 "total_area": {
                         "type": "string",
                         "description": "The total amount of area for all regions.The default is 10 percent of the input cells within the processing extent.",
-                        "default": null
+                        "default": None
                 },
                 "area_units": {
                         "type": "string",
                         "description": "Defines the area units used for the total_area, minimum_area, and maximum_area parameters.The available options and their corresponding units are the following:SQUARE_MAP_UNITS\u2014For the square of the l...",
-                        "default": null
+                        "default": None
                 },
                 "number_of_regions": {
                         "type": "string",
                         "description": "Determines how many regions the total_area will be distributed across.The maximum number of regions that can be specified is 30. The default is 1.",
-                        "default": null
+                        "default": None
                 },
                 "region_shape": {
                         "type": "string",
                         "description": "Defines the shape characteristics for the output regions.The regions start out from seed cell locations and grow outward with preference given to the cells that maintain the desired shape.The availabl...",
-                        "default": null
+                        "default": None
                 },
                 "region_orientation": {
                         "type": "string",
                         "description": "Defines the orientation of the defined shape. Regions are grown out from the seed locations with preference given to the cells that maintain the desired orientation of the region shapes.The orientatio...",
-                        "default": null
+                        "default": None
                 },
                 "shape_tradeoff": {
                         "type": "string",
                         "description": "Identifies the weight for the cells when growing the candidate regions in the parameterized region-growing algorithm. The weighting is a tradeoff between a cell's contribution for maintaining the regi...",
-                        "default": null
+                        "default": None
                 },
                 "evaluation_method": {
                         "type": "string",
                         "description": "The evaluation criteria to be used for determining which of the candidate regions identified in the parameterized region-growing algorithm are most preferred. The preference can be specified based on ...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_area": {
                         "type": "string",
                         "description": "Define the minimum area allowed for each region.The units specified by area_units will be used.To learn more about how regions are created when the minimum and maximum areas are defined, see How regio...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_area": {
                         "type": "string",
                         "description": "Define the maximum area allowed for each region.The units specified by area_units will be used.To learn more about how regions are created when the minimum and maximum areas are defined, see How regio...",
-                        "default": null
+                        "default": None
                 },
                 "minimum_distance": {
                         "type": "string",
                         "description": "Define the minimum distance allowed between regions. No two regions can be within this distance.This parameter influences the parameterized region-growing (PRG) algorithm. If a cell has the potential ...",
-                        "default": null
+                        "default": None
                 },
                 "maximum_distance": {
                         "type": "string",
                         "description": "Define the maximum distance allowed between regions. No region can be farther apart than this distance from at least one other region.When sequentially selecting regions, if the next best region is fa...",
-                        "default": null
+                        "default": None
                 },
                 "distance_units": {
                         "type": "string",
                         "description": "Defines the distance units that will be used for the minimum_distance and maximum_distance parameters.The available options and their corresponding units are the following:MAP_UNITS\u2014For the linear uni...",
-                        "default": null
+                        "default": None
                 },
                 "in_existing_regions": {
                         "type": "string",
                         "description": "A dataset identifying where regions already exist.The input can be a raster or feature dataset. If the input is a raster, any location in the raster with a valid value is considered already allocated....",
-                        "default": null
+                        "default": None
                 },
                 "number_of_neighbors": {
                         "type": "string",
                         "description": "Defines which neighboring cells to use in the growth of the regions.The available options are the following:FOUR\u2014Only the four direct (orthogonal) neighbors of the region cells will be considered in t...",
-                        "default": null
+                        "default": None
                 },
                 "no_islands": {
                         "type": "string",
                         "description": "Defines if islands will be allowed within the potential regions.NO_ISLANDS\u2014The parameterized region-growing algorithm ensures there will be no islands within a region.A flood field algorithm is implem...",
-                        "default": null
+                        "default": None
                 },
                 "region_seeds": {
                         "type": "string",
                         "description": "Defines the number of seeds from which to grow the potential regions.To learn more about how the seeds influence the region growth algorithm, see How seeds are distributed.The available options are th...",
-                        "default": null
+                        "default": None
                 },
                 "region_resolution": {
                         "type": "string",
                         "description": "Sets the resolution at which region growth occurs.\r\n\r\n\r\nThe input raster will be resampled to the resolution determined by the number of cells identified by this parameter (see below). For example, fo...",
-                        "default": null
+                        "default": None
                 },
                 "selection_method": {
                         "type": "string",
                         "description": "Identifies how the regions will be selected.The available options are the following:AUTO\u2014The selection method is based on the Number of regions parameter. If the Number of regions is eight or less, th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4172,17 +4172,17 @@ functions_declarations = {
                 "data_type": {
                         "type": "string",
                         "description": "Data type of the output raster dataset.INTEGER\u2014An integer raster will be created.FLOAT\u2014A floating-point raster will be created.\r\nIf the specified data type is floating-point, the values of the cells i...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "The extent for the output raster dataset.The Extent is a Python class.In this tool, it is in the form Extent(XMin, YMin, XMax, YMax)where XMin and YMin define the lower left coordinate of the extent, ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4196,12 +4196,12 @@ functions_declarations = {
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "The extent for the output raster dataset.The Extent is a Python class.In this tool, it is in the form Extent(XMin, YMin, XMax, YMax)where XMin and YMin define the lower left coordinate of the extent, ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": []
@@ -4213,17 +4213,17 @@ functions_declarations = {
                 "seed_value": {
                         "type": "string",
                         "description": "A value to be used to reseed the random number generator.This may be an integer or floating-point number. Rasters are not permitted as input.The random number generator is automatically seeded with th...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "extent": {
                         "type": "string",
                         "description": "The extent for the output raster dataset.The Extent is a Python class.In this tool, it is in the form Extent(XMin, YMin, XMax, YMax)where XMin and YMin define the lower left coordinate of the extent, ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": []
@@ -4261,7 +4261,7 @@ functions_declarations = {
                 "missing_values": {
                         "type": "string",
                         "description": "Denotes whether missing values in the reclass file retain their value or get mapped to NoData.DATA\u2014Signifies that if any cell location on the input raster contains a value that is not present or recla...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4296,7 +4296,7 @@ functions_declarations = {
                 "missing_values": {
                         "type": "string",
                         "description": "Denotes whether missing values in the reclass table retain their value or get mapped to NoData.DATA\u2014Signifies that if any cell location on the input raster contains a value not present or reclassed in...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4326,7 +4326,7 @@ functions_declarations = {
                 "missing_values": {
                         "type": "string",
                         "description": "Denotes whether missing values in the reclass table retain their value or get mapped to NoData.DATA\u2014Signifies that if any cell location on the input raster contains a value that is not present or recl...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4346,17 +4346,17 @@ functions_declarations = {
                 "transformation_function": {
                         "type": "string",
                         "description": "Specifies the continuous function to transform the input raster.The transformation function classes are used to specify the type of transformation function.The types of transformation function classes...",
-                        "default": null
+                        "default": None
                 },
                 "from_scale": {
                         "type": "string",
                         "description": "The starting value of the output evaluation scale.The from_scale value cannot be equal to the to_scale value. The from_scale can be lower or higher than the to_scale (for example, from 1 to 10, or fro...",
-                        "default": null
+                        "default": None
                 },
                 "to_scale": {
                         "type": "string",
                         "description": "The ending value of the output evaluation scale.The to_scale value cannot be equal to the from_scale value. The to_scale can be lower or higher than the from_scale (for example, from 1 to 10, or from ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4374,27 +4374,27 @@ functions_declarations = {
                 "number_zones": {
                         "type": "string",
                         "description": "The number of zones that the input raster will be reclassified into.This parameter is required when the slice_type parameter value is EQUAL_AREA, EQUAL_INTERVAL, NATURAL_BREAKS, or GEOMETRIC_INTERVAL....",
-                        "default": null
+                        "default": None
                 },
                 "slice_type": {
                         "type": "string",
                         "description": "Specifies the manner in which the input raster will be reclassified into zones.EQUAL_INTERVAL\u2014The range of input values will be equally divided into the specified number of output zones to determine t...",
-                        "default": null
+                        "default": None
                 },
                 "base_output_zone": {
                         "type": "string",
                         "description": "The starting value that will be used for zones (classes) on the output raster dataset.Classes will be assigned integer values, increasing by 1 from the starting value.The default starting value is 1.",
-                        "default": null
+                        "default": None
                 },
                 "nodata_to_value": {
                         "type": "string",
                         "description": "Replace NoData with a value in the output.If this parameter is not set, NoData cells will remain as NoData in the output raster.",
-                        "default": null
+                        "default": None
                 },
                 "class_interval_size": {
                         "type": "string",
                         "description": "The size of the interval between classes.This parameter is required when the slice_type parameter is set to DEFINED_INTERVAL, STANDARD_DEVIATION_MEAN_CENTERED, or STANDARD_DEVIATION_MEAN_BREAK.If DEFI...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4416,7 +4416,7 @@ functions_declarations = {
                 "in_additional_raster": {
                         "type": "string",
                         "description": "Ancillary raster datasets, such as a multispectral image or a DEM, will be incorporated to generate attributes and other required information for the classifier. This raster is necessary when calculat...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4453,12 +4453,12 @@ functions_declarations = {
                 "in_additional_raster": {
                         "type": "string",
                         "description": "Ancillary raster datasets, such as a multispectral image or a DEM, will be incorporated to generate attributes and other required information for the classifier. This raster is necessary when calculat...",
-                        "default": null
+                        "default": None
                 },
                 "used_attributes": {
                         "type": "string",
                         "description": "Specifies the attributes that will be included in the attribute table associated with the output raster.COLOR\u2014The RGB color values will be derived from the input raster on a per-segment basis. This is...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4480,27 +4480,27 @@ functions_declarations = {
                 "target_field": {
                         "type": "string",
                         "description": "Specifies whether the input data is a classified image or ground truth data.A classified image is the image that was just classified. Ground truth data, or reference data, consists of identified featu...",
-                        "default": null
+                        "default": None
                 },
                 "num_random_points": {
                         "type": "string",
                         "description": "The total number of random points that will be generated.The actual number may exceed but never fall below this number, depending on sampling strategy and number of classes. The default number of rand...",
-                        "default": null
+                        "default": None
                 },
                 "sampling": {
                         "type": "string",
                         "description": "Specifies the sampling scheme that will be used.STRATIFIED_RANDOM\u2014Randomly distributed points will be created in each class in which each class has a number of points proportional to its relative area...",
-                        "default": null
+                        "default": None
                 },
                 "polygon_dimension_field": {
                         "type": "string",
                         "description": "A field that defines the dimension (time) of the features. This parameter is used only if the classification result is a multidimensional raster and you want to generate assessment points from a featu...",
-                        "default": null
+                        "default": None
                 },
                 "min_point_distance": {
                         "type": "string",
                         "description": "The minimum distance between the reference points. The default is 0.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4531,97 +4531,97 @@ functions_declarations = {
                 "tile_size_x": {
                         "type": "string",
                         "description": "The size of the image chips for the x dimension.",
-                        "default": null
+                        "default": None
                 },
                 "tile_size_y": {
                         "type": "string",
                         "description": "The size of the image chips for the y dimension.",
-                        "default": null
+                        "default": None
                 },
                 "stride_x": {
                         "type": "string",
                         "description": "The distance to move in the x direction when creating the next image chips.When stride is equal to tile size, there will be no overlap. When stride is equal to half the tile size, there will be 50 per...",
-                        "default": null
+                        "default": None
                 },
                 "stride_y": {
                         "type": "string",
                         "description": "The distance to move in the y direction when creating the next image chips.When stride is equal to tile size, there will be no overlap. When stride is equal to half the tile size, there will be 50 per...",
-                        "default": null
+                        "default": None
                 },
                 "output_nofeature_tiles": {
                         "type": "string",
                         "description": "Specifies whether image chips that do not capture training samples will be exported.ALL_TILES\u2014All image chips, including those that do not capture training samples, will be exported.ONLY_TILES_WITH_FE...",
-                        "default": null
+                        "default": None
                 },
                 "metadata_format": {
                         "type": "string",
                         "description": "Specifies the format that will be used for the output metadata labels. If the input training sample data is a feature class layer, such as a building layer or a standard classification training sample...",
-                        "default": null
+                        "default": None
                 },
                 "start_index": {
                         "type": "string",
                         "description": "Legacy:This parameter has been deprecated. Use a value of 0 or # in Python.",
-                        "default": null
+                        "default": None
                 },
                 "class_value_field": {
                         "type": "string",
                         "description": "The field that contains the class values. If no field is specified, the system searches for a value or classvalue field. The field should be numeric, usually an integer. If the feature does not contai...",
-                        "default": null
+                        "default": None
                 },
                 "buffer_radius": {
                         "type": "string",
                         "description": "The radius of a buffer around each training sample that will be used to delineate a training sample area. This allows you to create circular polygon training samples from points.\r\nThe linear unit of t...",
-                        "default": null
+                        "default": None
                 },
                 "in_mask_polygons": {
                         "type": "string",
                         "description": "A polygon feature class that delineates the area where image chips will be created.Only image chips that fall completely within the polygons will be created.",
-                        "default": null
+                        "default": None
                 },
                 "rotation_angle": {
                         "type": "string",
                         "description": "The rotation angle that will be used to generate image chips.\r\nAn image chip will first be generated with no rotation. It will then be rotated at the specified angle to create additional image chips. ...",
-                        "default": null
+                        "default": None
                 },
                 "reference_system": {
                         "type": "string",
                         "description": "Specifies the type of reference system that will be used to interpret the input image. The reference system specified must match the reference system used to train the deep learning model.MAP_SPACE\u2014A ...",
-                        "default": null
+                        "default": None
                 },
                 "processing_mode": {
                         "type": "string",
                         "description": "Specifies how all raster items in a mosaic dataset or an image service will be processed. This parameter is applied when the input raster is a mosaic dataset or an image service.PROCESS_AS_MOSAICKED_I...",
-                        "default": null
+                        "default": None
                 },
                 "blacken_around_feature": {
                         "type": "string",
                         "description": "Specifies whether the pixels around each object or feature in each image tile will be masked out.This parameter only applies when the metadata_format parameter is set to Labeled_Tiles and an input fea...",
-                        "default": null
+                        "default": None
                 },
                 "crop_mode": {
                         "type": "string",
                         "description": "Specifies whether the exported tiles will be cropped so that they are all the same size.This parameter only applies when the  metadata_format parameter is set to either Labeled_Tiles or Imagenet, and ...",
-                        "default": null
+                        "default": None
                 },
                 "in_raster2": {
                         "type": "string",
                         "description": "An additional input  imagery source that will be used for image translation methods.This parameter is valid when the metadata_format parameter is set to Classified_Tiles, Export_Tiles, or CycleGAN.",
-                        "default": null
+                        "default": None
                 },
                 "in_instance_data": {
                         "type": "string",
                         "description": "The training sample data collected that contains classes for instance segmentation. The input can also be a point feature class without a class value field or an integer raster without class informati...",
-                        "default": null
+                        "default": None
                 },
                 "instance_class_value_field": {
                         "type": "string",
                         "description": "The field that contains the class values for instance segmentation. If no field is specified, the tool will use a value or class value field if one is present. If the feature does not contain a class ...",
-                        "default": null
+                        "default": None
                 },
                 "min_polygon_overlap_ratio": {
                         "type": "string",
                         "description": "The minimum overlap percentage for a feature to be included in the training data. If the percentage overlap is less than the value specified, the feature will be excluded from the training chip and wi...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4650,12 +4650,12 @@ functions_declarations = {
                 "min_sample_area": {
                         "type": "string",
                         "description": "The minimum area needed for each training sample, in square meters. The minimum value must be greater than or equal to 0.",
-                        "default": null
+                        "default": None
                 },
                 "max_sample_radius": {
                         "type": "string",
                         "description": "The longest distance (in meters) from any point within the training sample to its center seed point. If set to 0, the output training sample will be points instead of polygons. The minimum value must ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4691,7 +4691,7 @@ functions_declarations = {
                 "in_additional_raster": {
                         "type": "string",
                         "description": "Ancillary raster datasets, such as a multispectral image or a DEM, will be incorporated to generate attributes and other required information for the classifier. This raster is necessary when calculat...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4717,7 +4717,7 @@ functions_declarations = {
                 "value_option": {
                         "type": "string",
                         "description": "Specifies how the output pixel values will be defined.SUM_TO_ONE\u2014Class values for each pixel will be provided in decimal format with the sum of all classes equal to 1. For example, Class1 = 0.16; Clas...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4736,12 +4736,12 @@ functions_declarations = {
                 "tilesizex": {
                         "type": "string",
                         "description": "Specify the tile width from Segment Mean Shift. If left blank, the default is 512 pixels.",
-                        "default": null
+                        "default": None
                 },
                 "tilesizey": {
                         "type": "string",
                         "description": "Specify the tile height from Segment Mean Shift. If left blank, the default is 512 pixels.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4759,27 +4759,27 @@ functions_declarations = {
                 "spectral_detail": {
                         "type": "string",
                         "description": "The level of importance given to the spectral differences of features in the imagery.Valid values range from 1.0 to 20.0. A higher value is appropriate when there are features to classify separately t...",
-                        "default": null
+                        "default": None
                 },
                 "spatial_detail": {
                         "type": "string",
                         "description": "The level of importance given to the proximity between features in the imagery.Valid values range from 1.0 to 20. A higher value is appropriate for a scene in which the features of interest are small ...",
-                        "default": null
+                        "default": None
                 },
                 "min_segment_size": {
                         "type": "string",
                         "description": "The minimum size of a segment. Merge segments smaller than this size with their best fitting neighbor segment. This is related to the minimum mapping unit for your project.Units are in pixels.",
-                        "default": null
+                        "default": None
                 },
                 "band_indexes": {
                         "type": "string",
                         "description": "The bands that will be used to segment the imagery, separated by a space. If no band indexes are specified, they are determined by the following criteria:\r\n If the raster has only 3 bands, those 3 ban...",
-                        "default": null
+                        "default": None
                 },
                 "max_segment_size": {
                         "type": "string",
                         "description": "The maximum size of a segment. Segments that are larger than the specified size will be divided. Use this parameter to prevent artifacts in the output raster resulting from large segments.Units are in...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4805,37 +4805,37 @@ functions_declarations = {
                 "in_additional_raster": {
                         "type": "string",
                         "description": "Ancillary raster datasets, such as a multispectral image or a DEM, will be incorporated to generate attributes and other required information for classification. This parameter is optional.",
-                        "default": null
+                        "default": None
                 },
                 "max_iterations": {
                         "type": "string",
                         "description": "The maximum number of iterations the clustering process will run.The recommended range is between 10 and 20 iterations. Increasing this value will linearly increase the processing time.",
-                        "default": null
+                        "default": None
                 },
                 "min_samples_per_cluster": {
                         "type": "string",
                         "description": "The minimum number of pixels or segments in a valid cluster or class.The default value of 20 is effective in creating statistically significant classes. You can increase this number for more larger cl...",
-                        "default": null
+                        "default": None
                 },
                 "skip_factor": {
                         "type": "string",
                         "description": "Number of pixels to skip for a pixel image input. If a segmented image is an input, specify the number of segments to skip.",
-                        "default": null
+                        "default": None
                 },
                 "used_attributes_used_attributes": {
                         "type": "string",
                         "description": "Specifies the attributes that will be included in the attribute table associated with the output raster.COLOR\u2014The RGB color values will be derived from the input raster on a per-segment basis. This is...",
-                        "default": null
+                        "default": None
                 },
                 "max_merge_per_iter": {
                         "type": "string",
                         "description": "The maximum number of cluster merges per iteration. Increasing the number of merges will reduce the number of classes that are created. A lower value will result in more classes.",
-                        "default": null
+                        "default": None
                 },
                 "max_merge_distance": {
                         "type": "string",
                         "description": "The maximum distance between cluster centers in feature space. Increasing the distance will allow more clusters to merge, resulting in fewer classes. A lower value will result in more classes. Values ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4863,17 +4863,17 @@ functions_declarations = {
                 "in_additional_raster": {
                         "type": "string",
                         "description": "Incorporates ancillary raster datasets, such as a segmented image or DEM. This parameter is optional.",
-                        "default": null
+                        "default": None
                 },
                 "used_attributes": {
                         "type": "string",
                         "description": "Specifies the attributes that will be included in the attribute table associated with the output raster.COLOR\u2014The RGB color values will be derived from the input raster on a per-segment basis. This is...",
-                        "default": null
+                        "default": None
                 },
                 "dimension_value_field": {
                         "type": "string",
                         "description": "Contains dimension values in the input training sample feature class.\r\nThis parameter is required to classify a time series of raster data using the change analysis raster output from the Analyze Chan...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4901,32 +4901,32 @@ functions_declarations = {
                 "in_additional_raster": {
                         "type": "string",
                         "description": "Ancillary raster datasets, such as a multispectral image or a DEM, will be incorporated to generate attributes and other required information for classification. This parameter is optional.",
-                        "default": null
+                        "default": None
                 },
                 "max_num_trees": {
                         "type": "string",
                         "description": "The maximum number of trees in the forest. Increasing the number of trees will lead to higher accuracy rates, although this improvement will level off eventually. The number of trees increases the pro...",
-                        "default": null
+                        "default": None
                 },
                 "max_tree_depth": {
                         "type": "string",
                         "description": "The maximum depth of each tree in the forest. Depth is another way of saying the number of rules each tree is allowed to create to come to a decision. Trees will not grow any deeper than this setting.",
-                        "default": null
+                        "default": None
                 },
                 "max_samples_per_class": {
                         "type": "string",
                         "description": "The maximum number of samples that will be used to define each class.The default value of 1000 is recommended when the inputs are nonsegmented rasters. A value that is less than or equal to 0 means th...",
-                        "default": null
+                        "default": None
                 },
                 "used_attributes_used_attributes": {
                         "type": "string",
                         "description": "Specifies the attributes that will be included in the attribute table associated with the output raster.\r\nCOLOR\u2014The RGB color values will be derived from the input raster on a per-segment basis. This ...",
-                        "default": null
+                        "default": None
                 },
                 "dimension_value_field": {
                         "type": "string",
                         "description": "Contains dimension values in the input training sample feature class.This parameter is required to classify a time series of raster data using the change analysis raster output from the Analyze Change...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4954,22 +4954,22 @@ functions_declarations = {
                 "in_additional_raster": {
                         "type": "string",
                         "description": "Ancillary raster datasets, such as a multispectral image or a DEM, will be incorporated to generate attributes and other required information for classification. This parameter is optional.",
-                        "default": null
+                        "default": None
                 },
                 "max_samples_per_class": {
                         "type": "string",
                         "description": "The maximum number of samples that will be used to define each class.The default value of 500 is recommended when the inputs are nonsegmented rasters. A value that is less than or equal to 0 means tha...",
-                        "default": null
+                        "default": None
                 },
                 "used_attributes_used_attributes": {
                         "type": "string",
                         "description": "Specifies the attributes that will be included in the attribute table associated with the output raster.\r\nCOLOR\u2014The RGB color values will be derived from the input raster on a per-segment basis. This ...",
-                        "default": null
+                        "default": None
                 },
                 "dimension_value_field": {
                         "type": "string",
                         "description": "Contains dimension values in the input training sample feature class.\r\nThis parameter is required to classify a time series of raster data using the change analysis raster output from the Analyze Chan...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -4997,17 +4997,17 @@ functions_declarations = {
                 "target_field": {
                         "type": "string",
                         "description": "Specifies whether the input data is a classified image or ground truth data.A classified image is the image that was just classified. Ground truth data, or reference data, consists of identified featu...",
-                        "default": null
+                        "default": None
                 },
                 "polygon_dimension_field": {
                         "type": "string",
                         "description": "The dimension field for the in_points parameter value. The assessment points will be updated based on the matching dimension values with this field.",
-                        "default": null
+                        "default": None
                 },
                 "point_dimension_field": {
                         "type": "string",
                         "description": "The dimension field in the in_points parameter value. Input data with identical dimension values will be used to update corresponding points.\r\n\r\n\r\nWhen the in_class_data parameter value is a multidime...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5027,87 +5027,87 @@ functions_declarations = {
                 "latitude": {
                         "type": "string",
                         "description": "The latitude for the site area. The units are decimal degrees with positive values for the northern hemisphere and negative values for the southern hemisphere.For input surface rasters containing a sp...",
-                        "default": null
+                        "default": None
                 },
                 "sky_size": {
                         "type": "string",
                         "description": "The resolution or sky size for the viewshed, sky map, and sun map rasters. The units are cells.The default is a raster of 200 by 200 cells.",
-                        "default": null
+                        "default": None
                 },
                 "time_configuration": {
                         "type": "string",
                         "description": "Specifies the time configuration (period) that will be used for calculating solar radiation.The Time class objects will be used to specify the time configuration.The different types of time configurat...",
-                        "default": null
+                        "default": None
                 },
                 "day_interval": {
                         "type": "string",
                         "description": "The time interval through the year (units: days) that will be used to calculate sky sectors for the sun map.The default value is 14 (biweekly).",
-                        "default": null
+                        "default": None
                 },
                 "hour_interval": {
                         "type": "string",
                         "description": "The time interval through the day (units: hours) that will be used to calculate sky sectors for the sun map.The default value is 0.5.",
-                        "default": null
+                        "default": None
                 },
                 "each_interval": {
                         "type": "string",
                         "description": "Specifies whether a single total insolation value will be calculated for all locations or multiple values will be calculated for the specified hour and day interval.\r\n\r\nNOINTERVAL\u2014A single total radia...",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The number of ground x,y units in one surface z-unit.The z-factor adjusts the units of measure for the z-units when they are different from the x,y units of the input surface. The z-values of the inpu...",
-                        "default": null
+                        "default": None
                 },
                 "slope_aspect_input_type": {
                         "type": "string",
                         "description": "Specifies how slope and aspect information will be derived for analysis.\r\nFROM_DEM\u2014The slope and aspect rasters will be calculated from the input surface raster. This is the default.FLAT_SURFACE\u2014Const...",
-                        "default": null
+                        "default": None
                 },
                 "calculation_directions": {
                         "type": "string",
                         "description": "The number of azimuth directions that will be used when calculating the viewshed.Valid values must be multiples of 8 (8, 16, 24, 32, and so on). The default value is 32 directions, which is adequate f...",
-                        "default": null
+                        "default": None
                 },
                 "zenith_divisions": {
                         "type": "string",
                         "description": "The number of zenith divisions that will be used to create sky sectors in the sky map.The default is eight divisions (relative to zenith). Values must be greater than zero and less than half the sky s...",
-                        "default": null
+                        "default": None
                 },
                 "azimuth_divisions": {
                         "type": "string",
                         "description": "The number of azimuth divisions that will be used to create sky sectors in the sky map.The default is eight divisions (relative to north). Valid values must be multiples of 8. Values must be greater t...",
-                        "default": null
+                        "default": None
                 },
                 "diffuse_model_type": {
                         "type": "string",
                         "description": "Specifies the type of diffuse radiation model that will be used.UNIFORM_SKY\u2014The uniform diffuse model will be used. The incoming diffuse radiation is the same from all sky directions. This is the defa...",
-                        "default": null
+                        "default": None
                 },
                 "diffuse_proportion": {
                         "type": "string",
                         "description": "The proportion of global normal radiation flux that is diffuse. Values range from 0 to 1.Set this value according to atmospheric conditions. The default value is 0.3 for generally clear sky conditions...",
-                        "default": null
+                        "default": None
                 },
                 "transmittivity": {
                         "type": "string",
                         "description": "The fraction of radiation that passes through the atmosphere (averaged overall wavelengths). Values range from 0 (no transmission) to 1 (all transmission).The default is 0.5 for a generally clear sky.",
-                        "default": null
+                        "default": None
                 },
                 "out_direct_radiation_raster": {
                         "type": "string",
                         "description": "The output raster representing the direct incoming solar radiation for each location.\r\nThe output has units of watt hours per square meter (WH/m2).",
-                        "default": null
+                        "default": None
                 },
                 "out_diffuse_radiation_raster": {
                         "type": "string",
                         "description": "The output raster representing the diffuse incoming solar radiation for each location.The output has units of watt hours per square meter (WH/m2).",
-                        "default": null
+                        "default": None
                 },
                 "out_direct_duration_raster": {
                         "type": "string",
                         "description": "The output raster representing the duration of direct incoming solar radiation.\r\nThe output has units of hours.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5145,87 +5145,87 @@ functions_declarations = {
                 "time_zone": {
                         "type": "string",
                         "description": "The time zone that will be used for the start and end time. The default is coordinated universal time (UTC).UTC\u2014The time zone will be UTC.Dateline_Standard_Time\u2014The time zone will be Dateline Standard...",
-                        "default": null
+                        "default": None
                 },
                 "adjust_dst": {
                         "type": "string",
                         "description": "Specifies whether the input time configuration will be adjusted for daylight saving time.This parameter is not applicable for analysis on the Moon.NOT_ADJUSTED_FOR_DST\u2014The input time values will not b...",
-                        "default": null
+                        "default": None
                 },
                 "use_time_interval": {
                         "type": "string",
                         "description": "Specifies whether a single total insolation value will be calculated for the entire time configuration or multiple radiation values will be calculated for the specified interval.NO_INTERVAL\u2014A single r...",
-                        "default": null
+                        "default": None
                 },
                 "interval_unit": {
                         "type": "string",
                         "description": "Specifies the time unit that will be used for calculating solar radiation values over the entire time configuration.This parameter is only supported when the use_time_interval parameter is set to INTE...",
-                        "default": null
+                        "default": None
                 },
                 "interval": {
                         "type": "string",
                         "description": "The value of the duration or time between intervals.The default value is dependent on the interval unit specified. The default value for each of the available units are listed below.\r\nMINUTE\u201460HOUR\u20144D...",
-                        "default": null
+                        "default": None
                 },
                 "feature_offset": {
                         "type": "string",
                         "description": "A vertical distance that will be added to the raster surface for analysis. It must be a positive integer or floating-point value.You can select a field from the input features dataset, or you can prov...",
-                        "default": null
+                        "default": None
                 },
                 "feature_area": {
                         "type": "string",
                         "description": "The area associated with the input features. It must be a positive integer or floating-point value.You can select a field from the input features dataset, or you can provide a numerical value.For exam...",
-                        "default": null
+                        "default": None
                 },
                 "feature_slope": {
                         "type": "string",
                         "description": "The relative slope or incline associated with the input features. It must be a positive integer or floating-point value.You can select a field from the input features dataset, or you can provide a num...",
-                        "default": null
+                        "default": None
                 },
                 "feature_aspect": {
                         "type": "string",
                         "description": "The relative aspect or direction associated with the input features. It must be a positive integer or floating-point value.You can select a field from the input features dataset, or you can provide a ...",
-                        "default": null
+                        "default": None
                 },
                 "neighborhood_distance": {
                         "type": "string",
                         "description": "The distance from the target cell center for which the output insolation value will be calculated. It determines the size of the neighborhood.The default value is the input surface raster cell size, r...",
-                        "default": null
+                        "default": None
                 },
                 "use_adaptive_neighborhood": {
                         "type": "string",
                         "description": "Specifies whether neighborhood distance will vary with landscape changes (adaptive). The maximum distance is determined by the neighborhood distance. The minimum distance is the input raster cell size...",
-                        "default": null
+                        "default": None
                 },
                 "diffuse_model_type": {
                         "type": "string",
                         "description": "Specifies the type of diffuse radiation model that will be used.UNIFORM_SKY\u2014The uniform diffuse model will be used. The incoming diffuse radiation is the same from all sky directions. This is the defa...",
-                        "default": null
+                        "default": None
                 },
                 "diffuse_proportion": {
                         "type": "string",
                         "description": "The proportion of global normal radiation flux that is diffuse. Values range from 0 to 1.Set this value according to atmospheric conditions. The default value is 0.3 for generally clear sky conditions...",
-                        "default": null
+                        "default": None
                 },
                 "transmittivity": {
                         "type": "string",
                         "description": "The fraction of radiation that passes through the atmosphere (averaged overall wavelengths). Values range from 0 (no transmission) to 1 (all transmission).The default is 0.5 for a generally clear sky.",
-                        "default": null
+                        "default": None
                 },
                 "analysis_target_device": {
                         "type": "string",
                         "description": "Specifies the device that will be used to perform the calculation.GPU_THEN_CPU\u2014If a compatible GPU is found, it will be used to perform the calculation. Otherwise, the CPU will be used. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "out_join_layer": {
                         "type": "string",
                         "description": "The output layer that will be created by joining the output table to the input feature class. This is an optional output.",
-                        "default": null
+                        "default": None
                 },
                 "sunmap_grid_level": {
                         "type": "string",
                         "description": "The resolution that will be used to generate the H3 hexagonal grid cells used for internal calculations. A lower grid level value creates fewer, larger sun map areas and decreases tool run time. A hig...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5256,92 +5256,92 @@ functions_declarations = {
                 "height_offset": {
                         "type": "string",
                         "description": "The height (in meters) above the DEM surface for which calculations will be performed.The height offset will be applied to all input locations.",
-                        "default": null
+                        "default": None
                 },
                 "latitude": {
                         "type": "string",
                         "description": "The latitude for the site area. The units are decimal degrees with positive values for the northern hemisphere and negative values for the southern hemisphere.For input surface rasters containing a sp...",
-                        "default": null
+                        "default": None
                 },
                 "sky_size": {
                         "type": "string",
                         "description": "The resolution or sky size for the viewshed, sky map, and sun map rasters. The units are cells.The default is a raster of 200 by 200 cells.",
-                        "default": null
+                        "default": None
                 },
                 "time_configuration": {
                         "type": "string",
                         "description": "Specifies the time configuration (period) that will be used for calculating solar radiation.The Time class objects will be used to specify the time configuration.The different types of time configurat...",
-                        "default": null
+                        "default": None
                 },
                 "day_interval": {
                         "type": "string",
                         "description": "The time interval through the year (units: days) that will be used to calculate sky sectors for the sun map.The default value is 14 (biweekly).",
-                        "default": null
+                        "default": None
                 },
                 "hour_interval": {
                         "type": "string",
                         "description": "The time interval through the day (units: hours) that will be used to calculate sky sectors for the sun map.The default value is 0.5.",
-                        "default": null
+                        "default": None
                 },
                 "each_interval": {
                         "type": "string",
                         "description": "Specifies whether a single total insolation value will be calculated for all locations or multiple values will be calculated for the specified hour and day interval.NOINTERVAL\u2014A single total radiation...",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The number of ground x,y units in one surface z-unit.The z-factor adjusts the units of measure for the z-units when they are different from the x,y units of the input surface. The z-values of the inpu...",
-                        "default": null
+                        "default": None
                 },
                 "slope_aspect_input_type": {
                         "type": "string",
                         "description": "Specifies how slope and aspect information will be derived for analysis.FROM_DEM\u2014The slope and aspect rasters will be calculated from the input surface raster. This is the default.FLAT_SURFACE\u2014Constan...",
-                        "default": null
+                        "default": None
                 },
                 "calculation_directions": {
                         "type": "string",
                         "description": "The number of azimuth directions that will be used when calculating the viewshed.Valid values must be multiples of 8 (8, 16, 24, 32, and so on). The default value is 32 directions, which is adequate f...",
-                        "default": null
+                        "default": None
                 },
                 "zenith_divisions": {
                         "type": "string",
                         "description": "The number of zenith divisions that will be used to create sky sectors in the sky map.The default is eight divisions (relative to zenith). Values must be greater than zero and less than half the sky s...",
-                        "default": null
+                        "default": None
                 },
                 "azimuth_divisions": {
                         "type": "string",
                         "description": "The number of azimuth divisions that will be used to create sky sectors in the sky map.The default is eight divisions (relative to north). Valid values must be multiples of 8. Values must be greater t...",
-                        "default": null
+                        "default": None
                 },
                 "diffuse_model_type": {
                         "type": "string",
                         "description": "Specifies the type of diffuse radiation model that will be used.UNIFORM_SKY\u2014The uniform diffuse model will be used. The incoming diffuse radiation is the same from all sky directions. This is the defa...",
-                        "default": null
+                        "default": None
                 },
                 "diffuse_proportion": {
                         "type": "string",
                         "description": "The proportion of global normal radiation flux that is diffuse. Values range from 0 to 1.Set this value according to atmospheric conditions. The default value is 0.3 for generally clear sky conditions...",
-                        "default": null
+                        "default": None
                 },
                 "transmittivity": {
                         "type": "string",
                         "description": "The fraction of radiation that passes through the atmosphere (averaged overall wavelengths). Values range from 0 (no transmission) to 1 (all transmission).The default is 0.5 for a generally clear sky.",
-                        "default": null
+                        "default": None
                 },
                 "out_direct_radiation_features": {
                         "type": "string",
                         "description": "The output feature class representing the direct incoming solar radiation for each location.The output has units of watt hours per square meter (WH/m2).",
-                        "default": null
+                        "default": None
                 },
                 "out_diffuse_radiation_features": {
                         "type": "string",
                         "description": "The output feature class representing the incoming solar radiation for each location that is diffuse.The output has units of watt hours per square meter (WH/m2).",
-                        "default": null
+                        "default": None
                 },
                 "out_direct_duration_features": {
                         "type": "string",
                         "description": "The output feature class representing the duration of direct incoming solar radiation.The output has units of hours.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5369,92 +5369,92 @@ functions_declarations = {
                 "in_analysis_mask": {
                         "type": "string",
                         "description": "The input data that defines the locations where the analysis will occur.",
-                        "default": null
+                        "default": None
                 },
                 "in_slope_raster": {
                         "type": "string",
                         "description": "The input slope raster that will be used when calculating the output solar radiation.If this input is not specified, the tool will calculate slope values internally from the input surface raster. Prov...",
-                        "default": null
+                        "default": None
                 },
                 "in_aspect_raster": {
                         "type": "string",
                         "description": "The input aspect raster that will be used when calculating the output solar radiation.If this input is not specified, the tool will calculate aspect values internally from the input surface raster. Pr...",
-                        "default": null
+                        "default": None
                 },
                 "out_direct_radiation_raster": {
                         "type": "string",
                         "description": "The output raster representing the direct incoming solar radiation value for each location.The output has units of kilowatt hours per square meter (kWh/m2).",
-                        "default": null
+                        "default": None
                 },
                 "out_diffuse_radiation_raster": {
                         "type": "string",
                         "description": "The output raster representing the incoming solar radiation that is diffused by the sky, layers of atmosphere, and other surroundings.The output has units of kilowatt hours per square meter (kWh/m2).",
-                        "default": null
+                        "default": None
                 },
                 "out_duration_raster": {
                         "type": "string",
                         "description": "The output raster representing the duration of direct incoming solar radiation.The output has units of hours.",
-                        "default": null
+                        "default": None
                 },
                 "time_zone": {
                         "type": "string",
                         "description": "The time zone that will be used for the start and end time. The default is coordinated universal time (UTC).UTC\u2014The time zone will be UTC.Dateline_Standard_Time\u2014The time zone will be Dateline Standard...",
-                        "default": null
+                        "default": None
                 },
                 "adjust_dst": {
                         "type": "string",
                         "description": "Specifies whether the input time configuration will be adjusted for daylight saving time.This parameter is not applicable for analysis on the Moon.NOT_ADJUSTED_FOR_DST\u2014The input time values will not b...",
-                        "default": null
+                        "default": None
                 },
                 "use_time_interval": {
                         "type": "string",
                         "description": "Specifies whether a single total insolation value will be calculated for the entire time configuration or multiple radiation values will be calculated for the specified interval.NO_INTERVAL\u2014A single r...",
-                        "default": null
+                        "default": None
                 },
                 "interval_unit": {
                         "type": "string",
                         "description": "Specifies the time unit that will be used for calculating solar radiation values over the entire time configuration.This parameter is only supported when the use_time_interval parameter is set to INTE...",
-                        "default": null
+                        "default": None
                 },
                 "interval": {
                         "type": "string",
                         "description": "The value of the duration or time between intervals.The default value is dependent on the interval unit specified. The default value for each of the available units are listed below.\r\nMINUTE\u201460HOUR\u20144D...",
-                        "default": null
+                        "default": None
                 },
                 "neighborhood_distance": {
                         "type": "string",
                         "description": "The distance from the target cell center for which the output insolation value will be calculated. It determines the size of the neighborhood.The default value is the input surface raster cell size, r...",
-                        "default": null
+                        "default": None
                 },
                 "use_adaptive_neighborhood": {
                         "type": "string",
                         "description": "Specifies whether neighborhood distance will vary with landscape changes (adaptive). The maximum distance is determined by the neighborhood distance. The minimum distance is the input raster cell size...",
-                        "default": null
+                        "default": None
                 },
                 "diffuse_model_type": {
                         "type": "string",
                         "description": "Specifies the type of diffuse radiation model that will be used.UNIFORM_SKY\u2014The uniform diffuse model will be used. The incoming diffuse radiation is the same from all sky directions. This is the defa...",
-                        "default": null
+                        "default": None
                 },
                 "diffuse_proportion": {
                         "type": "string",
                         "description": "The proportion of global normal radiation flux that is diffuse. Values range from 0 to 1.Set this value according to atmospheric conditions. The default value is 0.3 for generally clear sky conditions...",
-                        "default": null
+                        "default": None
                 },
                 "transmittivity": {
                         "type": "string",
                         "description": "The fraction of radiation that passes through the atmosphere (averaged overall wavelengths). Values range from 0 (no transmission) to 1 (all transmission).The default is 0.5 for a generally clear sky.",
-                        "default": null
+                        "default": None
                 },
                 "analysis_target_device": {
                         "type": "string",
                         "description": "Specifies the device that will be used to perform the calculation.GPU_THEN_CPU\u2014If a compatible GPU is found, it will be used to perform the calculation. Otherwise, the CPU will be used. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "sunmap_grid_level": {
                         "type": "string",
                         "description": "The resolution that will be used to generate the H3 hexagonal grid cells used for internal calculations. A lower grid level value creates fewer, larger sun map areas and decreases tool run time. A hig...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5474,62 +5474,62 @@ functions_declarations = {
                 "in_points_feature_or_table": {
                         "type": "string",
                         "description": "The input point feature class or table containing the locations where solar radiation will be analyzed.",
-                        "default": null
+                        "default": None
                 },
                 "sky_size": {
                         "type": "string",
                         "description": "The resolution or sky size for the viewshed, sky map, and sun map rasters. The units are cells.The default is a raster of 200 by 200 cells.",
-                        "default": null
+                        "default": None
                 },
                 "height_offset": {
                         "type": "string",
                         "description": "The height (in meters) above the DEM surface for which calculations will be performed.The height offset will be applied to all input locations.",
-                        "default": null
+                        "default": None
                 },
                 "calculation_directions": {
                         "type": "string",
                         "description": "The number of azimuth directions that will be used when calculating the viewshed.Valid values must be multiples of 8 (8, 16, 24, 32, and so on). The default value is 32 directions, which is adequate f...",
-                        "default": null
+                        "default": None
                 },
                 "latitude": {
                         "type": "string",
                         "description": "The latitude for the site area. The units are decimal degrees with positive values for the northern hemisphere and negative values for the southern hemisphere.For input surface rasters containing a sp...",
-                        "default": null
+                        "default": None
                 },
                 "time_configuration": {
                         "type": "string",
                         "description": "Specifies the time configuration (period) that will be used for calculating solar radiation.The Time class objects will be used to specify the time configuration.The different types of time configurat...",
-                        "default": null
+                        "default": None
                 },
                 "day_interval": {
                         "type": "string",
                         "description": "The time interval through the year (units: days) that will be used to calculate sky sectors for the sun map.The default value is 14 (biweekly).",
-                        "default": null
+                        "default": None
                 },
                 "hour_interval": {
                         "type": "string",
                         "description": "The time interval through the day (units: hours) that will be used to calculate sky sectors for the sun map.The default value is 0.5.",
-                        "default": null
+                        "default": None
                 },
                 "out_sunmap_raster": {
                         "type": "string",
                         "description": "The output sun map raster.The output is a representation that specifies sun tracks, the apparent position of the sun as it varies through time. The output is at the same resolution as the viewshed and...",
-                        "default": null
+                        "default": None
                 },
                 "zenith_divisions": {
                         "type": "string",
                         "description": "The number of zenith divisions that will be used to create sky sectors in the sky map.The default is eight divisions (relative to zenith). Values must be greater than zero and less than half the sky s...",
-                        "default": null
+                        "default": None
                 },
                 "azimuth_divisions": {
                         "type": "string",
                         "description": "The number of azimuth divisions that will be used to create sky sectors in the sky map.The default is eight divisions (relative to north). Valid values must be multiples of 8. Values must be greater t...",
-                        "default": null
+                        "default": None
                 },
                 "out_skymap_raster": {
                         "type": "string",
                         "description": "The output sky map raster.The output is constructed by dividing the whole sky into a series of sky sectors defined by zenith and azimuth divisions. The output is at the same resolution as the viewshed...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5555,27 +5555,27 @@ functions_declarations = {
                 "method": {
                         "type": "string",
                         "description": "Specifies the interpolation method that will be used to determine information about the surface.BILINEAR\u2014An interpolation method  exclusive to the raster surface that determines cell values from the f...",
-                        "default": null
+                        "default": None
                 },
                 "sample_distance": {
                         "type": "string",
                         "description": "The spacing at which z-values will be interpolated. By default, the raster cell size is used when the input surface is a raster, and the natural densification of the triangulated surface is used when ...",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The factor by which z-values will be multiplied. This is typically used to convert z linear units to match x,y linear units. The default is 1, which leaves elevation values unchanged. This parameter i...",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_level_resolution": {
                         "type": "string",
                         "description": "The z-tolerance or window-size resolution of the terrain pyramid level that will be used. The default is 0, or full resolution.",
-                        "default": null
+                        "default": None
                 },
                 "noise_filtering": {
                         "type": "string",
                         "description": "Defines whether portions of the surface that are potentially characterized by anomalous measurements will be excluded from contributing to slope calculations. Other properties are not affected by this...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5595,22 +5595,22 @@ functions_declarations = {
                 "method": {
                         "type": "string",
                         "description": "Specifies whether the calculation will be based on a planar (flat earth) or a geodesic (ellipsoid) method.PLANAR\u2014The calculation will be performed on a projected flat plane using a 2D Cartesian coordi...",
-                        "default": null
+                        "default": None
                 },
                 "z_unit": {
                         "type": "string",
                         "description": "Specifies the linear unit that will be used for vertical z-values.It is defined by a vertical coordinate system if it exists. If no vertical coordinate system exists, define the z-unit using the unit ...",
-                        "default": null
+                        "default": None
                 },
                 "project_geodesic_azimuths": {
                         "type": "string",
                         "description": "Specifies whether geodesic azimuths will be projected to correct the angle distortion caused by the output spatial reference.\r\nGEODESIC_AZIMUTHS\u2014Geodesic azimuths will not be projected. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_target_device": {
                         "type": "string",
                         "description": "Specifies the device that will be used to perform the calculation.GPU_THEN_CPU\u2014If a compatible GPU is found, it will be used to perform the calculation. Otherwise, the CPU will be used. This is the de...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5636,22 +5636,22 @@ functions_declarations = {
                 "base_contour": {
                         "type": "string",
                         "description": "The base contour value.Contours are generated above and below this value as needed to cover the entire value range of the input raster. The default is zero.",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The unit conversion factor used when generating contours. The default value is 1.The contour lines are generated based on the z-values in the input raster, which are often measured in units of meters ...",
-                        "default": null
+                        "default": None
                 },
                 "contour_type": {
                         "type": "string",
                         "description": "Specifies the type of output. The output can represent the contours as either lines or polygons. There are several options for polygons.\r\n\r\nCONTOUR\u2014A polyline feature class of contours (isolines). Thi...",
-                        "default": null
+                        "default": None
                 },
                 "max_vertices_per_feature": {
                         "type": "string",
                         "description": "The vertex limit when subdividing a feature. This should only be used when output features contain a very large number of vertices (many millions). This parameter is intended as a way to subdivide ext...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5698,47 +5698,47 @@ functions_declarations = {
                 "in_barrier_features": {
                         "type": "string",
                         "description": "The input barrier features.The features can be polyline or polygon type.",
-                        "default": null
+                        "default": None
                 },
                 "in_contour_type": {
                         "type": "string",
                         "description": "The type of contour to create.POLYLINES\u2014 The contour or isoline representation of the input raster.POLYGONS\u2014 Closed polygons representing the contours.\r\nNote:The current version of this tool only supp...",
-                        "default": null
+                        "default": None
                 },
                 "in_contour_values_file": {
                         "type": "string",
                         "description": "The base contour, contour interval, indexed contour interval, and explicit contour values can also be specified via a text file.",
-                        "default": null
+                        "default": None
                 },
                 "explicit_only": {
                         "type": "string",
                         "description": "Only explicit contour values are used. Base contour, contour interval, and indexed contour intervals are not specified.NO_EXPLICIT_VALUES_ONLY\u2014 The default, contour interval must be specified.EXPLICIT...",
-                        "default": null
+                        "default": None
                 },
                 "in_base_contour": {
                         "type": "string",
                         "description": "The base contour value.Contours are generated above and below this value as needed to cover the entire value range of the input raster. The default is zero.",
-                        "default": null
+                        "default": None
                 },
                 "in_contour_interval": {
                         "type": "string",
                         "description": "The interval, or distance, between contour lines.This can be any positive number.",
-                        "default": null
+                        "default": None
                 },
                 "in_indexed_contour_interval": {
                         "type": "string",
                         "description": "Contours will also be generated for this interval and will be flagged accordingly in the output feature class.",
-                        "default": null
+                        "default": None
                 },
                 "in_contour_listin_explicit_contour": {
                         "type": "string",
                         "description": "Explicit values at which to create contours.",
-                        "default": null
+                        "default": None
                 },
                 "in_z_factor": {
                         "type": "string",
                         "description": "The unit conversion factor used when generating contours. The default value is 1.The contour lines are generated based on the z-values in the input raster, which are often measured in units of meters ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5757,17 +5757,17 @@ functions_declarations = {
                 "z_factor": {
                         "type": "string",
                         "description": "The number of ground x,y units in one surface z-unit.The z-factor adjusts the units of measure for the z-units when they are different from the x,y units of the input surface. The z-values of the inpu...",
-                        "default": null
+                        "default": None
                 },
                 "out_profile_curve_raster": {
                         "type": "string",
                         "description": "Output profile curve raster dataset.This is the curvature of the surface in the direction of slope.It will be floating-point type.",
-                        "default": null
+                        "default": None
                 },
                 "out_plan_curve_raster": {
                         "type": "string",
                         "description": "Output plan curve raster dataset.This is the curvature of the surface perpendicular to the slope direction.It will be floating-point type.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5789,7 +5789,7 @@ functions_declarations = {
                 "z_factor": {
                         "type": "string",
                         "description": "The number of ground x,y units in one surface z-unit.The z-factor adjusts the units of measure for the z-units when they are different from the x,y units of the input surface. The z-values of the inpu...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5808,37 +5808,37 @@ functions_declarations = {
                 "distance_units": {
                         "type": "string",
                         "description": "Specifies the distance unit that will be used for the Neighborhood Distance parameter. The default is CELLS.\r\nCELLS\u2014The distance unit will be cells.METERS\u2014The distance unit will be meters.CENTIMETERS\u2014...",
-                        "default": null
+                        "default": None
                 },
                 "neighborhood_distance": {
                         "type": "string",
                         "description": "The distance away from the target cell that defines the size of the processing neighborhood.The value must be a positive number. The default value is 5 cells.",
-                        "default": null
+                        "default": None
                 },
                 "normal_difference_threshold": {
                         "type": "string",
                         "description": "The maximum normal difference for a neighboring cell to be included in computing a new cell value for the current processing cell. A normal difference is an angle formed by the normal vector of a neig...",
-                        "default": null
+                        "default": None
                 },
                 "number_iterations": {
                         "type": "string",
                         "description": "The number of times that the smoothing process will be repeated.The value must be a positive integer. The default value is 3.",
-                        "default": null
+                        "default": None
                 },
                 "maximum_elevation_change": {
                         "type": "string",
                         "description": "The allowed maximum height change of any cell in one iteration.When a new value is calculated for a cell location, it is compared to the original value at that cell location. If the difference is less...",
-                        "default": null
+                        "default": None
                 },
                 "z_unit": {
                         "type": "string",
                         "description": "Specifies the linear unit that will be used for vertical z-values.It is defined by a vertical coordinate system if it exists. If no vertical coordinate system exists, define the z-unit using the unit ...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_target_device": {
                         "type": "string",
                         "description": "Specifies the device that will be used to perform the calculation.GPU_THEN_CPU\u2014If a compatible GPU is found, it will be used to perform the calculation. Otherwise, the CPU will be used. This is the de...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5860,92 +5860,92 @@ functions_declarations = {
                 "out_agl_raster": {
                         "type": "string",
                         "description": "The output above ground level (AGL) raster.The AGL result is a raster in which each cell value is the minimum height that must be added to a cell that is not visible to make it visible by at least one...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_type": {
                         "type": "string",
                         "description": "Specifies the type of visibility analysis that will be performed, either determining how visible each cell is to the observers or identifying the observers that are visible for each surface location.F...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_error": {
                         "type": "string",
                         "description": "The amount of uncertainty (the root mean square [RMS] error) in the surface elevation values. It is a floating-point value representing the expected error of the input elevation values. When this para...",
-                        "default": null
+                        "default": None
                 },
                 "out_observer_region_relationship_table": {
                         "type": "string",
                         "description": "The output table for identifying the regions that are visible to each observer. This table can be related to the input observer feature class and the output visibility raster for identifying the regio...",
-                        "default": null
+                        "default": None
                 },
                 "refractivity_coefficient": {
                         "type": "string",
                         "description": "The coefficient of the refraction of visible light in air.The default value is 0.13.",
-                        "default": null
+                        "default": None
                 },
                 "surface_offset": {
                         "type": "string",
                         "description": "A vertical distance that will be added to the z-value of each cell as it is considered for visibility. It must be a positive integer or floating-point value.You can select a field in the input observe...",
-                        "default": null
+                        "default": None
                 },
                 "observer_elevation": {
                         "type": "string",
                         "description": "The surface elevations of the observer points or vertices.You can select a field in the input observers dataset, or you can specify a numerical value.When this parameter is not specified, the observer...",
-                        "default": null
+                        "default": None
                 },
                 "observer_offset": {
                         "type": "string",
                         "description": "A vertical distance that will be added to the observer elevation. It must be a positive integer or floating-point value.You can select a field in the input observers dataset, or you can specify a nume...",
-                        "default": null
+                        "default": None
                 },
                 "inner_radius": {
                         "type": "string",
                         "description": "The start distance from which visibility will be determined. Cells closer than this distance will not be visible in the output but can still block visibility of the cells between inner radius and oute...",
-                        "default": null
+                        "default": None
                 },
                 "inner_radius_is_3d": {
                         "type": "string",
                         "description": "Specifies the type of distance that will be used for the inner radius parameter.GROUND\u2014The inner radius will be interpreted as a 2D distance. This is the default.3D\u2014The inner radius will be interprete...",
-                        "default": null
+                        "default": None
                 },
                 "outer_radius": {
                         "type": "string",
                         "description": "The maximum distance from which visibility will be determined. Cells beyond this distance will be excluded from the analysis.You can select a field in the input observers dataset, or you can specify a...",
-                        "default": null
+                        "default": None
                 },
                 "outer_radius_is_3d": {
                         "type": "string",
                         "description": "Specifies the type of distance that will be used for the outer radius parameter.GROUND\u2014The outer radius will be interpreted as a 2D distance. This is the default.3D\u2014The outer radius will be interprete...",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_start_angle": {
                         "type": "string",
                         "description": "The start angle of the horizontal scan range. Provide the value in degrees from 0 to 360 with 0 oriented to north. The value can be integer or floating point. The default value is 0.You can select a f...",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_end_angle": {
                         "type": "string",
                         "description": "The end angle of the horizontal scan range. Provide the value in degrees from 0 to 360 with 0 oriented to north. The value can be integer or floating point. The default value is 360.You can select a f...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_upper_angle": {
                         "type": "string",
                         "description": "The upper vertical angle limit of the scan relative to the horizontal plane. Provide the value in degrees from above -90 up to and including 90. The value can be integer or floating point. The default...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_lower_angle": {
                         "type": "string",
                         "description": "The lower vertical angle limit of the scan relative to the horizontal plane. Provide the value in degrees from -90 up to but not including 90. The value can be integer or floating point. The default v...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_method": {
                         "type": "string",
                         "description": "Specifies the method that will be used to calculate visibility. This parameter allows you to decide on performance level.ALL_SIGHTLINES\u2014A sightline will be run to every cell on the raster to establish...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_target_device": {
                         "type": "string",
                         "description": "Specifies the device that will be used to perform the calculation.GPU_THEN_CPU\u2014If a compatible GPU is found, it will be used to perform the calculation. Otherwise, the CPU will be used. This is the de...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -5964,32 +5964,32 @@ functions_declarations = {
                 "out_geomorphons_raster": {
                         "type": "string",
                         "description": "Each geomorphon pattern will be assigned a unique identifier, which is stored for each cell in the output geomorphons raster.The output is of integer type.",
-                        "default": null
+                        "default": None
                 },
                 "angle_threshold": {
                         "type": "string",
                         "description": "The angle threshold (in degrees) below which the target cell will be classified as flat.The default value is 1 degree. Specifying a larger value than the default is recommended for low resolution DEMs...",
-                        "default": null
+                        "default": None
                 },
                 "distance_units": {
                         "type": "string",
                         "description": "Specifies the distance unit that will be used for the search_distance and skip_distance parameters.Distance will be measured in the specified unit or number of cells. The default is CELLS.CELLS\u2014The di...",
-                        "default": null
+                        "default": None
                 },
                 "search_distance": {
                         "type": "string",
                         "description": "The distance away from the target cell that defines the radius of the area that will be used to identify the geomorphon pattern.The default value is 10. Use a search distance value that matches the ty...",
-                        "default": null
+                        "default": None
                 },
                 "skip_distance": {
                         "type": "string",
                         "description": "The distance away from the target cell where the analysis area starts. Neighboring cells that fall within this distance will be skipped and won't contribute to identification of the geomorphon pattern...",
-                        "default": null
+                        "default": None
                 },
                 "z_unit": {
                         "type": "string",
                         "description": "Specifies the linear unit that will be used for vertical z-values.It is defined by a vertical coordinate system if it exists. If no vertical coordinate system exists, define the z-unit using the unit ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6007,22 +6007,22 @@ functions_declarations = {
                 "azimuth": {
                         "type": "string",
                         "description": "Azimuth angle of the light source.The azimuth is expressed in positive degrees from 0 to 360, measured clockwise from north.The default is 315 degrees.",
-                        "default": null
+                        "default": None
                 },
                 "altitude": {
                         "type": "string",
                         "description": "Altitude angle of the light source above the horizon.The altitude is expressed in positive degrees, with 0 degrees at the horizon and 90 degrees directly overhead.The default is 45 degrees.",
-                        "default": null
+                        "default": None
                 },
                 "model_shadows": {
                         "type": "string",
                         "description": "Type of shaded relief to be generated.NO_SHADOWS\u2014The output raster only considers local illumination angles; the effects of shadows are not considered.The output values can range from 0 to 255, with 0...",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The number of ground x,y units in one surface z-unit.The z-factor adjusts the units of measure for the z-units when they are different from the x,y units of the input surface. The z-values of the inpu...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6048,32 +6048,32 @@ functions_declarations = {
                 "sample_distance": {
                         "type": "string",
                         "description": "The spacing at which z-values will be interpolated. By default, this is a raster dataset's cell size or a triangulated surface's natural densification.",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The factor by which z-values will be multiplied. This is typically used to convert z linear units to match x,y linear units. The default is 1, which leaves elevation values unchanged. This parameter i...",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies the interpolation method that will be used to determine elevation values for the output features. The available options depend on the surface type.\r\nBILINEAR\u2014The value of the query point wil...",
-                        "default": null
+                        "default": None
                 },
                 "vertices_only": {
                         "type": "string",
                         "description": "Specifies whether the interpolation will only occur along the vertices of an input feature, ignoring the sample distance option.DENSIFY\u2014Interpolation will occur using the sampling distance. This is th...",
-                        "default": null
+                        "default": None
                 },
                 "pyramid_level_resolution": {
                         "type": "string",
                         "description": "The z-tolerance or window-size resolution of the terrain pyramid level that will be used. The default is 0, or full resolution.",
-                        "default": null
+                        "default": None
                 },
                 "preserve_features": {
                         "type": "string",
                         "description": "Specifies whether features with one or more vertices that fall outside the raster's data area will be retained in the output. This parameter is only available when the input surface is a raster and th...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6093,37 +6093,37 @@ functions_declarations = {
                 "out_scale_raster": {
                         "type": "string",
                         "description": "The output raster containing the scale at which the maximum deviation was found for each cell. Scales are represented as their neighborhood distance values.It will be floating-point type.",
-                        "default": null
+                        "default": None
                 },
                 "distance_units": {
                         "type": "string",
                         "description": "Specifies the distance unit that will be used for the min_scale, max_scale, and base_increment parameters.Distance will be measured in the number of cells or specified unit. The default is the map uni...",
-                        "default": null
+                        "default": None
                 },
                 "min_scale": {
                         "type": "string",
                         "description": "The distance that defines the minimum neighborhood scale that elevation difference will be calculated for. This is the distance from the target cell center, creating a square of cells around the targe...",
-                        "default": null
+                        "default": None
                 },
                 "max_scale": {
                         "type": "string",
                         "description": "The distance that defines the maximum neighborhood scale that elevation difference will be calculated for. This is the distance from the target cell center, creating a square of cells around the targe...",
-                        "default": null
+                        "default": None
                 },
                 "base_increment": {
                         "type": "string",
                         "description": "The increase in neighborhood distance between scales.\r\nThis parameter value cannot be less than the in_raster cell size or 1 cell.The default value is the cell size of the in_raster parameter value.",
-                        "default": null
+                        "default": None
                 },
                 "nonlinearity": {
                         "type": "string",
                         "description": "The factor that can introduce nonlinearity into the scale increase at each increment. This causes the increment between scales to increase instead of remaining constant. Generally, values between 1.0 ...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_target_device": {
                         "type": "string",
                         "description": "Specifies the device that will be used to perform the calculation.GPU_THEN_CPU\u2014If a compatible GPU is found, it will be used to perform the calculation. Otherwise, the CPU will be used. This is the de...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6141,32 +6141,32 @@ functions_declarations = {
                 "out_scale_raster": {
                         "type": "string",
                         "description": "The output raster containing the scale at which the most extreme difference was found for each cell. Scales are represented as their neighborhood distance values.It will be floating-point type.",
-                        "default": null
+                        "default": None
                 },
                 "distance_units": {
                         "type": "string",
                         "description": "Specifies the distance unit that will be used for the min_scale, max_scale, and increment parameters.Distance will be measured in the number of cells or specified unit. The default is the map unit of ...",
-                        "default": null
+                        "default": None
                 },
                 "min_scale": {
                         "type": "string",
                         "description": "The distance that defines the minimum neighborhood scale that elevation difference will be calculated for. This is the distance from the target cell center, creating a square of cells around the targe...",
-                        "default": null
+                        "default": None
                 },
                 "max_scale": {
                         "type": "string",
                         "description": "The distance that defines the maximum neighborhood scale that elevation difference will be calculated for. This is the distance from the target cell center, creating a square of cells around the targe...",
-                        "default": null
+                        "default": None
                 },
                 "increment": {
                         "type": "string",
                         "description": "The increase in neighborhood distance between scales.\r\nThis parameter value cannot be less than the in_raster cell size or 1 cell.The default value is the cell size of the in_raster parameter value.",
-                        "default": null
+                        "default": None
                 },
                 "analysis_target_device": {
                         "type": "string",
                         "description": "Specifies the device that will be used to perform the calculation.GPU_THEN_CPU\u2014If a compatible GPU is found, it will be used to perform the calculation. Otherwise, the CPU will be used. This is the de...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6184,37 +6184,37 @@ functions_declarations = {
                 "out_scale_raster": {
                         "type": "string",
                         "description": "The output raster containing the scale at which the most extreme percentile was found for each cell. Scales are represented as their neighborhood distance values.It will be floating-point type.",
-                        "default": null
+                        "default": None
                 },
                 "distance_units": {
                         "type": "string",
                         "description": "Specifies the distance unit that will be used for the min_scale, max_scale, and base_increment parameters.Distance will be measured in the number of cells or specified unit. The default is the map uni...",
-                        "default": null
+                        "default": None
                 },
                 "min_scale": {
                         "type": "string",
                         "description": "The distance that defines the minimum neighborhood scale that elevation percentile will be calculated for. This is the distance from the target cell center, creating a square of cells around the targe...",
-                        "default": null
+                        "default": None
                 },
                 "max_scale": {
                         "type": "string",
                         "description": "The distance that defines the maximum neighborhood scale that elevation percentile will be calculated for. This is the distance from the target cell center, creating a square of cells around the targe...",
-                        "default": null
+                        "default": None
                 },
                 "base_increment": {
                         "type": "string",
                         "description": "The initial increase in neighborhood distance between scales.This parameter cannot be less than the in_raster cell size or 1 cell.The default value is the cell size of the in_raster parameter value.",
-                        "default": null
+                        "default": None
                 },
                 "nonlinearity": {
                         "type": "string",
                         "description": "The factor that can introduce nonlinearity into the scale increase at each increment. This causes the increment between scales to increase instead of remaining constant. Generally, values between 1.0 ...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_target_device": {
                         "type": "string",
                         "description": "Specifies the device that will be used to perform the calculation.GPU_THEN_CPU\u2014If a compatible GPU is found, it will be used to perform the calculation. Otherwise, the CPU will be used. This is the de...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6236,22 +6236,22 @@ functions_declarations = {
                 "z_factor": {
                         "type": "string",
                         "description": "The number of ground x,y units in one surface z-unit.The z-factor adjusts the units of measure for the z-units when they are different from the x,y units of the input surface. The z-values of the inpu...",
-                        "default": null
+                        "default": None
                 },
                 "curvature_correction": {
                         "type": "string",
                         "description": "Specifies whether correction for the earth's curvature will be applied.FLAT_EARTH\u2014No curvature correction will be applied. This is the default.CURVED_EARTH\u2014Curvature correction will be applied.",
-                        "default": null
+                        "default": None
                 },
                 "refractivity_coefficient": {
                         "type": "string",
                         "description": "The coefficient of the refraction of visible light in air.The default value is 0.13.",
-                        "default": null
+                        "default": None
                 },
                 "out_agl_raster": {
                         "type": "string",
                         "description": "The output above ground level (AGL) raster.The AGL result is a raster where each cell value is the minimum height that must be added to an otherwise nonvisible cell to make it visible by at least one ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6270,27 +6270,27 @@ functions_declarations = {
                 "output_measurement": {
                         "type": "string",
                         "description": "Specifies the measurement units (degrees or percentages) of the output slope raster.DEGREE\u2014The inclination of slope will be calculated in degrees.PERCENT_RISE\u2014The inclination of slope will be calculat...",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "The number of ground x,y units in one surface z-unit.The z-factor adjusts the units of measure for the z-units when they are different from the x,y units of the input surface. The z-values of the inpu...",
-                        "default": null
+                        "default": None
                 },
                 "method": {
                         "type": "string",
                         "description": "Specifies whether the calculation will be based on a planar (flat earth) or a geodesic (ellipsoid) method.PLANAR\u2014The calculation will be performed on a projected flat plane using a 2D Cartesian coordi...",
-                        "default": null
+                        "default": None
                 },
                 "z_unit": {
                         "type": "string",
                         "description": "Specifies the linear unit that will be used for vertical z-values.It is defined by a vertical coordinate system if it exists. If no vertical coordinate system exists, define the z-unit using the unit ...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_target_device": {
                         "type": "string",
                         "description": "Specifies the device that will be used to perform the calculation.GPU_THEN_CPU\u2014If a compatible GPU is found, it will be used to perform the calculation. Otherwise, the CPU will be used. This is the de...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6308,47 +6308,47 @@ functions_declarations = {
                 "parameter_type": {
                         "type": "string",
                         "description": "Specifies the output surface parameter type that will be computed.SLOPE\u2014The rate of change in elevation will be computed. This is the default.ASPECT\u2014The downslope direction of the maximum rate of chan...",
-                        "default": null
+                        "default": None
                 },
                 "local_surface_type": {
                         "type": "string",
                         "description": "Specifies the type of surface function that will be fitted around the target cell.QUADRATIC\u2014A quadratic surface function will be fitted to the neighborhood cells. This is the default.BIQUADRATIC\u2014A biq...",
-                        "default": null
+                        "default": None
                 },
                 "neighborhood_distance": {
                         "type": "string",
                         "description": "The output will be calculated over this distance from the target cell center. It determines the neighborhood size.The default value is the input raster cell size, resulting in a 3 by 3 neighborhood.",
-                        "default": null
+                        "default": None
                 },
                 "use_adaptive_neighborhood": {
                         "type": "string",
                         "description": "Specifies whether neighborhood distance will vary with landscape changes (adaptive). The maximum distance is determined by the neighborhood distance. The minimum distance is the input raster cell size...",
-                        "default": null
+                        "default": None
                 },
                 "z_unit": {
                         "type": "string",
                         "description": "Specifies the linear unit that will be used for vertical z-values.It is defined by a vertical coordinate system if it exists. If no vertical coordinate system exists, define the z-unit using the unit ...",
-                        "default": null
+                        "default": None
                 },
                 "output_slope_measurement": {
                         "type": "string",
                         "description": "The measurement units (degrees or percentages) that will be used for the output slope raster.DEGREE\u2014The inclination of slope will be calculated in degrees.PERCENT_RISE\u2014The inclination of slope will be...",
-                        "default": null
+                        "default": None
                 },
                 "project_geodesic_azimuths": {
                         "type": "string",
                         "description": "Specifies whether geodesic azimuths will be projected to correct the angle distortion caused by the output spatial reference.\r\nGEODESIC_AZIMUTHS\u2014Geodesic azimuths will not be projected. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "use_equatorial_aspect": {
                         "type": "string",
                         "description": "Specifies whether aspect will be measured from a point on the equator or from the north pole.\r\nNORTH_POLE_ASPECT\u2014Aspect will be measured from the north pole. This is the default.EQUATORIAL_ASPECT\u2014Aspe...",
-                        "default": null
+                        "default": None
                 },
                 "in_analysis_mask": {
                         "type": "string",
                         "description": "The input data defining the locations where the analysis will occur.It can be a raster or feature dataset. If the input is a raster, it can be integer or floating-point type. If the input is feature d...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6370,22 +6370,22 @@ functions_declarations = {
                 "z_factor": {
                         "type": "string",
                         "description": "The number of ground x,y units in one surface z-unit.The z-factor adjusts the units of measure for the z-units when they are different from the x,y units of the input surface. The z-values of the inpu...",
-                        "default": null
+                        "default": None
                 },
                 "curvature_correction": {
                         "type": "string",
                         "description": "Specifies whether correction for the earth's curvature will be applied.FLAT_EARTH\u2014No curvature correction will be applied. This is the default.CURVED_EARTH\u2014Curvature correction will be applied.",
-                        "default": null
+                        "default": None
                 },
                 "refractivity_coefficient": {
                         "type": "string",
                         "description": "The coefficient of the refraction of visible light in air.The default value is 0.13.",
-                        "default": null
+                        "default": None
                 },
                 "out_agl_raster": {
                         "type": "string",
                         "description": "The output above ground level (AGL) raster.The AGL result is a raster where each cell value is the minimum height that must be added to an otherwise nonvisible cell to make it visible by at least one ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6408,77 +6408,77 @@ functions_declarations = {
                 "out_agl_raster": {
                         "type": "string",
                         "description": "The output above-ground-level (AGL) raster.The AGL result is a raster where each cell value is the minimum height that must be added to an otherwise nonvisible cell to make it visible by at least one ...",
-                        "default": null
+                        "default": None
                 },
                 "analysis_type": {
                         "type": "string",
                         "description": "The visibility analysis type.FREQUENCY\u2014The output records the number of times that each cell location in the input surface raster can be seen by the input observation locations (as points, or as verti...",
-                        "default": null
+                        "default": None
                 },
                 "nonvisible_cell_value": {
                         "type": "string",
                         "description": "Value assigned to non-visible cells.ZERO\u20140 is assigned to nonvisible cells. This is the default.NODATA\u2014NoData is assigned to nonvisible cells.",
-                        "default": null
+                        "default": None
                 },
                 "z_factor": {
                         "type": "string",
                         "description": "Number of ground x,y units in one surface z unit.The z-factor adjusts the units of measure for the z units when they are different from the x,y units of the input surface. The z-values of the input su...",
-                        "default": null
+                        "default": None
                 },
                 "curvature_correction": {
                         "type": "string",
                         "description": "Specifies whether correction for the earth's curvature will be applied.FLAT_EARTH\u2014No curvature correction will be applied. This is the default.CURVED_EARTH\u2014Curvature correction will be applied.",
-                        "default": null
+                        "default": None
                 },
                 "refractivity_coefficient": {
                         "type": "string",
                         "description": "The coefficient of the refraction of visible light in air.The default value is 0.13.",
-                        "default": null
+                        "default": None
                 },
                 "surface_offset": {
                         "type": "string",
                         "description": "A vertical distance that will be added to the z-value of each cell as it is considered for visibility. It must be a positive integer or floating-point value.You can select a field in the input observe...",
-                        "default": null
+                        "default": None
                 },
                 "observer_elevation": {
                         "type": "string",
                         "description": "The surface elevations of the observer points or vertices.You can select a field in the input observers dataset, or you can specify a numerical value.By default, a numerical field SPOT is used if it e...",
-                        "default": null
+                        "default": None
                 },
                 "observer_offset": {
                         "type": "string",
                         "description": "A vertical distance that will be added to the observer elevation. It must be a positive integer or floating-point value.You can select a field in the input observers dataset, or you can specify a nume...",
-                        "default": null
+                        "default": None
                 },
                 "inner_radius": {
                         "type": "string",
                         "description": "The start distance from which visibility will be determined. Cells closer than this distance will not be visible in the output but can still block visibility of the cells between inner radius and oute...",
-                        "default": null
+                        "default": None
                 },
                 "outer_radius": {
                         "type": "string",
                         "description": "The maximum distance from which visibility will be determined. Cells beyond this distance will be excluded from the analysis.It can be a positive or negative integer or floating point value. If it is ...",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_start_angle": {
                         "type": "string",
                         "description": "The start angle of the horizontal scan range. Provide the value in degrees from 0 to 360 with 0 oriented to north. The value can be integer or floating point. The default value is 0.You can select a f...",
-                        "default": null
+                        "default": None
                 },
                 "horizontal_end_angle": {
                         "type": "string",
                         "description": "The end angle of the horizontal scan range. Provide the value in degrees from 0 to 360 with 0 oriented to north. The value can be integer or floating point. The default value is 360.You can select a f...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_upper_angle": {
                         "type": "string",
                         "description": "The upper vertical angle limit of the scan relative to the horizontal plane. Provide the value in degrees from above -90 up to and including 90. The value can be integer or floating point. The default...",
-                        "default": null
+                        "default": None
                 },
                 "vertical_lower_angle": {
                         "type": "string",
                         "description": "The lower vertical angle limit of the scan relative to the horizontal plane. Provide the value in degrees from -90 up to but not including 90. The value can be integer or floating point. The default v...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6513,12 +6513,12 @@ functions_declarations = {
                 "processing_cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 },
                 "classes_as_rows": {
                         "type": "string",
                         "description": "Specifies how the values from the input class raster will be represented in the output table.CLASSES_AS_FIELDS\u2014Classes will be represented as fields. This is the default.CLASSES_AS_ROWS\u2014Classes will b...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6544,47 +6544,47 @@ functions_declarations = {
                 "out_statistics_features": {
                         "type": "string",
                         "description": "The output feature class that will be created by joining the output table to the input zone data.",
-                        "default": null
+                        "default": None
                 },
                 "zone_field": {
                         "type": "string",
                         "description": "The field that contains the values that define each zone.It can be an integer or a string field of the zone dataset.",
-                        "default": null
+                        "default": None
                 },
                 "ignore_nodata": {
                         "type": "string",
                         "description": "Specifies whether NoData values in the value input will be ignored in the results of the zone that they fall within.DATA\u2014Within any particular zone, only cells that have a value in the input value ras...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_values": {
                         "type": "string",
                         "description": "The percentile that will be calculated. The default is 90, indicating the 90th percentile.The values can range from 0 to 100. The 0th percentile is essentially equivalent to the minimum statistic, and...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_interpolation_type": {
                         "type": "string",
                         "description": "Specifies the method of interpolation that will be used when the percentile value falls between two cell values from the input value raster.AUTO_DETECT\u2014If the input value raster is of integer pixel ty...",
-                        "default": null
+                        "default": None
                 },
                 "circular_calculation": {
                         "type": "string",
                         "description": "Specifies how the input raster will be processed for circular data.ARITHMETIC\u2014Ordinary linear statistics will be calculated. This is the default. CIRCULAR\u2014The statistics for angles or other cyclic qua...",
-                        "default": null
+                        "default": None
                 },
                 "circular_wrap_value": {
                         "type": "string",
                         "description": "The value that will be used to round a linear value to the range of a given circular statistic. Its value must be a positive integer or a floating-point value. The default value is 360 degrees.This pa...",
-                        "default": null
+                        "default": None
                 },
                 "process_as_multidimensional": {
                         "type": "string",
                         "description": "Specifies how the input rasters will be calculated if they are multidimensional.\r\nCURRENT_SLICE\u2014Statistics will be calculated from the current slice of the input multidimensional dataset. This is the ...",
-                        "default": null
+                        "default": None
                 },
                 "add_zone_attributes": {
                         "type": "string",
                         "description": "Specifies whether any of the additional zone attributes from the input zones will be appended to the output feature class.\r\nZONE_FIELD_ONLY\u2014Only the zone ID field from the input zones will be appended...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6625,12 +6625,12 @@ functions_declarations = {
                 "geometry_type": {
                         "type": "string",
                         "description": "Specifies the geometry type that will be calculated.AREA\u2014The area for each zone will be calculated.PERIMETER\u2014The perimeter for each zone will be calculated.THICKNESS\u2014The deepest (or thickest) point wi...",
-                        "default": null
+                        "default": None
                 },
                 "cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6657,7 +6657,7 @@ functions_declarations = {
                 "processing_cell_size": {
                         "type": "string",
                         "description": "The cell size of the output raster that will be created.This parameter can be defined by a numeric value or obtained from an existing raster dataset. If the cell size hasn't been explicitly specified ...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6689,12 +6689,12 @@ functions_declarations = {
                 "out_graph": {
                         "type": "string",
                         "description": "The name of the output graph for display.",
-                        "default": null
+                        "default": None
                 },
                 "zones_as_rows": {
                         "type": "string",
                         "description": "Specifies how the values from the input value raster will be represented in the output table.\r\nZONES_AS_FIELDS\u2014Zones will be represented as fields. This is the default.ZONES_AS_ROWS\u2014Zones will be repr...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6723,37 +6723,37 @@ functions_declarations = {
                 "statistics_type": {
                         "type": "string",
                         "description": "Specifies the statistic type to be calculated.MEAN\u2014The average of all cells in the value raster that belong to the same zone as the output cell will be calculated.This is the default.MAJORITY\u2014The valu...",
-                        "default": null
+                        "default": None
                 },
                 "ignore_nodata": {
                         "type": "string",
                         "description": "Specifies whether NoData values in the value input will be ignored in the results of the zone that they fall within.DATA\u2014Within any particular zone, only cells that have a value in the input value ras...",
-                        "default": null
+                        "default": None
                 },
                 "process_as_multidimensional": {
                         "type": "string",
                         "description": "Specifies how the input rasters will be calculated if they are multidimensional.CURRENT_SLICE\u2014Statistics will be calculated from the current slice of the input multidimensional dataset. This is the de...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_value": {
                         "type": "string",
                         "description": "The percentile that will be calculated. The default is 90, indicating the 90th percentile.The values can range from 0 to 100. The 0th percentile is essentially equivalent to the minimum statistic, and...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_interpolation_type": {
                         "type": "string",
                         "description": "Specifies the method of interpolation that will be used when the percentile value falls between two cell values from the input value raster.AUTO_DETECT\u2014If the input value raster is of integer pixel ty...",
-                        "default": null
+                        "default": None
                 },
                 "circular_calculation": {
                         "type": "string",
                         "description": "Specifies how the input raster will be processed for circular data.ARITHMETIC\u2014Ordinary linear statistics will be calculated. This is the default. CIRCULAR\u2014The statistics for angles or other cyclic qua...",
-                        "default": null
+                        "default": None
                 },
                 "circular_wrap_value": {
                         "type": "string",
                         "description": "The value that will be used to round a linear value to the range of a given circular statistic. Its value must be a positive integer or a floating-point value. The default value is 360 degrees.This pa...",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [
@@ -6785,42 +6785,42 @@ functions_declarations = {
                 "ignore_nodata": {
                         "type": "string",
                         "description": "Specifies whether NoData values in the value input will be ignored in the results of the zone that they fall within.DATA\u2014Within any particular zone, only cells that have a value in the input value ras...",
-                        "default": null
+                        "default": None
                 },
                 "statistics_type": {
                         "type": "string",
                         "description": "Specifies the statistic type to be calculated.ALL\u2014All of the statistics will be calculated. This is the default.MEAN\u2014The average of all cells in the value raster that belong to the same zone as the ou...",
-                        "default": null
+                        "default": None
                 },
                 "process_as_multidimensional": {
                         "type": "string",
                         "description": "Specifies how the input rasters will be calculated if they are multidimensional.\r\nCURRENT_SLICE\u2014Statistics will be calculated from the current slice of the input multidimensional dataset. This is the ...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_values": {
                         "type": "string",
                         "description": "The percentile that will be calculated. The default is 90, indicating the 90th percentile.The values can range from 0 to 100. The 0th percentile is essentially equivalent to the minimum statistic, and...",
-                        "default": null
+                        "default": None
                 },
                 "percentile_interpolation_type": {
                         "type": "string",
                         "description": "Specifies the method of interpolation that will be used when the percentile value falls between two cell values from the input value raster.AUTO_DETECT\u2014If the input value raster is of integer pixel ty...",
-                        "default": null
+                        "default": None
                 },
                 "circular_calculation": {
                         "type": "string",
                         "description": "Specifies how the input raster will be processed for circular data.ARITHMETIC\u2014Ordinary linear statistics will be calculated. This is the default. CIRCULAR\u2014The statistics for angles or other cyclic qua...",
-                        "default": null
+                        "default": None
                 },
                 "circular_wrap_value": {
                         "type": "string",
                         "description": "The value that will be used to round a linear value to the range of a given circular statistic. Its value must be a positive integer or a floating-point value. The default value is 360 degrees.This pa...",
-                        "default": null
+                        "default": None
                 },
                 "out_join_layer": {
                         "type": "string",
                         "description": "The output layer that will be created by joining the output table to the input zone data.",
-                        "default": null
+                        "default": None
                 }
         },
         "required": [

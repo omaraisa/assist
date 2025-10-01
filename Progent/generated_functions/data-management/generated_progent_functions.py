@@ -496,7 +496,8 @@ Removes attachments from geodatabase feature class or table records. Since attac
     def upgrade_attachments(self, params):
         """Upgrade Attachments
 
-Upgrades the attachments functionality on the data. When attachments are enabled on a feature class, an attachment table and relationship class are created to store the attachment data when an attachment is added to a feature. The attachment
+Upgrades the attachments functionality on the data. When attachments are enabled on a feature class, an attachment table and relationship class are created to store the attachment data when an attachment is added to a feature. The attachment
+
 table that is created includes fields that are used to store information about the attachment.
 
         params: {"in_dataset": <Table View>}
@@ -1228,7 +1229,8 @@ Creates a data loading workspace that can be used for data loading. The output w
     def generate_mapping_table(self, params):
         """Generate Mapping Table
 
-Generates the Mapping Table based on a configured data loading workspace. The table includes a list of  predefined datasets, fields, and attribute domain coded value descriptions.
+Generates the Mapping Table based on a configured data loading workspace. The table includes a list of  predefined datasets, fields, and attribute domain coded value descriptions.
+
 This output table is used as input to the Create Data Loading Workspace tool.
 
         params: {"in_workbook": <File>, "out_table": <Table>}
@@ -2464,7 +2466,8 @@ Creates an empty feature class in an enterprise database, enterprise geodatabase
     def integrate(self, params):
         """Integrate
 
-Analyzes the coordinate locations of feature vertices among features in one or more feature classes. Those that fall within a specified distance of one another are assumed to represent the same location and are assigned a common coordinate value (in other words, they are colocated). The tool also adds vertices where feature vertices are within the x,y tolerance of an edge and where line segments intersect. Integrate performs
+Analyzes the coordinate locations of feature vertices among features in one or more feature classes. Those that fall within a specified distance of one another are assumed to represent the same location and are assigned a common coordinate value (in other words, they are colocated). The tool also adds vertices where feature vertices are within the x,y tolerance of an edge and where line segments intersect. Integrate performs
+
 the following processing tasks: Vertices within the x,y tolerance of one another will be assigned the same coordinate location.When a vertex of one feature is within the x,y tolerance of an edge of any other feature, a new vertex will be inserted on the edge.When line segments intersect, a vertex will be inserted at the point of intersection for each feature involved in the intersection. An alternate tool is available for vector data integration. See the Pairwise Integrate documentation for details.
 
         params: {"in_featuresfeature_layer_long": <Value Table>, "cluster_tolerance": <Linear Unit>}
@@ -2770,9 +2773,12 @@ Copies features from the input feature class or layer to a new feature class.
     def delete_features(self, params):
         """Delete Features
 
-Deletes all or the selected subset of features from the input. The deletion of all features or a subset of features depends on the following:If the input is a feature class, all features will be deleted.
-If the input is a layer with no selection, all features will be deleted.
-If the input is a layer with a selection, only the
+Deletes all or the selected subset of features from the input. The deletion of all features or a subset of features depends on the following:If the input is a feature class, all features will be deleted.
+
+If the input is a layer with no selection, all features will be deleted.
+
+If the input is a layer with a selection, only the
+
 selected features will be deleted.
 
         params: {"in_features": <Feature Layer>}
@@ -3182,14 +3188,14 @@ Creates a line feature class converted from polygon boundaries. You can set the 
 
 Inspects features for geometry problems and repairs them. If a problem is found, a repair will be performed, and a one-line description will identify the feature, as well as the geometry problem that was repaired. This tool uses the same logic as the Check Geometry tool to repair geometry problems. Learn more about checking and repairing geometries
 
-        params: {"in_features": <Feature Layer>, "delete_null": <Boolean>, "validation_method": <String>}
+        params: {"in_features": <Feature Layer>, "delete_None": <Boolean>, "validation_method": <String>}
         Returns: {"success": True, "output_layer": <output_name>, "output_path": <output_path>} or error
         """
         try:
         in_features = params.get("in_features")
         if in_features is None:
             return {"success": False, "error": "in_features parameter is required"}
-        delete_null = params.get("delete_null")
+        delete_None = params.get("delete_None")
         validation_method = params.get("validation_method")
 
             # Generate output name and path
@@ -3199,7 +3205,7 @@ Inspects features for geometry problems and repairs them. If a problem is found,
             output_path = arcpy.CreateUniqueName(output_path)
 
             # Execute Repair Geometry
-            arcpy.RepairGeometry(in_features, delete_null, validation_method)
+            arcpy.RepairGeometry(in_features, delete_None, validation_method)
 
             self._add_to_map(output_path)
             return {"success": True, "output_layer": output_name, "output_path": output_path}
@@ -3515,7 +3521,7 @@ Adds a new field to a table or the table of a feature class or feature layer, as
         field_scale = params.get("field_scale")
         field_length = params.get("field_length")
         field_alias = params.get("field_alias")
-        field_is_nullable = params.get("field_is_nullable")
+        field_is_Noneable = params.get("field_is_Noneable")
         field_is_required = params.get("field_is_required")
         field_domain = params.get("field_domain")
 
@@ -3526,7 +3532,7 @@ Adds a new field to a table or the table of a feature class or feature layer, as
             output_path = arcpy.CreateUniqueName(output_path)
 
             # Execute Add Field
-            arcpy.AddField(in_table, field_name, field_type, field_precision, field_scale, field_length, field_alias, field_is_nullable, field_is_required, field_domain)
+            arcpy.AddField(in_table, field_name, field_type, field_precision, field_scale, field_length, field_alias, field_is_Noneable, field_is_required, field_domain)
 
             self._add_to_map(output_path)
             return {"success": True, "output_layer": output_name, "output_path": output_path}
@@ -3584,7 +3590,7 @@ Renames fields and field aliases or alters field properties.
         new_field_alias = params.get("new_field_alias")
         field_type = params.get("field_type")
         field_length = params.get("field_length")
-        field_is_nullable = params.get("field_is_nullable")
+        field_is_Noneable = params.get("field_is_Noneable")
         clear_field_alias = params.get("clear_field_alias")
 
             # Generate output name and path
@@ -3594,7 +3600,7 @@ Renames fields and field aliases or alters field properties.
             output_path = arcpy.CreateUniqueName(output_path)
 
             # Execute Alter Field
-            arcpy.AlterField(in_table, field, new_field_name, new_field_alias, field_type, field_length, field_is_nullable, clear_field_alias)
+            arcpy.AlterField(in_table, field, new_field_name, new_field_alias, field_type, field_length, field_is_Noneable, clear_field_alias)
 
             self._add_to_map(output_path)
             return {"success": True, "output_layer": output_name, "output_path": output_path}
@@ -9566,7 +9572,8 @@ Creates a feature class showing the footprints, boundary, seamlines or spatial r
     def export_mosaic_dataset_items(self, params):
         """Export Mosaic Dataset Items
 
-Saves a copy of processed images in a mosaic dataset to a specified folder and raster file format. The following are the two common workflows that use this tool: 
+Saves a copy of processed images in a mosaic dataset to a specified folder and raster file format. The following are the two common workflows that use this tool: 
+
 Export each selected item of a mosaic dataset to a new file. This allows you to have each processed item as a stand-alone file. You must set the appropriate NoData value for the exported items so there are no dark borders.Export each selected image within a time series mosaic dataset based on an area of interest. This allows you to only export the area of interest from each time slice.
 
         params: {"in_mosaic_dataset": <Mosaic Layer>, "out_folder": <Folder>, "where_clause": <SQL Expression>, ...}
@@ -10014,7 +10021,8 @@ Splits mosaic dataset items that were merged together using Merge Mosaic Dataset
     def synchronize_mosaic_dataset(self, params):
         """Synchronize Mosaic Dataset
 
-Synchronizes a mosaic dataset to keep it up to date. In addition to syncing data, you can update overviews if the underlying imagery has been changed, generate new overviews and cache, and restore the original configuration of mosaic dataset items. You can also remove paths to source data with this tool. To repair paths, use the Repair Mosaic Dataset Paths  tool. Synchronization is a one-way operation: changes in the source data can be 
+Synchronizes a mosaic dataset to keep it up to date. In addition to syncing data, you can update overviews if the underlying imagery has been changed, generate new overviews and cache, and restore the original configuration of mosaic dataset items. You can also remove paths to source data with this tool. To repair paths, use the Repair Mosaic Dataset Paths  tool. Synchronization is a one-way operation: changes in the source data can be 
+
 synchronized to the mosaic dataset’s attribute table, thereby updating the mosaic dataset's attribute table.  Changes in the mosaic dataset's attribute table will not affect the source data. Changes made by synchronization cannot be undone. Create a backup  of your mosaic dataset if you've made modifications to the data that you don't want overwritten.
 
         params: {"in_mosaic_dataset": <Mosaic Layer>, "where_clause": <SQL Expression>, "new_items": <Boolean>, ...}
@@ -10064,10 +10072,14 @@ synchronized to the mosaic dataset’s attribute table, thereby updating the mos
     def analyze_control_points(self, params):
         """Analyze Control Points
 
-Analyzes the control point coverage and identifies the areas that need additional control points to improve the block adjust result. The tool will check each image and provide the following:The number of control points
-for each imageThe percentage of image covered by the control
-points (point distribution)The overlap
-areasThe number of control
+Analyzes the control point coverage and identifies the areas that need additional control points to improve the block adjust result. The tool will check each image and provide the following:The number of control points
+
+for each imageThe percentage of image covered by the control
+
+points (point distribution)The overlap
+
+areasThe number of control
+
 points within overlap areas
 
         params: {"in_mosaic_dataset": <Mosaic Dataset; Mosaic Layer>, "in_control_points": <Feature Layer>, "out_coverage_table": <Feature Class>, ...}
@@ -12964,10 +12976,14 @@ Creates an empty table in an enterprise database, enterprise geodatabase, GeoPac
     def delete_rows(self, params):
         """Delete Rows
 
-Deletes all or the selected subset of rows from the input. The deletion of all rows or a subset of rows depends on the following:If the input is a feature class or table, all rows will be deleted.
-If the input is a layer or table view with no selection, all rows
-will be deleted.
-If the input is a layer or table view with a selection, only the
+Deletes all or the selected subset of rows from the input. The deletion of all rows or a subset of rows depends on the following:If the input is a feature class or table, all rows will be deleted.
+
+If the input is a layer or table view with no selection, all rows
+
+will be deleted.
+
+If the input is a layer or table view with a selection, only the
+
 selected rows will be deleted.
 
         params: {"in_rows": <Table View>}

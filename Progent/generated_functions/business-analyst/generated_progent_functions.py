@@ -1009,9 +1009,11 @@ Exports a segmentation profile to a table.
             return {"success": False, "error": str(e)}
 
 
-    def generate
+    def generate
+
 customer_segmentation_profile(self, params):
-        """Generate
+        """Generate
+
 Customer Segmentation Profile
 
 Creates a segmentation profile with an existing customer layer.
@@ -1032,15 +1034,18 @@ Creates a segmentation profile with an existing customer layer.
         in_volume_field = params.get("in_volume_field")
 
             # Generate output name and path
-            output_name = f"{in_customers_layer.replace(' ', '_')}_Generate
+            output_name = f"{in_customers_layer.replace(' ', '_')}_Generate
+
 Customer_Segmentation_Profile"
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             output_path = os.path.join(aprx.defaultGeodatabase, output_name)
             output_path = arcpy.CreateUniqueName(output_path)
 
-            # Execute Generate
+            # Execute Generate
+
 Customer Segmentation Profile
-            arcpy.Generate
+            arcpy.Generate
+
 CustomerSegmentationProfile(in_customers_layer, in_segmentation_base, out_profile, in_volume_field)
 
             self._add_to_map(output_path)
@@ -1050,9 +1055,11 @@ CustomerSegmentationProfile(in_customers_layer, in_segmentation_base, out_profil
             return {"success": False, "error": str(e)}
 
 
-    def generate
+    def generate
+
 market_area_segmentation_profile(self, params):
-        """Generate
+        """Generate
+
 Market Area Segmentation Profile
 
 Creates a segmentation profile by summarizing segments from standard geography boundaries within the input area.
@@ -1072,15 +1079,18 @@ Creates a segmentation profile by summarizing segments from standard geography b
             return {"success": False, "error": "out_profile parameter is required"}
 
             # Generate output name and path
-            output_name = f"{in_features.replace(' ', '_')}_Generate
+            output_name = f"{in_features.replace(' ', '_')}_Generate
+
 Market_Area_Segmentation_Profile"
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             output_path = os.path.join(aprx.defaultGeodatabase, output_name)
             output_path = arcpy.CreateUniqueName(output_path)
 
-            # Execute Generate
+            # Execute Generate
+
 Market Area Segmentation Profile
-            arcpy.Generate
+            arcpy.Generate
+
 MarketAreaSegmentationProfile(in_features, segmentation_base, out_profile)
 
             self._add_to_map(output_path)
@@ -1090,9 +1100,11 @@ MarketAreaSegmentationProfile(in_features, segmentation_base, out_profile)
             return {"success": False, "error": str(e)}
 
 
-    def generate
+    def generate
+
 segmentation_profile_report(self, params):
-        """Generate
+        """Generate
+
 Segmentation Profile Report
 
 Creates a report that displays segments of your customers and compares them to the study area (base profile).
@@ -1112,15 +1124,18 @@ Creates a report that displays segments of your customers and compares them to t
         report_format = params.get("report_format")
 
             # Generate output name and path
-            output_name = f"{target_profile.replace(' ', '_')}_Generate
+            output_name = f"{target_profile.replace(' ', '_')}_Generate
+
 Segmentation_Profile_Report"
             aprx = arcpy.mp.ArcGISProject("CURRENT")
             output_path = os.path.join(aprx.defaultGeodatabase, output_name)
             output_path = arcpy.CreateUniqueName(output_path)
 
-            # Execute Generate
+            # Execute Generate
+
 Segmentation Profile Report
-            arcpy.Generate
+            arcpy.Generate
+
 SegmentationProfileReport(target_profile, base_profile, report_title, report_folder, report_format)
 
             self._add_to_map(output_path)
