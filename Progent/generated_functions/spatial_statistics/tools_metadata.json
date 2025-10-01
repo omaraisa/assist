@@ -1,0 +1,17 @@
+{
+  "extraction_info": {
+    "date": "2025-10-01T13:21:08.124349",
+    "toolbox": "spatial_statistics",
+    "total_toolsets": 6,
+    "total_tools": 0,
+    "toolsets": [
+      "Extract",
+      "General",
+      "Overlay",
+      "Pairwise Overlay",
+      "Proximity",
+      "Statistics"
+    ]
+  },
+  "tools": []
+}

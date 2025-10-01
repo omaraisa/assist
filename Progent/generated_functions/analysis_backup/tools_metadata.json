@@ -1,0 +1,1554 @@
+{
+  "extraction_info": {
+    "date": "2025-10-01T11:38:01.358029",
+    "total_toolsets": 6,
+    "total_tools": 39,
+    "toolsets": [
+      "Extract",
+      "General",
+      "Overlay",
+      "Pairwise Overlay",
+      "Proximity",
+      "Statistics"
+    ]
+  },
+  "tools": [
+    {
+      "toolset": "Extract",
+      "tool_name": "Select",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/select.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class or layer from which features will be selected.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class that will be created. If no expression is used, the output will contain all the input features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "where_clause(Optional)",
+          "explanation": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
+          "datatype": "SQL Expression"
+        }
+      ],
+      "summary": "Extracts features from an input feature class or input feature layer, typically using a select or SQL expression, and stores them in an output feature class.",
+      "extraction_date": "2025-10-01T11:36:40.694776"
+    },
+    {
+      "toolset": "Extract",
+      "tool_name": "Table Select",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/table-select.htm",
+      "parameters": [
+        {
+          "name": "in_table",
+          "explanation": "The table containing records matching the specified expression that will be written to the output table.",
+          "datatype": "Table View; Raster Layer"
+        },
+        {
+          "name": "out_table",
+          "explanation": "The output table containing records from the input table that match the specified expression.",
+          "datatype": "Table"
+        },
+        {
+          "name": "where_clause(Optional)",
+          "explanation": "An SQL expression used to select a subset of records.  For more information on SQL syntax, see SQL reference for elements used in query expressions.",
+          "datatype": "SQL Expression"
+        }
+      ],
+      "summary": "Selects table records matching a Structured Query Language (SQL) expression and writes them to an output table.",
+      "extraction_date": "2025-10-01T11:36:42.318385"
+    },
+    {
+      "toolset": "Extract",
+      "tool_name": "An overview of the Analysis toolbox",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/an-overview-of-the-analysis-toolbox.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T11:36:43.979023"
+    },
+    {
+      "toolset": "Extract",
+      "tool_name": "Split By Attributes",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/split-by-attributes.htm",
+      "parameters": [
+        {
+          "name": "Input_Table",
+          "explanation": "The input feature class or table containing the data that will be split into the target workspace.",
+          "datatype": "Table View"
+        },
+        {
+          "name": "Target_Workspace",
+          "explanation": "The existing workspace where the output feature classes or tables will be written.",
+          "datatype": "Workspace; Feature Dataset"
+        },
+        {
+          "name": "Split_Fields[Split_Fields,...]",
+          "explanation": "The fields on which the input will be split into new feature classes or tables.",
+          "datatype": "Field"
+        }
+      ],
+      "summary": "Splits an input dataset by unique attributes.",
+      "extraction_date": "2025-10-01T11:36:45.569126"
+    },
+    {
+      "toolset": "Extract",
+      "tool_name": "Clip",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/clip.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The features that will be clipped.",
+          "datatype": "Feature Layer; Scene Layer; File; Building Scene Layer"
+        },
+        {
+          "name": "clip_features",
+          "explanation": "The features that will be used to clip the input features.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The dataset that will be created.",
+          "datatype": "Feature Class; File"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The minimum distance separating all feature coordinates as well as the distance a coordinate can move in x or y (or both). Set the value higher for data with less coordinate accuracy and lower for data with extremely high accuracy.Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        }
+      ],
+      "summary": "Extracts input features that overlay the clip features. Use this tool to cut out a piece of one dataset using one or more of the features in another dataset as a cookie cutter. This is particularly useful for creating a new dataset—also referred to as a study area or area of interest (AOI)—that contains a geographic subset of the features in another, larger dataset. Clip operations can also be performed using the Pairwise Clip tool.",
+      "extraction_date": "2025-10-01T11:36:47.339036"
+    },
+    {
+      "toolset": "Extract",
+      "tool_name": "Split",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/split.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The features to be split.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "split_features",
+          "explanation": "Polygon features containing a tabular field whose unique values are used to split the input features and provide the output feature classes' names.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "split_field",
+          "explanation": "The character field used to split the input features. This field's values identify the split features used to create each output feature class. The split field's unique values provide the names of the output feature classes.",
+          "datatype": "Field"
+        },
+        {
+          "name": "out_workspace",
+          "explanation": "The existing workspace where the output feature classes are stored.",
+          "datatype": "Workspace ; Feature Dataset"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Set the value higher for data that has less coordinate accuracy and lower for datasets with extremely high accuracy.Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        }
+      ],
+      "summary": "Splits an input with overlaying features to  create a subset of output feature classes.",
+      "extraction_date": "2025-10-01T11:36:49.201770"
+    },
+    {
+      "toolset": "General",
+      "tool_name": "Select",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/select.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class or layer from which features will be selected.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class that will be created. If no expression is used, the output will contain all the input features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "where_clause(Optional)",
+          "explanation": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
+          "datatype": "SQL Expression"
+        }
+      ],
+      "summary": "Extracts features from an input feature class or input feature layer, typically using a select or SQL expression, and stores them in an output feature class.",
+      "extraction_date": "2025-10-01T11:36:50.890099"
+    },
+    {
+      "toolset": "General",
+      "tool_name": "An overview of the Analysis toolbox",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/an-overview-of-the-analysis-toolbox.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T11:36:52.450584"
+    },
+    {
+      "toolset": "General",
+      "tool_name": "Assign Weights By Pairwise Comparison",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/assign-weights-by-pairwise-comparison.htm",
+      "parameters": [
+        {
+          "name": "input_variables[input_variables,...]",
+          "explanation": "The variable names that will be compared. Any name can be provided.The minimum number of variables is two and the maximum is nine.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_table",
+          "explanation": "The name of the output table that will contain calculated weights for the input variables. When the add_comparison_matrix parameter value is ADD_MATRIX, the output table will also include the pairwise comparison matrix.",
+          "datatype": "Table"
+        },
+        {
+          "name": "add_comparison_matrix(Optional)",
+          "explanation": "Specifies whether the out_table parameter value will contain the pairwise comparison matrix.ADD_MATRIX—The output table will contain both the pairwise comparison matrix and the calculated weights. This is the default.WEIGHTS_ONLY—The output table will only include the calculated weights.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "comparison_matrix(Optional)",
+          "explanation": "The pairwise comparison matrix that will be used when calculating the weights.\r\nDefine the pairwise comparisons by doing one of the following:Provide a file containing a valid comparison matrix.Specify the variable names and their comparisons.The file can be a geodatabase table, dBASE (.dbf), or comma-delimited files (.csv and .txt).",
+          "datatype": "Pairwise Weights Table"
+        }
+      ],
+      "summary": "Calculates the relative weights for a set of input variables by comparing them in pairs. Learn more about how Assign Weights By Pairwise Comparison works",
+      "extraction_date": "2025-10-01T11:36:54.419776"
+    },
+    {
+      "toolset": "General",
+      "tool_name": "How Assign Weights by Pairwise Comparison works",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/how-assign-weights-by-pairwise-comparison-works.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T11:36:56.383652"
+    },
+    {
+      "toolset": "Overlay",
+      "tool_name": "Select",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/select.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class or layer from which features will be selected.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class that will be created. If no expression is used, the output will contain all the input features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "where_clause(Optional)",
+          "explanation": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
+          "datatype": "SQL Expression"
+        }
+      ],
+      "summary": "Extracts features from an input feature class or input feature layer, typically using a select or SQL expression, and stores them in an output feature class.",
+      "extraction_date": "2025-10-01T11:36:57.974741"
+    },
+    {
+      "toolset": "Overlay",
+      "tool_name": "Symmetrical Difference",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/symmetrical-difference.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class or layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "update_features",
+          "explanation": "The update feature class or layer. The geometry type must be the same as that of the input feature class or layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class to which the results will be written.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "join_attributes(Optional)",
+          "explanation": "Specifies the attributes that will be transferred to the output feature class.ALL—All the attributes from the input features will be transferred to the output feature class. This is the default. NO_FID—All the attributes except the FID from the input features will be transferred to the output feature class. ONLY_FID—Only the FID field from the input features will be transferred to the output feature class.",
+          "datatype": "String"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both).Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        }
+      ],
+      "summary": "Computes a geometric intersection of the input and update features, returning the input features and update features that do not overlap. Features or portions of features in the input and update features that do not overlap will be written to the output feature class.",
+      "extraction_date": "2025-10-01T11:36:59.579412"
+    },
+    {
+      "toolset": "Overlay",
+      "tool_name": "Erase",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/erase.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class or layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "erase_features",
+          "explanation": "The features that will be used to erase coincident features in the input.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class that will contain only those input features that are not coincident with the erase features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        }
+      ],
+      "summary": "Creates a feature class by overlaying the input features with the erase features. Only those portions of the input features falling outside the erase features  are copied to the output feature class. An alternate tool is available for erase operations. See the Pairwise Erase tool documentation for details.",
+      "extraction_date": "2025-10-01T11:37:01.199652"
+    },
+    {
+      "toolset": "Overlay",
+      "tool_name": "Update",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/update.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class or layer. The geometry type must be polygon.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "update_features",
+          "explanation": "The features that will be used to update the input features. The geometry type must be polygon.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class that will contain the results.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "keep_borders(Optional)",
+          "explanation": "Specifies whether the boundary of the update polygon features will be kept.BORDERS—The outside border of the update_features parameter value will be kept in the out_feature_class parameter value. This is the default. NO_BORDERS—The outside border of the update_features parameter value will not be kept after it is inserted into the in_features. Item values of the update_features parameter value take precedence over in_features parameter value attributes.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        }
+      ],
+      "summary": "Computes the geometric intersection of the input features and update features. The attributes and geometry of the input features are updated by the update features in the output feature class.",
+      "extraction_date": "2025-10-01T11:37:03.631104"
+    },
+    {
+      "toolset": "Overlay",
+      "tool_name": "Intersect",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/intersect.htm",
+      "parameters": [
+        {
+          "name": "in_features[[in_features, {Rank}],...]",
+          "explanation": "A list of the input feature classes or layers. When the distance between features is less than the cluster tolerance, the features with the lower rank will snap to the feature with the higher rank. The highest rank is 1. For more information, see Priority ranks and geoprocessing tools.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "join_attributes(Optional)",
+          "explanation": "Specifies the attributes from the input features that will be transferred to the output feature class.ALL—All the attributes from the input features will be transferred to the output feature class. This is the default. NO_FID—All the attributes except the FID attribute from the input features will be transferred to the output feature class. ONLY_FID—Only the FID attribute from the input features will be transferred to the output feature class.",
+          "datatype": "String"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both).Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "output_type(Optional)",
+          "explanation": "Specifies the type of intersections that will be returned.INPUT—The intersections returned will be the same geometry type as the input features with the lowest dimension geometry. If all inputs are polygons, the output feature class will contain polygons. If one or more of the inputs are lines and none of the inputs are points, the output will be line. If one or more of the inputs are points, the output feature class will contain points. This is the default. LINE—The intersections  returned will be line. This is only valid if none of the inputs are points. POINT—The intersections  returned will be point. If the inputs are line or polygon, the output will be a multipoint feature class.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Computes a geometric intersection of the input features. Features or portions of features that overlap in all layers or feature classes will be written to the output feature class. An alternate tool is available for intersect operations. See the Pairwise Intersect tool documentation for details. The Pairwise Intersect tool is similar to this tool  in that geometric intersections are computed, but it is different in that intersections are computed on pairs of features rather than all combinations of features. Learn more about how Intersect works",
+      "extraction_date": "2025-10-01T11:37:05.395050"
+    },
+    {
+      "toolset": "Overlay",
+      "tool_name": "Apportion Polygon",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/apportion-polygon.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The polygon features with numeric attributes that will be                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          summarized into the target polygon geometries.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "apportion_fields[[field, {statistic_type}],...]",
+          "explanation": "The numeric fields from the input polygons that will be summarized by each target polygon and recorded in the output feature class.The optional statistic types are as follows:SUM—The values for the specified field will be added together. Use this statistic for count-based attributes. This is the default.MEAN—The average for the specified field will be calculated. Use this statistic for rate-based attributes, such as population percentages. This option is only valid when the method parameter is set to AREA.MEDIAN—The median of the specified field will be calculated. Use this statistic for rate-based attributes, such as population percentages. This option is only valid when the method parameter is set to AREA.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "target_features",
+          "explanation": "The polygon \r\nfeatures and their apportioned fields that will be copied to the output feature class.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_features",
+          "explanation": "The output feature class containing the attribute and geometries of the target polygons as well as the specified apportion fields from the input polygons.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "method",
+          "explanation": "Specifies the method that will be used to apportion the fields from the input polygons to the target polygons.\r\nAREA—The amount that each input polygon contributes to the summarized values for each target feature will be determined by the area of overlap between the two features. If an input feature overlaps two target features by the same amount,  the apportioned fields will be divided in two and contribute to both target features by half of the total value. This is the default.LENGTH—The attributes from the input features will be divided based on the percentage of how much of a line is within each target feature. Only the line intersecting the input feature is included in the calculation.  The line outside the input feature is excluded.  For example, if one target feature covers 750 meters of a line, and another target feature covers 250 meters of a line, 75% (750 / 1000) of the input feature's attribute values will be aggregated to the first target feature, and 25% (250 / 1000) of the input feature's attribute values will be aggregated to the second target feature.POINTS—The attributes from the input features will be divided based on the number of points inside each target feature overlapping an input feature.  Points outside of the input feature are excluded. Optionally, a weight field can be specified so that the total weight of all points within each target feature will be used to determine how the input features' attribute values are divided. For example, if two target features overlap one input feature, and there are two points inside the first target feature and eight points inside the second target feature, 20% (2 / 10) of the input feature's attribute values will be aggregated to the first target feature, and 80% (8 / 10) of the input feature's attribute values will be aggregated to the second target feature.",
+          "datatype": "String"
+        },
+        {
+          "name": "estimation_features(Optional)",
+          "explanation": "The input point or polyline features that will be used to estimate the percent of the input polygon apportion fields to apportion to the target polygon.  This is the amount of the point or line within the intersection divided by the amount within the input feature to create a percentage.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "weight_field(Optional)",
+          "explanation": "A numeric field from the target polygon layer that  will be used to adjust which target polygons receive larger apportioned values from the input polygons' fields to apportion. Targets with higher weight are apportioned a higher ratio of the field values.If estimation features are specified, the weight\r\nfield will be a numeric field from the estimation features that will\r\nadjust the values apportioned to the target polygons intersecting\r\nthe estimation features.",
+          "datatype": "Field"
+        },
+        {
+          "name": "maintain_geometries(Optional)",
+          "explanation": "Specifies whether the output feature class will maintain the original geometries of the target polygon layer. MAINTAIN_GEOMETRIES—The output feature class will maintain the original geometries of the target polygon layer. This is the default.INTERSECT_GEOMETRIES—The output feature class will be a geometric intersection of the target polygons and the input polygons. Only areas of the target polygons that overlap an input polygon will be included in the output.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Summarizes the attributes of an input polygon layer based on the spatial overlay of a target polygon layer and assigns the summarized attributes to the target polygons. The target polygons have summed numeric attributes derived from the input polygons that each target overlaps. This process is typically known as apportioning or apportionment. This tool can be used to estimate the population of one\r\nfeature based on the percentage of that feature that overlays another feature\r\nwith a known population. The Enrich Layer tool uses detailed aggregation and apportionment settings to summarize data.  The Apportion Polygon tool is similar to the Enrich Layer tool. However, Apportion Polygon uses specified apportionment, while Enrich Layer uses U.S. Census Block points or global settlement points for apportionment. For more information, see Data apportionment.",
+      "extraction_date": "2025-10-01T11:37:07.130042"
+    },
+    {
+      "toolset": "Overlay",
+      "tool_name": "Count Overlapping Features",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/count-overlapping-features.htm",
+      "parameters": [
+        {
+          "name": "in_features[in_features,...]",
+          "explanation": "The input feature classes or layers. The input features can be point, multipoint, line, or polygon. If multiple inputs are provided, they must all be the same geometry type.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class containing the overlap count.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "min_overlap_count(Optional)",
+          "explanation": "Limits the output to only locations that meet or exceed the specified number of overlaps. The default value is 1.",
+          "datatype": "Long"
+        },
+        {
+          "name": "out_overlap_table(Optional)",
+          "explanation": "The output table containing records for each individual overlapping geometry.",
+          "datatype": "Table"
+        }
+      ],
+      "summary": "Generates planarized overlapping features from the input features. The count of overlapping features is written to the output features.",
+      "extraction_date": "2025-10-01T11:37:08.727205"
+    },
+    {
+      "toolset": "Overlay",
+      "tool_name": "Identity",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/identity.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class or layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "identity_features",
+          "explanation": "The identity feature class or layer. It must be polygon or the same geometry type as the input features.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class that will be created and to which the results will be written.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "join_attributes(Optional)",
+          "explanation": "Specifies how attributes will be transferred to the output feature class.ALL—All the attributes (including FIDs) from the input features, as well as the identity features, will be transferred to the output features.  If no intersection is found, the identity feature values will not be transferred to the output (their values will be set to empty strings or 0) and the identity feature FID will be -1. This is the default. NO_FID—All the attributes except the FID from the input features and identity features will be transferred to the output features.  If no intersection is found, the identity feature values will not be transferred to the output (their values will be set to empty strings or 0). ONLY_FID—All the attributes from the input features and only the FID  from the identity features will be transferred to the output features. If no intersection is found,  the identity features' FID attribute value in the output will be -1.",
+          "datatype": "String"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "relationship(Optional)",
+          "explanation": "Specifies whether additional spatial relationships between the in_features and identity_features parameter values will be written to the output. This only applies when the geometry type of the in_features parameter value is line and the geometry type of the identity_features parameter value is polygon.NO_RELATIONSHIPS—No additional spatial relationship will be written to the output. KEEP_RELATIONSHIPS—The output line features will contain two additional fields, LEFT_poly and RIGHT_poly.  These  fields contain the feature ID  of the identity_features  parameter value on the left and right side of the line feature.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Computes a geometric intersection of the input features and identity features. The input features or portions thereof that overlap identity features will get the attributes of those identity features.",
+      "extraction_date": "2025-10-01T11:37:10.478335"
+    },
+    {
+      "toolset": "Overlay",
+      "tool_name": "Spatial Join",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/spatial-join.htm",
+      "parameters": [
+        {
+          "name": "target_features",
+          "explanation": "The attributes from the target features and the attributes from the joined features will be transferred to the output feature class. However, a subset of attributes can be defined by the field map parameter.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "join_features",
+          "explanation": "The attributes from the join features will be joined to the attributes of the target features. See the explanation of the join_operation parameter for details on how the aggregation of joined attributes are affected by the type of join operation.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "A new feature class containing the attributes of the target and join features. By default, all attributes of the target features and the attributes of the joined features will be written to the output. However, the set of attributes to be transferred can be defined by the field map parameter.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "join_operation(Optional)",
+          "explanation": "The operation that will join the target features and join features in the output feature class if multiple join features are found that have the same spatial relationship with a single target feature.\r\nJOIN_ONE_TO_ONE—If multiple join features are found that have the same spatial relationship with a single target feature, the attributes from the multiple join features will be aggregated using a field map merge rule. For example, if a point target feature is found within two separate polygon join features, the attributes from the two polygons will be aggregated before being transferred to the output point feature class. If one polygon has an attribute value of 3 and the other has a value of 7, and a Sum merge rule is specified, the aggregated value in the output feature class will be 10. This is the default.JOIN_ONE_TO_MANY—If multiple join features are found that have the same spatial relationship with a single target feature, the output feature class will contain multiple copies (records) of the target feature. For example, if a single point target feature is found within two separate polygon join features, the output feature class will contain two copies of the target feature: one record with the attributes of one polygon and another record with the attributes of the other polygon.",
+          "datatype": "String"
+        },
+        {
+          "name": "join_type(Optional)",
+          "explanation": "Specifies whether all target features will be maintained in the output feature class (an outer join) or only those that have the specified spatial relationship with the join features (an inner join).KEEP_ALL—All target features will be maintained in the output (outer join). This is the default.KEEP_COMMON— Only those target features that have the specified spatial relationship with the join features will be maintained in the output feature class (inner join). For example, if a point feature class is specified for the target features, and a polygon feature class is specified for the join features with a match_option value of  WITHIN, the output feature class will only contain those target features that are within a polygon join feature. Any target features not within a join feature will be excluded from the output.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "field_mapping(Optional)",
+          "explanation": "The fields that will\r\nbe included in the output feature class with their respective properties and\r\nsource fields. The output includes all fields from the join and\r\ntarget features by default. Use the field map to add, delete, rename, and reorder fields, as well as change other field properties.The field map can be used to combine values from two or more input\r\nfields into a single output field.In Python, use the FieldMappings class to define this parameter.",
+          "datatype": "Field Mappings"
+        },
+        {
+          "name": "match_option(Optional)",
+          "explanation": "Specifies the criteria that will be used to match rows.INTERSECT—The features in the join features will be matched if they intersect a target  feature. This is the default. Specify the distance in the search_radius  parameter.INTERSECT_3D— The features in the join features will be matched if they intersect a target feature in three-dimensional space (x, y, and z). Specify the distance in the search_radius parameter.WITHIN_A_DISTANCE—The features in the join features will be matched if they are within a specified distance of a target feature. Specify the distance in the search_radius parameter.WITHIN_A_DISTANCE_GEODESIC—This is the same as WITHIN_A_DISTANCE except that geodesic distance is used rather than planar distance.  Distance between features will be calculated using a geodesic formula that takes into account the curvature of the spheroid and correctly handles data near and across the dateline and poles. Use this option if the data covers a large geographic extent or the coordinate system of the inputs is unsuitable for distance calculations.WITHIN_A_DISTANCE_3D—The features in the join features will be matched if they are within a specified distance of a target feature in three-dimensional space. Specify the distance in the search_radius parameter.CONTAINS—The features in the join features will be matched if a target feature contains them. The target features must be polygons or polylines. For this option, the target features cannot be points, and the join features can only be polygons when the target features are also polygons.COMPLETELY_CONTAINS—The features in the join features will be matched if a target feature completely contains them. A polygon can completely contain any feature. A point cannot completely contain any feature, not even a point. A polyline can completely contain only polyline and point features.CONTAINS_CLEMENTINI—This spatial relationship produces the same results as COMPLETELY_CONTAINS except that if the join feature is entirely on the boundary of the target feature (no part is properly inside or outside) the feature will not be matched. Clementini defines the boundary polygon as the line separating inside and outside, the boundary of a line is defined as its end points, and the boundary of a point is always empty.WITHIN—The features in the join features will be matched if a target feature is within them. This is the opposite of CONTAINS. For this option, the target features can only be polygons when the join features are also polygons. A point can be a  join feature only if a point is the target. COMPLETELY_WITHIN—The features in the join features will be matched if a target feature is completely within them. This is the opposite of COMPLETELY_CONTAINS. WITHIN_CLEMENTINI—The result will be identical to WITHIN  except if the entirety of the feature in the join features is on the boundary of the target feature, the feature will not be matched. Clementini defines the boundary polygon as the line separating inside and outside, the boundary of a line is defined as its end points, and the boundary of a point is always empty.ARE_IDENTICAL_TO—The features in the join features will be matched if they are identical to a target feature. Both join and target feature must be of the same shape type—point to point, line to line, or polygon to polygon. BOUNDARY_TOUCHES—The features in the join features will be matched if they have a boundary that touches a target feature. When the target and join features are lines or polygons, the boundary of the join feature can only touch the boundary of the target feature and no part of the join feature can cross the boundary of the target feature.SHARE_A_LINE_SEGMENT_WITH—The features in the join features will be matched if they share a line segment with a target feature. The join and target features must be lines or polygons.CROSSED_BY_THE_OUTLINE_OF—The features in the join features will be matched if a target feature is crossed by their outline. The join and target features must be lines or polygons. If polygons are used for the join or target features, the polygon's boundary (line) will be used. Lines that cross at a point will be matched; lines that share a line segment will not be matched.HAVE_THEIR_CENTER_IN—The features in the join features will be matched if a target feature's center falls within them. The center of the feature is calculated as follows: For polygon and multipoint, the geometry's centroid is used, and for line input, the geometry's midpoint is used. Specify the distance in the search_radius parameter.CLOSEST—The feature in the join features that is closest to a target feature will be matched. See the usage tip for more information. Specify the distance in the search_radius parameter.CLOSEST_GEODESIC—This is the same as CLOSEST except that geodesic distance is used rather than planar distance.  Use this option if the data covers a large geographic extent or the coordinate system of the inputs is unsuitable for distance calculations LARGEST_OVERLAP—The feature in the join features will be matched with the target feature with the largest overlap.",
+          "datatype": "String"
+        },
+        {
+          "name": "search_radius(Optional)",
+          "explanation": "Join features within this distance of a target feature will be considered for the spatial join. A search radius is only valid when the spatial relationship is specified (the match_option parameter is set to INTERSECT, WITHIN_A_DISTANCE, WITHIN_A_DISTANCE_GEODESIC, HAVE_THEIR_CENTER_IN,  CLOSEST, or CLOSEST_GEODESIC). For example, using a search radius of 100 meters with the WITHIN_A_DISTANCE spatial relationship will join feature within 100 meters of a target feature. For the three within-a-distance relationships, if no value is specified for the search_radius, a distance of 0 is used.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "distance_field_name(Optional)",
+          "explanation": "The name of the field that contains the distance between the target feature and the closest join feature. This field will be added to the output feature class. This parameter is only valid when the spatial relationship is specified (match_option is set to CLOSEST or CLOSEST_GEODESIC. The value of this field is -1 if no feature is matched within a search radius. If no field name is provided, the field will not be added to the output feature class.",
+          "datatype": "String"
+        },
+        {
+          "name": "match_fields[[join_field, target_field],...](Optional)",
+          "explanation": "Pairs of fields from the join features and target features that will be used for attribute matching. Only the records from the join features that share match field values with the target features will participate in the spatial join.",
+          "datatype": "Value Table"
+        }
+      ],
+      "summary": "Joins attributes from one feature to another based on the spatial relationship. The target features and the joined attributes from the join features are written to the output feature class. Learn more about Spatial Join relationships by feature type",
+      "extraction_date": "2025-10-01T11:37:12.527402"
+    },
+    {
+      "toolset": "Overlay",
+      "tool_name": "Union",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/union.htm",
+      "parameters": [
+        {
+          "name": "in_features[[in_features, {rank}],...]",
+          "explanation": "The input feature classes or layers. When the distance between features is less than the cluster tolerance, the features with the lower rank will snap to the feature with the higher rank. The highest rank is one. All of the input features must be polygons.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class that will contain the results.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "join_attributes(Optional)",
+          "explanation": "Specifies which attributes from the input features will be transferred to the output feature class.ALL—All the attributes from the input features will be transferred to the output feature class. This is the default. NO_FID—All the attributes except the FID from the input features will be transferred to the output feature class. ONLY_FID—Only the FID field from the input features will be transferred to the output feature class.",
+          "datatype": "String"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "gaps(Optional)",
+          "explanation": "Specifies whether a feature will be created for areas in the output that are completely enclosed by polygons.Gaps are areas in the output feature class that are completely enclosed by other polygons (created from the intersection of features or from existing holes in the input polygons). These areas are not invalid, but you can identify them for analysis. To identify the gaps in the output, set this parameter to NO_GAPS, and a feature will be created in these areas. To select these features, query the output feature class based on all the input feature's FID values being equal to -1.GAPS—A feature will not be created for an area in the output that is completely enclosed by polygons. This is the default. NO_GAPS—A feature will be created for an area in the output that is completely enclosed by polygons. This feature will have no attribute values and will have a FID value of -1.",
+          "datatype": "Boolean"
+        }
+      ],
+      "summary": "Computes a geometric union of the input features. All features and their attributes will be written to the output feature class. Learn more about how Union works",
+      "extraction_date": "2025-10-01T11:37:14.263545"
+    },
+    {
+      "toolset": "Pairwise Overlay",
+      "tool_name": "Select",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/select.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class or layer from which features will be selected.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class that will be created. If no expression is used, the output will contain all the input features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "where_clause(Optional)",
+          "explanation": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
+          "datatype": "SQL Expression"
+        }
+      ],
+      "summary": "Extracts features from an input feature class or input feature layer, typically using a select or SQL expression, and stores them in an output feature class.",
+      "extraction_date": "2025-10-01T11:37:15.828075"
+    },
+    {
+      "toolset": "Pairwise Overlay",
+      "tool_name": "Pairwise Dissolve",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/pairwise-dissolve.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The features to be aggregated.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class to be created that will contain the aggregated features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "dissolve_field[dissolve_field,...](Optional)",
+          "explanation": "The field or fields on which features will be aggregated.",
+          "datatype": "Field"
+        },
+        {
+          "name": "statistics_fields[[field, {statistic_type}],...](Optional)",
+          "explanation": "Specifies the field or fields containing the attribute values that will be used to calculate the specified statistic. Multiple statistic and field combinations can be specified. Null values are excluded from all calculations.By default, the tool will not calculate any statistics.Numeric attribute fields can be summarized using any statistic. Text attribute fields can be summarized  using minimum, maximum, count, first, last, unique, concatenate, and mode statistics.SUM—The values for the specified field will be added together.MEAN—The average for the specified field will be calculated.MIN—The smallest value of the specified field will be identified.MAX—The largest value of the specified field will be identified.RANGE—The range of values (maximum minus minimum) for the specified field will be calculated.STD—The standard deviation of values for the specified field will be calculated.COUNT—The number of values in the specified field will be identified.FIRST—The specified field value of the first record in the input will be used.LAST—The specified field value of the last record in the input will be used.MEDIAN—The median of the specified field will be calculated.VARIANCE—The variance of the specified field will be calculated.\r\nUNIQUE—The number of unique values of the specified field will be counted.CONCATENATE—The values for the specified field will be concatenated. The values can be separated using the concatenation_separator parameter.MODE—The mode (the most common value) for the specified field will be identified. If more than one value is equally common, the lowest value will be returned.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "multi_part(Optional)",
+          "explanation": "Specifies whether multipart features will be included in the output.MULTI_PART—Multipart features will be included in the output. This is the default.SINGLE_PART—Multipart features will not be included in the output. Individual features will be created for each part.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "concatenation_separator(Optional)",
+          "explanation": "A character or characters that will be used to concatenate values when the CONCATENATION option is used for the statistics_fields parameter. By default, the tool will concatenate values without a separator.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Aggregates features based on specified attributes using a parallel processing approach. An alternate tool is available for dissolve operations. See the Dissolve tool documentation for details.",
+      "extraction_date": "2025-10-01T11:37:17.597124"
+    },
+    {
+      "toolset": "Pairwise Overlay",
+      "tool_name": "An overview of the Analysis toolbox",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/an-overview-of-the-analysis-toolbox.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T11:37:19.339605"
+    },
+    {
+      "toolset": "Pairwise Overlay",
+      "tool_name": "Comparison of classic overlay tools to pairwise overlay tools",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/comparison-of-classic-overlay-tools-to-pairwise-overlay-tools.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T11:37:21.013100"
+    },
+    {
+      "toolset": "Pairwise Overlay",
+      "tool_name": "Pairwise Integrate",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/pairwise-integrate.htm",
+      "parameters": [
+        {
+          "name": "in_features[in_features,...]",
+          "explanation": "The feature classes that will be integrated. When the distance between features is small in comparison to the tolerance, the vertices or points will be clustered (moved to be coincident).",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The distance that determines the range in which feature vertices are made coincident. To minimize undesired movement of vertices, the x,y tolerance should be small. If no value is provided, the x,y tolerance from the first dataset in the list of inputs will be used.Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        }
+      ],
+      "summary": "Analyzes the coordinate locations of feature vertices among features in one or more feature classes. Those that fall within a specified distance of one another are assumed to represent the same location and are assigned a common coordinate value (in other words, they are colocated). The tool also adds vertices where feature vertices are within the x,y tolerance of an edge and where line segments intersect. Pairwise Integrate performs\r\nthe following processing tasks: Vertices within the x,y tolerance of one another will be assigned the same coordinate location.When a vertex of one feature is within the x,y tolerance of an edge of any other feature, a new vertex will be inserted on the edge.When line segments intersect, a vertex will be inserted at the point of intersection for each feature involved in the intersection. An alternate tool is available for vector data integration. See the Integrate tool documentation for details.",
+      "extraction_date": "2025-10-01T11:37:22.804093"
+    },
+    {
+      "toolset": "Pairwise Overlay",
+      "tool_name": "Clip",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/clip.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The features that will be clipped.",
+          "datatype": "Feature Layer; Scene Layer; File; Building Scene Layer"
+        },
+        {
+          "name": "clip_features",
+          "explanation": "The features that will be used to clip the input features.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The dataset that will be created.",
+          "datatype": "Feature Class; File"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The minimum distance separating all feature coordinates as well as the distance a coordinate can move in x or y (or both). Set the value higher for data with less coordinate accuracy and lower for data with extremely high accuracy.Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        }
+      ],
+      "summary": "Extracts input features that overlay the clip features. Use this tool to cut out a piece of one dataset using one or more of the features in another dataset as a cookie cutter. This is particularly useful for creating a new dataset—also referred to as a study area or area of interest (AOI)—that contains a geographic subset of the features in another, larger dataset. Clip operations can also be performed using the Pairwise Clip tool.",
+      "extraction_date": "2025-10-01T11:37:24.753525"
+    },
+    {
+      "toolset": "Pairwise Overlay",
+      "tool_name": "Pairwise Buffer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/pairwise-buffer.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input point, line, or polygon features that will be buffered.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class containing the output buffers.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "buffer_distance_or_field",
+          "explanation": "The distance around the input features that will be buffered. Distances can be provided as either a value representing a linear distance or a field from the input features that contains the distance to buffer each feature.See the Usage section for more information about how the tool handles linear units.When specifying a distance, if the linear unit has two words, such as Decimal Degrees, combine the two words into one (for example, 20 DecimalDegrees).",
+          "datatype": "Linear Unit; Field"
+        },
+        {
+          "name": "dissolve_option(Optional)",
+          "explanation": "Specifies the type of dissolve operation that will be performed to remove buffer overlap.NONE—An individual buffer for each feature will be maintained, regardless of overlap. This is the default. ALL—All buffers will be dissolved together into a single feature, removing any overlap. LIST—Any buffers sharing attribute values in the listed fields (carried over from the input features) will be dissolved.",
+          "datatype": "String"
+        },
+        {
+          "name": "dissolve_field[dissolve_field,...](Optional)",
+          "explanation": "The list of fields from the input features on which the output buffers will be dissolved. Any buffers sharing attribute values in the listed fields (carried over from the input features) will be dissolved.",
+          "datatype": "Field"
+        },
+        {
+          "name": "method(Optional)",
+          "explanation": "Specifies whether the planar or geodesic method will be used to create the buffers.PLANAR—If the input features are in a projected coordinate system, Euclidean buffers will be created. If the input features are in a geographic coordinate system and the buffer distance is in linear units (meters, feet, and so forth, as opposed to angular units such as degrees), geodesic buffers will be created. This is the default. You can use the Output Coordinate System environment setting to specify the coordinate system to use. For example, if the input features are in a projected coordinate system, you can set the environment to a geographic coordinate system to create geodesic buffers. GEODESIC—All buffers will be created using a shape-preserving geodesic buffer method, regardless of the input coordinate system.",
+          "datatype": "String"
+        },
+        {
+          "name": "max_deviation(Optional)",
+          "explanation": "The maximum distance the output buffer boundary will deviate from the true buffer boundary. While the true boundary of the buffer is a curve, the output boundary will be densified. Use this parameter to control how the output polygon boundary approximates the true buffer boundary.If this parameter is not set or is set to 0, the tool will identify the maximum deviation. It is recommended that you use the default value. Performance degradation in the tool and in subsequent analyses may result from using a maximum offset deviation that is too small.",
+          "datatype": "Linear Unit"
+        }
+      ],
+      "summary": "Creates buffer polygons around input features to a specified distance using a parallel processing approach. Alternate tools are available for buffer operations. See the Buffer and Graphic Buffer tool documentation for details.",
+      "extraction_date": "2025-10-01T11:37:27.855642"
+    },
+    {
+      "toolset": "Pairwise Overlay",
+      "tool_name": "Pairwise Clip",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/pairwise-clip.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The features that will be clipped.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "clip_features",
+          "explanation": "The features that will be used to clip the input features.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class that will be created.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The minimum distance separating all feature coordinates (nodes and vertices) as well as the distance a coordinate can move in x or y (or both). Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        }
+      ],
+      "summary": "Extracts input features that overlay the clip features. Use this tool to cut out a piece of one feature class using one or more of the features in another feature class. This is particularly useful for creating a new feature class—also referred to as a study area or area of interest (AOI)—that contains a geographic subset of the features in another, larger feature class. Clip operations can also be performed with  the Clip tool.",
+      "extraction_date": "2025-10-01T11:37:29.457156"
+    },
+    {
+      "toolset": "Proximity",
+      "tool_name": "Select",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/select.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class or layer from which features will be selected.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class that will be created. If no expression is used, the output will contain all the input features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "where_clause(Optional)",
+          "explanation": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
+          "datatype": "SQL Expression"
+        }
+      ],
+      "summary": "Extracts features from an input feature class or input feature layer, typically using a select or SQL expression, and stores them in an output feature class.",
+      "extraction_date": "2025-10-01T11:37:31.074833"
+    },
+    {
+      "toolset": "Proximity",
+      "tool_name": "Buffer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/buffer.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input point, line, or polygon features that will be buffered.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class containing the output buffers.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "buffer_distance_or_field",
+          "explanation": "The distance around the input features that will be buffered. Distances can be provided as either a value representing a linear distance or a field from the input features that contains the distance to buffer each feature.If linear units are not specified or are entered as Unknown, the linear unit of the input features' spatial reference will be used.When specifying a distance, if the linear unit has two words, such as Decimal Degrees, combine the two words into one (for example, 20 DecimalDegrees).",
+          "datatype": "Linear Unit; Field"
+        },
+        {
+          "name": "line_side(Optional)",
+          "explanation": "Specifies the sides of the input features that will be buffered. This parameter is only supported for polygon and line features.FULL—For lines, buffers will be generated on both sides of the line. For polygons, buffers will be generated around the polygon and will contain and overlap the area of the input features. This is the default. LEFT—For lines, buffers will be generated on the topological left of the line. This option is not supported for polygon input features.RIGHT—For lines, buffers will be generated on the topological right of the line. This option is not supported for polygon input features.OUTSIDE_ONLY—For polygons, buffers will be generated outside the input polygon only (the area inside the input polygon will be erased from the output buffer). This option is not supported for line input features.\r\nLicense:This optional parameter is not available with a Desktop Basic or Desktop Standard license.",
+          "datatype": "String"
+        },
+        {
+          "name": "line_end_type(Optional)",
+          "explanation": "Specifies the shape of the buffer at the end of line input features. This parameter is not valid for polygon input features.ROUND—The ends of the buffer will be round, in the shape of a half circle. This is the default. FLAT—The ends of the buffer will be flat or squared and will end at the endpoint of the input line feature. \r\nLicense:This optional parameter is not available with a Desktop Basic or Desktop Standard license.",
+          "datatype": "String"
+        },
+        {
+          "name": "dissolve_option(Optional)",
+          "explanation": "Specifies the type of dissolve that will be performed to remove buffer overlap.NONE—An individual buffer for each feature will be maintained, regardless of overlap. This is the default. ALL—All buffers will be dissolved together into a single feature, removing any overlap. LIST—Any buffers sharing attribute values in the listed fields (carried over from the input features) will be dissolved.",
+          "datatype": "String"
+        },
+        {
+          "name": "dissolve_field[dissolve_field,...](Optional)",
+          "explanation": "The list of fields from the input features on which the output buffers will be dissolved. Any buffers sharing attribute values in the listed fields (carried over from the input features) will be dissolved.",
+          "datatype": "Field"
+        },
+        {
+          "name": "method(Optional)",
+          "explanation": "Specifies whether the planar or geodesic method will be used to create the buffers.PLANAR—If the input features are in a projected coordinate system, Euclidean buffers will be created. If the input features are in a geographic coordinate system and the buffer distance is in linear units (meters, feet, and so forth, as opposed to angular units such as degrees), geodesic buffers will be created. This is the default. You can use the Output Coordinate System environment setting to specify the coordinate system to use. For example, if the input features are in a projected coordinate system, you can set the environment to a geographic coordinate system to create geodesic buffers. GEODESIC—All buffers will be created using a shape-preserving geodesic buffer method, regardless of the input coordinate system.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Creates buffer polygons around input features to a specified distance. Alternate tools are available for buffer operations. See the Pairwise Buffer and Graphic Buffer  tool documentation for details. Learn more about how Buffer works",
+      "extraction_date": "2025-10-01T11:37:32.838906"
+    },
+    {
+      "toolset": "Proximity",
+      "tool_name": "Near",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/near.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input features, which can be point, polyline, polygon, or multipoint type.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "near_features[near_features,...]",
+          "explanation": "One or more feature layers or feature classes containing near feature candidates. The near features can be point, polyline, polygon, or multipoint. If multiple layers or feature classes are specified, the NEAR_FC field will be added to the input table and will store the paths of the source feature class containing the nearest feature found. The same feature class or layer can be used as both input features and near features.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "search_radius(Optional)",
+          "explanation": "The radius that will be used to search for near features. If no value is specified, all near features will be considered. If a distance but no unit or unknown is specified, the units of the coordinate system of the input features will be used. If the GEODESIC option is used for the method parameter, use a linear unit such as kilometers or miles.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "location(Optional)",
+          "explanation": "Specifies whether x- and y-coordinates of the closest location of the near feature will be written to the NEAR_X and NEAR_Y fields.NO_LOCATION— Location information will not be written. This is the default.LOCATION— Location information will be written.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "angle(Optional)",
+          "explanation": "Specifies whether the near angle will be calculated and written to the NEAR_ANGLE field in the output table. A near angle measures direction of the line connecting an input feature to its nearest feature at their closest locations. When the PLANAR method is used for the method parameter, the angle will be within the range of -180° to 180°, with 0° to the east, 90° to the north, 180° (or -180°) to the west, and -90° to the south. When the GEODESIC method is used, the angle will be within the range of -180° to 180°, with 0° to the north, 90° to the east, 180° (or -180°) to the south, and -90° to the west.NO_ANGLE—The near angle will not be calculated or written. This is the default.ANGLE—The near angle will be calculated and written to the NEAR_ANGLE field.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "method(Optional)",
+          "explanation": "Specifies whether a shortest path on a spheroid (geodesic) or a flat earth (planar) distance method will be used. It is recommended that you use the GEODESIC method for data stored in a coordinate system that is not appropriate for distance measurements (for example, Web Mercator or any geographic coordinate system) and for a dataset that spans a large geographic area.PLANAR—Planar distance will be used between features. This is the default.  GEODESIC—Geodesic distance will be used between features.  This method takes into account the curvature of the spheroid and correctly deals with data near the international date line and the poles.",
+          "datatype": "String"
+        },
+        {
+          "name": "field_names[[property, fieldname],...](Optional)",
+          "explanation": "The names of the attribute fields that will be added during processing.If this parameter is not used or any fields that will be added are excluded from this parameter, the default field names will be used.By default, the NEAR_FID and NEAR_DIST fields will be added, the NEAR_X and NEAR_Y fields will be added when the location parameter is set to LOCATION, the NEAR_ANGLE field will be added when the angle parameter is set to ANGLE, and the NEAR_FC field will be added when multiple inputs are used.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "distance_unit(Optional)",
+          "explanation": "Specifies the unit of measurement for the NEAR_DIST field. When no unit of measurement is specified, the values in the NEAR_DIST field will be in the linear unit of the input feature's coordinate system. If the input is in a geographic coordinate system and the geodesic method is used, the units of the NEAR_DIST field will be meters. Kilometers—The unit will be kilometers.Meters—The unit will be meters.NauticalMilesInt—The unit will be international nautical miles.MilesInt—The unit will be  statute miles.YardsInt—The unit will be international yards.FeetInt—The unit will be  international feet.NauticalMiles—The unit will be U.S. survey nautical miles.Miles—The unit will be U.S. survey miles.Yards—The unit will be U.S. survey yards.Feet—The unit will be  U.S. survey feet.",
+          "datatype": "String"
+        },
+        {
+          "name": "match_fields[[input_field, near_field],...](Optional)",
+          "explanation": "The pairs of fields from the input features and near features that will be used for attribute matching. Only the near features that share match field values with the input features will be used in the near calculation.",
+          "datatype": "Value Table"
+        }
+      ],
+      "summary": "Calculates distance and additional proximity information between the input features and the closest feature in another layer or feature class. Learn more about how proximity is calculated by geoprocessing tools",
+      "extraction_date": "2025-10-01T11:37:34.597385"
+    },
+    {
+      "toolset": "Proximity",
+      "tool_name": "Create Thiessen Polygons",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/create-thiessen-polygons.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The point input features from which Thiessen polygons will be generated.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class containing the Thiessen polygons that are generated from the point input features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "fields_to_copy(Optional)",
+          "explanation": "Specifies which fields from the input features will be transferred to the output feature class.ONLY_FID—Only the FID field from the input features will be transferred to the output feature class. This is the default. ALL—All fields from the input features will be transferred to the output feature class.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Creates Thiessen polygons from point features. Each Thiessen polygon contains only a single point input feature. Any location within a Thiessen polygon is closer to its associated point than to any other point input feature.",
+      "extraction_date": "2025-10-01T11:37:36.133798"
+    },
+    {
+      "toolset": "Proximity",
+      "tool_name": "Generate Origin-Destination Links",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/generate-origin-destination-links.htm",
+      "parameters": [
+        {
+          "name": "origin_features",
+          "explanation": "The input features from which links will be generated.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "destination_features",
+          "explanation": "The destination features to which links will be generated.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output polyline feature class that will contain the output links.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "origin_group_field(Optional)",
+          "explanation": "The attribute field from the input origin features that will be used for grouping. Features that have the same group field value between origins and destinations will be connected with a link.",
+          "datatype": "Field"
+        },
+        {
+          "name": "destination_group_field(Optional)",
+          "explanation": "The attribute field from the input destination features that will be used for grouping. Features that have the same group field value between origins and destinations will be connected with a link.",
+          "datatype": "Field"
+        },
+        {
+          "name": "line_type(Optional)",
+          "explanation": "Specifies whether a shortest path on a spheroid (geodesic) or a  Cartesian projected earth (planar) will be used when generating the output links. Geodesic lines will have a slight curve when their length exceeds approximately 50 kilometers, as the curvature of the Earth makes the shortest distance between two points appear curved when viewed on a 2D map.It is recommended that you use the GEODESIC line type with data stored in a coordinate system that is not appropriate for distance measurements (for example, Web Mercator and any geographic coordinate system) or any dataset that spans a large geographic area.PLANAR—Planar distance will be used between features. This is the default.  GEODESIC—Geodesic distances will be used between features.  This line type takes into account the curvature of the spheroid and correctly deals with data near the dateline and poles.",
+          "datatype": "String"
+        },
+        {
+          "name": "num_nearest(Optional)",
+          "explanation": "The maximum number of links that will be generated per origin feature to the nearest destination features. If no number is specified, the tool will generate links between all origin and destination features.For example, using a value of 1 will generate links between each origin feature and its closest destination feature.",
+          "datatype": "Double"
+        },
+        {
+          "name": "search_distance(Optional)",
+          "explanation": "The maximum distance between an origin and destination feature that will produce a link feature  in the output. The unit of the search distance is specified in the distance unit parameter. If no search distance  is specified, the tool will generate links between all origin and destination features regardless of their distance apart.",
+          "datatype": "Double"
+        },
+        {
+          "name": "distance_unit",
+          "explanation": "Specifies the units used to measure the length of the links. Distances for each link will appear in the LINK_DIST field. If a distance unit  is not specified, the distance unit of the origin features' coordinate system will be used.KILOMETERS—The distance between origin and destination will be calculated in kilometers.METERS—The distance between origin and destination will be calculated in meters.MILES—The distance between origin and destination will be calculated in miles.NAUTICALMILES—The distance between origin and destination will be calculated in nautical miles.YARDS—The distance between origin and destination will be calculated in yards.FEET—The distance between origin and destination will be calculated in feet.",
+          "datatype": "String"
+        },
+        {
+          "name": "aggregate_links(Optional)",
+          "explanation": "Specifies whether overlapping links will be aggregated.AGGREGATE_OVERLAPPING—Overlapping links will be aggregated if the starting point coordinates are the same.NO_AGGREGATE—Overlapping links will not be aggregated. This is the default.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "sum_fields[sum_fields,...](Optional)",
+          "explanation": "Specifies the field or fields containing the attribute values that will be used to calculate the specified statistic. Multiple statistic and field combinations can be specified. Null values are excluded from all calculations.By default, the tool will not calculate any statistics.Numeric attribute fields can be summarized using any statistic. Text attribute fields can be summarized using minimum, maximum, count, first, last, unique, and concatenate statistics.SUM—The values for the specified field will be added together.MEAN—The average for the specified field will be calculated.MIN—The smallest value for all records of the specified field will be found.MAX—The largest value for all records of the specified field will be found.RANGE—The range of values (maximum minus minimum) for the specified field will be calculated.STD—The standard deviation of values in the specified field will be calculated.COUNT—The number of values included in the statistical calculations will be found. Each value will be counted except null values. To determine the number of null values in a field, create a count on the field in question, create a count on a different field that does not contain null values (for example, the OID if present), and subtract the two values.FIRST—The specified field value of the first record in the input will be used.LAST—The specified field value of thee last record in the input will be used.MEDIAN—The median for all records of the specified field will be calculated.VARIANCE—The variance for all records of the specified field will be calculated.\r\nUNIQUE—The number of unique values of the specified field will be counted.",
+          "datatype": "Value Table"
+        }
+      ],
+      "summary": "Generates connecting lines from origin features to destination features. This is often referred to as a spider diagram.",
+      "extraction_date": "2025-10-01T11:37:37.882459"
+    },
+    {
+      "toolset": "Proximity",
+      "tool_name": "Polygon Neighbors",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/polygon-neighbors.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input polygon features.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_table",
+          "explanation": "The output table.",
+          "datatype": "Table"
+        },
+        {
+          "name": "in_fields[in_fields,...](Optional)",
+          "explanation": "The input attribute field or fields that will be used to identify unique polygons or polygon groups and represent them in the output.",
+          "datatype": "Field"
+        },
+        {
+          "name": "area_overlap(Optional)",
+          "explanation": "Specifies whether overlapping relationships will  be analyzed and included in the output.  \r\nNO_AREA_OVERLAP—Overlapping relationships will not be analyzed or included in the output. This is the default.AREA_OVERLAP—Overlapping relationships will be analyzed and included in the output.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "both_sides(Optional)",
+          "explanation": "Specifies whether both sides of neighbor relationships will be included in the output.BOTH_SIDES— For a pair of neighboring polygons, both neighboring information of one polygon being the source and the other being the neighbor and vice versa will be included. This is the default.NO_BOTH_SIDES— For a pair of neighboring polygons, only neighboring information of one polygon being the source and the other being the neighbor will be included. The reciprocal relationship will not be included.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "cluster_tolerance(Optional)",
+          "explanation": "The minimum distance between coordinates before they will be considered equal. By default, this is the x,y tolerance of the input  features.Caution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "out_linear_units(Optional)",
+          "explanation": "Specifies the units that will be used to report the total  length of the coincident edge between neighboring polygons. The default is the input feature units.UNKNOWN—The length unit will be unknown.KILOMETERS—The length unit will be kilometers.METERS—The length unit will be meters.DECIMETERS—The length unit will be decimeters.CENTIMETERS—The length unit will be centimeters.MILLIMETERS—The length unit will be millimeters.MILES_INTERNATIONAL—The length unit will be statute miles.NAUTICAL_MILES_INTERNATIONAL—The length unit will be international nautical miles.YARDS_INTERNATIONAL—The length unit will be international yards.FEET_INTERNATIONAL—The length unit will be international feet.INCHES_INTERNATIONAL—The length unit will be international inches.MILES—The length unit will be US survey miles.NAUTICAL_MILES—The length unit will be US survey nautical miles.YARDS—The length unit will be US survey yards.FEET—The length unit will be US survey feet.INCHES—The length unit will be US survey inches.DECIMAL_DEGREES—The length unit will be decimal degrees.POINTS—The length unit will be points.",
+          "datatype": "String"
+        },
+        {
+          "name": "out_area_units(Optional)",
+          "explanation": "Specifies the units that will be used to report the area overlap of neighboring polygons.  The default is the input feature units. \r\nThis parameter is only enabled when the area_overlap parameter is set to AREA_OVERLAP.UNKNOWN—The area unit will be square unknown.SQUARE_KILOMETERS—The area unit will be square kilometers.SQUARE_METERS—The area unit will be square meters.SQUARE_DECIMETERS—The area unit will be square decimeters.SQUARE_CENTIMETERS—The area unit will be square centimeters.SQUARE_MILLIMETERS—The area unit will be square millimeters.SQUARE_MILES—The area unit will be square statute miles.SQUARE_NAUTICAL_MILES—The area unit will be square international nautical miles.SQUARE_YARDS—The area unit will be square international yards.SQUARE_FEET—The area unit will be square international feet.SQUARE_INCHES—The area unit will be square international inches.SQUARE_MILES_US—The area unit will be square US survey miles.SQUARE_NAUTICAL_MILES_US—The area unit will be square US survey nautical miles.SQUARE_YARDS_US—The area unit will be square US survey yards.SQUARE_FEET_US—The area unit will be square US survey feet.SQUARE_INCHES_US—The area unit will be square US survey inches.ACRES_US—The area unit will be US survey acres.HECTARES—The area unit will be hectares.ACRES—The area unit will be international acres.ARES—The area unit will be ares.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Creates a table with statistics based on polygon contiguity (overlaps, coincident edges, or nodes). Learn more about how Polygon Neighbors works",
+      "extraction_date": "2025-10-01T11:37:39.715924"
+    },
+    {
+      "toolset": "Proximity",
+      "tool_name": "An overview of the Analysis toolbox",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/an-overview-of-the-analysis-toolbox.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T11:37:41.355203"
+    },
+    {
+      "toolset": "Proximity",
+      "tool_name": "Multiple Ring Buffer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/multiple-ring-buffer.htm",
+      "parameters": [
+        {
+          "name": "Input_Features",
+          "explanation": "The input point, line, or polygon features to be buffered.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "Output_Feature_class",
+          "explanation": "The output feature class that will contain multiple buffers.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "Distances[distance,...]",
+          "explanation": "The list of buffer distances.",
+          "datatype": "Double"
+        },
+        {
+          "name": "Buffer_Unit(Optional)",
+          "explanation": "Specifies the linear unit that will be used with the distance values.Default—The linear unit of the input features' spatial reference will be used. If the Output Coordinate System geoprocessing environment has been set, the linear unit of the environment will be used. The linear unit is ignored if the input features have an unknown or undefined spatial reference. This is the default.Inches—The unit will be inches.Feet—The unit will be feet.Yards—The unit will be yards.Miles—The unit will be miles.NauticalMiles—The unit will be nautical miles.Millimeters—The unit will be millimeters.Centimeters—The unit will be centimeters.Decimeters—The unit will be decimeters.Meters—The unit will be meters.Kilometers—The unit will be kilometers.DecimalDegrees—The unit will be decimal degrees.Points—The unit will be points.",
+          "datatype": "String"
+        },
+        {
+          "name": "Dissolve_Option(Optional)",
+          "explanation": "Specifies whether buffers will be dissolved to resemble rings around the input features.ALL—Buffers will be dissolved to resemble rings around the input features that do not overlap (think of these as rings or donuts around the input features). The smallest buffer will cover the area of its input feature plus the buffer distance, and subsequent buffers will be rings around the smallest buffer that do not cover the area of the input feature or smaller buffers. All buffers of the same distance will be dissolved into a single feature. This is the default. NONE—Buffers will not be dissolved. All buffer areas will be maintained regardless of overlap. Each buffer will cover its input feature plus the area of any smaller buffers.",
+          "datatype": "String"
+        },
+        {
+          "name": "Outside_Polygons_Only(Optional)",
+          "explanation": "Specifies whether the buffers will cover the input features. This parameter is valid only for polygon input features.FULL—Buffers will overlap or cover the input features. This is the default.OUTSIDE_ONLY—Buffers will be rings around the input features, and will not overlap or cover the input features (the area inside the input polygon will be erased from the buffer).",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "Method(Optional)",
+          "explanation": "Specifies the method used to create the buffer.\r\nPLANAR—Buffers will be created using a Euclidean buffer method. This is the default when the input has a projected coordinate system.GEODESIC—Buffers will be created using a shape-preserving geodesic buffer method. This is the default when the input has  a geographic coordinate system.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Creates multiple buffers at specified distances around the input features. These buffers can be merged and dissolved using the buffer distance values to create nonoverlapping buffers.",
+      "extraction_date": "2025-10-01T11:37:42.968240"
+    },
+    {
+      "toolset": "Proximity",
+      "tool_name": "Graphic Buffer",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/graphic-buffer.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input point, line, or polygon features that will be buffered.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The feature class containing the output buffers.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "buffer_distance_or_field",
+          "explanation": "The distance around the input features that will be buffered. Distances can be provided as either a value representing a linear distance or a field from the input features that contains the distance to buffer each feature.If linear units are not specified or are entered as Unknown, the linear unit of the input features' spatial reference will be used.When specifying a distance, if the linear unit has two words, such as Decimal Degrees, combine the two words into one (for example, 20 DecimalDegrees).",
+          "datatype": "Linear Unit; Field"
+        },
+        {
+          "name": "line_caps(Optional)",
+          "explanation": "Specifies the type of caps (ends) of the input features that will be buffered. This parameter is only supported for point and polygon features.SQUARE—The output buffer will have a square cap around the end of the input segment. This is the default.BUTT—The output buffer will have a cap perpendicular to the end of the input segment.ROUND—The output buffer will have a cap that is round at the end of the input segment.",
+          "datatype": "String"
+        },
+        {
+          "name": "line_joins(Optional)",
+          "explanation": "Specifies the shape of the buffer at corners where two segments join. This parameter is  only supported for line and polygon features.\r\nMITER—The output buffer feature will be a square or sharp shape around corners. For example, a square input polygon feature will have a square buffer feature. This is the default.BEVEL—The output buffer feature for inner corners will be squared, and the outer corner will be cut perpendicular to the farthest point of the corner.ROUND—The output buffer feature for inner corners will be squared, and the outer corner will be round.",
+          "datatype": "String"
+        },
+        {
+          "name": "miter_limit(Optional)",
+          "explanation": "Where line segments meet at a sharp angle and the line_joins parameter value has been specified as MITER, this parameter can be used to control how sharp corners in buffer output come to a point. In some cases, the outer angle where two lines join is quite large when using the MITER option. This may cause the point of the corner to extend farther than intended.",
+          "datatype": "Double"
+        },
+        {
+          "name": "max_deviation(Optional)",
+          "explanation": "The maximum distance the output buffer boundary will deviate from the true buffer boundary. While the true boundary of the buffer is a curve, the output boundary will be densified. Use this parameter to control how the output polygon boundary approximates the true buffer boundary.If this parameter is not set or is set to 0, the tool will identify the maximum deviation. It is recommended that you use the default value. Performance degradation in the tool and in subsequent analyses may result from using a maximum offset deviation that is too small.",
+          "datatype": "Linear Unit"
+        }
+      ],
+      "summary": "Creates buffer polygons around input features to a specified distance. A number of cartographic shapes are available for buffer ends (caps) and corners (joins) when the buffer is generated around the feature. Learn more about how Graphic Buffer works Alternate tools are available for buffer operations. See the Pairwise Buffer and Buffer  tool documentation for details.",
+      "extraction_date": "2025-10-01T11:37:44.734337"
+    },
+    {
+      "toolset": "Proximity",
+      "tool_name": "Generate Near Table",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/generate-near-table.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input features, which can be point, polyline, polygon, or multipoint type.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "near_features[near_features,...]",
+          "explanation": "One or more feature layers or feature classes containing near feature candidates. The near features can be point, polyline, polygon, or multipoint. If multiple layers or feature classes are specified, the NEAR_FC field will be added to the input table and will store the paths of the source feature class containing the nearest feature found. The same feature class or layer can be used as both input features and near features.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_table",
+          "explanation": "The output table containing the result of the analysis.",
+          "datatype": "Table"
+        },
+        {
+          "name": "search_radius(Optional)",
+          "explanation": "The radius that will be used to search for near features. If no value is specified, all near features will be considered. If a distance but no unit or unknown is specified, the units of the coordinate system of the input features will be used. If the GEODESIC option is used for the method parameter, use a linear unit such as kilometers or miles.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "location(Optional)",
+          "explanation": "Specifies whether x- and y-coordinates of the input feature's location and closest location of the near feature will be written to the FROM_X, FROM_Y, NEAR_X, and NEAR_Y fields.NO_LOCATION— Locations will not be written to the output table. This is the default.LOCATION— Locations will be written to the output table.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "angle(Optional)",
+          "explanation": "Specifies whether the near angle will be calculated and written to the  NEAR_ANGLE field in the output table. A near angle measures direction of the line connecting an input feature to its nearest feature at their closest locations.  When the PLANAR method is used for  the method parameter, the angle will be within the range of -180° to 180°,  with 0° to the east, 90° to the north, 180° (or -180°) to the west, and -90° to the south.  When  the GEODESIC method is used for  the method parameter, the angle will be within the range of -180° to 180°, with 0° to the north, 90° to the east, 180° (or -180°) to the south, and -90° to the west.\r\nNO_ANGLE—The near angle will not be calculated and the NEAR_ANGLE field will not be added to the output table. This is the default.ANGLE—The near angle will be calculated and the NEAR_ANGLE field will be added  to the output table.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "closest(Optional)",
+          "explanation": "Specifies whether only the closest near feature will be written to the output table.CLOSEST—Only the closest near feature will be written to the output table. This is the default.ALL—Multiple near features will be written to the output table (a limit can be specified in the closest_count parameter).",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "closest_count(Optional)",
+          "explanation": "Limits the number of near features reported for each input feature. This parameter is ignored if the closest parameter  is set to CLOSEST.",
+          "datatype": "Long"
+        },
+        {
+          "name": "method(Optional)",
+          "explanation": "Specifies whether a shortest path on a spheroid (geodesic) or a flat earth (planar) distance method will be used. It is recommended that you use the GEODESIC method for data stored in a coordinate system that is not appropriate for distance measurements (for example, Web Mercator or any geographic coordinate system) and for a dataset that spans a large geographic area.PLANAR—Planar distance will be used between features. This is the default.  GEODESIC—Geodesic distance will be used between features.  This method takes into account the curvature of the spheroid and correctly deals with data near the international date line and the poles.",
+          "datatype": "String"
+        },
+        {
+          "name": "distance_unit(Optional)",
+          "explanation": "Specifies the unit of measurement for the NEAR_DIST field. When no unit of measurement is specified, the values in the NEAR_DIST field will be in the linear unit of the input feature's coordinate system. If the input is in a geographic coordinate system and the geodesic method is used, the units of the NEAR_DIST field will be meters. Kilometers—The unit will be kilometers.Meters—The unit will be meters.NauticalMilesInt—The unit will be international nautical miles.MilesInt—The unit will be  statute miles.YardsInt—The unit will be international yards.FeetInt—The unit will be  international feet.NauticalMiles—The unit will be U.S. survey nautical miles.Miles—The unit will be U.S. survey miles.Yards—The unit will be U.S. survey yards.Feet—The unit will be  U.S. survey feet.",
+          "datatype": "String"
+        },
+        {
+          "name": "match_fields[[input_field, near_field],...](Optional)",
+          "explanation": "The pairs of fields from the input features and near features that will be used for attribute matching. Only the near features that share match field values with the input features will be used in the near calculation.",
+          "datatype": "Value Table"
+        }
+      ],
+      "summary": "Calculates distances and other proximity information between features in one or more feature classes or layers. Unlike the Near tool, which modifies the input, Generate Near Table writes results to a new stand-alone table and supports finding more than one near feature. Learn more about how proximity is calculated by geoprocessing tools",
+      "extraction_date": "2025-10-01T11:37:46.624458"
+    },
+    {
+      "toolset": "Statistics",
+      "tool_name": "Select",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/select.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The input feature class or layer from which features will be selected.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output feature class that will be created. If no expression is used, the output will contain all the input features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "where_clause(Optional)",
+          "explanation": "The SQL expression that will be used to select a subset of features.  For more information about SQL syntax,  see SQL reference for query expressions used in ArcGIS.",
+          "datatype": "SQL Expression"
+        }
+      ],
+      "summary": "Extracts features from an input feature class or input feature layer, typically using a select or SQL expression, and stores them in an output feature class.",
+      "extraction_date": "2025-10-01T11:37:48.293094"
+    },
+    {
+      "toolset": "Statistics",
+      "tool_name": "Tabulate Intersection",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/tabulate-intersection.htm",
+      "parameters": [
+        {
+          "name": "in_zone_features",
+          "explanation": "The features used to identify zones.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "zone_fields[zone_fields,...]",
+          "explanation": "The attribute field or fields that will be used to define zones.",
+          "datatype": "Field"
+        },
+        {
+          "name": "in_class_features",
+          "explanation": "The features used to identify classes.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_table",
+          "explanation": "The table that will contain the cross tabulation of intersections between zones and classes.",
+          "datatype": "Table"
+        },
+        {
+          "name": "class_fields[class_fields,...](Optional)",
+          "explanation": "The attribute field or fields used to define classes.",
+          "datatype": "Field"
+        },
+        {
+          "name": "sum_fields[sum_fields,...](Optional)",
+          "explanation": "The fields that will be summed from the in_class_features parameter.",
+          "datatype": "Field"
+        },
+        {
+          "name": "xy_tolerance(Optional)",
+          "explanation": "The distance that determines the range in which features or their vertices are considered equal. By default, this is the x,y tolerance of the in_zone_features parameter value.\r\nCaution:  Changing this parameter's value may cause failure or unexpected results.  It is recommended that you do not modify this parameter. It has been removed from view on the tool dialog box.  By default, the input feature class's spatial reference x,y tolerance property is used.",
+          "datatype": "Linear Unit"
+        },
+        {
+          "name": "out_units(Optional)",
+          "explanation": "Specifies the units that will be used to calculate area or length measurements. Setting output units when the \r\ninput class features are points is not supported.UNKNOWN—The units will be unknown.KILOMETERS—The units will be kilometers.METERS—The units will be meters.DECIMETERS—The units will be decimeters.CENTIMETERS—The units will be centimeters.MILLIMETERS—The units will be millimeters.MILES_INTERNATIONAL—The units will be statute miles.NAUTICAL_MILES_INTERNATIONAL—The units will be international nautical miles.YARDS_INTERNATIONAL—The units will be international yards.FEET_INTERNATIONAL—The units will be international feet.INCHES_INTERNATIONAL—The units will be international inches.MILES—The units will be US survey miles.NAUTICAL_MILES—The units will be US survey nautical miles.YARDS—The units will be US survey yards.FEET—The units will be US survey feet.INCHES—The units will be US survey inches.DECIMAL_DEGREES—The units will be decimal degrees.POINTS—The units will be points.ARES—The units will be ares.SQUARE_KILOMETERS—The units will be square kilometers.SQUARE_METERS—The units will be square meters.SQUARE_DECIMETERS—The units will be square decimeters.SQUARE_CENTIMETERS—The units will be square centimeters.SQUARE_MILLIMETERS—The units will be square millimeters.SQUARE_MILES—The units will be square statute miles.SQUARE_NAUTICAL_MILES—The area unit will be square international nautical miles.SQUARE_YARDS—The units will be square international yards.SQUARE_FEET—The units will be square international feet.SQUARE_INCHES—The units will be square international inches.SQUARE_MILES_US—The units will be square US survey miles.SQUARE_NAUTICAL_MILES_US—The area unit will be square US survey nautical miles.SQUARE_YARDS_US—The units will be square US survey yards.SQUARE_FEET_US—The units will be square US survey feet.SQUARE_INCHES_US—The units will be square US survey inches.ACRES_US—The units will be US survey acres.HECTARES—The units will be hectares.ACRES—The units will be international acres.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Computes the intersection between two feature classes and cross tabulates the area, length, or count of the intersecting features.",
+      "extraction_date": "2025-10-01T11:37:50.156539"
+    },
+    {
+      "toolset": "Statistics",
+      "tool_name": "Summarize Within",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/summarize-within.htm",
+      "parameters": [
+        {
+          "name": "in_polygons",
+          "explanation": "The polygons that will be used to summarize the features, or portions of features, in the input summary layer.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "in_sum_features",
+          "explanation": "The point, line, or polygon features that will be summarized for each polygon in the input polygons.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output polygon feature class containing the same geometries and attributes as the input polygons. The feature class will include additional attributes for the number of points, length of lines, and area of polygons inside each input polygon and statistics about those features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "keep_all_polygons(Optional)",
+          "explanation": "Specifies whether all input polygons or only those intersecting or containing at least one  input summary feature will be copied to the output feature class.KEEP_ALL—All input polygons will be copied to the output feature class. This is the default.ONLY_INTERSECTING—Only input polygons that intersect or contain at least one input summary feature will be copied to the output feature class.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "sum_fields[[summary_field, statistic_type],...](Optional)",
+          "explanation": "A list of attribute  field names from the input summary features, as well as statistical summary types that will be calculated for those attribute fields for all points in each polygon. Summary fields must be numeric. Text and other attribute field types are not supported.\r\nThe following are the statistic types:Sum—The total value of all the points in each polygon will be calculated.Mean—The average or mean value of all the points in each polygon will be calculated.Min—The smallest value of all the points in each polygon will be identified.Max—The largest value of all the points in each polygon will be identified.Stddev—The standard deviation of all the points in each polygon will be calculated.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "sum_shape(Optional)",
+          "explanation": "Specifies whether attributes for the number of points, length of lines, and area of polygon features summarized in each input polygon will be added to the output feature class.ADD_SHAPE_SUM—Shape summary attributes will be added to the output feature class. This is the default.NO_SHAPE_SUM—Shape summary attributes will not be added to the output feature class.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "shape_unit(Optional)",
+          "explanation": "Specifies the unit that will be used when calculating shape summary\r\nattributes. If the input summary features are points, no shape unit is necessary, since only the count of points in each input polygon is added.If the input summary features are lines, specify  a linear unit.  If the input summary features are polygons, specify an areal unit.METERS—The unit will be meters.KILOMETERS—The unit will be kilometers.FEET—The unit will be feet.YARDS—The unit will be yards.MILES—The unit will be miles.ACRES—The unit will be acres.HECTARES—The unit will be hectares.SQUAREMETERS—The unit will be square meters.SQUAREKILOMETERS—The unit will be square kilometers.SQUAREFEET—The unit will be square feet.SQUAREYARDS—The unit will be square yards.SQUAREMILES—The unit will be square miles.",
+          "datatype": "String"
+        },
+        {
+          "name": "group_field(Optional)",
+          "explanation": "An attribute field from the input summary features that will be used for grouping. Features that have the same group field value will be combined and summarized with other features with the same group field value.When a group field is provided, the  out_grouped_table parameter value is required.",
+          "datatype": "Field"
+        },
+        {
+          "name": "add_min_maj(Optional)",
+          "explanation": "Specifies whether minority and majority fields will be added to the output. This parameter allows you to determine which group field value is the minority (least dominant) and the majority (most dominant) within each input polygon.This parameter is enabled if you provided a group_field parameter value.NO_MIN_MAJ—Minority and majority fields will not be added to the output. This is the default.ADD_MIN_MAJ—Minority and majority fields will be added to the output.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "add_group_percent(Optional)",
+          "explanation": "Specifies whether a percentage attribute field will be added to the output. This parameter allows you to determine the percentage of each attribute value in each group.This parameter is enabled if you provided a group_field parameter value.NO_PERCENT—A percentage attribute field will not be added to the output. This is the default.ADD_PERCENT—A percentage attribute field will be added to the output.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "out_group_table(Optional)",
+          "explanation": "An output table that includes summary fields for each group of summary features for each input polygon. The table will have the following attribute fields:Join_ID—An ID corresponding to an ID field added to the output feature classThe group fieldA shape summary fieldOne field for each summary fieldA percentage fieldThis parameter is required when the group_field parameter value is provided.",
+          "datatype": "Table"
+        }
+      ],
+      "summary": "Overlays a polygon layer with another layer to summarize the number of points, length of the lines, or area of the polygons within each polygon, and calculate attribute field statistics about the features within the polygons. The following are example scenarios using Summarize Within:From a layer of watershed boundaries and a layer of land-use boundaries by land-use type, calculate total acreage of land-use type for each watershed.From a layer of parcels in a county and a layer of city boundaries, summarize the average value of vacant parcels within each city boundary.From a layer of counties and a layer of roads, summarize the total mileage of roads by road type in each county.",
+      "extraction_date": "2025-10-01T11:37:52.107834"
+    },
+    {
+      "toolset": "Statistics",
+      "tool_name": "Summary Statistics",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/summary-statistics.htm",
+      "parameters": [
+        {
+          "name": "in_table",
+          "explanation": "The input table containing the fields that will be used to calculate statistics.",
+          "datatype": "Table View; Raster Layer"
+        },
+        {
+          "name": "out_table",
+          "explanation": "The output table that will store the calculated statistics.",
+          "datatype": "Table"
+        },
+        {
+          "name": "statistics_fields[[field, {statistic_type}],...]",
+          "explanation": "Specifies the field or fields containing the attribute values that will be used to calculate the specified statistic. Multiple statistic and field combinations can be specified. Null values are excluded from all calculations.Numeric attribute fields can be summarized using any statistic. Text attribute fields can be summarized  using minimum, maximum, count, first, last, unique, concatenate, and mode statistics. Date, Date only, and Timestamp offset attribute fields can be summarized only with the mean, minimum, maximum, count, first, last, unique, and concatenate statistics.The DBMS statistic types are only supported for input geodatabase data sources, including enterprise geodatabases, feature services, cloud data warehouses, and SQLite geodatabases  SUM—The values for the specified field will be added together.MEAN—The average for the specified field will be calculated.MIN—The smallest value of the specified field will be identified.MAX—The largest value of the specified field will be identified.RANGE—The range of values (maximum minus minimum) for the specified field will be calculated.STD—The standard deviation of values for the specified field will be calculated.COUNT—The number of values in the specified field will be identified.FIRST—The specified field value of the first record in the input will be used.LAST—The specified field value of the last record in the input will be used.MEDIAN—The median of the specified field will be calculated.VARIANCE—The variance of the specified field will be calculated.\r\nUNIQUE—The number of unique values of the specified field will be counted.CONCATENATE—The values for the specified field will be concatenated. The values can be separated using the concatenation_separator parameter.MODE—The mode (the most common value) for the specified field will be identified. If more than one value is equally common, the lowest value will be returned.DBMS_SUM—The values for the specified field will be added together.DBMS_MEAN—The average for the specified field will be calculated.DBMS_MIN—The smallest value of the specified field will be identified.DBMS_MAX—The largest value of the specified field will be identified.\r\nDBMS_STD—The standard deviation of values for the specified field will be calculated.DBMS_COUNT—The number of values in the specified field will be identified.\r\nDBMS_MEDIAN—The median of the specified field will be calculated.DBMS_VARIANCE—The variance of the specified field will be calculated.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "case_field[case_field,...](Optional)",
+          "explanation": "The field or fields in the input that will be used to calculate statistics separately for each unique attribute value (or combination of attribute values when multiple fields are specified).",
+          "datatype": "Field"
+        },
+        {
+          "name": "concatenation_separator(Optional)",
+          "explanation": "A character or characters that will be used to concatenate values when the CONCATENATION option is used for the statistics_fields parameter. By default, the tool will concatenate values without a separator.",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Calculates summary statistics for fields in a table.",
+      "extraction_date": "2025-10-01T11:37:53.850055"
+    },
+    {
+      "toolset": "Statistics",
+      "tool_name": "Enrich",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/enrich.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The features to be enriched.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "A new layer containing both the input attributes and user-selected attributes. User-selected attributes are summarized from underlying demographic boundaries. Only the area inside the input boundary is considered.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "variables[variables,...]",
+          "explanation": "The variables to be summarized and added to the output feature class.",
+          "datatype": "String"
+        },
+        {
+          "name": "buffer_type(Optional)",
+          "explanation": "Input point features must have an associated boundary polygon to enrich. When connected to ArcGIS Online, travel mode options are dynamically populated. Input line features can only use Straight Line distance. The default value is Straight Line.",
+          "datatype": "String"
+        },
+        {
+          "name": "distance(Optional)",
+          "explanation": "Determines the distance or size of an area to enrich (for example, a 1-mile buffer or 5-minute walk time). Units correspond to the buffer type. The default value is 1.",
+          "datatype": "Double"
+        },
+        {
+          "name": "unit(Optional)",
+          "explanation": "The units associated with the distance or time parameter.Miles—MilesYards—YardsFeet—FeetKilometers—KilometersMeters—MetersHours—HoursMinutes—MinutesSeconds—Seconds",
+          "datatype": "String"
+        }
+      ],
+      "summary": "Enriches data by adding demographic and landscape facts about the people and places that surround or are inside data locations.  The output is a duplicate of your input with additional attribute fields.  This tool requires an ArcGIS Online organizational account or a locally installed Business Analyst dataset. The demographic and landscape information available with this tool can come from ArcGIS Online or locally installed Business Analyst data. The Enrich tool will consume credits if ArcGIS Online is set as the Business Analyst data source. The Enrich tool uses detailed aggregation and apportionment settings to summarize data. For more information, see Data apportionment.",
+      "extraction_date": "2025-10-01T11:37:55.480914"
+    },
+    {
+      "toolset": "Statistics",
+      "tool_name": "An overview of the Analysis toolbox",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/an-overview-of-the-analysis-toolbox.htm",
+      "parameters": [],
+      "summary": "",
+      "extraction_date": "2025-10-01T11:37:57.164040"
+    },
+    {
+      "toolset": "Statistics",
+      "tool_name": "Summarize Nearby",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/summarize-nearby.htm",
+      "parameters": [
+        {
+          "name": "in_features",
+          "explanation": "The point, line, or polygon features that will be buffered. Those buffers will be used to summarize the input summary features.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "in_sum_features",
+          "explanation": "The point, line, or polygon features that will be summarized.",
+          "datatype": "Feature Layer"
+        },
+        {
+          "name": "out_feature_class",
+          "explanation": "The output polygon feature class containing the buffered input features, attributes of the input features, and new attributes about the number points, length of lines, and area of polygons inside each buffer and statistics about those features.",
+          "datatype": "Feature Class"
+        },
+        {
+          "name": "distance_type",
+          "explanation": "Specifies the distance measurement type that will be used to generate buffer areas. Both driving distance and driving time will use the road network and honor restrictions such as one-way streets. Driving time honors the current posted speed limits. To use the drive-time and drive-distance measurement options, you must be signed in to an ArcGIS Online organizational account with Network Analysis privileges. Each time the tool runs successfully, credits are debited from your subscription based on the service used and the results returned from the service. The Credits page provides details about credits.All distance types except straight-line distance use ArcGIS Online routing and network services.DRIVING_DISTANCE—The distance will be covered in a car or other similar small automobiles, such as pickup trucks. Travel follows all rules that are specific to cars.DRIVING_TIME—The distance will be covered within a specified time in a car or other similar small automobiles, such as pickup trucks. Dynamic travel speeds based on traffic are used where it is available when you specify a time of day. Travel follows all rules that are specific to cars.STRAIGHT_LINE—A Euclidean or straight-line distance will be used.TRUCKING_DISTANCE—The distance will be covered along designated truck routes. Travel follows all rules for cars as well as rules specific to trucking.TRUCKING_TIME—The distance will be covered within a specified time when traveling along designated truck routes.  Dynamic travel speeds based on traffic are used where it is available when you specify a time of day. Travel follows all rules for cars as well as rules specific to trucking.WALKING_DISTANCE—The distance will be covered along paths and roads that allow pedestrian traffic.WALKING_TIME—The distance will be covered within a specified time when walking along paths and roads that allow pedestrian traffic.",
+          "datatype": "String"
+        },
+        {
+          "name": "distances[distance,...]",
+          "explanation": "Distance values that will define a search distance (for straight-line, driving, trucking, or walking distance) or travel time (for driving, trucking, or walking time). Features that are within (or equal to) the distances you provide will be summarized.Multiple values can be specified. One area around each input feature will be generated for each distance.",
+          "datatype": "Double"
+        },
+        {
+          "name": "distance_units(Optional)",
+          "explanation": "Specifies the unit that will be used for the distance values.\r\nMILES—The units will be miles.KILOMETERS—The units will be kilometers.FEET—The units will be feet.YARDS—The units will be yards.METERS—The units will be meters.HOURS—The units will be hours.MINUTES—The units will be minutes.SECONDS—The units will be seconds.",
+          "datatype": "String"
+        },
+        {
+          "name": "time_of_day(Optional)",
+          "explanation": "The date or time when traffic conditions will be considered during travel time. Traffic conditions, especially in urbanized areas, can significantly impact the area covered within a specified travel time. If no date or time is specified, the distance covered during a specified travel time will not be impacted by traffic. Traffic conditions may be live or typical (historical) based on the date and time specified for this parameter. Esri saves live traffic data for 12 hours and references\r\npredictive data extending 12 hours into the future. If the time and date you specify is within the 24-hour time window, live traffic is used. If it is outside the time window, typical or historic traffic is used.",
+          "datatype": "Date"
+        },
+        {
+          "name": "time_zone(Optional)",
+          "explanation": "Specifies the time zone that will be used for the specified time of day. Time zones can be specified in local time or coordinated universal time (UTC).\r\n\r\nGEOLOCAL—The time of day refers to the local  time zone or zones in which the input features are located. This option can cause the analysis to have rolling start times across time zones. This is the default.For example, setting a geolocal time of day to 9:00 a.m. causes the drive times for points in the eastern time zone to start at 9:00 a.m. eastern time, and 9:00 a.m. central time for points in the central time zone. (The start times are offset by an hour in real or UTC time.)UTC—The time of day refers to coordinated universal time (UTC). The start times for all points are simultaneous, regardless of time zones.For example, setting a UTC time of day to 9:00 a.m. causes the drive times for points in the eastern time zone to start at 4:00 a.m. eastern time, and 3:00 a.m. central time for points in the central time zone. (The start times are simultaneous.)",
+          "datatype": "String"
+        },
+        {
+          "name": "keep_all_polygons(Optional)",
+          "explanation": "Specifies whether all buffers of the input features or only those intersecting or containing at least one input summary feature will be copied to the output feature class.KEEP_ALL—All buffers will be copied to the output feature class. This is the default.ONLY_INTERSECTING—Only buffers that intersect or contain at least one input summary feature will be copied to the output feature class.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "sum_fields[[summary_field, statistic_type],...](Optional)",
+          "explanation": "A list of attribute  field names from the input summary features and statistical summary types that will be calculated for those attribute fields for all points within each input feature buffer. Summary fields must be numeric. Text and other attribute field types are not supported.\r\nThe following statistic types are supported:Sum—The total value of all the points in each buffer will be calculated.Mean—The average of all the points in each buffer will be calculated.Min—The smallest value of all the points in each buffer will be identified.Max—The largest value of all the points in each buffer will be identified.Stddev—The standard deviation of all the points in each buffer will be calculated.",
+          "datatype": "Value Table"
+        },
+        {
+          "name": "sum_shape(Optional)",
+          "explanation": "Specifies whether attributes for the number of points, length of lines, and area of polygon features summarized in each input feature buffer (shape summary attributes) will be added to the output feature class. ADD_SHAPE_SUM—Shape summary attributes will be added to the output feature class. This is the default.NO_SHAPE_SUM—Shape summary attributes will not be added to the output feature class.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "shape_unit(Optional)",
+          "explanation": "Specifies the unit that will be used when calculating shape summary\r\nattributes. If the input summary features are points, no shape unit is necessary, since only the count of points within each input feature buffer is added.If the input summary features are lines, specify  a linear unit.  If the input summary features are polygons, specify an areal unit.METERS—The units will be meters.KILOMETERS—The units will be kilometers.FEET—The units will be feet.YARDS—The units will be yards.MILES—The units will be miles.ACRES—The units will be acres.HECTARES—The units will be hectares.SQUAREMETERS—The units will be square meters.SQUAREKILOMETERS—The units will be square kilometers.SQUAREFEET—The units will be square feet.SQUAREYARDS—The units will be square yards.SQUAREMILES—The units will be square miles.",
+          "datatype": "String"
+        },
+        {
+          "name": "group_field(Optional)",
+          "explanation": "The attribute field from the input summary features that will be used for grouping. Features that have the same group field value will be combined and summarized with other features with the same group field value.When a group field is specified, an additional output grouped table will be created and its location must be specified in the out_grouped_table parameter.",
+          "datatype": "Field"
+        },
+        {
+          "name": "add_min_maj(Optional)",
+          "explanation": "Specifies whether minority (least dominant) and majority (most dominant) group field values within each input feature buffer will be added to the output. This parameter is enabled if you specified a group_field parameter value.\r\nNO_MIN_MAJ—Minority and majority fields will not be added to the output. This is the default.ADD_MIN_MAJ—Minority and majority fields will be added to the output.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "add_group_percent(Optional)",
+          "explanation": "Specifies whether a percentage of each attribute value in each group will be added to the output. This parameter allows you to determine the percentage of each attribute value in each group. This parameter is enabled if you specified a group_field parameter value.\r\nNO_PERCENT—A percentage attribute field will not be added to the output. This is the default.ADD_PERCENT—A percentage attribute field will be added to the output.",
+          "datatype": "Boolean"
+        },
+        {
+          "name": "Output_Grouped_Table(Optional)",
+          "explanation": "An output table that includes summary fields for each group of summary features for each input feature buffer. If a group field is specified, the output grouped table is required.The table will have the following attribute fields:Join_ID—An ID corresponding to an ID field added to the output feature classThe group fieldA shape summary field such as count of points or length of linesOne field for each summary fieldPercentage field",
+          "datatype": "Table"
+        }
+      ],
+      "summary": "Finds features that are within a specified distance of features in the input layer and calculates statistics for the nearby features. Distance can be measured as a straight-line distance, a drive-time distance (for example, within 10 minutes), or a drive distance (for example, within 5 kilometers). For drive-time and drive-distance measurements, you  must be signed in to an  ArcGIS Online organizational account with Network Analysis privileges. Both measurement options consume credits. The following are example scenarios using Summarize Nearby:Calculate the total population within a 5minute drive time of a proposed new store location.Calculate the number of freeway access ramps within a 1-mile drive distance of a proposed new store location to use as a measure of store accessibility.",
+      "extraction_date": "2025-10-01T11:37:59.265651"
+    },
+    {
+      "toolset": "Statistics",
+      "tool_name": "Frequency",
+      "help_url": "https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/frequency.htm",
+      "parameters": [
+        {
+          "name": "in_table",
+          "explanation": "The table containing the field(s) that will be used to calculate frequency statistics.",
+          "datatype": "Table View; Raster Layer"
+        },
+        {
+          "name": "out_table",
+          "explanation": "The output table that will store the frequency statistics.",
+          "datatype": "Table"
+        },
+        {
+          "name": "frequency_fields[frequency_fields,...]",
+          "explanation": "The field(s) used to calculate frequency statistics. Each unique combination of field values will be included as a new row in the output table.",
+          "datatype": "Field"
+        },
+        {
+          "name": "summary_fields[summary_fields,...](Optional)",
+          "explanation": "The attribute field(s) to sum and add to the output table. Values will be summed for each unique combination of frequency fields. Null values are excluded from this calculation.",
+          "datatype": "Field"
+        }
+      ],
+      "summary": "Reads a table and a set of fields and creates a new table containing unique field values and the number of occurrences of each unique field value.",
+      "extraction_date": "2025-10-01T11:38:00.840094"
+    }
+  ]
+}

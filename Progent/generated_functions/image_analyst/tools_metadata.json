@@ -1,0 +1,17 @@
+{
+  "extraction_info": {
+    "date": "2025-10-01T13:21:01.779229",
+    "toolbox": "image_analyst",
+    "total_toolsets": 6,
+    "total_tools": 0,
+    "toolsets": [
+      "Extract",
+      "General",
+      "Overlay",
+      "Pairwise Overlay",
+      "Proximity",
+      "Statistics"
+    ]
+  },
+  "tools": []
+}
