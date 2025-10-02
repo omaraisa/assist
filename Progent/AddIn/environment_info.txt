@@ -1,7 +1,0 @@
-# Progent Environment Information
-# Generated on Mon 09/29/2025  9:59:19.96
-
-PROJECT_DIR=E:\ai_stage\assist\Progent
-PYTHON_VERSION=3.11.9
-VIRTUAL_ENV=E:\ai_stage\assist\Progent\venv
-
