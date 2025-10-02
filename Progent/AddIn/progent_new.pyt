@@ -12,7 +12,16 @@ from copy import deepcopy
 
 # Import the new analysis tools module
 from . import analysis_tools
-from . import d_analyst_tools
+from . import threed_analyst_tools
+from . import business_analyst_tools
+from . import cartography_tools
+from . import conversion_tools
+from . import data_management_tools
+from . import geostatistical_analyst_tools
+from . import image_analyst_tools
+from . import network_analyst_tools
+from . import spatial_analyst_tools
+from . import spatial_statistics_tools
 
 class RunPythonCode(object):
     def __init__(self):
@@ -21,7 +30,16 @@ class RunPythonCode(object):
         self.canRunInBackground = False
         # Instantiate the analysis tools
         self.analysis_tools = analysis_tools.AnalysisTools()
-        self.d_analyst_tools = d_analyst_tools.DAnalystTools()
+        self.d_analyst_tools = threed_analyst_tools.DAnalystTools()
+        self.business_analyst_tools = business_analyst_tools.BusinessAnalystTools()
+        self.cartography_tools = cartography_tools.CartographyTools()
+        self.conversion_tools = conversion_tools.ConversionTools()
+        self.data_management_tools = data_management_tools.DataManagementTools()
+        self.geostatistical_analyst_tools = geostatistical_analyst_tools.GeostatisticalAnalystTools()
+        self.image_analyst_tools = image_analyst_tools.ImageAnalystTools()
+        self.network_analyst_tools = network_analyst_tools.NetworkAnalystTools()
+        self.spatial_analyst_tools = spatial_analyst_tools.SpatialAnalystTools()
+        self.spatial_statistics_tools = spatial_statistics_tools.SpatialStatisticsTools()
 
     def getParameterInfo(self):
         function_name = arcpy.Parameter(
@@ -78,9 +96,54 @@ class RunPythonCode(object):
             func = getattr(self.analysis_tools, function_name, None)
             if func:
                 return func(params)
-
+            
             # If not found, try to find it in the d_analyst_tools instance
             func = getattr(self.d_analyst_tools, function_name, None)
+            if func:
+                return func(params)
+            
+            # If not found, try to find it in the business_analyst_tools instance
+            func = getattr(self.business_analyst_tools, function_name, None)
+            if func:
+                return func(params)
+            
+            # If not found, try to find it in the cartography_tools instance
+            func = getattr(self.cartography_tools, function_name, None)
+            if func:
+                return func(params)
+            
+            # If not found, try to find it in the conversion_tools instance
+            func = getattr(self.conversion_tools, function_name, None)
+            if func:
+                return func(params)
+            
+            # If not found, try to find it in the data_management_tools instance
+            func = getattr(self.data_management_tools, function_name, None)
+            if func:
+                return func(params)
+            
+            # If not found, try to find it in the geostatistical_analyst_tools instance
+            func = getattr(self.geostatistical_analyst_tools, function_name, None)
+            if func:
+                return func(params)
+            
+            # If not found, try to find it in the image_analyst_tools instance
+            func = getattr(self.image_analyst_tools, function_name, None)
+            if func:
+                return func(params)
+            
+            # If not found, try to find it in the network_analyst_tools instance
+            func = getattr(self.network_analyst_tools, function_name, None)
+            if func:
+                return func(params)
+            
+            # If not found, try to find it in the spatial_analyst_tools instance
+            func = getattr(self.spatial_analyst_tools, function_name, None)
+            if func:
+                return func(params)
+            
+            # If not found, try to find it in the spatial_statistics_tools instance
+            func = getattr(self.spatial_statistics_tools, function_name, None)
             if func:
                 return func(params)
             else:

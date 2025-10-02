@@ -1,0 +1,20 @@
+# ArcGIS Tools Database Requirements
+# Core dependencies for the RAG database system
+
+# Built-in Python modules (no installation needed):
+# sqlite3 - Database operations
+# json - JSON parsing
+# ast - Python AST parsing
+# pathlib - File system operations
+# logging - Logging functionality
+# typing - Type hints
+# re - Regular expressions
+
+# Optional future dependencies (for vector search phase):
+sentence-transformers>=2.2.0  # For semantic similarity
+numpy>=1.21.0                # Vector operations
+scikit-learn>=1.0.0          # Additional ML utilities
+
+# Development dependencies:
+pytest>=7.0.0                 # Testing framework
+pytest-cov>=4.0.0            # Test coverage
