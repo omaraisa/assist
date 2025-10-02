@@ -65,7 +65,22 @@ declaration = {
 db.insert_function_declaration("buffer", declaration, "analysis")
 ```
 
-### 2. Intelligent Search
+### 2. Unified Population (Load All Sources)
+
+```bash
+cd app/database
+
+# Validate data sources before populating
+python unified_populate.py --validate-only
+
+# Populate from all sources (original + Jules' enhanced files)
+python unified_populate.py --generated-path ../generated_functions
+
+# Custom database path
+python unified_populate.py --db-path app/database/arcgis_tools.db --generated-path ../generated_functions
+```
+
+### 3. Intelligent Search
 
 ```python
 from app.database.retrieval import search_arcgis_tools
@@ -75,18 +90,7 @@ results = search_arcgis_tools("create buffer around roads", max_results=5)
 
 for result in results:
     print(f"{result['function_name']}: {result['relevance_score']:.2f}")
-    print(f"Description: {result['description']}")
-```
-
-### 3. Populate Database (After Jules Completes)
-
-```bash
-# Run the population script
-cd app/database
-python populate_database.py --path ../generated_functions
-
-# Validate the population
-python populate_database.py --validate-only
+    print(f"Description: {result['declaration']['description']}")
 ```
 
 ## API Reference
@@ -163,17 +167,35 @@ for tool in relevant_tools:
 llm_response = call_llm_with_tools(user_query, tool_declarations)
 ```
 
-## File Structure
+## Data Sources & Deduplication
 
-```
-app/database/
-├── database.py          # Core database class
-├── retrieval.py         # Intelligent search system
-├── populate_database.py # Database population script
-├── test_database.py     # Database unit tests
-├── test_retrieval.py    # Retrieval system tests
-├── requirements.txt     # Dependencies
-└── README.md           # This file
+The system supports loading function declarations from multiple sources:
+
+### Sources
+1. **Original AI Functions** (`app/ai/function_declarations.py`)
+   - Existing AI layer functions (dashboard, spatial analysis, etc.)
+   - Enhanced with automatic keyword extraction
+
+2. **Geoprocessing Tools** (`generated_functions/`)
+   - Jules' enhanced ArcGIS toolbox functions
+   - Already include keywords and examples
+
+3. **Future Sources** - Extensible architecture
+
+### Deduplication Strategy
+- **Primary Key**: Function name uniqueness
+- **Conflict Resolution**: First source wins (original functions prioritized)
+- **Logging**: Tracks skipped duplicates and errors
+- **Statistics**: Complete population metrics
+
+### Population Process
+```python
+# Unified population handles all sources automatically
+populator = UnifiedDatabasePopulator()
+stats = populator.populate_from_all_sources("../generated_functions")
+
+print(f"Loaded {stats['original_functions']} original + {stats['geoprocessing_functions']} geoprocessing tools")
+print(f"Skipped {stats['duplicates_skipped']} duplicates")
 ```
 
 ## Testing
